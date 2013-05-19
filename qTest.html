@@ -1,0 +1,98 @@
+<html>
+<head>
+	<script src="ext/q.js"></script>
+
+	<script>
+		function step0() {
+			Q.delay(3100).done(function() {
+				console.log('step0 delayed');
+			});			
+		}
+
+		// even though step1 takes longer than step2, step1 results diplay before step2 results
+		function step1(successIndicator) {
+			var deferred = Q.defer();
+			setTimeout(function() {
+				console.log('step1 async');
+				deferred.resolve(successIndicator);
+			}, 2000);
+			return deferred.promise;
+		}
+
+		function step2(successIndicator) {
+			var deferred = Q.defer();
+			setTimeout(function() {
+				console.log('step2 async');
+				deferred.resolve(successIndicator);
+			}, 1000);
+			return deferred.promise;
+		}
+
+		function step3() {
+			var deferred = Q.defer();
+			try {
+				badconsole.log('step3 async');
+			}
+			catch(ex) {
+				deferred.reject(new Error(ex));
+			}
+			deferred.resolve(3);
+			return deferred.promise;
+		}
+
+		function step2WaitsButInputDoesNotDependOnStep1_Output() {
+			step1(1).then( function(step1SuccessResult) {
+				console.log('step1 result: ' + step1SuccessResult);
+			}).then( function() {
+				step2(2).then( function(step2SuccessResult) {
+					console.log('step2 result: ' + step2SuccessResult);
+				});
+			}).done();
+		}
+
+		function step2WaitsButInputDoesNotDependOnStep1_Output_NoLogging() {
+			step1(1).then(function() {
+			step2(2).then(function() {
+			step3()
+			})}).done();
+		}
+
+		function step2WaitsAndInputDependsOnStep1_Output() {
+			return step1(1).then( function(step1SuccessResult) {
+				console.log('step1 result: ' + step1SuccessResult);
+				return step2(step1SuccessResult).then( function(step2SuccessResult) {
+					console.log('step2 result: ' + step2SuccessResult);
+				})
+			}).done();
+		}
+
+		function main() {
+			console.log('do this right away');
+			//step0();
+
+			//step2WaitsButInputDoesNotDependOnStep1_Output();
+			//step2WaitsButInputDoesNotDependOnStep1_Output_NoLogging();
+			//step2WaitsAndInputDependsOnStep1_Output();
+			/*
+			step1(1).then(function(success) {
+				console.log('step1 result: ' + success);
+				step2(2).then(function(success) {
+					console.log('step2 result: ' + success);
+				})
+			}).done();
+			*/
+			step3(3).then(
+			function (success) {
+
+			},
+			function(error) {
+				console.error(error);
+			}).done();
+
+			console.log('do this whenever');
+		}
+	</script>
+</head>
+<body onLoad="main();">
+</body>
+</html>

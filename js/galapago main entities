@@ -1,0 +1,73 @@
+Creature has an Image
+Creature has a CreatureType
+
+Treasure has an Image
+Treasure has a TreasureType
+
+Tile has either a Creature or a Treasure
+Tile has a matrix coordinate
+Tile can be Selected
+Tile can be MousedOver
+
+Board has layer with matrix of Tiles with Creatures
+Board has layer with matrix of Tiles with Treasures
+
+operations: 
+/* hilight a tile as the active tile prepared to swap */
+selectForSwap(t1)
+
+/* select a tile as the destination tile for a swap */
+selectForDestination(t1)
+
+/* determine whether or not two tiles are adjacent */
+areAdjacent(t1, t2)
+
+swapTiles(t1, t2)
+
+/* has the player achieved the goal for the level, e.g. clearing all the gold tiles */
+isComplete()
+
+/* seed Creature Tiles with random CreatureTypes */
+seed()
+
+clear()
+
+countGoldTiles()
+
+/*
+clear a triplet of tiles from the board 
+clear any underlying treasure tiles at some positions, e.g. gold tiles
+*/
+clearTiles(t1, t2, t3)
+
+/* shift down the tiles above a cleared tile triplet
+shiftDown(t1, t2, t3)
+
+isColumn(t1, t2, t3)
+
+isRow(t1, t2, t3)
+
+/* returns a tile triplet if there are three Creatures
+of same CreatureType in adjacent tiles within a row or column */
+getTriplet([Tile]) returns null or [Tile]
+
+/*
+retuns [Tile] surrounding a tile (two up, two down, two left, two right) plus the input tile
+up to half of the tiles returned can be null if the input tile is near a border
+x x x
+x x x
+x x x
+*/
+getTripletCandidates(t1) retuns [Tile]
+
+Level has Board
+Level has background theme
+Level has path to resources
+
+
+
+select tile1, clone to tempTile1
+activate tile1
+select tile2, clone to tempTile2
+activate tile2
+swap tile1 and tile2

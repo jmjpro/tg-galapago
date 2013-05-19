@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <style>
+        body {
+            background: url( 'res/img/background/background_beach_720.png') no-repeat fixed top left;
+        }
+    </style>
+    <script>
+     
+    function init() {
+        var canvas=document.getElementById("myCanvas");
+        var context=canvas.getContext("2d");
+     
+        var x = 250;
+        var y = 200;
+        context.fillText("Hello World!", x, y);
+    }
+     
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="myCanvas" width="578" height="200"></canvas>
+</body>
+</html>

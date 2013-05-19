@@ -1,0 +1,39 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#nav {
+    display: none;
+}
+
+#canvas-main {
+    border: 3px solid #d3d3d3;
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    background-repeat: no-repeat;
+    background-position: top left;
+}
+
+#sound-match-01 {
+    display: none;
+}
+
+canvas.game-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+img.progress_bar {
+    left: 1103px;
+}
+
+#progress_bar {
+    display: inline;
+    top: 150px;
+    left: 1100px;
+}

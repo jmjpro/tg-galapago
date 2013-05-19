@@ -1,0 +1,24 @@
+	{
+		"resourcePath" : "level_02",
+		"bgTheme" : "beach",
+		"treasureType" : "gold",
+		"creatureTypes" : [
+			"Galapa_Frog",
+			"Grants_Treetopper",
+			"Green_Flutterby",
+			"Hodapp_Ladybird",
+			"Lost_Lightning_Bug",
+			"Rosy_Crawler",
+			"Violet_Visionary"
+		],
+		"creaturePositions" : [
+			[1, 0, 1],
+			[0, 1, 0],
+			[1, 0, 1]
+		],
+		"treasurePositions" : [
+			[0, 1, 0],
+			[0, 0, 0],
+			[0, 1, 0]
+		]
+	}

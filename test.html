@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="ext/imgpreload.js"></script>
+	<script>
+	function draw() {
+		var c=document.getElementById("myCanvas");
+		var ctx=c.getContext("2d");
+		var imageArray = ['/res/img/friends/Blue_Friend.bmp', '/res/img/friends/Green_Friend.bmp', '/res/img/friends/Lightning_Friend.bmp', '/res/img/friends/Pink_Friend.bmp', '/res/img/friends/Purple_Friend.bmp'];
+		var it;
+		var INIT_LEFT = 10;
+		var INIT_TOP = 10;
+		var curLeft = INIT_LEFT;
+		var curTop = INIT_TOP;
+		imgpreload(imageArray, function( images ) {
+			var it;
+			for( it in images ) {
+				ctx.drawImage( images[it], curLeft, curTop );
+				curTop += images[it].height + 5;
+			}
+		});
+	}
+	</script>
+</head>
+<body onLoad="draw();">
+<canvas id="myCanvas" width="350" height="300" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+</body>
+</html>
