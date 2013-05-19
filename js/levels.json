@@ -1,17 +1,17 @@
 [
 	{
-		"resourcePath" : "level_01",
+		"name" : "level_01",
 		"bgTheme" : "beach",
-		"dangerBarSeconds" : "60",
+		"dangerBarSeconds" : "120",
 		"treasureType" : "gold",
 		"creatureTypes" : [
-			"Cyclops_Crab",
-			"Electric_Cha_Toad",
-			"Mandarin_Seastar",
-			"Palace_Fish",
-			"Pink_Alibi_Frog",
-			"Turtle_of_Toi",
-			"Two_Bells_Crab"
+			"blue_crab",
+			"gold_flying_fish",
+			"green_turtle",
+			"pink_frog",
+			"purple_crab",
+			"red_starfish",
+			"teal_blob"
 		],
 		"creaturePositions" : [
 			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -51,7 +51,7 @@
 		]
 	},
 	{
-		"resourcePath" : "level_02",
+		"name" : "level_02",
 		"bgTheme" : "forest",
 		"treasureType" : "gold",
 		"creatureTypes" : [

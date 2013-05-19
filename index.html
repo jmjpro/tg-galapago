@@ -31,6 +31,7 @@
     
     <body onLoad="Galapago.init(gameMode);">
         <audio id="sound-match-01" src="res/audio/Match_01.mp3" preload="auto"/></audio>
+        <audio id="sound-warning" src="res/audio/Warning.mp3" preload="auto"/></audio>
 
         <div id="nav">
             <a href="#" onClick="Galapago.setLevel('level_01');">Level 1</a>
@@ -45,7 +46,8 @@
             <canvas id="layer-creature" class="game-layer" style="z-index: 3;"></canvas>
             <canvas id="layer-grid" class="game-layer" style="z-index: 4;"></canvas>
             <canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;"></canvas>
-            <canvas id="layer-map" class="game-layer" style="z-index: 6;"></canvas>
+            <canvas id="layer-power-up" class="game-layer" style="z-index: 6;"></canvas>
+            <canvas id="layer-map" class="game-layer" style="z-index: 7;"></canvas>
         </div>
 
         <div id="debug-console"></div>

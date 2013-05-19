@@ -3,12 +3,12 @@
 /* begin class Galapago */
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
 Galapago.CONFIG_FILE_PATH = 'js/levels.json';
-Galapago.GAME_IMAGE_DIRECTORY = 'res/img/game_screen/';
-Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress_bar/';
+Galapago.GAME_IMAGE_DIRECTORY = 'res/img/game-screen/';
+Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
 Galapago.STAGE_WIDTH = 1280;
 Galapago.STAGE_HEIGHT = 720;
 Galapago.BACKGROUND_PATH_PREFIX = 'res/img/background/background_';
-Galapago.BACKGROUND_PATH_SUFFIX = '_720.jpg)';
+Galapago.BACKGROUND_PATH_SUFFIX = '.jpg)';
 Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.LAYER_MAP = 'layer-map';
 Galapago.gameImageNames = [
@@ -23,7 +23,25 @@ Galapago.gameImageNames = [
 	'left_side_bar',
 	'Level_Completed_indicator',
 	'right_side_bar',
-	'Shuffler_Powerup'
+	'Shuffler_Powerup',
+	'Bracket_Left.png',
+	'Bracket_Right.png',
+	'button_menu',
+	'button_quit',
+	'danger_bar',
+	'PowerUps_Flame_Activated',
+	'PowerUps_Flame_Disabled',
+	'PowerUps_Flame_Pressed',
+	'PowerUps_Flame_Rollover',
+	'PowerUps_Holder',
+	'PowerUps_Shuffle_Activated',
+	'PowerUps_Shuffle_Disabled',
+	'PowerUps_Shuffle_Pressed',
+	'PowerUps_Shuffle_Rollover',
+	'PowerUps_Swap_Activated',
+	'PowerUps_Swap_Disabled',
+	'PowerUps_Swap_Pressed',
+	'PowerUps_Swap_Rollover'
 ];
 Galapago.dangerBarImageNames = [
 	'danger_bar',
@@ -48,7 +66,7 @@ Galapago.levelsFromJson = function (levelConfigs) {
 	_.each( levelConfigs, function(levelConfig) {
 		level = new Level();
 		level.levelConfig = levelConfig;
-		level.resourcePath = levelConfig.resourcePath;
+		level.name = levelConfig.name;
 		level.bgTheme = levelConfig.bgTheme;
 		level.creatureTypes = levelConfig.creatureTypes;
 		level.treasureType = levelConfig.treasureType;
@@ -89,7 +107,7 @@ Galapago.buildGameImagePaths = function() {
 	var gameImagePaths;
 	gameImagePaths = [];
 	_.each( Galapago.gameImageNames, function(imageName) {
-		gameImagePaths.push(Galapago.GAME_IMAGE_DIRECTORY + imageName + '.bmp');
+		gameImagePaths.push(Galapago.GAME_IMAGE_DIRECTORY + imageName + '.png');
 	});
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
@@ -159,12 +177,12 @@ LevelMap.prototype.registerEventHandlers = function() {
 			level = Galapago.levels[levelIt];
 			mapHotspotRegion = level.mapHotspotRegion;
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
-				console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.resourcePath);
+				console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
 				levelMap.drawHotspot(mapHotspotRegion);
 				break;
 			}
 			else {
-				console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.resourcePath);
+				console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.name);
 				levelMap.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
@@ -216,7 +234,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			Galapago.setLevel(level.resourcePath);
+			Galapago.setLevel(level.name);
 			break;
 		}
 		else {
@@ -226,7 +244,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 }; //LevelMap.prototype.handleSelect()
 
 LevelMap.prototype.handleKeyboardSelect = function() {
-	Galapago.setLevel(this.level.resourcePath);
+	Galapago.setLevel(this.level.name);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.handleLeftArrow = function() {
@@ -305,7 +323,7 @@ LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 	this.layer.stroke();
 }; //LevelMap.prototype.drawHotspot
 
-//+ Jonas Raoni Soares Silva
+//+ adapted from Jonas Raoni Soares Silva
 //@ http://jsfromhell.com/math/is-point-in-poly [rev. #0]
 LevelMap.isPointInPoly = function (pt, poly) {
     for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
@@ -332,12 +350,10 @@ function Score() {}
 
 /* begin class Level */
 Level.CREATURE_PATH = 'res/img/creatures/';
-Level.TREASURE_PATH = 'res/img/game_screen/';
+Level.TREASURE_PATH = 'res/img/gold-tiles/';
 Level.BLOB_IMAGE_EXTENSION = 'png';
-Level.CREATURE_IMAGE_IDS = ['01', '02', '03'];
 Level.CREATURE_IMAGE_ID = '01';
-Level.LOCKING_IMAGE_ID = '02';
-Level.COCOON_IMAGE_ID = '03';
+Level.CREATURE_IMAGE_IDS = ['01', '02', '03'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_TREASURE = 'layer-treasure';
 Level.LAYER_CREATURE = 'layer-creature';
@@ -348,7 +364,7 @@ function Level() {
 	this.creatureTypes = [];
 	//TODO: do we need to store levelConfig?
 	this.levelConfig = ''; // original JSON text
-	this.resourcePath = '';
+	this.name = '';
 	this.treasureImages = [];
 	this.treasureType = '';
 	this.mapHotspotRegion = [];
@@ -360,7 +376,7 @@ function Level() {
 
 Level.prototype.toString = function() {
 	var output;
-	output = 'resourcePath: ' + this.resourcePath + ', ' +
+	output = 'name: ' + this.name + ', ' +
 			'bgTheme: ' + this.bgTheme + ', ' +
 			'creatureTypes: ' + this.creatureTypes + ', ' +
 			'board: ' + this.board.toString();
@@ -380,7 +396,7 @@ Level.prototype.buildCreatureImagePaths = function() {
 		for( spriteIt = 0; spriteIt < Level.CREATURE_IMAGE_IDS.length; spriteIt++ ) {
 			creatureType = this.creatureTypes[creatureTypeIt];
 			spriteNumber = Level.CREATURE_IMAGE_IDS[spriteIt];
-			creatureImagePath = Level.CREATURE_PATH + this.resourcePath + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
+			creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
 			creatureImagePathIt++;
 		}
@@ -392,7 +408,7 @@ Level.prototype.buildCreatureImagePaths = function() {
 Level.prototype.buildTreasureImagePaths = function() {
 	var treasureImagePaths;
 	treasureImagePaths = [];
-	treasureImagePaths[0] = Level.TREASURE_PATH + 'gold_cell' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	treasureImagePaths[0] = Level.TREASURE_PATH + 'tile_gold' + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return treasureImagePaths;
 };
 
@@ -440,6 +456,7 @@ Level.prototype.loadImagesAsync = function() {
 	})/*.done()*/,
 	this.imgpreloadAsync(treasureImagePaths).then( function(imageObjectArray) {
 		level.treasureImages = imageObjectArray;
+		console.debug('level.treasureImages = ' + level.treasureImages);
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/]);
@@ -462,6 +479,9 @@ Level.prototype.display = function() {
 	level.board.setActiveTile();
 	level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 	console.debug(level.toString());
+
+	level.board.addPowerups();
+
 	return level; //chainable
 	}).done();
 }; //Level.prototype.display()
@@ -469,7 +489,7 @@ Level.prototype.display = function() {
 Level.findByName = function(levelName) {
 	var level;
 	level = _.filter( Galapago.levels, function(level) {
-		return level.resourcePath === levelName;
+		return level.name === levelName;
 	});
 
 	return (level.length === 1) ? level[0] : null;
@@ -548,15 +568,15 @@ Level.prototype.getImageByPath = function(images, imagePath) {
 	return null;
 };
 
-Level.prototype.getCreatureImage = function(resourcePath, creatureType, spriteNumber) {
+Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	var creatureImagePath;
-	creatureImagePath = Level.CREATURE_PATH + resourcePath + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
+	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
 };
 
 Level.prototype.getTreasureImage = function(treasureType) {
 	var treasureImagePath;
-	treasureImagePath = Level.TREASURE_PATH + treasureType.toLowerCase() + '_cell' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	treasureImagePath = Level.TREASURE_PATH + 'tile_' + treasureType.toLowerCase() + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return this.getImageByPath(this.treasureImages, treasureImagePath);
 };
 /* end class Level */
@@ -598,8 +618,12 @@ function Board() {
 	this.tripletCounter = 0;
 	this.treasureCounter = 0;
 	this.handleTripletsDebugCounter = 0;
-	this.level = null;
+	this.level = null;	
 } //Board constructor
+
+Board.prototype.addPowerups = function() {
+	new Powerup(this.level.gameImages);
+};
 
 /* req 4.4.2
 As default, the cursor is shown on the top leftmost creature on board. However, on new game once in a session, in levels
@@ -866,9 +890,6 @@ Board.prototype.handleTriplets = function(tile) {
 	changingPointsArray = [];
 	tileTriplets = board.findTriplets(tile);
 	if( tileTriplets && tileTriplets.length >= 1 ) {
-		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
-			dangerBar.start(); //YJ: RQ 4.4.2
-		}
 		_.each( tileTriplets, function(tileTriplet) {
 			board.tripletCounter++;
 			pointsArray = pointsArray.concat(Tile.tileArrayToPointsArray(tileTriplet));
@@ -918,6 +939,9 @@ Board.prototype.handleSelect = function(tile) {
 	}
 	//YJ: two different tiles selected; swap them and look for triplets
 	else if( tile !== tilePrev && this.adjacent(tile, tilePrev) ) {
+		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
+			dangerBar.start(); //YJ: RQ 4.4.2
+		}
 		tile.setSelectedAsync().then(function() {
 			board.swapCreatures( tile, tilePrev );
 			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
@@ -1242,7 +1266,7 @@ Board.prototype.randomCreature = function(creatureTypes) {
 	var randomIt, creatureType, creatureImage, creature;
 	randomIt = Math.floor( Math.random() * creatureTypes.length );
 	creatureType = creatureTypes[randomIt];
-	creatureImage = this.level.getCreatureImage(this.level.resourcePath, creatureType, Level.CREATURE_IMAGE_ID);
+	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_IMAGE_ID);
 	creature = new Creature(creatureType, creatureImage);
 	return creature;
 };
@@ -1662,7 +1686,7 @@ MatrixUtil.getChangingPoints = function(pointsArray) {
 DangerBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 383;
-DangerBar.RATIO_DANGER = 0.25;
+DangerBar.RATIO_DANGER = 0.15;
 DangerBar.PROGRESS_BAR_TOP = 150;
 DangerBar.CAP_TOP_TOP = 163;
 DangerBar.CAP_BOTTOM_TOP = 610;
@@ -1772,6 +1796,9 @@ DangerBar.prototype.update = function() {
 		dangerBar.layer.clearRect( DangerBar.LEFT, DangerBar.CAP_TOP_TOP + dangerBar.progress_bar_cap_top01.height, dangerBar.progress_bar_fill01.width, dangerBar.fillHeightInitial );
 		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, fillDanger.width, fillDanger.height );
 		dangerBar.layer.drawImage( bottomCapDanger, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, bottomCapDanger.width, bottomCapDanger.height );
+		$('#sound-warning')[0].play();
+		$('#sound-warning')[0].play();
+		$('#sound-warning')[0].play();
 	}
 	else { //timeout
 		//clear the space between the top cap and the bottom cap, including the bottom cap
@@ -1818,6 +1845,47 @@ BobCervantes.prototype.update = function() {
 }; //BobCervantes.prototype.update()
 
 /* end class BobCervantes */
+
+/* begin class BobCervantes */
+Powerup.LEFT = 124;
+Powerup.TOP = 228;
+Powerup.MARGIN = 10;
+Powerup.LAYER_POWER_UP = 'layer-power-up';
+
+function Powerup(images) {
+	this.initImages(images);
+	this.layer = $('#' + Powerup.LAYER_POWER_UP)[0].getContext('2d');
+	this.update();
+}
+
+Powerup.prototype.initImages = function(imageArray) {
+	var powerup;
+	var imageId;
+	var image;
+	powerup = this;
+
+	_.each(imageArray, function(image) {
+		imageId = image.id;
+		powerup[imageId] = image;
+	});
+} //DangerBar.prototype.initImages
+
+Powerup.prototype.update = function() {
+	var ctx, left, top, width, height;
+	ctx = this.layer;
+	left = Powerup.LEFT;
+	top = Powerup.TOP;
+	width = this.PowerUps_Flame_Disabled.width;
+	height = this.PowerUps_Flame_Disabled.height;
+	ctx.clearRect( left, top, width, height );
+	ctx.drawImage( this.PowerUps_Holder, left, top );
+	top += Powerup.MARGIN * 3;
+	ctx.drawImage( this.PowerUps_Flame_Disabled, left, top );
+	top += this.PowerUps_Swap_Disabled.height + Powerup.MARGIN;
+	ctx.drawImage( this.PowerUps_Swap_Disabled, left, top );
+	top += this.PowerUps_Shuffle_Disabled.height + Powerup.MARGIN;
+	ctx.drawImage( this.PowerUps_Shuffle_Disabled, left, top );
+}; //BobCervantes.prototype.update()
 
 /* class FileUtil */
 // helper functions for manipulating files and filenames
