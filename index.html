@@ -9,23 +9,23 @@
         <script src="js/debugConsole.js"></script>
         <script src="ext/lodash.min.js"></script>
         <script src="ext/imgpreload.js"></script>
-        <script src="ext/queryString.js"></script>
+        <!--script src="ext/queryString.js"></script-->
         <script src="ext/q.min.js"></script>
         <!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
         <script src="ext/zepto-1.0.min.js"></script>
-        <script src="ext/zepto-touch-1.0.js"></script>
-        <script src="ext/imageFilters.js"></script>
+        <!--script src="ext/zepto-touch-1.0.js"></script-->
+        <!--script src="ext/imageFilters.js"></script-->
         <script src="js/game.js"></script>
         <script>
-            var levelQueryString, gameMode;
+            var /*levelQueryString,*/ gameMode;
 
             if( typeof jsErrLog !== 'undefined' ) {
                 jsErrLog.debugMode = false;
                 jsErrLog.info = "Galapago debugging";                
             }
 
-            levelQueryString = QueryString.level || 'level_01';
-            gameMode = QueryString.gameMode || 'MODE_TIMED';
+            //levelQueryString = QueryString.level || 'level_01';
+            gameMode = 'MODE_TIMED';
         </script>
     </head>
     
@@ -42,9 +42,9 @@
 
         <div id="canvas-main" style="">
             <canvas id="layer-background" class="game-layer" style="z-index: 1;"></canvas>
-            <canvas id="layer-treasure" class="game-layer" style="z-index: 2;"></canvas>
-            <canvas id="layer-creature" class="game-layer" style="z-index: 3;"></canvas>
-            <canvas id="layer-grid" class="game-layer" style="z-index: 4;"></canvas>
+            <canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
+            <canvas id="layer-treasure" class="game-layer" style="z-index: 3;"></canvas>
+            <canvas id="layer-creature" class="game-layer" style="z-index: 4;"></canvas>
             <canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;"></canvas>
             <canvas id="layer-power-up" class="game-layer" style="z-index: 6;"></canvas>
             <canvas id="layer-map" class="game-layer" style="z-index: 7;"></canvas>
