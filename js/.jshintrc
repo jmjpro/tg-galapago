@@ -1,0 +1,11 @@
+{
+  "undef" : true,
+  "unused" : true,
+
+  // == Environments ====================================================
+  "browser" : true,
+  "devel" : true,
+  "jquery" : true,
+
+  "globals": { "_" : false, "Q" : false, "imgpreload" : false }
+}

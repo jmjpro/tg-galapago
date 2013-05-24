@@ -68,9 +68,9 @@ Galapago.levelsFromJson = function (levelConfigs) {
 		level = new Level();
 		level.levelConfig = levelConfig;
 		level.name = levelConfig.name;
-		level.bgTheme = levelConfig.bgTheme;
-		level.creatureTypes = levelConfig.creatureTypes;
-		level.treasureType = levelConfig.treasureType;
+		level.setBgTheme(levelConfig.bgTheme);
+		//level.creatureTypes = levelConfig.creatureTypes;
+		//level.treasureType = levelConfig.treasureType;
 		level.mapHotspotRegion = levelConfig.mapHotspotRegion;
 		levels.push(level);
 	});
@@ -79,24 +79,16 @@ Galapago.levelsFromJson = function (levelConfigs) {
 }; //Galapago.prototype.levelsFromJson()
 
 Galapago.init = function(gameMode) {
-	var levelMap, galapago, level;
- 	Galapago.gameMode = gameMode;
+	var level;
+	Galapago.gameMode = gameMode;
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	Galapago.loadConfigAsync().then(function(data) {
 		Galapago.levels = Galapago.levelsFromJson(data);
 		Galapago.levelMap = new LevelMap();
 		Galapago.levelMap.display();
-	 	level = Galapago.levels[0];
+		level = Galapago.levels[0];
 		Galapago.levelMap.drawHotspot(level.mapHotspotRegion);
 		Galapago.levelMap.level = level;
-		//this.levelMap.drawHotSpots('white');
-		/*
-		_.each( Galapago.levels, function(level) {
-			if( level.mapHotspotRegion && level.mapHotspotRegion.length > 0 ) {
-				Galapago.levelMap.drawHotspot(level.mapHotspotRegion);
-			}
-		});
-		*/
 	}, function(status) {
 		console.log('failed to load JSON level config with status ' + status);
 	}).then(function() {
@@ -125,14 +117,20 @@ Galapago.buildDangerBarImagePaths = function() {
 Galapago.loadConfigAsync = function() {
 	var deferred;
 	deferred = Q.defer();
-	$.getJSON(Galapago.CONFIG_FILE_PATH, function(data, status) {
-		if('success' === status) {
+
+	$.ajax({
+		type: 'GET',
+		url: Galapago.CONFIG_FILE_PATH,
+		dataType: 'json',
+		timeout: 3000, //3 second timeout
+		success: function(data) {
 			deferred.resolve(data);
-		}
-		else {
-			deferred.reject(status);
+		},
+		error: function(xhr, type) {
+			deferred.reject(type);
 		}
 	});
+
 	return deferred.promise;
 	//Galapago.levels = Galapago.levelsFromJson(Level.LEVELS_JSON);
 }; //Galapago.loadConfigAsync
@@ -159,7 +157,7 @@ function LevelMap() {
 	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.registerEventHandlers();
-	this.level;
+	this.level = null;
 } //LevelMap constructor
 
 LevelMap.prototype.registerEventHandlers = function() {
@@ -192,7 +190,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 	levelMap.canvas.onclick = function(evt) {
 		levelMap.handleSelect(evt);
-	} //onclick
+	}; //onclick
 
 	window.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
@@ -268,51 +266,6 @@ LevelMap.prototype.display = function() {
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 };
 
-LevelMap.prototype.drawHotSpots = function(fillColor) {
-	var levelMap, mouseMoveCounter;
-	levelMap = this;
-	mouseMoveCounter = 0;
-	// define a custom fillCircle method
-	
-	this.layer.fillCircle = function(x, y, radius, fillColor) {
-		this.fillStyle = fillColor;
-		this.beginPath();
-		this.moveTo(x, y);
-		this.arc(x, y, radius, 0, Math.PI * 2, false);
-		this.fill();
-	};
-
-	// bind mouse events
-	this.canvas.onmousemove = function(e) {
-		if (!this.isDrawing) {
-			return;
-		}
-		mouseMoveCounter++;
-		var x = e.pageX - this.offsetLeft;
-		var y = e.pageY - this.offsetTop;
-		var radius = 1; // or whatever
-		var fillColor = '#ff0000';
-		var point = [];
-		levelMap.layer.fillCircle(x, y, radius, fillColor);
-		if( mouseMoveCounter % 3 === 0 ) {
-			point.push(x);
-			point.push(y);
-			levelMap.hotspotPointsArray.push(point);
-		}
-	};
-
-	this.canvas.onmousedown = function(e) {
-		this.isDrawing = true;
-	};
-
-	this.canvas.onmouseup = function(e) {
-		this.isDrawing = false;
-		levelMap.layer.clearRect(0, 0, levelMap.canvas.width, levelMap.canvas.height);	
-		levelMap.drawHotspot(levelMap.hotspotPointsArray);
-		console.debug( MatrixUtil.pointsArrayToString(levelMap.hotspotPointsArray) );
-	};
-}; //LevelMap.prototype.drawHotSpots
-
 LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 	this.layer.strokeStyle = 'white';
 	this.layer.beginPath();
@@ -327,18 +280,19 @@ LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 //+ adapted from Jonas Raoni Soares Silva
 //@ http://jsfromhell.com/math/is-point-in-poly [rev. #0]
 LevelMap.isPointInPoly = function (pt, poly) {
-    for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-        ((poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1]))
-        && (pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0])
-        && (c = !c);
-    return c;
-} //LevelMap.isPointInPoly()
+	for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i) {
+		((poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1])) &&
+		(pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0]) &&
+		(c = !c);
+	}
+	return c;
+}; //LevelMap.isPointInPoly()
 
 /* end class LevelMap */
 
 /* begin class Score */
 Score.TRIPLET = 100;
-Score.MULTIPLIER_TREASURE = 3;
+Score.MULTIPLIER_GOLD = 3;
 Score.FONT_SIZE = '30px';
 Score.FONT_NAME = 'Calibri';
 Score.X = 500;
@@ -351,13 +305,16 @@ function Score() {}
 
 /* begin class Level */
 Level.CREATURE_PATH = 'res/img/creatures/';
-Level.TREASURE_PATH = 'res/img/gold-tiles/';
+Level.GOLD_PATH = 'res/img/gold-tiles/';
 Level.BLOB_IMAGE_EXTENSION = 'png';
-Level.CREATURE_IMAGE_ID = '01';
-Level.CREATURE_IMAGE_IDS = ['01', '02', '03'];
+Level.CREATURE_IMAGE_TYPES = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
-Level.LAYER_TREASURE = 'layer-treasure';
+Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
+Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "purple_crab", "red_starfish", "teal_blob", "yellow_fish"];
+Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "purple_moth", "red_beetle", "teal_bug", "yellow_frog"];
+Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "purple_lizard", "red_beetle", "teal_flyer", "yellow_bug"];
+Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 
 function Level() {
 	this.bgTheme = '';
@@ -366,14 +323,44 @@ function Level() {
 	//TODO: do we need to store levelConfig?
 	this.levelConfig = ''; // original JSON text
 	this.name = '';
-	this.treasureImages = [];
-	this.treasureType = '';
+	this.goldImages = [];
 	this.mapHotspotRegion = [];
 	this.dangerBar = null;
 	this.gameImages = [];
 	this.dangerBarImages = [];
-	this.layerBackground;
+	this.layerBackground = null;
 }
+
+Level.prototype.getGold = function() {
+	var goldImagePath, goldImage, gold;
+	goldImagePath = Level.GOLD_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	goldImage = this.getImageByPath(this.goldImages, goldImagePath);
+	gold = new Gold(goldImage);
+	return gold;
+};
+
+Level.prototype.getImageByColorId = function(colorId) {
+	var creatureType;
+	
+	//distinguish between pink and purple
+	if( 'p' === colorId ) {
+		colorId = 'pi';
+	}
+	else if( 'u' === colorId ) {
+		colorId = 'pu';
+	}
+
+	creatureType = _.filter( this.creatureTypes, function(creatureType) {
+		return creatureType.startsWith(colorId);
+	});
+
+	return Level.getCreatureImage(creatureType);	
+}; //Level.prototype.getImageByColorId
+
+Level.prototype.setBgTheme = function(bgTheme) {
+	this.bgTheme = bgTheme;
+	this.creatureTypes = Level.getCreatureTypesFromTheme(this.bgTheme);
+};
 
 Level.prototype.toString = function() {
 	var output;
@@ -387,7 +374,6 @@ Level.prototype.toString = function() {
 Level.prototype.initImages = function(imageArray) {
 	var level;
 	var imageId;
-	var image;
 	level = this;
 
 	_.each(imageArray, function(image) {
@@ -406,9 +392,9 @@ Level.prototype.buildCreatureImagePaths = function() {
 	creatureImagePaths = [];
 	creatureImagePathIt = 0;
 	for( creatureTypeIt = 0; creatureTypeIt < this.creatureTypes.length; creatureTypeIt++ ) {
-		for( spriteIt = 0; spriteIt < Level.CREATURE_IMAGE_IDS.length; spriteIt++ ) {
+		for( spriteIt = 0; spriteIt < Level.CREATURE_IMAGE_TYPES.length; spriteIt++ ) {
 			creatureType = this.creatureTypes[creatureTypeIt];
-			spriteNumber = Level.CREATURE_IMAGE_IDS[spriteIt];
+			spriteNumber = Level.CREATURE_IMAGE_TYPES[spriteIt];
 			creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
 			creatureImagePathIt++;
@@ -418,11 +404,11 @@ Level.prototype.buildCreatureImagePaths = function() {
 	return creatureImagePaths;
 }; //Level.prototype.buildCreatureImagePaths()
 
-Level.prototype.buildTreasureImagePaths = function() {
-	var treasureImagePaths;
-	treasureImagePaths = [];
-	treasureImagePaths[0] = Level.TREASURE_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
-	return treasureImagePaths;
+Level.prototype.buildGoldImagePaths = function() {
+	var goldImagePaths;
+	goldImagePaths = [];
+	goldImagePaths[0] = Level.GOLD_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	return goldImagePaths;
 };
 
 Level.prototype.imgpreloadAsync = function(imagePaths) {
@@ -444,10 +430,10 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 };
 
 Level.prototype.loadImagesAsync = function() {
-	var level, creatureImagePaths, treasureImagePaths, gameImagePaths, dangerBarImagePaths;
+	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths;
 	level = this;
 	creatureImagePaths = level.buildCreatureImagePaths();
-	treasureImagePaths = level.buildTreasureImagePaths();
+	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 
@@ -468,9 +454,9 @@ Level.prototype.loadImagesAsync = function() {
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/,
-	level.imgpreloadAsync(treasureImagePaths).then( function(imageObjectArray) {
-		level.treasureImages = imageObjectArray;
-		console.debug('level.treasureImages = ' + level.treasureImages);
+	level.imgpreloadAsync(goldImagePaths).then( function(imageObjectArray) {
+		level.goldImages = imageObjectArray;
+		console.debug('level.goldImages = ' + level.goldImages);
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/]);
@@ -481,14 +467,11 @@ Level.prototype.display = function() {
 	level.styleCanvas();
 	level.setBoard(new Board());
 	level.loadImagesAsync().then( function() {
-	level.board.build( level.levelConfig.treasurePositions, 'TREASURE', 'GOLD' );
-	level.board.build( level.levelConfig.creaturePositions, 'CREATURE', null );
-	/*
-	level.board.stage.add(level.board.gridLayer);
-	level.board.gridLayer.setZIndex(1);
-	*/
-	if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.treasureTileMatrix) ) {
-		throw new Error('creatureTileMatrix dimensions must match treasureTileMatrix dimensions');
+	level.board.init( level.levelConfig.blobPositions );
+	level.board.build( level.levelConfig.blobPositions );
+
+	if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
+		throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 	}
 	level.board.setActiveTile();
 	level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
@@ -499,6 +482,22 @@ Level.prototype.display = function() {
 	return level; //chainable
 	}).done();
 }; //Level.prototype.display()
+
+Level.getCreatureTypesFromTheme = function(bgTheme) {
+	var creatureTypes;
+	switch( bgTheme ) {
+		case 'beach':
+			creatureTypes = Level.BG_THEME_BEACH_CREATURES;
+			break;
+		case 'forest':
+			creatureTypes = Level.BG_THEME_FOREST_CREATURES;
+			break;
+		case 'mountains':
+			creatureTypes = Level.BG_THEME_MOUNTAIN_CREATURES;
+			break;
+	}
+	return creatureTypes;
+}; //Level.getCreatureTypesFromTheme
 
 Level.findByName = function(levelName) {
 	var level;
@@ -582,23 +581,17 @@ Level.prototype.getImageByPath = function(images, imagePath) {
 	return null;
 };
 
-Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
+Level.prototype.getCreatureImage = function(creatureType, imageType) {
 	var creatureImagePath;
-	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
+	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + imageType + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
-};
-
-Level.prototype.getTreasureImage = function(treasureType) {
-	var treasureImagePath;
-	treasureImagePath = Level.TREASURE_PATH + 'tile_' + treasureType.toLowerCase() + '_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
-	return this.getImageByPath(this.treasureImages, treasureImagePath);
 };
 /* end class Level */
 
 /*
 begin class Board
 Board has layer with matrix of Tiles with Creatures
-Board has layer with matrix of Tiles with Treasures
+Board has layer with matrix of Tiles with Gold
 */
 Board.STAGE_WIDTH_OFFSET = 325;
 Board.STAGE_HEIGHT_OFFSET = 100;
@@ -615,8 +608,8 @@ function Board() {
 	this.score = 0;
 	this.drawScore();
 
-	this.treasureLayer = $('#' + Level.LAYER_TREASURE)[0].getContext('2d');
-	this.treasureTileMatrix = [];
+	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
+	this.goldTileMatrix = [];
 
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.creatureTileMatrix = [];
@@ -630,7 +623,7 @@ function Board() {
 
 	this.creatureCounter = 0;
 	this.tripletCounter = 0;
-	this.treasureCounter = 0;
+	this.goldCounter = 0;
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;	
 } //Board constructor
@@ -669,8 +662,8 @@ Board.prototype.setActiveTile = function(tile) {
 Board.prototype.getTileMatrix = function(blobType) {
 	var tileMatrix;
 	switch( blobType ) {
-		case 'TREASURE':
-			tileMatrix = this.treasureTileMatrix;
+		case 'GOLD':
+			tileMatrix = this.goldTileMatrix;
 			break;
 		case 'CREATURE':
 			tileMatrix = this.creatureTileMatrix;
@@ -681,24 +674,24 @@ Board.prototype.getTileMatrix = function(blobType) {
 	return tileMatrix;
 }; //Board.prototype.getTileMatrix()
 
-Board.prototype.countTreasure = function() {
-	var rowIt, colIt, treasureCount;
-	treasureCount = 0;
-	for( rowIt = 0; rowIt < this.treasureTileMatrix.length; rowIt++ ) {
-		for( colIt = 0; colIt < this.treasureTileMatrix[rowIt].length; colIt++ ) {
-			if( this.treasureTileMatrix[colIt][rowIt] ) { // not null
-				treasureCount++;
+Board.prototype.countGold = function() {
+	var rowIt, colIt, goldCount;
+	goldCount = 0;
+	for( rowIt = 0; rowIt < this.goldTileMatrix.length; rowIt++ ) {
+		for( colIt = 0; colIt < this.goldTileMatrix[rowIt].length; colIt++ ) {
+			if( this.goldTileMatrix[colIt][rowIt] ) { // not null
+				goldCount++;
 			}
 		}
 	}
-	return treasureCount;
+	return goldCount;
 };
 
 Board.prototype.getLayer = function(blobType) {
 	var layer;
 	switch( blobType ) {
-		case 'TREASURE':
-			layer = this.treasureLayer;
+		case 'GOLD':
+			layer = this.goldLayer;
 			break;
 		case 'CREATURE':
 			layer = this.creatureLayer;
@@ -784,50 +777,104 @@ Board.prototype.drawRotatedCreatures = function (angle) {
 Board.prototype.toString = function() {
 	var output;
 	output = 'creatureTileMatrix: ' + this.creatureTileMatrix + ', ' +
-			'treasureTileMatrix: ' + this.treasureTileMatrix;
+			'goldTileMatrix: ' + this.goldTileMatrix;
 	return output;
-};
+}; //Board.prototype.toString
 
-Board.prototype.build = function(tilePositions, blobType, treasureType) {
-	var tileMatrix, layer, colIt, rowIt;
-	var coordinates;
-
-	tileMatrix = this.getTileMatrix(blobType);
-	layer = this.getLayer(blobType);
-
-	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
-		tileMatrix.push([]);
-		for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
-			tileMatrix[rowIt].push([]);
+Board.prototype.init = function(tilePositions) {
+	var board, tileMatrix, colIt, rowIt;
+	board = this;
+	_.each(Level.BLOB_TYPES, function(blobType) {
+		tileMatrix = board.getTileMatrix(blobType);
+		for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+			tileMatrix.push([]);
+			for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
+				tileMatrix[rowIt].push([]);
+			}
 		}
-	}
+	});
+} //Board.prototype.init
 
+Board.prototype.build = function(tilePositions) {
+	var colIt, rowIt, coordinates, cellId, cellObject;
+
+	//yj: populate the grid
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
-			if( tilePositions[rowIt][colIt] === 1 ) {
-				coordinates = [colIt, rowIt];
-				if( 'CREATURE' === blobType ) {
-					this.addTile(coordinates, blobType);
+			cellId = tilePositions[rowIt][colIt];
+			cellObject = this.parseCell(cellId);
+			coordinates = [colIt, rowIt];
+			if( cellObject.hasCreature ) {
+				this.addTile(coordinates, 'CREATURE');
+				if(cellObject.hasGold) {
+					this.addTile(coordinates, 'GOLD');
 				}
 				else {
-					this.addTile(coordinates, blobType, null, treasureType);
+					//ym: we don't have to explicitly set cells to null but it simplifies logic later
+					this.goldTileMatrix[colIt][rowIt] = null;
 				}
 			}
-			else { //if( tilePositions[rowIt][colIt] === 1 ) {
-				tileMatrix[rowIt][colIt] = null;
+			else {
+				//ym: we don't have to explicitly set cells to null but it simplifies logic later
+				this.creatureTileMatrix[colIt][rowIt] = null;
+				if( typeof cellObject.blockingImageId === 'undefined' ) {
+					//this.blockingTileMatrix[colIt][rowIt] = null;
+				}
+				else {
+					console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
+					//this.addTile();
+				}
+				if( typeof cellObject.cocoonImageId === 'undefined' ) {
+					//this.cocoonTileMatrix[colIt][rowIt] = null;
+				}
+				else {
+					console.debug('TODO implement add coocoon tile at ' + MatrixUtil.coordinatesToString(coordinates) );
+					//this.addTile();
+				}
+				if( typeof cellObject.superFriendImageId === 'undefined' ) {
+					//this.superFriendTileMatrix[colIt][rowIt] = null;
+				}
+				else {
+					console.debug('TODO implement add super friend tile at ' + MatrixUtil.coordinatesToString(coordinates) );
+					//this.addTile();					
+				}
+				//TODO: logic for lighting creatures else if()
 			}
 		}
 	}
-
-	if( 'CREATURE' === blobType ) {
-		console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
-	}
+	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
 	return;
-};
+}; //Board.prototype.build
+
+Board.prototype.parseCell = function(cellId) {
+	var cellObject;
+	cellObject = [];
+
+	if( cellId[0] === '1' ) {
+		cellObject.hasCreature = true;
+	}
+	if( cellId.length >=2 && cellId[1] === '1' ) {
+		cellObject.hasGold = true;
+	}
+	//if the third string char contains one of these color ids
+	if( cellId.length >=3 && cellId[2].search('[bgpurty]') !== -1 ) {
+		cellObject.blockingImageId = this.level.getImageByColorId( Level.CREATURE_IMAGE_TYPES[1], cellId[2] );
+	}
+	//if the fourth string char contains one of these color ids
+	if( cellId.length >=4 && cellId[3].search('[bgpurty]') !== -1 ) {
+		cellObject.cocoonImageId = this.level.getImageByColorId( Level.CREATURE_IMAGE_TYPES[2], cellId[3] );
+	}
+	//if the fifth string char contains one of these color ids
+	if( cellId.length >=5 && cellId[4].search('[bgpurty]') !== -1 ) {
+		cellObject.superFriendImageId = this.level.getSuperFriendImageByColorId( cellId[4] );
+	}
+	//TODO yj: clarify requirements for lightning creatures
+	return cellObject;
+}; //Board.prototype.parseCell
 
 //add a new tile or update the position of an existing tile
 //synchronizes coordinate and position information with the tile object
-Board.prototype.addTile = function(coordinates, blobType, tile, treasureType) {
+Board.prototype.addTile = function(coordinates, blobType, tile) {
 	var layer, tileMatrix, col, row, x, y, width, height, blob, imageName;
 
 	tileMatrix = this.getTileMatrix(blobType);
@@ -840,7 +887,7 @@ Board.prototype.addTile = function(coordinates, blobType, tile, treasureType) {
 	height = Tile.getHeight();
 	
 	if( tile ) {
-		imageName = 'CREATURE' === blobType ? tile.blob.creatureType : tile.blob.treasureType;
+		imageName = tile.blob.creatureType;
 		console.debug( 'moving existing tile ' + imageName + ' to ' + MatrixUtil.coordinatesToString(coordinates));
 		tile.coordinates = coordinates;
 		tileMatrix[col][row] = tile;
@@ -861,9 +908,9 @@ Board.prototype.addTile = function(coordinates, blobType, tile, treasureType) {
 
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
-		else {
-			blob = this.getTreasure(treasureType);
-			imageName = treasureType;
+		else { //'GOLD'
+			blob = this.level.getGold();
+			imageName = 'GOLD';
 			tile = new Tile(this, blob, coordinates);
 			tileMatrix[col][row] = tile;
 		}
@@ -896,7 +943,7 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 }; //Board.prototype.addTileToLayer()
 
 Board.prototype.handleTriplets = function(tile) {
-	var board, dangerBar, tileTriplets, treasureTiles, pointsArray, changingPointsArray, changedTiles;
+	var board, dangerBar, tileTriplets, goldTiles, pointsArray, changingPointsArray, changedTiles;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
@@ -916,13 +963,13 @@ Board.prototype.handleTriplets = function(tile) {
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		board.removeTriplets(tileTriplets);
 		board.animateTripletsRemovalAsync(tileTriplets);
-		treasureTiles = board.getTreasureTiles(tileTriplets);
-		if( treasureTiles && treasureTiles.length > 0 ) {
-			_.each( treasureTiles, function() {
-				board.treasureTileCounter++;
+		goldTiles = board.getGoldTiles(tileTriplets);
+		if( goldTiles && goldTiles.length > 0 ) {
+			_.each( goldTiles, function() {
+				board.goldTileCounter++;
 			});
-			board.animateTreasureRemovalAsync(treasureTiles);
-			if( board.countTreasure() === 0 ) {
+			board.animateGoldRemovalAsync(goldTiles);
+			if( board.countGold() === 0 ) {
 				if( dangerBar.isRunning() ) {
 					dangerBar.stop();
 				}
@@ -961,7 +1008,7 @@ Board.prototype.handleSelect = function(tile) {
 			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 				board.handleTripletsDebugCounter = 0;
 				board.tripletCounter = 0;
-				board.treasureCounter = 0;
+				board.goldCounter = 0;
 				console.log( 'tilePrev triplets' );
 				board.handleTriplets(tilePrev);
 				console.log( 'tile triplets' );
@@ -1235,39 +1282,39 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 	return deferred.promise;
 };
 
-//get the treasure tiles backing a triplet of creature tiles
-Board.prototype.getTreasureTiles = function(triplets) {
-	var treasureTiles, treasureTile, tripletsIt, triplet, tripletIt, creatureTile;
-	treasureTiles = [];
-	for( tripletsIt = 0; tripletsIt < triplets.length; tripletsIt++ ) {
-		triplet = triplets[tripletsIt];
-		for( tripletIt = 0; tripletIt < triplet.length; tripletIt++ ) {
-			creatureTile = triplet[tripletIt];
-			treasureTile = this.getTreasureTile(creatureTile);
-			if( treasureTile ) {
-				treasureTiles.push(treasureTile);
+//get the gold tiles backing a triplet of creature tiles
+Board.prototype.getGoldTiles = function(triplets) {
+	var board, goldTiles, goldTile;
+	goldTiles = [];
+
+	board = this;
+	_.each( triplets, function(triplet) {
+		_.each( triplet, function(creatureTile) {
+			goldTile = board.getGoldTile(creatureTile);
+			if( goldTile ) {
+				goldTiles.push(goldTile);
 			}
-		}
-	}
-	return treasureTiles;
+		});
+	});
+
+	return goldTiles;
 };
 
-
-//get the treasure tile backing an individual creature tiles
-Board.prototype.getTreasureTile = function(creatureTile) {
+//get the gold tile backing an individual creature tiles
+Board.prototype.getGoldTile = function(creatureTile) {
 	var creatureTileCol, creatureTileRow;
 	creatureTileCol = creatureTile.coordinates[0];
 	creatureTileRow = creatureTile.coordinates[1];
-	return this.treasureTileMatrix[creatureTileCol][creatureTileRow];
+	return this.goldTileMatrix[creatureTileCol][creatureTileRow];
 };
 
-Board.prototype.animateTreasureRemovalAsync = function(treasureTiles) {
+Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
 	//deferred = Q.defer();
 	board = this;
-	_.each(treasureTiles, function(tile) {
+	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
-		board.treasureLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight() );
 	});
 	//deferred.resolve();
 	//return deferred.promise;
@@ -1280,25 +1327,18 @@ Board.prototype.randomCreature = function(creatureTypes) {
 	var randomIt, creatureType, creatureImage, creature;
 	randomIt = Math.floor( Math.random() * creatureTypes.length );
 	creatureType = creatureTypes[randomIt];
-	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_IMAGE_ID);
+	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_IMAGE_TYPES[0]);
 	creature = new Creature(creatureType, creatureImage);
 	return creature;
 };
 
-Board.prototype.getTreasure = function(treasureType) {
-	var treasureImage, treasure;
-	treasureImage = this.level.getTreasureImage(treasureType);
-	treasure = new Treasure(treasureType, treasureImage);
-	return treasure;
-};
-
 Board.prototype.updateScore = function() {
-	var scoreToAdd, tripletIt, treasureIt;
+	var scoreToAdd, tripletIt, goldIt;
 	scoreToAdd = 0;
 	for( tripletIt = 0; tripletIt < this.tripletCounter; tripletIt++ ) {
 		scoreToAdd += Score.TRIPLET;
-		for( treasureIt = 0; treasureIt < this.treasureCounter; treasureIt++ ) {
-			scoreToAdd *= Score.MULTIPLIER_TREASURE;
+		for( goldIt = 0; goldIt < this.goldCounter; goldIt++ ) {
+			scoreToAdd *= Score.MULTIPLIER_GOLD;
 		}
 	}
 	this.score += scoreToAdd;
@@ -1355,7 +1395,7 @@ Board.prototype.handleClickOrTap = function(evt) {
 
 /*
 begin class Tile
-Tile has a blob (either a Creature or a Treasure)
+Tile has a blob (either a Creature or a Gold)
 Tile has a matrix coordinate
 Tile can be Selected
 Tile can be MousedOver
@@ -1378,7 +1418,7 @@ function Tile(board, blob, coordinates) {
 
 Tile.prototype.toString = function() {
 	var output, tileType;
-	tileType = this.blob.creatureType || this.blob.treasureType || '';
+	tileType = this.blob.creatureType || '';
 	output = '[' + this.coordinates[0] + ',' + this.coordinates[1] + ']:' + tileType;
 	return output;
 };
@@ -1416,13 +1456,11 @@ Tile.prototype.setInactiveAsync = function() {
 }; //Tile.prototype.setActiveAsync()
 
 Tile.prototype.setSelectedAsync = function() {
-	var deferred, brightenedImagePixels;
+	var deferred;
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
 	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	//brightenedImagePixels = this.getFilteredPixels(Filters.brightness, Tile.CREATURE_BRIGHTNESS_ADJUSTMENT);
-	//this.board.creatureLayer.putImageData(brightenedImagePixels, this.getXCoord(), this.getYCoord());
 	deferred.resolve();
 	return deferred.promise;
 
@@ -1435,10 +1473,12 @@ Tile.prototype.setUnselected = function() {
 	return this; // chainable
 };
 
+/*
 Tile.prototype.getFilteredPixels = function (filter, arg1, arg2, arg3) {
 	var pixelsOut = Filters.filterImage(filter, this.board.creatureLayer, this.blob.image, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight(), arg1, arg2, arg3);
 	return pixelsOut;
 };
+*/	
 
 Tile.prototype.clear = function() {
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
@@ -1519,7 +1559,7 @@ Tile.tileArrayToPointsString = function (tiles) {
 };
 /* end class Tile */
 
-//TODO consider having Creature and Treasure extend a base class Blob
+//TODO consider having Creature and Gold extend a base class Blob
 
 /*
 begin class Creature
@@ -1535,17 +1575,14 @@ function Creature(creatureType, image) {
 /* end class Creature */
 
 /*
-begin class Treasure
-Treasure has a TreasureType
-Treasure has an Image
+begin class Gold
+Gold has an Image
 */
-function Treasure(treasureType, image) {
-	//var blobType, treasureType, image;
-	this.blobType = 'TREASURE';
-	this.treasureType = treasureType;
+function Gold(image) {
+	this.blobType = 'GOLD';
 	this.image = image;
 }
-/* end class Creature */
+/* end class Gold */
 
 /* class MatrixUtil */
 // helper functions for manipulating matrices and points
@@ -1706,8 +1743,12 @@ MatrixUtil.getChangingPoints = function(pointsArray) {
 /* begin class DangerBar */
 DangerBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 DangerBar.REFRESH_INTERVAL_SEC = 5;
+DangerBar.RATIO_DANGER = 0.85;
+DangerBar.WARNING_10_SEC = 10;
+DangerBar.WARNING_5_SEC = 5;
+DangerBar.WARNING_SOUND_ID = 'sound-warning';
+DangerBar.WARNING_SOUND_LENGTH_SEC = 0.7;
 DangerBar.BOTTOM_CAP_TOP = 383;
-DangerBar.RATIO_DANGER = 0.15;
 DangerBar.PROGRESS_BAR_TOP = 150;
 DangerBar.CAP_TOP_TOP = 173;
 DangerBar.FILL_TOP_ADJUSTMENT = 48;
@@ -1733,6 +1774,11 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.fillTopInitial = this.fillTop;
 	this.fillHeight = DangerBar.CAP_BOTTOM_TOP - DangerBar.CAP_TOP_TOP;
 	this.fillHeightInitial = this.fillHeight;
+	/* ym: REQ 4.9.11 Time Warning at 15%
+	since our ratio might not match exactly, we keep a counter to keep track
+	of the first time the dangerBar goes below the ratio
+	*/
+	this.numTimesBelowDangerRatio = 0;
 	this.drawImages();
 }
 
@@ -1741,14 +1787,13 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 DangerBar.prototype.initImages = function(imageArray) {
 	var dangerBar;
 	var imageId;
-	var image;
 	dangerBar = this;
 
 	_.each(imageArray, function(image) {
 		imageId = image.id;
 		dangerBar[imageId] = image;
 	});
-} //DangerBar.prototype.initImages
+}; //DangerBar.prototype.initImages
 
 DangerBar.prototype.magnifyImages = function(imageArray) {
 	_.each(imageArray, function(image) {
@@ -1797,33 +1842,23 @@ DangerBar.prototype.update = function() {
 	fillHeight = Math.round(dangerBar.fillHeightInitial * ratio);
 	dangerBar.fillTop += (dangerBar.fillHeight - fillHeight);
 	dangerBar.fillHeight = fillHeight;
+	//YM: the height reduces from the bottom, so we need to shift the top down
+	// by the same amount that we reduce the height
+	fillNormal.height = fillHeight;
+	fillDanger.height = fillHeight;
+	//clear the space between the top cap and the bottom cap
+	dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 	
 	if( ratio > DangerBar.RATIO_DANGER ) {
-		//YM: the height reduces from the bottom, so we need to shift the top down
-		// by the same amount that we reduce the height
-		/*fillNormal.style.top = dangerBar.fillTop + 'px'*/;
-		fillNormal.height = fillHeight/* + 'px'*/;
-		//clear the space between the top cap and the bottom cap
-		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.layer.drawImage( fillNormal, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
 	}
-	else if( ratio > 0 ) {
-		//fillDanger.style.top = dangerBar.fillTop/* + 'px'*/;
-		fillDanger.height = fillHeight/* + 'px'*/;
-		//fillDanger.style.display = 'inline';
-		//bottomCapDanger.style.top = dangerBar.imageArray.progress_bar_cap_bottom01.style.top;
-		//bottomCapDanger.style.display = 'inline';
-		/*
-		fillNormal.style.display = 'none';
-		bottomCapNormal.style.display = 'none';
-		*/
-		//clear the space between the top cap and the bottom cap
-		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+	else if( ratio <= DangerBar.RATIO_DANGER && this.numTimesBelowDangerRatio === 0 ||
+		dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5 ||
+		dangerBar.timeRemainingMs/1000 <= 5 && dangerBar.timeRemainingMs/1000 > 0) {
+		this.numTimesBelowDangerRatio++;
 		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
 		//dangerBar.layer.drawImage( bottomCapDanger, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, bottomCapDanger.width, bottomCapDanger.height );
-		$('#sound-warning')[0].play();
-		$('#sound-warning')[0].play();
-		$('#sound-warning')[0].play();
+		DangerBar.playWarningSoundRepeated();
 	}
 	else { //timeout
 		//clear the space between the top cap and the bottom cap, including the bottom cap
@@ -1832,6 +1867,14 @@ DangerBar.prototype.update = function() {
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+//req 4.9.11 time warning
+DangerBar.playWarningSoundRepeated = function() {
+	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC).then(function() {
+	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC).then(function() {
+	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC);
+	});}).done();
+}; //DangerBar.playWarningSoundRepeated()
 
 /* end class DangerBar */
 
@@ -1886,7 +1929,6 @@ function Powerup(images) {
 Powerup.prototype.initImages = function(imageArray) {
 	var powerup;
 	var imageId;
-	var image;
 	powerup = this;
 
 	_.each(imageArray, function(image) {
@@ -1944,9 +1986,9 @@ ArrayUtil.unique = function(arr) {
 /* end class ArrayUtil */
 
 // define a startsWith method on String if it doesn't exist already
-if (typeof String.prototype.startsWith != 'function') {
+if (typeof String.prototype.startsWith !== 'function') {
   String.prototype.startsWith = function (str){
-    return this.slice(0, str.length) == str;
+    return this.slice(0, str.length) === str;
   };
 }
 
@@ -1974,3 +2016,22 @@ SpriteSheet.prototype.getSprite = function(x, y, width, height) {
     sprite.src = spriteURL;
     return sprite;
 }; //SpriteSheet.prototype.getSprite
+
+function SoundUtil() {}
+
+SoundUtil.playSoundAsync = function(soundElementId, soundLengthSec) {
+	var deferred, selector;
+	deferred = Q.defer();
+	selector = '#' + soundElementId;
+	$(selector)[0].addEventListener('ended', function() {SoundUtil[soundElementId] = 'ended';});
+	$(selector)[0].play();
+	setTimeout(function() {
+		if(SoundUtil[soundElementId] === 'ended') {
+			deferred.resolve();
+		}
+		else {
+			deferred.reject();
+		}
+	}, soundLengthSec * 1000);
+	return deferred.promise;
+}; //SoundUtil.playSoundAsync
