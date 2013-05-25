@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>    
+    <head>
+        <script>document.writeln('<title>' + document.domain + ': Galapagos</title>');</script>
+        <link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
+        <link rel="stylesheet" type="text/css" href="css/global.css"/>
+        <!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
+        <!--script src="ext/stacktrace-min-0.4.js"></script-->
+        <!--script src="js/debugConsole.js"></script-->
+        <script src="ext/lodash.min.js"></script>
+        <script src="ext/imgpreload.js"></script>
+        <!--script src="ext/queryString.js"></script-->
+        <script src="ext/q.min.js"></script>
+        <!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
+        <script src="ext/zepto-1.0.min.js"></script>
+        <script src="ext/zepto-touch-1.0.js"></script>
+        <!--script src="ext/imageFilters.js"></script-->
+        <script src="js/game.js"></script>
+        <script>
+            var /*levelQueryString,*/ gameMode;
+
+            if( typeof jsErrLog !== 'undefined' ) {
+                jsErrLog.debugMode = false;
+                jsErrLog.info = "Galapago debugging";                
+            }
+
+            //levelQueryString = QueryString.level || 'level_01';
+            gameMode = 'MODE_TIMED';
+        </script>
+    </head>
+    
+    <body onLoad="Galapago.init(gameMode);">
+        <audio id="sound-match-01" src="res/audio/Match_01.mp3" preload="auto"/></audio>
+        <audio id="sound-warning" src="res/audio/Warning.mp3" preload="auto"/></audio>
+
+        <div id="nav">
+            <a href="#" onClick="Galapago.setLevel('level_01');">Level 1</a>
+            <a href="#" onClick="Galapago.setLevel('level_02');">Level 2</a>
+            <a href="#" onClick="Galapago.level.board.completeAnimationAsync();">Completed Level Animation</a>
+            <a id="debug-console-toggle" href="#" onClick="toggleDebugConsole();">Show Debug Console</a>
+        </div>
+
+        <div id="canvas-main" style="">
+            <canvas id="layer-background" class="game-layer" style="z-index: 1;"></canvas>
+            <canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
+            <canvas id="layer-gold" class="game-layer" style="z-index: 3;"></canvas>
+            <canvas id="layer-creature" class="game-layer" style="z-index: 4;"></canvas>
+            <canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;"></canvas>
+            <canvas id="layer-power-up" class="game-layer" style="z-index: 6;"></canvas>
+            <canvas id="layer-map" class="game-layer" style="z-index: 7;"></canvas>
+        </div>
+
+        <div id="debug-console"></div>
+    </body>
+</html>

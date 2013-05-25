@@ -12,21 +12,6 @@ Galapago.BACKGROUND_PATH_SUFFIX = '.jpg)';
 Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.LAYER_MAP = 'layer-map';
 Galapago.gameImageNames = [
-/*	'bob_eyes_02',
-	'cervantes_eyes_01',
-	'cervantes_eyes_02',
-	'cervantes_eyes_03',
-	'cervantes_mouth02',
-	'Firepower_Powerup',
-	'Flip_Flop_Powerup',
-	'item_collected_mark',
-	'left_side_bar',
-	'Level_Completed_indicator',
-	'right_side_bar',
-	'Shuffler_Powerup',
-	'Bracket_Left.png',
-	'Bracket_Right.png',
-	'button_menu',*/
 	'button_quit',
 	'PowerUps_Flame_Activated',
 	'PowerUps_Flame_Disabled',
@@ -255,7 +240,7 @@ LevelMap.prototype.handleLeftArrow = function() {
 
 LevelMap.prototype.handleRightArrow = function() {
 	//this.level = getNeighborLevel(1);
-	this.level = Galapago.levels[1];
+	this.level = Galapago.levels[2];
 	this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 	Galapago.levelMap.drawHotspot(this.level.mapHotspotRegion);
 }; //LevelMap.prototype.handleRightArrow()
@@ -493,7 +478,7 @@ Level.getCreatureTypesFromTheme = function(bgTheme) {
 			creatureTypes = Level.BG_THEME_FOREST_CREATURES;
 			break;
 		case 'mountains':
-			creatureTypes = Level.BG_THEME_MOUNTAIN_CREATURES;
+			creatureTypes = Level.BG_THEME_MOUNTAINS_CREATURES;
 			break;
 	}
 	return creatureTypes;
