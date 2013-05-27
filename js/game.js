@@ -11,6 +11,7 @@ Galapago.BACKGROUND_PATH_PREFIX = 'res/img/background/background_';
 Galapago.BACKGROUND_PATH_SUFFIX = '.jpg)';
 Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.LAYER_MAP = 'layer-map';
+Galapago.NUM_LEVELS = 70;
 Galapago.gameImageNames = [
 	'button_quit',
 	'PowerUps_Flame_Activated',
@@ -42,43 +43,52 @@ Galapago.dangerBarImageNames = [
 
 /* ym: this class shouldn't be instantiated */
 function Galapago() {
-	//this.gameImages = [];
 } //function Galapago()
 
-Galapago.levelsFromJson = function (levelConfigs) {
-	var levels, level;
-	levels = [];
+Galapago.setLevelsFromJson = function (levelsJson) {
+	var level;
 
-	_.each( levelConfigs, function(levelConfig) {
-		level = new Level();
-		level.levelConfig = levelConfig;
-		level.name = levelConfig.name;
-		level.setBgTheme(levelConfig.bgTheme);
-		//level.creatureTypes = levelConfig.creatureTypes;
-		//level.treasureType = levelConfig.treasureType;
-		level.mapHotspotRegion = levelConfig.mapHotspotRegion;
-		levels.push(level);
+	_.each( levelsJson.levels, function(levelJson) {
+		level = Level.findById(levelJson.id);
+		level.levelConfig = levelJson;
+		level.name = levelJson.name;
+		level.setBgTheme(levelJson.bgTheme);
+		level.mapHotspotRegion = levelJson.mapHotspotRegion;
+		if( levelJson.neighbors ) {
+			if( levelJson.neighbors.north ) {
+				level.neighbors.north = Level.findById(levelJson.neighbors.north);
+			}
+			if( levelJson.neighbors.east ) {
+				level.neighbors.east = Level.findById(levelJson.neighbors.east);
+			}
+			if( levelJson.neighbors.south ) {
+				level.neighbors.south = Level.findById(levelJson.neighbors.south);
+			}
+			if( levelJson.neighbors.west ) {
+				level.neighbors.west = Level.findById(levelJson.neighbors.west);
+			}
+		}
 	});
-
-	return levels;
-}; //Galapago.prototype.levelsFromJson()
+}; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(gameMode) {
-	var level;
-	Galapago.gameMode = gameMode;
+	var levelTemp, level, levelIt;
+	Galapago.gameMode = gameMode
+	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
-	Galapago.loadConfigAsync().then(function(data) {
-		Galapago.levels = Galapago.levelsFromJson(data);
-		Galapago.levelMap = new LevelMap();
-		Galapago.levelMap.display();
-		level = Galapago.levels[0];
-		Galapago.levelMap.drawHotspot(level.mapHotspotRegion);
-		Galapago.levelMap.level = level;
+	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
+		levelTemp = new Level(levelIt + 1);
+		Galapago.levels.push(levelTemp);
+	}
+	Galapago.loadJsonAsync(Galapago.CONFIG_FILE_PATH).then(function(data) {
+		Galapago.setLevelsFromJson(data);
+		level = Level.findById(1);
+		Galapago.levelMap = new LevelMap(level);
 	}, function(status) {
 		console.log('failed to load JSON level config with status ' + status);
-	}).then(function() {
+	})/*.then(function() {
 		//Galapago.setLevel(levelName);
-	}).done();
+	})*/.done();
 }; //Galapago.init()
 
 Galapago.buildGameImagePaths = function() {
@@ -99,13 +109,13 @@ Galapago.buildDangerBarImagePaths = function() {
 	return dangerBarImagePaths;
 }; //Galapago.buildDangerBarImagePaths()
 
-Galapago.loadConfigAsync = function() {
+Galapago.loadJsonAsync = function(jsonFilePath) {
 	var deferred;
 	deferred = Q.defer();
 
 	$.ajax({
 		type: 'GET',
-		url: Galapago.CONFIG_FILE_PATH,
+		url: jsonFilePath,
 		dataType: 'json',
 		timeout: 3000, //3 second timeout
 		success: function(data) {
@@ -118,11 +128,11 @@ Galapago.loadConfigAsync = function() {
 
 	return deferred.promise;
 	//Galapago.levels = Galapago.levelsFromJson(Level.LEVELS_JSON);
-}; //Galapago.loadConfigAsync
+}; //Galapago.loadJsonAsync
 
-Galapago.setLevel = function(levelName) {
-	this.level = Level.findByName(levelName);
-	console.log( 'levelName: ' + levelName );
+Galapago.setLevel = function(levelId) {
+	this.level = Level.findById(levelId);
+	console.log( 'levelName: ' + this.level.id );
 	console.log( 'theme: ' + this.level.bgTheme );
 	this.level.display();
 	Level.registerEventHandlers();
@@ -136,14 +146,39 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
+LevelMap.LEVEL_STATUS_X = 957;
+LevelMap.LEVEL_STATUS_Y = 45;
+LevelMap.LEVEL_STATUS_WIDTH = 235;
+LevelMap.LEVEL_STATUS_HEIGHT = 151;
+LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
+LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y = LevelMap.LEVEL_STATUS_Y + 30;
+LevelMap.LEVEL_STATUS_FONT_SIZE = '20px';
+LevelMap.LEVEL_STATUS_FONT_NAME = 'Calibri';
+LevelMap.LEVEL_STATUS_FONT_COLOR = 'cyan';
+
 /* begin class LevelMap */
-function LevelMap() {
+function LevelMap(level) {
+	this.hotspotLevel = level;
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
 	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.registerEventHandlers();
-	this.level = null;
+	this.levelCounter = 0;
+	this.display();
+	this.setHotspotLevel(level);
+
 } //LevelMap constructor
+
+LevelMap.prototype.updateLevelStatus = function() {
+	var text;
+	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
+	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
+	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
+	text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
+	//this.layer.fillRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
+	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
+	return this; //chainable
+}; //Board.prototype.drawScore()
 
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
@@ -218,7 +253,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			Galapago.setLevel(level.name);
+			Galapago.setLevel(level.id);
 			break;
 		}
 		else {
@@ -228,22 +263,42 @@ LevelMap.prototype.handleSelect = function(evt) {
 }; //LevelMap.prototype.handleSelect()
 
 LevelMap.prototype.handleKeyboardSelect = function() {
-	Galapago.setLevel(this.level.name);
+	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
-LevelMap.prototype.handleLeftArrow = function() {
-	//this.level = getNeighborLevel(-1);
-	this.level = Galapago.levels[0];
-	this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
-	Galapago.levelMap.drawHotspot(this.level.mapHotspotRegion);
+LevelMap.prototype.handleUpArrow = function() {
+	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
 }; //LevelMap.prototype.handleLeftArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
+<<<<<<< HEAD
 	//this.level = getNeighborLevel(1);
 	this.level = Galapago.levels[2];
 	this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 	Galapago.levelMap.drawHotspot(this.level.mapHotspotRegion);
+=======
+	this.setHotspotLevel(this.hotspotLevel.neighbors.east);
 }; //LevelMap.prototype.handleRightArrow()
+
+LevelMap.prototype.handleDownArrow = function() {
+	this.setHotspotLevel(this.hotspotLevel.neighbors.south);
+>>>>>>> Fixes #12
+}; //LevelMap.prototype.handleRightArrow()
+
+LevelMap.prototype.handleLeftArrow = function() {
+	this.setHotspotLevel(this.hotspotLevel.neighbors.west);
+}; //LevelMap.prototype.handleLeftArrow()
+
+LevelMap.prototype.setHotspotLevel = function(level) {
+	if( level && level.mapHotspotRegion.length > 2 ) {
+		this.hotspotLevel = level;
+		console.info("hotspot on level " + this.hotspotLevel.id);
+		this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
+		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
+		this.updateLevelStatus();
+	}
+}; //LevelMap.prototype.setHotspotLevel()
 
 LevelMap.prototype.display = function() {
 	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
@@ -273,7 +328,35 @@ LevelMap.isPointInPoly = function (pt, poly) {
 	return c;
 }; //LevelMap.isPointInPoly()
 
+LevelMap.mapCellsFromJson = function (mapCellsJson) {
+	var mapCells, mapCell, levelIt;
+	mapCells = [];
+	levelIt = 1;
+
+	_.each( mapCellsJson.mapCells, function(mapCellJson) {
+		mapCell = new MapCell(mapCellJson.level, mapCellJson.north, mapCellJson.east, mapCellJson.south, mapCellJson.west);
+		mapCells.push(mapCell);
+		levelIt++;
+	});
+
+	return mapCells;
+}; //LevelMap.mapCellsFromJson()
+
 /* end class LevelMap */
+
+/* begin class MapCell */
+function MapCell(levelId, northId, eastId, southId, westId) {
+	this.level = Level.findById(levelId);
+	this.north = Level.findById(northId);
+	this.east = Level.findById(eastId);
+	this.south = Level.findById(southId);
+	this.west = Level.findById(westId);
+} //MapCell constructor
+
+MapCell.prototype.toString = function() {
+	return this.level + '|' + this.north + ',' + this.east + ',' + this.south + ',' + this.west;
+}
+/* end class MapCell */
 
 /* begin class Score */
 Score.TRIPLET = 100;
@@ -292,7 +375,7 @@ function Score() {}
 Level.CREATURE_PATH = 'res/img/creatures/';
 Level.GOLD_PATH = 'res/img/gold-tiles/';
 Level.BLOB_IMAGE_EXTENSION = 'png';
-Level.CREATURE_IMAGE_TYPES = ['1', '2', '3'];
+Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
@@ -301,19 +384,21 @@ Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizar
 Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "purple_lizard", "red_beetle", "teal_flyer", "yellow_bug"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 
-function Level() {
+function Level(id) {
+	this.id = id;
+	this.name = '';
 	this.bgTheme = '';
 	this.creatureImages = [];
 	this.creatureTypes = [];
 	//TODO: do we need to store levelConfig?
 	this.levelConfig = ''; // original JSON text
-	this.name = '';
 	this.goldImages = [];
 	this.mapHotspotRegion = [];
 	this.dangerBar = null;
 	this.gameImages = [];
 	this.dangerBarImages = [];
 	this.layerBackground = null;
+	this.neighbors = {};
 }
 
 Level.prototype.getGold = function() {
@@ -324,8 +409,8 @@ Level.prototype.getGold = function() {
 	return gold;
 };
 
-Level.prototype.getImageByColorId = function(colorId) {
-	var creatureType;
+Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
+	var creatureType, creatureImage, creature;
 	
 	//distinguish between pink and purple
 	if( 'p' === colorId ) {
@@ -339,8 +424,10 @@ Level.prototype.getImageByColorId = function(colorId) {
 		return creatureType.startsWith(colorId);
 	});
 
-	return Level.getCreatureImage(creatureType);	
-}; //Level.prototype.getImageByColorId
+	creatureImage = this.getCreatureImage(creatureType, creatureSpriteNumber);
+	creature = new Creature(creatureType, creatureImage);
+	return creature;
+}; //Level.prototype.getCreatureByColorId
 
 Level.prototype.setBgTheme = function(bgTheme) {
 	this.bgTheme = bgTheme;
@@ -377,9 +464,9 @@ Level.prototype.buildCreatureImagePaths = function() {
 	creatureImagePaths = [];
 	creatureImagePathIt = 0;
 	for( creatureTypeIt = 0; creatureTypeIt < this.creatureTypes.length; creatureTypeIt++ ) {
-		for( spriteIt = 0; spriteIt < Level.CREATURE_IMAGE_TYPES.length; spriteIt++ ) {
+		for( spriteIt = 0; spriteIt < Level.CREATURE_SPRITE_NUMBERS.length; spriteIt++ ) {
 			creatureType = this.creatureTypes[creatureTypeIt];
-			spriteNumber = Level.CREATURE_IMAGE_TYPES[spriteIt];
+			spriteNumber = Level.CREATURE_SPRITE_NUMBERS[spriteIt];
 			creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
 			creatureImagePathIt++;
@@ -451,21 +538,26 @@ Level.prototype.display = function() {
 	var level = this;
 	level.styleCanvas();
 	level.setBoard(new Board());
-	level.loadImagesAsync().then( function() {
-	level.board.init( level.levelConfig.blobPositions );
-	level.board.build( level.levelConfig.blobPositions );
+	if( level.levelConfig.blobPositions ) {
+		level.loadImagesAsync().then( function() {
+		level.board.init( level.levelConfig.blobPositions );
+		level.board.build( level.levelConfig.blobPositions );
 
-	if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
-		throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
+		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
+			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
+		}
+		level.board.setActiveTile();
+		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+		console.debug(level.toString());
+
+		level.board.addPowerups();
+
+		return level; //chainable
+		}).done();
 	}
-	level.board.setActiveTile();
-	level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-	console.debug(level.toString());
-
-	level.board.addPowerups();
-
-	return level; //chainable
-	}).done();
+	else {
+		return level; //chainable
+	}
 }; //Level.prototype.display()
 
 Level.getCreatureTypesFromTheme = function(bgTheme) {
@@ -483,6 +575,10 @@ Level.getCreatureTypesFromTheme = function(bgTheme) {
 	}
 	return creatureTypes;
 }; //Level.getCreatureTypesFromTheme
+
+Level.findById = function(id) {
+	return Galapago.levels[id - 1];
+};
 
 Level.findByName = function(levelName) {
 	var level;
@@ -566,9 +662,9 @@ Level.prototype.getImageByPath = function(images, imagePath) {
 	return null;
 };
 
-Level.prototype.getCreatureImage = function(creatureType, imageType) {
+Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	var creatureImagePath;
-	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + imageType + '.' + Level.BLOB_IMAGE_EXTENSION;
+	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
 };
 /* end class Level */
@@ -721,9 +817,9 @@ Board.prototype.drawFlyingCreatures = function () {
 	board = Galapago.level.board;
 	ctx = board.creatureLayer;
 	board.creatureYOffset -= Board.CREATURE_FLYOVER_STEP;
-  // save the current co-ordinate system before we screw with it
-  //ctx.save();
-  // move the board up by the creatureYOffset amount; 
+	// save the current co-ordinate system before we screw with it
+	//ctx.save();
+	// move the board up by the creatureYOffset amount; 
 	for( rowIt = 0; rowIt < board.creatureTileMatrix.length; rowIt++ ) {
 		for( colIt = 0; colIt < board.creatureTileMatrix[rowIt].length; colIt++ ) {
 			if( rowIt % 2 === 0 && colIt % 2 === 0 ) {
@@ -733,17 +829,17 @@ Board.prototype.drawFlyingCreatures = function () {
 			}
 		}
 	}
-  // and restore the co-ords to how they were when we began
-  //ctx.restore(); 
+	// and restore the co-ords to how they were when we began
+	//ctx.restore(); 
 }; //Board.prototype.drawFlyingCreatures()
 
 /*
 Board.prototype.drawRotatedCreatures = function (angle) { 
 	var ctx, rowIt, colIt, tile;
 	ctx = this.creatureLayer;
-  // save the current co-ordinate system before we screw with it
-  ctx.save();
-  // draw it up and to the left by half the width and height of the image
+	// save the current co-ordinate system before we screw with it
+	ctx.save();
+	// draw it up and to the left by half the width and height of the image
 	for( rowIt = 0; rowIt < this.creatureTileMatrix.length; rowIt++ ) {
 		for( colIt = 0; colIt < this.creatureTileMatrix[rowIt].length; colIt++ ) {
 			// move to the middle of where we want to draw our image
@@ -754,8 +850,8 @@ Board.prototype.drawRotatedCreatures = function (angle) {
 			ctx.drawImage(tile.blob.image, -(Tile.getWidth()/2), -(Tile.getHeight()/2));
 		}
 	}
-  // and restore the co-ords to how they were when we began
-  ctx.restore(); 
+	// and restore the co-ords to how they were when we began
+	ctx.restore(); 
 };
 */
 
@@ -771,60 +867,65 @@ Board.prototype.init = function(tilePositions) {
 	board = this;
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
-		for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
 			tileMatrix.push([]);
-			for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
-				tileMatrix[rowIt].push([]);
+			for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+				tileMatrix[colIt].push([]);
 			}
 		}
 	});
-} //Board.prototype.init
+}; //Board.prototype.init
 
 Board.prototype.build = function(tilePositions) {
-	var colIt, rowIt, coordinates, cellId, cellObject;
+	var colIt, rowIt, coordinates, cellId, cellObject, spriteNumber;
 
 	//yj: populate the grid
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
+			//ym: we don't have to explicitly set cells to null but it simplifies logic later
+			this.creatureTileMatrix[colIt][rowIt] = null;
+			//ym: we don't have to explicitly set cells to null but it simplifies logic later
+			this.goldTileMatrix[colIt][rowIt] = null;
+			//ym: row and col are switched here the way from they're used in the rest of the game
+			//because tilePositions is loaded by external code
 			cellId = tilePositions[rowIt][colIt];
 			cellObject = this.parseCell(cellId);
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
-				this.addTile(coordinates, 'CREATURE');
-				if(cellObject.hasGold) {
-					this.addTile(coordinates, 'GOLD');
-				}
-				else {
-					//ym: we don't have to explicitly set cells to null but it simplifies logic later
-					this.goldTileMatrix[colIt][rowIt] = null;
-				}
+				spriteNumber = '1';
+				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
+			}
+			if( typeof cellObject.gold != 'undefined' ) {
+				this.addTile(coordinates, 'GOLD', cellObject.gold);
+			}
+			if( cellObject.hasTileOnly ) {
+				spriteNumber = '0'; //no creature
+				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
+			}
+			if( typeof cellObject.blocking === 'undefined' ) {
+				//this.blockingTileMatrix[colIt][rowIt] = null;
 			}
 			else {
-				//ym: we don't have to explicitly set cells to null but it simplifies logic later
-				this.creatureTileMatrix[colIt][rowIt] = null;
-				if( typeof cellObject.blockingImageId === 'undefined' ) {
-					//this.blockingTileMatrix[colIt][rowIt] = null;
-				}
-				else {
-					console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
-					//this.addTile();
-				}
-				if( typeof cellObject.cocoonImageId === 'undefined' ) {
-					//this.cocoonTileMatrix[colIt][rowIt] = null;
-				}
-				else {
-					console.debug('TODO implement add coocoon tile at ' + MatrixUtil.coordinatesToString(coordinates) );
-					//this.addTile();
-				}
-				if( typeof cellObject.superFriendImageId === 'undefined' ) {
-					//this.superFriendTileMatrix[colIt][rowIt] = null;
-				}
-				else {
-					console.debug('TODO implement add super friend tile at ' + MatrixUtil.coordinatesToString(coordinates) );
-					//this.addTile();					
-				}
-				//TODO: logic for lighting creatures else if()
+				spriteNumber = '2';
+				this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
+				//console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
 			}
+			if( typeof cellObject.cocoon === 'undefined' ) {
+				//this.cocoonTileMatrix[colIt][rowIt] = null;
+			}
+			else {
+				spriteNumber = '3';
+				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
+				//this.addTile();
+			}
+			if( typeof cellObject.superFriendImage === 'undefined' ) {
+				//this.superFriendTileMatrix[colIt][rowIt] = null;
+			}
+			else {
+				console.debug('TODO implement add super friend tile at ' + MatrixUtil.coordinatesToString(coordinates) );
+				//this.addTile();					
+			}
+			//TODO: logic for lighting creatures else if()
 		}
 	}
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
@@ -835,23 +936,33 @@ Board.prototype.parseCell = function(cellId) {
 	var cellObject;
 	cellObject = [];
 
-	if( cellId[0] === '1' ) {
-		cellObject.hasCreature = true;
+	switch( cellId[0] ) {
+		case '0':
+			//tile background or creature
+			break;
+		case '1':
+			//tile background and creature
+			cellObject.hasCreature = true;
+			break;
+		case '2':
+			//tile background only
+			cellObject.hasTileOnly = true;
+			break;
 	}
 	if( cellId.length >=2 && cellId[1] === '1' ) {
-		cellObject.hasGold = true;
+		cellObject.gold = this.level.getGold();
 	}
 	//if the third string char contains one of these color ids
 	if( cellId.length >=3 && cellId[2].search('[bgpurty]') !== -1 ) {
-		cellObject.blockingImageId = this.level.getImageByColorId( Level.CREATURE_IMAGE_TYPES[1], cellId[2] );
+		cellObject.blocking = this.level.getCreatureByColorId( cellId[2], Level.CREATURE_SPRITE_NUMBERS[1] );
 	}
 	//if the fourth string char contains one of these color ids
 	if( cellId.length >=4 && cellId[3].search('[bgpurty]') !== -1 ) {
-		cellObject.cocoonImageId = this.level.getImageByColorId( Level.CREATURE_IMAGE_TYPES[2], cellId[3] );
+		cellObject.cocoon = this.level.getCreatureByColorId( cellId[3], Level.CREATURE_SPRITE_NUMBERS[2] );
 	}
 	//if the fifth string char contains one of these color ids
 	if( cellId.length >=5 && cellId[4].search('[bgpurty]') !== -1 ) {
-		cellObject.superFriendImageId = this.level.getSuperFriendImageByColorId( cellId[4] );
+		cellObject.superFriend = this.level.getSuperFriendByColorId( cellId[4] );
 	}
 	//TODO yj: clarify requirements for lightning creatures
 	return cellObject;
@@ -859,8 +970,8 @@ Board.prototype.parseCell = function(cellId) {
 
 //add a new tile or update the position of an existing tile
 //synchronizes coordinate and position information with the tile object
-Board.prototype.addTile = function(coordinates, blobType, tile) {
-	var layer, tileMatrix, col, row, x, y, width, height, blob, imageName;
+Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, tile) {
+	var layer, tileMatrix, col, row, x, y, width, height, imageName;
 
 	tileMatrix = this.getTileMatrix(blobType);
 	layer = this.getLayer(blobType);
@@ -881,28 +992,35 @@ Board.prototype.addTile = function(coordinates, blobType, tile) {
 	}
 	else {
 		if( 'CREATURE' === blobType ) {
-			//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
-			do {
-				this.creatureCounter++;
-				blob = this.randomCreature(this.level.creatureTypes);
+			tile = new Tile(this, blob, coordinates);
+			if( spriteNumber === '1' ) {
+				//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
+				do {
+					this.creatureCounter++;
+					blob = this.randomCreature(this.level.creatureTypes);
+					imageName = blob.creatureType;
+					tile = new Tile(this, blob, coordinates);
+					tileMatrix[col][row] = tile;
+				}
+				while( this.findTriplets(tile).length > 0 );
+			}
+			else if( spriteNumber === '2' ) {
 				imageName = blob.creatureType;
-				tile = new Tile(this, blob, coordinates);
 				tileMatrix[col][row] = tile;
 			}
-			while( this.findTriplets(tile).length > 0 );
-
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-		}
-		else { //'GOLD'
-			blob = this.level.getGold();
-			imageName = 'GOLD';
+		}		
+		else if( blob.blobType === 'GOLD' ) {
+			imageName = blob.blobType;
 			tile = new Tile(this, blob, coordinates);
 			tileMatrix[col][row] = tile;
 		}
 
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
 		layer.clearRect( x, y, width, height );
-		layer.drawImage(blob.image, x, y, width, height);
+		if( blob && blob.image ) {
+			layer.drawImage(blob.image, x, y, width, height);
+		}
 	}
 	return this; //chainable
 }; //Board.prototype.addTile()
@@ -1201,7 +1319,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	_.each( tiles, function(tile) {
 		if( tile ) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
-			board.addTile(loweredPoint, tile.blob.blobType, tile, null);
+			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
 		}
 	});
 	return this; //chainable
@@ -1226,7 +1344,7 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		board.addTile(point, 'CREATURE');
+		board.addTile(point, 'CREATURE', null, null, null);
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTilesAbove()
@@ -1247,8 +1365,8 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {
 	var tempCoordinates/*, deferred*/;
 	tempCoordinates = tileSrc.coordinates.slice(0);
-	this.addTile(tileDest.coordinates, tileSrc.blob.blobType, tileSrc);
-	this.addTile(tempCoordinates, tileDest.blob.blobType, tileDest);
+	this.addTile(tileDest.coordinates, tileSrc.blob.blobType, null, null, tileSrc);
+	this.addTile(tempCoordinates, tileDest.blob.blobType, null, null, tileDest);
 	return this;
 };
 
@@ -1307,13 +1425,13 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 };
 
 //generate a random number r between 0 and creatureTypes.length - 1
-//instantiate a creature with the rth creature type from the list
+//return a creature image with the rth creature type from the list
 Board.prototype.randomCreature = function(creatureTypes) {
 	var randomIt, creatureType, creatureImage, creature;
 	randomIt = Math.floor( Math.random() * creatureTypes.length );
 	creatureType = creatureTypes[randomIt];
-	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_IMAGE_TYPES[0]);
-	creature = new Creature(creatureType, creatureImage);
+	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_SPRITE_NUMBERS[0]);
+	creature  = new Creature(creatureType, creatureImage);
 	return creature;
 };
 
@@ -1972,34 +2090,34 @@ ArrayUtil.unique = function(arr) {
 
 // define a startsWith method on String if it doesn't exist already
 if (typeof String.prototype.startsWith !== 'function') {
-  String.prototype.startsWith = function (str){
-    return this.slice(0, str.length) === str;
-  };
+	String.prototype.startsWith = function (str){
+		return this.slice(0, str.length) === str;
+	};
 }
 
 function SpriteSheet(image) {
-    this.image = image;
-    //create a temporary canvas and position it offscreen;
-    var tempCanvas = document.createElement('canvas');
-    document.body.appendChild(tempCanvas);
-    this.canvas = tempCanvas;
-    this.canvas.style.display = 'none';
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.left = -1000;
-    this.canvas.style.top = -1000;
-    this.ctx = this.canvas.getContext('2d');
+		this.image = image;
+		//create a temporary canvas and position it offscreen;
+		var tempCanvas = document.createElement('canvas');
+		document.body.appendChild(tempCanvas);
+		this.canvas = tempCanvas;
+		this.canvas.style.display = 'none';
+		this.canvas.style.position = 'absolute';
+		this.canvas.style.left = -1000;
+		this.canvas.style.top = -1000;
+		this.ctx = this.canvas.getContext('2d');
 }
 
 //returns a JavaScript image object representing the specified slice of the sprite sheet
 SpriteSheet.prototype.getSprite = function(x, y, width, height) {
-    var sprite, spriteURL;
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.ctx.drawImage(this.image, x, y, width, height, 0, 0, width, width);
-    spriteURL = this.canvas.toDataURL();
-    sprite = new Image();
-    sprite.src = spriteURL;
-    return sprite;
+		var sprite, spriteURL;
+		this.canvas.width = width;
+		this.canvas.height = height;
+		this.ctx.drawImage(this.image, x, y, width, height, 0, 0, width, width);
+		spriteURL = this.canvas.toDataURL();
+		sprite = new Image();
+		sprite.src = spriteURL;
+		return sprite;
 }; //SpriteSheet.prototype.getSprite
 
 function SoundUtil() {}
