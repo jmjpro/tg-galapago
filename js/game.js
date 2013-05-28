@@ -1323,7 +1323,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 }; //Board.prototype.lowerTiles()
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
-	var pointsAbove, tilesAbove, emptyPoints, triplet, board;	
+	var pointsAbove, tilesAbove, emptyPoints, triplet, board, spriteNumber;	
 	console.debug( 'lowering tiles above ' + Tile.tileArrayToPointsString(tileTriplet) );
 	board = this;
 	triplet = Tile.tileArrayToPointsArray(tileTriplet);
@@ -1341,7 +1341,8 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		board.addTile(point, 'CREATURE', null, null, null);
+		spriteNumber = '1';
+		board.addTile(point, 'CREATURE', null, spriteNumber);
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTilesAbove()
