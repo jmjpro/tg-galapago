@@ -307,7 +307,7 @@ LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 	this.layer.strokeStyle = 'white';
 	this.layer.beginPath();
 	this.layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
-	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length - 1 ; pointIt++ ){
+	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
 		this.layer.lineTo( hotspotPointsArray[pointIt][0] , hotspotPointsArray[pointIt][1] );
 	}
 	this.layer.closePath();
