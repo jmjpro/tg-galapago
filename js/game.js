@@ -376,9 +376,9 @@ Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
-Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "purple_crab", "red_starfish", "teal_blob", "yellow_fish"];
-Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "purple_moth", "red_beetle", "teal_bug", "yellow_frog"];
-Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "purple_lizard", "red_beetle", "teal_flyer", "yellow_bug"];
+Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
+Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
+Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 
 function Level(id) {
@@ -408,14 +408,6 @@ Level.prototype.getGold = function() {
 
 Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
 	var creatureType, creatureImage, creature;
-	
-	//distinguish between pink and purple
-	if( 'p' === colorId ) {
-		colorId = 'pi';
-	}
-	else if( 'u' === colorId ) {
-		colorId = 'pu';
-	}
 
 	creatureType = _.filter( this.creatureTypes, function(creatureType) {
 		return creatureType.startsWith(colorId);
