@@ -9,9 +9,14 @@ Tools
 -----
 <dl>
   <dt>Version control</dt>
-  <dd>Github</dd>
+  <dd>[Github] (https://github.com/jmjpro/tg-galapago)</dd>
   <dt>Issue tracking</dt>
-  <dd>Github</dd>
+  <dd>[Github] (https://github.com/jmjpro/tg-galapago)</dd>
   <dt>Time tracking and invoicing</dt>
-  <dd>TBD. Freckle? Harvest?</dd>
+  <dd>TBD. See below</dd>
 </dl>
+
+Some options to consider for GitHub issue integrated time tracking:
+* [Freckle] (http://timesavers.letsfreckle.com) add f:15 to a GitHub checkin comment to log 15 minutes of work against an issue
+* [Harvest] (http://blog.klokantech.com/2012/12/github-time-tracking-and-invoicing.html) browser plugin decorates GitHub page with mini form for entering Harvest time. I couldn't see the mini form after installing the plugin in both Chrome and Firefox
+* [TimeHub] (https://timehub.me/) This couldn't see my the tg-galapago repo. The site maintainer is investigating the issue.
