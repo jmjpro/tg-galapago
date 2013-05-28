@@ -31,7 +31,7 @@
 				["1","1","1","1","1","1","1","1","1","1"],
 				["1","1","1","1","1","1","1","1","1","1"],
 				["1","1","1","1","11","11","1","1","1","1"],
-				["1","1","1","11","11","11","11","1","1","1"],
+				["1","1","10b","11","11","11","11","10b","1","1"],
 				["1","11","11","11","11","11","11","11","11","1"],
 				["1","11","11","11","1","1","11","11","11","1"],
 				["1","11","11","11","1","1","11","11","11","1"], 
@@ -53,7 +53,7 @@
 				["0","00b","0","0","00b","0","0","00b","0"],
 				["2","2","2","2","2","2","2","2","2"],
 				["2","2","2","2","2","2","2","2","2"],
-				["2","2","11","11","2","11","11","2","2"]
+				["2","2","01","01","2","01","01","2","2"]
 			],
 			"mapHotspotRegion" : [[314,427],[331,399],[358,372],[401,384],[406,384],[411,430],[334,436],[322,434]],
 			"neighbors"	: {"north":"41","east":"4","west":"2"}
@@ -200,7 +200,7 @@
 		},
 		{
 			"id" : "34",
-			"name" : "Whitakerâ€™s Waterfalls",
+			"name" : "Whitaker’s Waterfalls",
 			"bgTheme" : "forest",
 			"mapHotspotRegion" : [[549,420],[582,370],[685,384],[659,430],[606,422]],
 			"neighbors"	: {"north":"28","east":"33","south":"39","west":"40"}
@@ -263,7 +263,7 @@
 		},
 		{
 			"id" : "63",
-			"name" : "Pryorâ€™s Peak",
+			"name" : "Pryor’s Peak",
 			"bgTheme" : "mountain",
 			"mapHotspotRegion" : [[617,232],[646,209],[708,218],[687,239],[675,264],[647,252]],
 			"neighbors"	: {"north":"65","east":"57","south":"56","west":"64"}
@@ -347,7 +347,7 @@
 		},
 		{
 			"id" : "16",
-			"name" : "Elyâ€™s Bluff",
+			"name" : "Ely’s Bluff",
 			"bgTheme" : "forest",
 			"mapHotspotRegion" : [[710,504],[794,480],[811,546],[786,554],[710,539]],
 			"neighbors"	: {"north":"37","east":"17","south":"9","west":"15"}
@@ -379,6 +379,216 @@
 			"bgTheme" : "forest",
 			"mapHotspotRegion" : [[1017,423],[1050,372],[1106,398],[1106,406],[1057,432]],
 			"neighbors"	: {"north":"23","east":"21","south":"13","west":"19"}
-		}
+		},
+		{
+			"id" : "16",
+			"name" : "ELY'S BLUFF",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[710,504],[794,480],[811,546],[786,554],[710,539]],
+			"neighbors"	: {"north":"37","east":"17","south":"9","west":"15"}
+		},
+		{
+			"id" : "17",
+			"name" : "SHIPWRECK ALLEY",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[794,480],[798,479],[862,470],[891,513],[889,515],[814,546],[811,546]],
+			"neighbors"	: {"north":"36","east":"18","south":"10","west":"16"}
+		},
+		{
+			"id" : "18",
+			"name" : "BORB BAY",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[862,470],[882,461],[934,440],[946,470],[891,513]],
+			"neighbors"	: {"north":"35","east":"19","south":"11","west":"17"}
+		},
+		{
+			"id" : "19",
+			"name" : "TURTLE COVE",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[934,440],[958,428],[976,416],[1017,423],[1057,432],[1012,451],[986,492],[946,470]],
+			"neighbors"	: {"north":"29","east":"20","south":"12","west":"18"}
+		},
+		{
+			"id" : "20",
+			"name" : "DABOB BAY",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[1017,423],[1050,372],[1106,398],[1106,406],[1057,432]],
+			"neighbors"	: {"north":"23","east":"21","south":"13","west":"19"}
+		},
+		{
+			"id" : "21",
+			"name" : "FORESAKEN TIDEPOOL",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[1050,372],[1106,398],[1132,349],[1095,329],[1065,346],[1051,362]],
+			"neighbors"	: {"north":"24","east":"22","west":"20"}
+		},
+		{
+			"id" : "22",
+			"name" : "SEA SHELL SHORELINE ",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[1095,329],[1132,349],[1153,338],[1158,328],[1145,326],[1140,312],[1130,302],[1135,286],[1132,281],[1115,280],[1110,278],[1097,281],[1103,306]],
+			"neighbors"	: {"north":"24","west":"21"}
+		},
+		{
+			"id" : "23",
+			"name" : "DARK SHORE",
+			"bgTheme" : "beach",
+			"mapHotspotRegion" : [[976,416],[1017,423],[1050,372],[1051,362],[1026,338],[993,372],[991,392]],
+			"neighbors"	: {"north":"26","east":"24","south":"20","west":"29"}
+		},
+		{
+			"id" : "24",
+			"name" : "FOGGY BOTTOM",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[1003,316],[1026,338],[1051,362],[1065,346],[1095,329],[1103,306],[1097,281],[1072,268],[1032,254],[1029,267],[1019,290]],
+			"neighbors"	: {"north":"25","south":"21","west":"23"}
+		},
+		{
+			"id" : "25",
+			"name" : "CRAGGY RAVINE",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[954,289],[1003,316],[1019,290],[1029,267],[1032,254],[970,251]],
+			"neighbors"	: {"north":"53","south":"24","west":"26"}
+		},
+		{
+			"id" : "26",
+			"name" : "SHADY HOLLOW",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[912,329],[941,360],[970,361],[993,372],[1026,338],[1003,316],[954,289]],
+			"neighbors"	: {"north":"52","east":"25","south":"23","west":"27"}
+		},
+		{
+			"id" : "27",
+			"name" : "ROSEMARY FOREST",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[839,324],[842,356],[938,360],[941,360],[912,329]],
+			"neighbors"	: {"north":"51","east":"26","south":"30","west":"50"}
+		},
+		{
+			"id" : "29",
+			"name" : "LEAFY HIDEAWAY",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[938,360],[920,405],[976,416],[991,392],[993,372],[960,361]],
+			"neighbors"	: {"north":"26","east":"23","south":"19","west":"35"}
+		},
+		{
+			"id" : "30",
+			"name" : "MISTY THICKET",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[844,359],[865,408],[877,403],[920,405],[938,360]],
+			"neighbors"	: {"north":"27","east":"26","south":"35","west":"31"}
+		},
+		{
+			"id" : "31",
+			"name" : "OBERON ROCK",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[778,377],[799,435],[865,408],[842,356],[810,358]],
+			"neighbors"	: {"north":"50","east":"30","south":"36","west":"32"}
+		},
+		{
+			"id" : "32",
+			"name" : "RUSTIC ROCK",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[738,385],[725,444],[799,435],[778,377],[763,352]],
+			"neighbors"	: {"north":"49","east":"31","south":"37","west":"33"}
+		},
+		{
+			"id" : "35",
+			"name" : "EASTER MEADOW",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[860,410],[862,461],[934,440],[958,428],[976,416],[920,405],[877,403]],
+			"neighbors"	: {"north":"30","east":"29","south":"19","west":"36"}
+		},
+		{
+			"id" : "36",
+			"name" : "TUBBY HILL",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[795,438],[798,479],[862,470],[882,461],[860,410]],
+			"neighbors"	: {"north":"31","east":"35","south":"17","west":"37"}
+		},
+		{
+			"id" : "37",
+			"name" : "DUSK WOOD",
+			"bgTheme" : "forest",
+			"mapHotspotRegion" : [[723,444],[714,471],[710,504],[798,479],[795,438]],
+			"neighbors"	: {"north":"32","east":"36","south":"16","west":"38"}
+		},
+		{
+			"id" : "50",
+			"name" : "HOT POCKET",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[761,302],[763,352],[778,377],[810,358],[842,356],[839,324],[824,294],[792,295]],
+			"neighbors"	: {"north":"59","east":"51","south":"31","west":"49"}
+		},
+		{
+			"id" : "51",
+			"name" : "PARTICLE RIDGE",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[824,294],[839,324],[912,329],[857,262]],
+			"neighbors"	: {"north":"60","east":"52","south":"27","west":"50"}
+		},
+		{
+			"id" : "52",
+			"name" : "ROCK SLIDE",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[857,262],[912,329],[954,289],[887,241]],
+			"neighbors"	: {"north":"61","east":"53","south":"26","west":"51"}
+		},
+		{
+			"id" : "53",
+			"name" : "DEATH CLIMB",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[888,240],[954,289],[970,251],[948,236],[924,210],[918,213],[915,213]],
+			"neighbors"	: {"north":"62","south":"25","west":"52"}
+		},
+		{
+			"id" : "59",
+			"name" : "CROWN HILL",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[767,228],[768,235],[765,299],[792,295],[824,294],[809,259],[797,215]],
+			"neighbors"	: {"north":"67","east":"60","south":"50","west":"58"}
+		},
+		{
+			"id" : "60",
+			"name" : "DECEPTION PASS",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[797,215],[809,259],[824,294],[857,262],[834,232],[808,210]],
+			"neighbors"	: {"north":"67","east":"61","south":"51","west":"59"}
+		},
+		{
+			"id" : "61",
+			"name" : "THOMPSON'S PASS",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[806,210],[834,232],[857,262],[887,241],[846,186],[830,199]],
+			"neighbors"	: {"north":"68","east":"62","south":"52","west":"60"}
+		},
+		{
+			"id" : "62",
+			"name" : "PANORAMIC VISTA",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[846,186],[888,240],[915,213],[904,202],[899,182],[879,168],[870,167]],
+			"neighbors"	: {"north":"69","south":"53","west":"61"}
+		},
+		{
+			"id" : "67",
+			"name" : "ROCKY CRAG",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[751,149],[767,228],[797,215],[808,210],[800,186],[765,154]],
+			"neighbors"	: {"north":"70","east":"68","south":"59","west":"66"}
+		},
+		{
+			"id" : "68",
+			"name" : "BLANCHARD KNOLL",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[765,154],[800,186],[808,210],[830,199],[846,186],[791,124],[769,142]],
+			"neighbors"	: {"north":"70","east":"69","south":"61","west":"67"}
+		},
+		{
+			"id" : "69",
+			"name" : "ATTICUS HILL",
+			"bgTheme" : "mountain",
+			"mapHotspotRegion" : [[791,124],[846,186],[870,167],[867,157],[807,113]],
+			"neighbors"	: {"north":"70","south":"62","west":"68"}
+		}		
 	]
 }
