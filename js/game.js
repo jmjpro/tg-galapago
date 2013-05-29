@@ -1064,7 +1064,7 @@ Board.prototype.handleTriplets = function(tile) {
 		goldTiles = board.getGoldTiles(tileTriplets);
 		if( goldTiles && goldTiles.length > 0 ) {
 			_.each( goldTiles, function() {
-				board.goldTileCounter++;
+				board.goldCounter++;
 			});
 			board.animateGoldRemovalAsync(goldTiles);
 			if( board.countGold() === 0 ) {
