@@ -271,10 +271,6 @@ LevelMap.prototype.handleUpArrow = function() {
 }; //LevelMap.prototype.handleLeftArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
-	//this.level = getNeighborLevel(1);
-	this.level = Galapago.levels[2];
-	this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
-	Galapago.levelMap.drawHotspot(this.level.mapHotspotRegion);
 	this.setHotspotLevel(this.hotspotLevel.neighbors.east);
 }; //LevelMap.prototype.handleRightArrow()
 
