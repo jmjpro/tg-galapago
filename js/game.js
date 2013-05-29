@@ -300,15 +300,25 @@ LevelMap.prototype.display = function() {
 };
 
 LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
+	var x, y;
 	this.layer.strokeStyle = 'white';
 	this.layer.beginPath();
 	this.layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
-	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length - 1 ; pointIt++ ){
-		this.layer.lineTo( hotspotPointsArray[pointIt][0] , hotspotPointsArray[pointIt][1] );
+	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
+		x = hotspotPointsArray[pointIt][0];
+		y = hotspotPointsArray[pointIt][1];
+		this.layer.lineTo( x, y );
+		//this.debugDisplayMapCoordinates(x, y);
 	}
 	this.layer.closePath();
 	this.layer.stroke();
 }; //LevelMap.prototype.drawHotspot
+
+LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
+	this.layer.font = '10px Arial';
+	this.layer.fillStyle = 'red';
+	this.layer.fillText( x + ',' + y, x, y );
+}; //LevelMap.prototype.debugDisplayMapCoordinates
 
 //+ adapted from Jonas Raoni Soares Silva
 //@ http://jsfromhell.com/math/is-point-in-poly [rev. #0]
