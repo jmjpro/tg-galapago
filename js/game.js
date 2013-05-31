@@ -361,19 +361,6 @@ MapCell.prototype.toString = function() {
 }
 /* end class MapCell */
 
-/* begin class Score */
-Score.TRIPLET = 100;
-Score.MULTIPLIER_GOLD = 3;
-Score.FONT_SIZE = '30px';
-Score.FONT_NAME = 'Calibri';
-Score.X = 500;
-Score.Y = 60;
-Score.COLOR = 'cyan';
-Score.MAX_WIDTH = 100;
-Score.MAX_HEIGHT = 25;
-function Score() {}
-/* end class Score */
-
 /* begin class Level */
 Level.CREATURE_PATH = 'res/img/creatures/';
 Level.GOLD_PATH = 'res/img/gold-tiles/';
@@ -699,7 +686,8 @@ function Board() {
 
 	this.creatureCounter = 0;
 	this.tripletCounter = 0;
-	this.goldCounter = 0;
+	this.chainReactionCounter = 0;
+	this.scoreEvents = [];
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;	
 } //Board constructor
@@ -1047,11 +1035,16 @@ Board.prototype.handleTriplets = function(tile) {
 	board.handleTripletsDebugCounter++;
 	pointsArray = [];
 	changingPointsArray = [];
-	tileTriplets = board.findTriplets(tile);
+	tileTriplets = board.getMatchingTiles(tile);
 	if( tileTriplets && tileTriplets.length >= 1 ) {
 		_.each( tileTriplets, function(tileTriplet) {
 			board.tripletCounter++;
 			pointsArray = pointsArray.concat(Tile.tileArrayToPointsArray(tileTriplet));
+			goldTiles = board.getGoldTiles(tileTriplet);
+			if( goldTiles && goldTiles.length > 0 ) {
+				board.animateGoldRemovalAsync(goldTiles);
+			}
+			board.scoreEvents.push(new ScoreEvent(tileTriplet.length, goldTiles.length, board.chainReactionCounter));
 		});
 		//YM: pointsArray can contain duplicates due to overlapping triplets
 		//remove the duplicates
@@ -1061,22 +1054,16 @@ Board.prototype.handleTriplets = function(tile) {
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		board.removeTriplets(tileTriplets);
 		board.animateTripletsRemovalAsync(tileTriplets);
-		goldTiles = board.getGoldTiles(tileTriplets);
-		if( goldTiles && goldTiles.length > 0 ) {
-			_.each( goldTiles, function() {
-				board.goldCounter++;
-			});
-			board.animateGoldRemovalAsync(goldTiles);
-			if( board.countGold() === 0 ) {
-				if( dangerBar.isRunning() ) {
-					dangerBar.stop();
-				}
-				board.completeAnimationAsync();
-				return tileTriplets;
+		if( board.countGold() === 0 ) {
+			if( dangerBar.isRunning() ) {
+				dangerBar.stop();
 			}
+			board.completeAnimationAsync();
+			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
 		_.each( changedTiles, function( tile ) {
+			board.chainReactionCounter++;
 			board.handleTriplets(tile);
 		});
 	}
@@ -1106,7 +1093,8 @@ Board.prototype.handleSelect = function(tile) {
 			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 				board.handleTripletsDebugCounter = 0;
 				board.tripletCounter = 0;
-				board.goldCounter = 0;
+				board.chainReactionCounter = 0;
+				board.scoreEvents = [];
 				console.log( 'tilePrev triplets' );
 				board.handleTriplets(tilePrev);
 				console.log( 'tile triplets' );
@@ -1261,6 +1249,77 @@ Board.prototype.findTriplets = function(tileFocal) {
 	return triplets;
 };
 
+Board.prototype.getMatchingTiles = function(tileFocal) {
+	var triplets, matchingTiles, coordinates, neighborTile, col, row, tilesMatched, x, y, matchFound;
+	triplets = [];
+	matchingTiles = [];
+	coordinates = tileFocal ? tileFocal.coordinates : null;
+	console.debug( 'called Board.getScoringEvents with focal tile ' + coordinates );
+	if( !tileFocal ) { //YM: tileFocal could have been nulled by a previous triplet formed from the same move
+		return matchingTiles;
+	}
+	col = coordinates[0];
+	row = coordinates[1];
+	x = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		x--;
+		neighborTile = this.getNeighbor(tileFocal, [x, 0]);
+		if(neighborTile && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+	matchingTiles.push(tileFocal);
+	x = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		x++;
+		neighborTile = this.getNeighbor(tileFocal, [x, 0]);
+		if(neighborTile && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+
+	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
+		this.addTriplet(triplets, matchingTiles);
+	}
+
+	matchingTiles =[];
+	y = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		y--;
+		neighborTile = this.getNeighbor(tileFocal, [0, y]);
+		if(neighborTile && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+	matchingTiles.push(tileFocal);
+	y = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		y++;
+		neighborTile = this.getNeighbor(tileFocal, [0, y]);
+		if(neighborTile && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+	
+	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
+		this.addTriplet(triplets, matchingTiles);
+	}
+	return triplets;
+};
+
+
 Board.prototype.getNeighbor = function( tile, coordsDistance ) {
 	var tileNeighbor, coordsNeighbor, col, row, matrix;
 	matrix = this.creatureTileMatrix;
@@ -1286,9 +1345,9 @@ Board.prototype.animateTripletsRemovalAsync = function(tileTriplets) {
 	_.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'animating triplet removal for ' + Tile.tileArrayToPointsString(tileTriplet) );
 		$('#sound-match-01')[0].play();
-		tileTriplet[0].clear();
-		tileTriplet[1].clear();
-		tileTriplet[2].clear();
+		_.each( tileTriplet, function(tile) {
+			tile.clear();
+		});
 		board.lowerTilesAbove(tileTriplet);
 	});
 	//this.creatureLayer.draw();
@@ -1329,7 +1388,7 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	tilesAbove = this.getCreatureTilesFromPoints(pointsAbove);
 
 	if( MatrixUtil.isVerticalPointSet(triplet) ) {
-		this.lowerTiles(tilesAbove, 3);
+		this.lowerTiles(tilesAbove, triplet.length);
 		emptyPoints = MatrixUtil.getFirstNRowPoints(triplet);
 	}
 	else {
@@ -1382,20 +1441,17 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 };
 
 //get the gold tiles backing a triplet of creature tiles
-Board.prototype.getGoldTiles = function(triplets) {
+Board.prototype.getGoldTiles = function(triplet) {
 	var board, goldTiles, goldTile;
 	goldTiles = [];
 
 	board = this;
-	_.each( triplets, function(triplet) {
-		_.each( triplet, function(creatureTile) {
-			goldTile = board.getGoldTile(creatureTile);
-			if( goldTile ) {
-				goldTiles.push(goldTile);
-			}
-		});
+	_.each( triplet, function(creatureTile) {
+		goldTile = board.getGoldTile(creatureTile);
+		if( goldTile ) {
+			goldTiles.push(goldTile);
+		}
 	});
-
 	return goldTiles;
 };
 
@@ -1432,15 +1488,7 @@ Board.prototype.randomCreature = function(creatureTypes) {
 };
 
 Board.prototype.updateScore = function() {
-	var scoreToAdd, tripletIt, goldIt;
-	scoreToAdd = 0;
-	for( tripletIt = 0; tripletIt < this.tripletCounter; tripletIt++ ) {
-		scoreToAdd += Score.TRIPLET;
-		for( goldIt = 0; goldIt < this.goldCounter; goldIt++ ) {
-			scoreToAdd *= Score.MULTIPLIER_GOLD;
-		}
-	}
-	this.score += scoreToAdd;
+	this.score += Score.consolidateScores(this.scoreEvents);
 	this.drawScore();
 }; //Board.prototype.updateScore
 
