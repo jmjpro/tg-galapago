@@ -1046,6 +1046,7 @@ Board.prototype.handleTriplets = function(tile) {
 			}
 			board.scoreEvents.push(new ScoreEvent(tileTriplet.length, goldTiles.length, board.chainReactionCounter));
 		});
+		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
 		//remove the duplicates
 		console.debug( 'pointsArray with possible duplicates ' + MatrixUtil.pointsArrayToString(pointsArray) );
@@ -1063,7 +1064,6 @@ Board.prototype.handleTriplets = function(tile) {
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
 		_.each( changedTiles, function( tile ) {
-			board.chainReactionCounter++;
 			board.handleTriplets(tile);
 		});
 	}
