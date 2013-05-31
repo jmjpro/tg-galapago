@@ -685,7 +685,6 @@ function Board() {
 	this.creatureYOffset = 0;
 
 	this.creatureCounter = 0;
-	this.tripletCounter = 0;
 	this.chainReactionCounter = 0;
 	this.scoreEvents = [];
 	this.handleTripletsDebugCounter = 0;
@@ -1038,7 +1037,6 @@ Board.prototype.handleTriplets = function(tile) {
 	tileTriplets = board.getMatchingTiles(tile);
 	if( tileTriplets && tileTriplets.length >= 1 ) {
 		_.each( tileTriplets, function(tileTriplet) {
-			board.tripletCounter++;
 			pointsArray = pointsArray.concat(Tile.tileArrayToPointsArray(tileTriplet));
 			goldTiles = board.getGoldTiles(tileTriplet);
 			if( goldTiles && goldTiles.length > 0 ) {
@@ -1092,7 +1090,6 @@ Board.prototype.handleSelect = function(tile) {
 			board.swapCreatures( tile, tilePrev );
 			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 				board.handleTripletsDebugCounter = 0;
-				board.tripletCounter = 0;
 				board.chainReactionCounter = 0;
 				board.scoreEvents = [];
 				console.log( 'tilePrev triplets' );
@@ -1100,7 +1097,7 @@ Board.prototype.handleSelect = function(tile) {
 				console.log( 'tile triplets' );
 				board.handleTriplets(tile);
 				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-				if( board.tripletCounter > 0 ) {
+				if( board.scoreEvents.length > 0 ) {
 					board.updateScore();
 					//reset grid lines and active tile
 					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
