@@ -404,7 +404,7 @@ Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
 
 	creatureType = _.filter( this.creatureTypes, function(creatureType) {
 		return creatureType.startsWith(colorId);
-	});
+	})[0];
 
 	creatureImage = this.getCreatureImage(creatureType, creatureSpriteNumber);
 	creature = new Creature(creatureType, creatureImage);
@@ -702,6 +702,9 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
+	if(tile && (tile.isBlocked() || tile.isCocooned())){
+		tile = this.tileActive;
+	}
 	if(tile) {
 		tileActive = tile;
 	}
@@ -874,21 +877,21 @@ Board.prototype.build = function(tilePositions) {
 			cellObject = this.parseCell(cellId);
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
-				spriteNumber = '1';
+				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.gold != 'undefined' ) {
 				this.addTile(coordinates, 'GOLD', cellObject.gold);
 			}
 			if( cellObject.hasTileOnly ) {
-				spriteNumber = '0'; //no creature
+				spriteNumber = Tile.EMPTY_TILE_SPRITE_NUMBER; //no creature
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.blocking === 'undefined' ) {
 				//this.blockingTileMatrix[colIt][rowIt] = null;
 			}
 			else {
-				spriteNumber = '2';
+				spriteNumber = Tile.BLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
 				//console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
 			}
@@ -896,7 +899,7 @@ Board.prototype.build = function(tilePositions) {
 				//this.cocoonTileMatrix[colIt][rowIt] = null;
 			}
 			else {
-				spriteNumber = '3';
+				spriteNumber = Tile.COCOONED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
 				//this.addTile();
 			}
@@ -974,14 +977,14 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	}
 	else {
 		if( 'CREATURE' === blobType ) {
-			tile = new Tile(this, blob, coordinates);
+			tile = new Tile(this, blob, coordinates, spriteNumber);
 			if( spriteNumber === '1' ) {
 				//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
 				do {
 					this.creatureCounter++;
 					blob = this.randomCreature(this.level.creatureTypes);
 					imageName = blob.creatureType;
-					tile = new Tile(this, blob, coordinates);
+					tile = new Tile(this, blob, coordinates, spriteNumber);
 					tileMatrix[col][row] = tile;
 				}
 				while( this.findTriplets(tile).length > 0 );
@@ -994,7 +997,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		}		
 		else if( blob.blobType === 'GOLD' ) {
 			imageName = blob.blobType;
-			tile = new Tile(this, blob, coordinates);
+			tile = new Tile(this, blob, coordinates, spriteNumber);
 			tileMatrix[col][row] = tile;
 		}
 
@@ -1372,14 +1375,6 @@ Board.prototype.getGoldTile = function(creatureTile) {
 	return this.goldTileMatrix[creatureTileCol][creatureTileRow];
 };
 
-//get the blocking tile backing an individual creature tiles
-Board.prototype.getBlockedTile = function(creatureTile) {
-};
-
-//get the cocoon tile backing an individual creature tiles
-Board.prototype.getCocoonTile = function(creatureTile) {
-};
-
 Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
 	//deferred = Q.defer();
@@ -1473,11 +1468,16 @@ Tile.WIDTH = 62;
 Tile.HEIGHT = 62;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
+Tile.EMPTY_TILE_SPRITE_NUMBER = '0';
+Tile.UNBLOCKED_TILE_SPRITE_NUMBER = '1';
+Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
+Tile.COCOONED_TILE_SPRITE_NUMBER = '3';
 
-function Tile(board, blob, coordinates) {
+function Tile(board, blob, coordinates, spriteNumber) {
 	this.board = board;
 	this.blob = blob;
 	this.coordinates = coordinates;
+	this.spriteNumber = spriteNumber;
 }
 
 Tile.prototype.toString = function() {
@@ -1570,6 +1570,14 @@ Tile.prototype.getXCoord = function() {
 Tile.prototype.getYCoord = function() {	
 	return Tile.getYCoord(this.coordinates[1]);
 }; //Tile.prototype.getXCoord()
+
+Tile.prototype.isBlocked = function()  {
+	return this.spriteNumber == Tile.BLOCKED_TILE_SPRITE_NUMBER;
+}
+
+Tile.prototype.isCocooned = function()  {
+	return this.spriteNumber == Tile.COCOONED_TILE_SPRITE_NUMBER;
+}
 
 //static
 Tile.posToPixels = function(pos, basePixels, widthToHeightRatio, offset ) {

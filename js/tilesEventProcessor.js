@@ -123,8 +123,7 @@ TilesEventProcessor.prototype.getBlockedTiles = function(matchingTilesSet) {
 	blockedTiles = [];
 	var board = this.board;
 	_.each( matchingTilesSet, function(creatureTile) {
-		blockedTile = board.getBlockedTile(creatureTile);
-		if( blockedTile ) {
+		if( creatureTile.isBlocked() ) {
 			blockedTiles.push(blockedTile);
 		}
 	});
@@ -137,8 +136,7 @@ TilesEventProcessor.prototype.getCocoonTiles = function(matchingTilesSet) {
 	cocoonTiles = [];
 	var board = this.board;
 	_.each( matchingTilesSet, function(creatureTile) {
-		cocoonTile = board.getCocoonTile(creatureTile);
-		if( cocoonTile ) {
+		if( creatureTile.isCocooned() ) {
 			cocoonTiles.push(cocoonTile);
 		}
 	});
