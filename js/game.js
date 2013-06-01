@@ -1028,22 +1028,20 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 }; //Board.prototype.addTileToLayer()
 
 Board.prototype.handleTriplets = function(tile) {
-	var board, dangerBar, tileTriplets, goldTiles, pointsArray, changingPointsArray, changedTiles;
+	var board, dangerBar, tileTriplets, totalMatchedGoldTiles, pointsArray, changingPointsArray, changedTiles;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
 	pointsArray = [];
 	changingPointsArray = [];
-	tileTriplets = board.getMatchingTiles(tile);
-	if( tileTriplets && tileTriplets.length >= 1 ) {
-		_.each( tileTriplets, function(tileTriplet) {
-			pointsArray = pointsArray.concat(Tile.tileArrayToPointsArray(tileTriplet));
-			goldTiles = board.getGoldTiles(tileTriplet);
-			if( goldTiles && goldTiles.length > 0 ) {
-				board.animateGoldRemovalAsync(goldTiles);
-			}
-			board.scoreEvents.push(new ScoreEvent(tileTriplet.length, goldTiles.length, null, null, null, null, false, board.chainReactionCounter));
-		});
+	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
+	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
+	if( tileTriplets && tileTriplets.length > 0 ) {
+		pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		totalMatchedGoldTiles = tileMovedEventProcessorResult.totalMatchedGoldTiles;
+		if(totalMatchedGoldTiles && totalMatchedGoldTiles.length > 0 ) {
+			board.animateGoldRemovalAsync(totalMatchedGoldTiles);
+		}
 		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
 		//remove the duplicates
@@ -1246,77 +1244,6 @@ Board.prototype.findTriplets = function(tileFocal) {
 	return triplets;
 };
 
-Board.prototype.getMatchingTiles = function(tileFocal) {
-	var triplets, matchingTiles, coordinates, neighborTile, col, row, tilesMatched, x, y, matchFound;
-	triplets = [];
-	matchingTiles = [];
-	coordinates = tileFocal ? tileFocal.coordinates : null;
-	console.debug( 'called Board.getScoringEvents with focal tile ' + coordinates );
-	if( !tileFocal ) { //YM: tileFocal could have been nulled by a previous triplet formed from the same move
-		return matchingTiles;
-	}
-	col = coordinates[0];
-	row = coordinates[1];
-	x = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		x--;
-		neighborTile = this.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-	matchingTiles.push(tileFocal);
-	x = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		x++;
-		neighborTile = this.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-
-	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
-		this.addTriplet(triplets, matchingTiles);
-	}
-
-	matchingTiles =[];
-	y = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		y--;
-		neighborTile = this.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-	matchingTiles.push(tileFocal);
-	y = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		y++;
-		neighborTile = this.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-	
-	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
-		this.addTriplet(triplets, matchingTiles);
-	}
-	return triplets;
-};
-
-
 Board.prototype.getNeighbor = function( tile, coordsDistance ) {
 	var tileNeighbor, coordsNeighbor, col, row, matrix;
 	matrix = this.creatureTileMatrix;
@@ -1435,21 +1362,6 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 		deferred.resolve();
 	});
 	return deferred.promise;
-};
-
-//get the gold tiles backing a triplet of creature tiles
-Board.prototype.getGoldTiles = function(triplet) {
-	var board, goldTiles, goldTile;
-	goldTiles = [];
-
-	board = this;
-	_.each( triplet, function(creatureTile) {
-		goldTile = board.getGoldTile(creatureTile);
-		if( goldTile ) {
-			goldTiles.push(goldTile);
-		}
-	});
-	return goldTiles;
 };
 
 //get the gold tile backing an individual creature tiles

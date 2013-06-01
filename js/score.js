@@ -31,6 +31,7 @@ Score.consolidateScores = function(scoreEvents){
 
 /* end class Score */
 
+/* begin class ScoreEvent */
 function ScoreEvent(totalTilesMatched,
 					totalGoldTilesMatched,
 					totalLockedTilesMatched,
@@ -77,3 +78,4 @@ ScoreEvent.prototype.score= function() {
 	}
 	return score;
 }
+/* end class Score */
