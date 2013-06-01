@@ -1298,9 +1298,24 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board;
 	board = this;
 	_.each( tiles, function(tile) {
-		if( tile ) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
-			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
+		if( tile && !tile.isBlocked() && !tile.isCocooned()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+			var keepLooping = false;
+			do {
+				loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
+				var tileToBeReplaced = board.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]];
+				if(tileToBeReplaced && (tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned())){
+					keepLooping = true;
+					numRows--;
+				}
+				else{
+					keepLooping = false;
+				}
+			} 
+			while (keepLooping)
 			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
+		}
+		else{
+			numRows++;
 		}
 	});
 	return this; //chainable
