@@ -884,7 +884,7 @@ Board.prototype.build = function(tilePositions) {
 				this.addTile(coordinates, 'GOLD', cellObject.gold);
 			}
 			if( cellObject.hasTileOnly ) {
-				spriteNumber = Tile.EMPTY_TILE_SPRITE_NUMBER; //no creature
+				spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.blocking === 'undefined' ) {
@@ -1468,7 +1468,7 @@ Tile.WIDTH = 62;
 Tile.HEIGHT = 62;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
-Tile.EMPTY_TILE_SPRITE_NUMBER = '0';
+Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
 Tile.UNBLOCKED_TILE_SPRITE_NUMBER = '1';
 Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
 Tile.COCOONED_TILE_SPRITE_NUMBER = '3';
