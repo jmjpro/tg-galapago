@@ -9,7 +9,7 @@ Score.MAX_HEIGHT = 25;
 Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH = 3;
 Score.MATCHED_TILES_POINTS = 100;
 Score.ADDITIONAL_MATCHED_TILES_POINTS = 100;
-Score.MULTIPLIER_GOLD_OR_LOCKED_TILE_MATCH = 3;
+Score.MULTIPLIER_GOLD_OR_BLOCKED_TILE_MATCH = 3;
 Score.MATCHED_COCOON_TILES_POINTS = 100;
 Score.TILE_HIT_BY_LIGTNING_STRIKE_POINTS = 100;
 Score.TILE_REMOVED_BY_SUPER_FRIEND_POINTS = 100;
@@ -34,7 +34,7 @@ Score.consolidateScores = function(scoreEvents){
 /* begin class ScoreEvent */
 function ScoreEvent(totalTilesMatched,
 					totalGoldTilesMatched,
-					totalLockedTilesMatched,
+					totalBlockedTilesMatched,
 					totalCocoonTilesMatched,
 					totalNonEmptyTilesHitByLightning,
 					totalNonEmptyTilesRemoveBySuperFriend,
@@ -42,7 +42,7 @@ function ScoreEvent(totalTilesMatched,
 					chainReactionCounter){
 	this.totalTilesMatched = totalTilesMatched;
 	this.totalGoldTilesMatched = totalGoldTilesMatched;
-	this.totalLockedTilesMatched = totalLockedTilesMatched;
+	this.totalBlockedTilesMatched = totalBlockedTilesMatched;
 	this.totalCocoonTilesMatched = totalCocoonTilesMatched;
 	this.totalNonEmptyTilesHitByLightning = totalNonEmptyTilesHitByLightning;
 	this.totalNonEmptyTilesRemoveBySuperFriend = totalNonEmptyTilesRemoveBySuperFriend;
@@ -58,20 +58,20 @@ ScoreEvent.prototype.score= function() {
 	if(this.totalTilesMatched > Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH){
 		score += (this.totalTilesMatched - Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) * Score.ADDITIONAL_MATCHED_TILES_POINTS;
 	}
-	if(this.totalCocoonTilesMatched && this.totalCocoonTilesMatched.length > 0){
+	if(this.totalCocoonTilesMatched > 0){
 		score += Score.MATCHED_COCOON_TILES_POINTS;
 	}
-	if(this.totalNonEmptyTilesHitByLightning && this.totalNonEmptyTilesHitByLightning.length > 0){
-		score += this.totalNonEmptyTilesHitByLightning.length * Score.TILE_HIT_BY_LIGTNING_STRIKE_POINTS;
+	if(this.totalNonEmptyTilesHitByLightning > 0){
+		score += this.totalNonEmptyTilesHitByLightning * Score.TILE_HIT_BY_LIGTNING_STRIKE_POINTS;
 	}
-	if(this.totalNonEmptyTilesRemoveBySuperFriend && this.totalNonEmptyTilesRemoveBySuperFriend.length > 0){
-		score += this.totalNonEmptyTilesRemoveBySuperFriend.length * Score.TILE_REMOVED_BY_SUPER_FRIEND_POINTS;
+	if(this.totalNonEmptyTilesRemoveBySuperFriend > 0){
+		score += this.totalNonEmptyTilesRemoveBySuperFriend * Score.TILE_REMOVED_BY_SUPER_FRIEND_POINTS;
 	}
 	if(this.firePowerUsed){
 		score += Score.FIREPOWER_POERUP_USED_POINTS;
 	}
-	if(!this.firePowerUsed && ((this.totalGoldTilesMatched && this.totalGoldTilesMatched > 0) || (this.totalLockedTilesMatched && this.totalLockedTilesMatched > 0))){
-		score *= Score.MULTIPLIER_GOLD_OR_LOCKED_TILE_MATCH; 
+	if(!this.firePowerUsed && (this.totalGoldTilesMatched > 0 || this.totalBlockedTilesMatched > 0)){
+		score *= Score.MULTIPLIER_GOLD_OR_BLOCKED_TILE_MATCH; 
 	}
 	if(this.chainReactionCounter > 0){
 		score *= this.chainReactionCounter;

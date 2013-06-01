@@ -23,7 +23,10 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 			_.each( goldTiles, function(goldTile){
 				totalMatchedGoldTiles.push(goldTile);
 			});
-			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, null, null, null, null, false, tilesEventProcessor.board.chainReactionCounter));
+			var blockedTiles = tilesEventProcessor.getBlockedTiles(matchingTilesSet);
+			var cocoonTiles = tilesEventProcessor.getCocoonTiles(matchingTilesSet);
+			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
+				cocoonTiles.length, null, null, false, tilesEventProcessor.board.chainReactionCounter));
 			affectedPointsArray = affectedPointsArray.concat(Tile.tileArrayToPointsArray(matchingTilesSet));
 		});
 	}
@@ -113,4 +116,33 @@ TilesEventProcessor.prototype.getGoldTiles = function(matchingTilesSet) {
 	});
 	return goldTiles;
 };
-/* begin class TilesEventProcessor */
+
+//get the blocked tiles backing a matchingTilesSet of creature tiles
+TilesEventProcessor.prototype.getBlockedTiles = function(matchingTilesSet) {
+	var blockedTiles, blockedTile;
+	blockedTiles = [];
+	var board = this.board;
+	_.each( matchingTilesSet, function(creatureTile) {
+		blockedTile = board.getBlockedTile(creatureTile);
+		if( blockedTile ) {
+			blockedTiles.push(blockedTile);
+		}
+	});
+	return blockedTiles;
+};
+
+//get the cocoon tiles backing a matchingTilesSet of creature tiles
+TilesEventProcessor.prototype.getCocoonTiles = function(matchingTilesSet) {
+	var cocoonTiles, cocoonTile;
+	cocoonTiles = [];
+	var board = this.board;
+	_.each( matchingTilesSet, function(creatureTile) {
+		cocoonTile = board.getCocoonTile(creatureTile);
+		if( cocoonTile ) {
+			cocoonTiles.push(cocoonTile);
+		}
+	});
+	return cocoonTiles;
+};
+
+/* end class TilesEventProcessor */

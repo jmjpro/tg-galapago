@@ -1372,6 +1372,14 @@ Board.prototype.getGoldTile = function(creatureTile) {
 	return this.goldTileMatrix[creatureTileCol][creatureTileRow];
 };
 
+//get the blocking tile backing an individual creature tiles
+Board.prototype.getBlockedTile = function(creatureTile) {
+};
+
+//get the cocoon tile backing an individual creature tiles
+Board.prototype.getCocoonTile = function(creatureTile) {
+};
+
 Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
 	//deferred = Q.defer();
