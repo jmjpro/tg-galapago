@@ -1042,7 +1042,7 @@ Board.prototype.handleTriplets = function(tile) {
 			if( goldTiles && goldTiles.length > 0 ) {
 				board.animateGoldRemovalAsync(goldTiles);
 			}
-			board.scoreEvents.push(new ScoreEvent(tileTriplet.length, goldTiles.length, board.chainReactionCounter));
+			board.scoreEvents.push(new ScoreEvent(tileTriplet.length, goldTiles.length, null, null, null, null, false, board.chainReactionCounter));
 		});
 		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
