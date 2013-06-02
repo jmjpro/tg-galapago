@@ -26,6 +26,7 @@ Score.consolidateScores = function(scoreEvents){
 				score += scoreEvent.score();
 		});
 	}
+	console.info( "increasing score by " + score );
 	return score;
 }
 
