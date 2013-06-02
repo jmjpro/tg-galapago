@@ -1550,7 +1550,12 @@ function Tile(board, blob, coordinates, spriteNumber) {
 
 Tile.prototype.toString = function() {
 	var output, tileType;
-	tileType = this.blob.creatureType || '';
+	if( this.blob === null || this.blob.creatureType === null ) {
+		tileType = this.spriteNumber;
+	}
+	else {
+		tileType = this.blob.creatureType + ' ' + this.spriteNumber;
+	}
 	output = '[' + this.coordinates[0] + ',' + this.coordinates[1] + ']:' + tileType;
 	return output;
 };
