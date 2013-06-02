@@ -1,12 +1,13 @@
 CACHE MANIFEST
+#v0.1
 
 CACHE:
       index.html
-      js/game.js
+
       js/gal.js
       js/gal.filesystem.js
       js/levels.json
-      	  
+
 	  res/img/progress-bar/danger_bar.png 
 	  res/img/progress-bar/progress_bar.png 
 	  res/img/progress-bar/progress_bar_fill01.png 
@@ -27,6 +28,7 @@ CACHE:
 	  res/img/game-screen/PowerUps_Swap_Rollover.png 
 	  res/img/game-screen/tile_1.png 	 
 	  res/img/game-screen/tile_2.png 
+ 
       res/img/creatures/beach/blue_crab_1.png 
 	  res/img/creatures/beach/green_turtle_1.png 
 	  res/img/creatures/beach/pink_frog_1.png 
@@ -54,6 +56,9 @@ CACHE:
 	  res/img/gold-tiles/tile_gold_1.png
 	  res/img/background/background_map.jpg
 	  res/img/background/background_beach.jpg
+
+	  res/img/map-screen/green_v.png
+	  res/img/map-screen/level_stars_gold.png
 
 NETWORK:
 *
