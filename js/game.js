@@ -361,19 +361,6 @@ MapCell.prototype.toString = function() {
 }
 /* end class MapCell */
 
-/* begin class Score */
-Score.TRIPLET = 100;
-Score.MULTIPLIER_GOLD = 3;
-Score.FONT_SIZE = '30px';
-Score.FONT_NAME = 'Calibri';
-Score.X = 500;
-Score.Y = 60;
-Score.COLOR = 'cyan';
-Score.MAX_WIDTH = 100;
-Score.MAX_HEIGHT = 25;
-function Score() {}
-/* end class Score */
-
 /* begin class Level */
 Level.CREATURE_PATH = 'res/img/creatures/';
 Level.GOLD_PATH = 'res/img/gold-tiles/';
@@ -417,7 +404,7 @@ Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
 
 	creatureType = _.filter( this.creatureTypes, function(creatureType) {
 		return creatureType.startsWith(colorId);
-	});
+	})[0];
 
 	creatureImage = this.getCreatureImage(creatureType, creatureSpriteNumber);
 	creature = new Creature(creatureType, creatureImage);
@@ -698,8 +685,8 @@ function Board() {
 	this.creatureYOffset = 0;
 
 	this.creatureCounter = 0;
-	this.tripletCounter = 0;
-	this.goldCounter = 0;
+	this.chainReactionCounter = 0;
+	this.scoreEvents = [];
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;	
 } //Board constructor
@@ -715,6 +702,9 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
+	if(tile && (tile.isBlocked() || tile.isCocooned())){
+		tile = this.tileActive;
+	}
 	if(tile) {
 		tileActive = tile;
 	}
@@ -887,21 +877,21 @@ Board.prototype.build = function(tilePositions) {
 			cellObject = this.parseCell(cellId);
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
-				spriteNumber = '1';
+				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.gold != 'undefined' ) {
 				this.addTile(coordinates, 'GOLD', cellObject.gold);
 			}
 			if( cellObject.hasTileOnly ) {
-				spriteNumber = '0'; //no creature
+				spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.blocking === 'undefined' ) {
 				//this.blockingTileMatrix[colIt][rowIt] = null;
 			}
 			else {
-				spriteNumber = '2';
+				spriteNumber = Tile.BLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
 				//console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
 			}
@@ -909,7 +899,7 @@ Board.prototype.build = function(tilePositions) {
 				//this.cocoonTileMatrix[colIt][rowIt] = null;
 			}
 			else {
-				spriteNumber = '3';
+				spriteNumber = Tile.COCOONED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
 				//this.addTile();
 			}
@@ -987,27 +977,26 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	}
 	else {
 		if( 'CREATURE' === blobType ) {
-			tile = new Tile(this, blob, coordinates);
+			tile = new Tile(this, blob, coordinates, spriteNumber);
 			if( spriteNumber === '1' ) {
 				//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
 				do {
 					this.creatureCounter++;
 					blob = this.randomCreature(this.level.creatureTypes);
 					imageName = blob.creatureType;
-					tile = new Tile(this, blob, coordinates);
-					tileMatrix[col][row] = tile;
+					tile = new Tile(this, blob, coordinates, spriteNumber);
 				}
 				while( this.findTriplets(tile).length > 0 );
 			}
 			else if( spriteNumber === '2' ) {
 				imageName = blob.creatureType;
-				tileMatrix[col][row] = tile;
 			}
+			tileMatrix[col][row] = tile;
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}		
 		else if( blob.blobType === 'GOLD' ) {
 			imageName = blob.blobType;
-			tile = new Tile(this, blob, coordinates);
+			tile = new Tile(this, blob, coordinates, spriteNumber);
 			tileMatrix[col][row] = tile;
 		}
 
@@ -1029,7 +1018,8 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	tileMatrix[col][row] = null;
+	var tile = tileMatrix[col][row];
+	tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
 	return this; //chainable
 }; //Board.prototype.removeTile()
 
@@ -1041,18 +1031,21 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 }; //Board.prototype.addTileToLayer()
 
 Board.prototype.handleTriplets = function(tile) {
-	var board, dangerBar, tileTriplets, goldTiles, pointsArray, changingPointsArray, changedTiles;
+	var board, dangerBar, tileTriplets, totalMatchedGoldTiles, pointsArray, changingPointsArray, changedTiles;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
 	pointsArray = [];
 	changingPointsArray = [];
-	tileTriplets = board.findTriplets(tile);
-	if( tileTriplets && tileTriplets.length >= 1 ) {
-		_.each( tileTriplets, function(tileTriplet) {
-			board.tripletCounter++;
-			pointsArray = pointsArray.concat(Tile.tileArrayToPointsArray(tileTriplet));
-		});
+	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
+	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
+	if( tileTriplets && tileTriplets.length > 0 ) {
+		pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		totalMatchedGoldTiles = tileMovedEventProcessorResult.totalMatchedGoldTiles;
+		if(totalMatchedGoldTiles && totalMatchedGoldTiles.length > 0 ) {
+			board.animateGoldRemovalAsync(totalMatchedGoldTiles);
+		}
+		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
 		//remove the duplicates
 		console.debug( 'pointsArray with possible duplicates ' + MatrixUtil.pointsArrayToString(pointsArray) );
@@ -1061,19 +1054,12 @@ Board.prototype.handleTriplets = function(tile) {
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		board.removeTriplets(tileTriplets);
 		board.animateTripletsRemovalAsync(tileTriplets);
-		goldTiles = board.getGoldTiles(tileTriplets);
-		if( goldTiles && goldTiles.length > 0 ) {
-			_.each( goldTiles, function() {
-				board.goldCounter++;
-			});
-			board.animateGoldRemovalAsync(goldTiles);
-			if( board.countGold() === 0 ) {
-				if( dangerBar.isRunning() ) {
-					dangerBar.stop();
-				}
-				board.completeAnimationAsync();
-				return tileTriplets;
+		if( board.countGold() === 0 ) {
+			if( dangerBar.isRunning() ) {
+				dangerBar.stop();
 			}
+			board.completeAnimationAsync();
+			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
 		_.each( changedTiles, function( tile ) {
@@ -1105,14 +1091,14 @@ Board.prototype.handleSelect = function(tile) {
 			board.swapCreatures( tile, tilePrev );
 			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 				board.handleTripletsDebugCounter = 0;
-				board.tripletCounter = 0;
-				board.goldCounter = 0;
+				board.chainReactionCounter = 0;
+				board.scoreEvents = [];
 				console.log( 'tilePrev triplets' );
 				board.handleTriplets(tilePrev);
 				console.log( 'tile triplets' );
 				board.handleTriplets(tile);
 				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-				if( board.tripletCounter > 0 ) {
+				if( board.scoreEvents.length > 0 ) {
 					board.updateScore();
 					//reset grid lines and active tile
 					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1286,9 +1272,9 @@ Board.prototype.animateTripletsRemovalAsync = function(tileTriplets) {
 	_.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'animating triplet removal for ' + Tile.tileArrayToPointsString(tileTriplet) );
 		$('#sound-match-01')[0].play();
-		tileTriplet[0].clear();
-		tileTriplet[1].clear();
-		tileTriplet[2].clear();
+		_.each( tileTriplet, function(tile) {
+			tile.clear();
+		});
 		board.lowerTilesAbove(tileTriplet);
 	});
 	//this.creatureLayer.draw();
@@ -1312,13 +1298,74 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board;
 	board = this;
 	_.each( tiles, function(tile) {
-		if( tile ) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
-			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
+		if( tile && !tile.isBlocked() && !tile.isCocooned()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+			var keepLooping = false;
+			do {
+				loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
+				var tileToBeReplaced = board.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]];
+				if(tileToBeReplaced && (tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned())){
+					keepLooping = true;
+					numRows--;
+				}
+				else{
+					keepLooping = false;
+				}
+			} 
+			while (keepLooping)
+			loweredPoint = board.getLowestPoint(loweredPoint);
 			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
+		}
+		else{
+			numRows++;
 		}
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTiles()
+
+
+Board.prototype.getLowestPoint = function(loweredPoint) {
+	var col = loweredPoint[0];
+	var row = loweredPoint[1] + 1;
+	var tileToBeReplaced = null;
+	if(row < this.creatureTileMatrix[0].length){ 
+		tileToBeReplaced = this.creatureTileMatrix[col][row];
+	}
+	if(tileToBeReplaced == null){
+		return loweredPoint;
+	}
+	else if (tileToBeReplaced.isPlain()){
+		return this.getLowestPoint(tileToBeReplaced.coordinates);
+	}
+	else{
+		//If current point is plain check down and left
+		if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
+			tileToBeReplaced = null;
+			col = col -1;
+			if(col > -1){
+				tileToBeReplaced = this.creatureTileMatrix[col][row];
+			}
+			if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+				return this.getLowestPoint(tileToBeReplaced.coordinates);
+			}
+			else{
+				tileToBeReplaced = null;
+				col = col + 2;
+				if(col < this.creatureTileMatrix.length){
+					tileToBeReplaced = this.creatureTileMatrix[col][row];
+				}
+				if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+					return this.getLowestPoint(tileToBeReplaced.coordinates);
+				}
+				else{
+					return loweredPoint;
+				}
+			}
+		}
+		else{
+			return loweredPoint;
+		}
+	} 
+}
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	var pointsAbove, tilesAbove, emptyPoints, triplet, board, spriteNumber;	
@@ -1329,17 +1376,24 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	tilesAbove = this.getCreatureTilesFromPoints(pointsAbove);
 
 	if( MatrixUtil.isVerticalPointSet(triplet) ) {
-		this.lowerTiles(tilesAbove, 3);
+		this.lowerTiles(tilesAbove, triplet.length);
 		emptyPoints = MatrixUtil.getFirstNRowPoints(triplet);
 	}
 	else {
-		this.lowerTiles(tilesAbove, 1);
+		this.lowerTiles(tilesAbove, 1); 
 		emptyPoints = MatrixUtil.getNFirstRowPoints(triplet);
 	}
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		spriteNumber = '1';
+		var lowestPoint = board.getLowestPoint(point);
+		while(lowestPoint != point)
+		{
+			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
+			lowestPoint = board.getLowestPoint(point);		
+		}
+		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 		board.addTile(point, 'CREATURE', null, spriteNumber);
 	});
 	return this; //chainable
@@ -1381,24 +1435,6 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 	return deferred.promise;
 };
 
-//get the gold tiles backing a triplet of creature tiles
-Board.prototype.getGoldTiles = function(triplets) {
-	var board, goldTiles, goldTile;
-	goldTiles = [];
-
-	board = this;
-	_.each( triplets, function(triplet) {
-		_.each( triplet, function(creatureTile) {
-			goldTile = board.getGoldTile(creatureTile);
-			if( goldTile ) {
-				goldTiles.push(goldTile);
-			}
-		});
-	});
-
-	return goldTiles;
-};
-
 //get the gold tile backing an individual creature tiles
 Board.prototype.getGoldTile = function(creatureTile) {
 	var creatureTileCol, creatureTileRow;
@@ -1432,15 +1468,7 @@ Board.prototype.randomCreature = function(creatureTypes) {
 };
 
 Board.prototype.updateScore = function() {
-	var scoreToAdd, tripletIt, goldIt;
-	scoreToAdd = 0;
-	for( tripletIt = 0; tripletIt < this.tripletCounter; tripletIt++ ) {
-		scoreToAdd += Score.TRIPLET;
-		for( goldIt = 0; goldIt < this.goldCounter; goldIt++ ) {
-			scoreToAdd *= Score.MULTIPLIER_GOLD;
-		}
-	}
-	this.score += scoreToAdd;
+	this.score += Score.consolidateScores(this.scoreEvents);
 	this.drawScore();
 }; //Board.prototype.updateScore
 
@@ -1508,16 +1536,26 @@ Tile.WIDTH = 62;
 Tile.HEIGHT = 62;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
+Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
+Tile.UNBLOCKED_TILE_SPRITE_NUMBER = '1';
+Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
+Tile.COCOONED_TILE_SPRITE_NUMBER = '3';
 
-function Tile(board, blob, coordinates) {
+function Tile(board, blob, coordinates, spriteNumber) {
 	this.board = board;
 	this.blob = blob;
 	this.coordinates = coordinates;
+	this.spriteNumber = spriteNumber;
 }
 
 Tile.prototype.toString = function() {
 	var output, tileType;
-	tileType = this.blob.creatureType || '';
+	if( this.blob === null || this.blob.creatureType === null ) {
+		tileType = this.spriteNumber;
+	}
+	else {
+		tileType = this.blob.creatureType + ' ' + this.spriteNumber;
+	}
 	output = '[' + this.coordinates[0] + ',' + this.coordinates[1] + ']:' + tileType;
 	return output;
 };
@@ -1526,7 +1564,7 @@ Tile.prototype.toString = function() {
 Tile.prototype.matches = function(that) {
 	var isMatch;
 	isMatch = false;
-	if( that instanceof Tile && that && this.blob.creatureType === that.blob.creatureType) {
+	if( that instanceof Tile && that && this.blob && that.blob && this.blob.creatureType === that.blob.creatureType) {
 		isMatch = true;
 	}
 	return isMatch;
@@ -1605,6 +1643,18 @@ Tile.prototype.getXCoord = function() {
 Tile.prototype.getYCoord = function() {	
 	return Tile.getYCoord(this.coordinates[1]);
 }; //Tile.prototype.getXCoord()
+
+Tile.prototype.isBlocked = function()  {
+	return this.spriteNumber == Tile.BLOCKED_TILE_SPRITE_NUMBER;
+}
+
+Tile.prototype.isCocooned = function()  {
+	return this.spriteNumber == Tile.COCOONED_TILE_SPRITE_NUMBER;
+}
+
+Tile.prototype.isPlain = function()  {
+	return this.spriteNumber == Tile.PLAIN_TILE_SPRITE_NUMBER;
+}
 
 //static
 Tile.posToPixels = function(pos, basePixels, widthToHeightRatio, offset ) {
