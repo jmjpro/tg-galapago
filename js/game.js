@@ -985,14 +985,13 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 					blob = this.randomCreature(this.level.creatureTypes);
 					imageName = blob.creatureType;
 					tile = new Tile(this, blob, coordinates, spriteNumber);
-					tileMatrix[col][row] = tile;
 				}
 				while( this.findTriplets(tile).length > 0 );
 			}
 			else if( spriteNumber === '2' ) {
 				imageName = blob.creatureType;
-				tileMatrix[col][row] = tile;
 			}
+			tileMatrix[col][row] = tile;
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}		
 		else if( blob.blobType === 'GOLD' ) {
@@ -1019,7 +1018,8 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	tileMatrix[col][row] = null;
+	var tile = tileMatrix[col][row];
+	tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
 	return this; //chainable
 }; //Board.prototype.removeTile()
 
@@ -1312,6 +1312,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 				}
 			} 
 			while (keepLooping)
+			loweredPoint = board.getLowestPoint(loweredPoint);
 			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
 		}
 		else{
@@ -1320,6 +1321,51 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTiles()
+
+
+Board.prototype.getLowestPoint = function(loweredPoint) {
+	var col = loweredPoint[0];
+	var row = loweredPoint[1] + 1;
+	var tileToBeReplaced = null;
+	if(row < this.creatureTileMatrix[0].length){ 
+		tileToBeReplaced = this.creatureTileMatrix[col][row];
+	}
+	if(tileToBeReplaced == null){
+		return loweredPoint;
+	}
+	else if (tileToBeReplaced.isPlain()){
+		return this.getLowestPoint(tileToBeReplaced.coordinates);
+	}
+	else{
+		//If current point is plain check down and left
+		if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
+			tileToBeReplaced = null;
+			col = col -1;
+			if(col > -1){
+				tileToBeReplaced = this.creatureTileMatrix[col][row];
+			}
+			if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+				return this.getLowestPoint(tileToBeReplaced.coordinates);
+			}
+			else{
+				tileToBeReplaced = null;
+				col = col + 2;
+				if(col < this.creatureTileMatrix.length){
+					tileToBeReplaced = this.creatureTileMatrix[col][row];
+				}
+				if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+					return this.getLowestPoint(tileToBeReplaced.coordinates);
+				}
+				else{
+					return loweredPoint;
+				}
+			}
+		}
+		else{
+			return loweredPoint;
+		}
+	} 
+}
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	var pointsAbove, tilesAbove, emptyPoints, triplet, board, spriteNumber;	
@@ -1334,13 +1380,20 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 		emptyPoints = MatrixUtil.getFirstNRowPoints(triplet);
 	}
 	else {
-		this.lowerTiles(tilesAbove, 1);
+		this.lowerTiles(tilesAbove, 1); 
 		emptyPoints = MatrixUtil.getNFirstRowPoints(triplet);
 	}
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		spriteNumber = '1';
+		var lowestPoint = board.getLowestPoint(point);
+		while(lowestPoint != point)
+		{
+			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
+			lowestPoint = board.getLowestPoint(point);		
+		}
+		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 		board.addTile(point, 'CREATURE', null, spriteNumber);
 	});
 	return this; //chainable
@@ -1506,7 +1559,7 @@ Tile.prototype.toString = function() {
 Tile.prototype.matches = function(that) {
 	var isMatch;
 	isMatch = false;
-	if( that instanceof Tile && that && this.blob.creatureType === that.blob.creatureType) {
+	if( that instanceof Tile && that && this.blob && that.blob && this.blob.creatureType === that.blob.creatureType) {
 		isMatch = true;
 	}
 	return isMatch;
@@ -1592,6 +1645,10 @@ Tile.prototype.isBlocked = function()  {
 
 Tile.prototype.isCocooned = function()  {
 	return this.spriteNumber == Tile.COCOONED_TILE_SPRITE_NUMBER;
+}
+
+Tile.prototype.isPlain = function()  {
+	return this.spriteNumber == Tile.PLAIN_TILE_SPRITE_NUMBER;
 }
 
 //static

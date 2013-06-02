@@ -50,7 +50,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x--;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -62,7 +62,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x++;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -79,7 +79,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y--;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -91,7 +91,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y++;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
