@@ -427,7 +427,7 @@
 		},
 		{
 			"id" : "34",
-			"name" : "Whitaker’s Waterfalls",
+			"name" : "Whitaker's Waterfalls",
 			"bgTheme" : "forest",
 			"unlocksLevels" :["28","33","39","40"],
 			"dangerBarSeconds" : "240",			
@@ -746,7 +746,7 @@
 		},
 		{
 			"id" : "63",
-			"name" : "Pryor’s Peak",
+			"name" : "Pryor's Peak",
 			"bgTheme" : "mountain",
 			"unlocksLevels" :["64"],
 			"dangerBarSeconds" : "220",			
