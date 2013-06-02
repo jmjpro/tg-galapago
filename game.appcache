@@ -1,0 +1,59 @@
+CACHE MANIFEST
+
+CACHE:
+      index.html
+      js/game.js
+      js/gal.js
+      js/gal.filesystem.js
+      js/levels.json
+      	  
+	  res/img/progress-bar/danger_bar.png 
+	  res/img/progress-bar/progress_bar.png 
+	  res/img/progress-bar/progress_bar_fill01.png 
+	  res/img/progress-bar/progress_bar_fill02.png 
+	  res/img/game-screen/button_quit.png 
+	  res/img/game-screen/PowerUps_Flame_Activated.png
+	  res/img/game-screen/PowerUps_Flame_Disabled.png 
+	  res/img/game-screen/PowerUps_Flame_Pressed.png 
+	  res/img/game-screen/PowerUps_Flame_Rollover.png 
+	  res/img/game-screen/PowerUps_Holder.png 
+	  res/img/game-screen/PowerUps_Shuffle_Activated.png 
+	  res/img/game-screen/PowerUps_Shuffle_Disabled.png 
+	  res/img/game-screen/PowerUps_Shuffle_Pressed.png 
+	  res/img/game-screen/PowerUps_Shuffle_Rollover.png 
+	  res/img/game-screen/PowerUps_Swap_Activated.png 
+	  res/img/game-screen/PowerUps_Swap_Disabled.png 
+	  res/img/game-screen/PowerUps_Swap_Pressed.png 
+	  res/img/game-screen/PowerUps_Swap_Rollover.png 
+	  res/img/game-screen/tile_1.png 	 
+	  res/img/game-screen/tile_2.png 
+      res/img/creatures/beach/blue_crab_1.png 
+	  res/img/creatures/beach/green_turtle_1.png 
+	  res/img/creatures/beach/pink_frog_1.png 
+	  res/img/creatures/beach/red_starfish_1.png 
+	  res/img/creatures/beach/teal_blob_1.png 
+	  res/img/creatures/beach/violet_crab_1.png  
+	  res/img/creatures/beach/yellow_fish_1.png 
+	 
+      res/img/creatures/beach/blue_crab_2.png 
+	  res/img/creatures/beach/green_turtle_2.png  
+	  res/img/creatures/beach/pink_frog_2.png  
+	  res/img/creatures/beach/red_starfish_2.png  
+	  res/img/creatures/beach/teal_blob_2.png 
+	  res/img/creatures/beach/violet_crab_2.png 
+	  res/img/creatures/beach/yellow_fish_2.png 
+	 
+      res/img/creatures/beach/blue_crab_3.png 
+	  res/img/creatures/beach/green_turtle_3.png  
+	  res/img/creatures/beach/pink_frog_3.png  
+	  res/img/creatures/beach/red_starfish_3.png  
+	  res/img/creatures/beach/teal_blob_3.png  
+	  res/img/creatures/beach/violet_crab_3.png 
+	  res/img/creatures/beach/yellow_fish_3.png 
+	  
+	  res/img/gold-tiles/tile_gold_1.png
+	  res/img/background/background_map.jpg
+	  res/img/background/background_beach.jpg
+
+NETWORK:
+*
