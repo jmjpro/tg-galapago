@@ -52,6 +52,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 		level = Level.findById(levelJson.id);
 		level.levelConfig = levelJson;
 		level.name = levelJson.name;
+		level.difficulty = levelJson.difficulty;
 		level.setBgTheme(levelJson.bgTheme);
 		level.mapHotspotRegion = levelJson.mapHotspotRegion;
 		if( levelJson.neighbors ) {
@@ -73,7 +74,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 
 Galapago.init = function(gameMode) {
 	var levelTemp, level, levelIt;
-	Galapago.gameMode = gameMode
+	Galapago.gameMode = gameMode;
 	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -152,9 +153,17 @@ LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y = LevelMap.LEVEL_STATUS_Y + 30;
+LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
+LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
+LevelMap.MAX_DIFFICULTY = 5;
+Level
 LevelMap.LEVEL_STATUS_FONT_SIZE = '20px';
 LevelMap.LEVEL_STATUS_FONT_NAME = 'Calibri';
 LevelMap.LEVEL_STATUS_FONT_COLOR = 'cyan';
+//TODO: define this in a JSON config file
+LevelMap.STAR_SPRITE_MATRIX = [
+	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
+];
 
 /* begin class LevelMap */
 function LevelMap(level) {
@@ -162,23 +171,60 @@ function LevelMap(level) {
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
 	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
+	this.images = null;
 	this.registerEventHandlers();
 	this.levelCounter = 0;
-	this.display();
-	this.setHotspotLevel(level);
-
+	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
 } //LevelMap constructor
 
+LevelMap.prototype.initImages = function( instance, images ) {
+	var levelMap = instance;
+	levelMap.images = images;
+	levelMap.display();
+	levelMap.setHotspotLevel(levelMap.hotspotLevel);
+}; //LevelMap.prototype.initImages()
+
+//TODO use q.js instead of callback
+LevelMap.prototype.loadImages = function (sources, callback) {
+	var levelMap= this;
+	var images = {};
+	var loadedImages = 0;
+	var numImages = 0;
+	var src;
+	// get num of sources
+	for(src in sources) {
+		numImages++;
+	}
+	for(src in sources) {
+		images[src] = new Image();
+		images[src].onload = function() {
+			if(++loadedImages >= numImages) {
+				callback(levelMap, images);
+			}
+		};
+		images[src].src = ScreenLoader.MAP_SCREEN_IMAGE_DIRECTORY + sources[src];
+	}
+}; //LevelMap.prototype.loadImages()
+
+LevelMap.prototype.display = function() {
+	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
+	this.canvas.width = Galapago.STAGE_WIDTH;
+	this.canvas.height = Galapago.STAGE_HEIGHT;
+};
+
 LevelMap.prototype.updateLevelStatus = function() {
-	var text;
+	var text, spriteSheet;
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
 	//this.layer.fillRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
+	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
+	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
+	//this.layer.drawImage(this.images.level_stars_gold, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y, this.images.level_stars_gold.width, this.images.level_stars_gold.height);
 	return this; //chainable
-}; //Board.prototype.drawScore()
+}; //LevelMap.prototype.updateLevelStatus()
 
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
@@ -293,12 +339,6 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 	}
 }; //LevelMap.prototype.setHotspotLevel()
 
-LevelMap.prototype.display = function() {
-	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
-	this.canvas.width = Galapago.STAGE_WIDTH;
-	this.canvas.height = Galapago.STAGE_HEIGHT;
-};
-
 LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 	var x, y;
 	this.layer.strokeStyle = 'white';
@@ -358,7 +398,7 @@ function MapCell(levelId, northId, eastId, southId, westId) {
 
 MapCell.prototype.toString = function() {
 	return this.level + '|' + this.north + ',' + this.east + ',' + this.south + ',' + this.west;
-}
+};
 /* end class MapCell */
 
 /* begin class Level */
@@ -1018,7 +1058,7 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	var tile = tileMatrix[col][row];
+	tile = tileMatrix[col][row];
 	tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
 	return this; //chainable
 }; //Board.prototype.removeTile()
@@ -1311,7 +1351,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 					keepLooping = false;
 				}
 			} 
-			while (keepLooping)
+			while (keepLooping);
 			loweredPoint = board.getLowestPoint(loweredPoint);
 			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
 		}
@@ -1330,7 +1370,7 @@ Board.prototype.getLowestPoint = function(loweredPoint) {
 	if(row < this.creatureTileMatrix[0].length){ 
 		tileToBeReplaced = this.creatureTileMatrix[col][row];
 	}
-	if(tileToBeReplaced == null){
+	if(tileToBeReplaced === null){
 		return loweredPoint;
 	}
 	else if (tileToBeReplaced.isPlain()){
@@ -1365,7 +1405,7 @@ Board.prototype.getLowestPoint = function(loweredPoint) {
 			return loweredPoint;
 		}
 	} 
-}
+}; //Board.prototype.getLowestPoint()
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	var pointsAbove, tilesAbove, emptyPoints, triplet, board, spriteNumber;	
@@ -1646,15 +1686,15 @@ Tile.prototype.getYCoord = function() {
 
 Tile.prototype.isBlocked = function()  {
 	return this.spriteNumber == Tile.BLOCKED_TILE_SPRITE_NUMBER;
-}
+};
 
 Tile.prototype.isCocooned = function()  {
 	return this.spriteNumber == Tile.COCOONED_TILE_SPRITE_NUMBER;
-}
+};
 
 Tile.prototype.isPlain = function()  {
 	return this.spriteNumber == Tile.PLAIN_TILE_SPRITE_NUMBER;
-}
+};
 
 //static
 Tile.posToPixels = function(pos, basePixels, widthToHeightRatio, offset ) {
@@ -2140,31 +2180,6 @@ if (typeof String.prototype.startsWith !== 'function') {
 		return this.slice(0, str.length) === str;
 	};
 }
-
-function SpriteSheet(image) {
-		this.image = image;
-		//create a temporary canvas and position it offscreen;
-		var tempCanvas = document.createElement('canvas');
-		document.body.appendChild(tempCanvas);
-		this.canvas = tempCanvas;
-		this.canvas.style.display = 'none';
-		this.canvas.style.position = 'absolute';
-		this.canvas.style.left = -1000;
-		this.canvas.style.top = -1000;
-		this.ctx = this.canvas.getContext('2d');
-}
-
-//returns a JavaScript image object representing the specified slice of the sprite sheet
-SpriteSheet.prototype.getSprite = function(x, y, width, height) {
-		var sprite, spriteURL;
-		this.canvas.width = width;
-		this.canvas.height = height;
-		this.ctx.drawImage(this.image, x, y, width, height, 0, 0, width, width);
-		spriteURL = this.canvas.toDataURL();
-		sprite = new Image();
-		sprite.src = spriteURL;
-		return sprite;
-}; //SpriteSheet.prototype.getSprite
 
 function SoundUtil() {}
 
