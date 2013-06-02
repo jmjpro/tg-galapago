@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>    
+<html lang="en" manifest="game.appcache">    
     <head>
         <script>document.writeln('<title>' + document.domain + ': Galapagos</title>');</script>
         <link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
@@ -16,6 +16,9 @@
         <script src="ext/zepto-touch-1.0.js"></script>
         <!--script src="ext/imageFilters.js"></script-->
         <script src="js/game.js"></script>
+		<script src="js/gal.js"></script>
+        <script src="js/gal.filesystem.js"></script>
+		<script src="js/loadingScreen.js"></script>
         <script>
             var /*levelQueryString,*/ gameMode;
 
@@ -29,7 +32,7 @@
         </script>
     </head>
     
-    <body onLoad="Galapago.init(gameMode);">
+    <body onload="ScreenLoader.init(gameMode);" >
         <audio id="sound-match-01" src="res/audio/Match_01.mp3" preload="auto"/></audio>
         <audio id="sound-warning" src="res/audio/Warning.mp3" preload="auto"/></audio>
 
@@ -37,7 +40,7 @@
             <a href="#" onClick="Galapago.level.board.completeAnimationAsync();">Completed Level Animation</a>
             <a id="debug-console-toggle" href="#" onClick="toggleDebugConsole();">Show Debug Console</a>
         </div>
-
+        <img src=""/>
         <div id="canvas-main" style="">
             <canvas id="layer-background" class="game-layer" style="z-index: 1;"></canvas>
             <canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
