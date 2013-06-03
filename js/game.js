@@ -1018,8 +1018,12 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	var tile = tileMatrix[col][row];
-	tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
+	if( 'CREATURE' == tile.blob.blobType ) {
+		tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
+	}
+	else {
+		tileMatrix[col][row] = null;
+	}
 	return this; //chainable
 }; //Board.prototype.removeTile()
 
