@@ -6,12 +6,18 @@ ScreenLoader.LAYER_MAP = 'layer-map';
 ScreenLoader.BACKGROUND_PATH_PREFIX = 'res/img/loading-screen/';
 ScreenLoader.BACKGROUND_PATH_SUFFIX = '.jpg)';
 ScreenLoader.progressBarImageNames = {
-      loadingprogressbar:"loading-progress-bar.png",
-	  loadingprogressbarfill:"loading-progress-bar-fill.png",
-	  loadingprogressbarleftcap:"loading-progress-bar-left-cap.png"
+	loadingprogressbar:"loading-progress-bar.png",
+	loadingprogressbarfill:"loading-progress-bar-fill.png",
+	loadingprogressbarleftcap:"loading-progress-bar-left-cap.png"
+};
+ScreenLoader.mapScreenImageNames = {
+	green_v:"green_v.png",
+	level_stars_gold:"level_stars_gold.png",
 };
 
-ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/loading-screen/'
+ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/loading-screen/';
+ScreenLoader.MAP_SCREEN_IMAGE_DIRECTORY='res/img/map-screen/';
+
 function ScreenLoader() {
 }
 
@@ -20,7 +26,7 @@ ScreenLoader.init = function(gameMode) {
 	this.layer = this.canvas.getContext('2d');
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.layer.clearRect( 0, 0, ScreenLoader.STAGE_WIDTH, ScreenLoader.STAGE_HEIGHT);
-    this.canvas.style.background = 'url(' + ScreenLoader.BACKGROUND_PATH_PREFIX + 'background-loading' + ScreenLoader.BACKGROUND_PATH_SUFFIX;
+		this.canvas.style.background = 'url(' + ScreenLoader.BACKGROUND_PATH_PREFIX + 'background-loading' + ScreenLoader.BACKGROUND_PATH_SUFFIX;
 	this.canvas.style.zIndex = 0;
 	this.canvas.width = ScreenLoader.STAGE_WIDTH;
 	this.canvas.height = ScreenLoader.STAGE_HEIGHT;	
@@ -35,15 +41,15 @@ ScreenLoader.init = function(gameMode) {
 };
 
 ScreenLoader.registerEvent = function(){
-    var screenLoader = this;
+		var screenLoader = this;
 	this.gal.onProgress("Map Screen and Level 1", function(progress) { 
-	   var percentage = progress.current/progress.total ;
-	   screenLoader.progressBar.progress(percentage);
+		 var percentage = progress.current/progress.total ;
+		 screenLoader.progressBar.progress(percentage);
 	});
 	this.gal.onLoaded('Map Screen and Level 1', function(result) {
-	  if (result.success) {
-	     screenLoader.progressBar.loaded(result);	  
-	  }
+		if (result.success) {
+			 screenLoader.progressBar.loaded(result);	  
+		}
 	});
 }
 
@@ -68,38 +74,38 @@ function ProgressBar(layerBackground, imageSource,gameMode){
 }
 
 ProgressBar.prototype.loadImages = function (sources, callback) {
-        var progressBar= this;
-        var images = {};
-        var loadedImages = 0;
-        var numImages = 0;
-        // get num of sources
-        for(var src in sources) {
-          numImages++;
-        }
-        for(var src in sources) {
-          images[src] = new Image();
-          images[src].onload = function() {
-            if(++loadedImages >= numImages) {
-              callback(progressBar,images);
-            }
-          };
-          images[src].src = ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY+sources[src];
-        }
-      }
+	var progressBar= this;
+	var images = {};
+	var loadedImages = 0;
+	var numImages = 0;
+	// get num of sources
+	for(var src in sources) {
+		numImages++;
+	}
+	for(var src in sources) {
+		images[src] = new Image();
+		images[src].onload = function() {
+			if(++loadedImages >= numImages) {
+				callback(progressBar,images);
+			}
+		};
+		images[src].src = ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY+sources[src];
+	}
+}
 
 ProgressBar.prototype.drawImages = function(progressBar,images) {
-    progressBar.images=images;
+		progressBar.images=images;
 	progressBar.layerBackground.drawImage( images.loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, images.loadingprogressbar.width, images.loadingprogressbar.height );
 	
 	progressBar.layer.font = 'italic 20pt Calibri';
 	progressBar.layer.fillStyle = 'white';
 	progressBar.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
 	progressBar.layer.drawImage(images.loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,images.loadingprogressbarleftcap.width,images.loadingprogressbarleftcap.height);
-    progressBar.showCopywrite(progressBar.layer);
+		progressBar.showCopywrite(progressBar.layer);
 }; //DangerBar.prototype.drawImages()
 
 ProgressBar.prototype.progress = function(percentdownload) {
-     
+		 
 	var newWidth=  ProgressBar.PROGRESS_BAR_Width*percentdownload;
 	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 	this.layer.drawImage(this.images.loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,this.images.loadingprogressbarleftcap.width,this.images.loadingprogressbarleftcap.height);	
@@ -120,14 +126,14 @@ ProgressBar.prototype.loaded = function(result) {
 	this.layer.font = 'italic 20pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
-    this.showCopywrite(this.layer);
+		this.showCopywrite(this.layer);
 	this.isLoadingComplete=true;
 	//this.results=result;
 };
 
 ProgressBar.prototype.showCopywrite =function(context){
-    context.font='italic 9pt Calibri'
-    context.fillStyle = 'white';
+		context.font='italic 9pt Calibri'
+		context.fillStyle = 'white';
 	context.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
 	context.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);
 }
@@ -137,8 +143,8 @@ var progressBar = this;
 window.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 			case 13: // enter
-			   if(progressBar.isLoadingComplete){
-			    progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
+				 if(progressBar.isLoadingComplete){
+					progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 				//alert();
 				Galapago.init(gameMode);
 				}

@@ -114,8 +114,14 @@ SpriteSheet.prototype.displaySlice = function(context, matrixCellStart, matrixCe
 	context.putImageData(spriteData, 0, 0);
 }; //SpriteSheet.prototype.displaySlice()
 
-SpriteSheet.prototype.displayFraction = function(context, fractionWidth, fractionHeight) {
-	var spriteData, endCol, endRow, matrixCellEnd;
+SpriteSheet.prototype.displayFraction = function(context, fractionWidth, fractionHeight, x, y) {
+	var spriteData, endCol, endRow, matrixCellEnd, x, y;
+	if( typeof x === 'undefined') {
+		x = 0;
+	}
+	if( typeof y === 'undefined') {
+		y = 0;
+	}
 	matrixCellEnd = [];
 	if( fractionWidth === 0 || fractionHeight === 0 ) {
 		return;
@@ -126,7 +132,7 @@ SpriteSheet.prototype.displayFraction = function(context, fractionWidth, fractio
 		matrixCellEnd[0] = endCol;
 		matrixCellEnd[1] = endRow;
 		spriteData = this.getSliceData([0,0], matrixCellEnd);
-		context.putImageData(spriteData, 0, 0);
+		context.putImageData(spriteData, x, y);
 	}
 }; //SpriteSheet.prototype.displayFraction()
 
