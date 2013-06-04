@@ -174,8 +174,8 @@ function LevelMap(level) {
 	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.images = null;
-	this.registerEventHandlers();
 	this.levelCounter = 0;
+	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
 } //LevelMap constructor
 
@@ -208,14 +208,15 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 	}
 }; //LevelMap.prototype.loadImages()
 
-LevelMap.prototype.display = function() {
+LevelMap.prototype.display = function() {	
 	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
+	this.canvas.focus();
 };
 
 LevelMap.prototype.updateLevelStatus = function() {
-	var text, spriteSheet;
+	var text, spriteSheet, levelScore;
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -224,10 +225,11 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
-	var levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
+	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
 	if(levelScore){
 	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
 	}
+	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed";
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
 	}
@@ -269,7 +271,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 		levelMap.handleSelect(evt);
 	}; //onclick
 
-	window.onkeydown = function(evt) {
+	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 13: // enter
@@ -597,6 +599,7 @@ Level.prototype.display = function() {
 		level.board.addPowerups();
 
 		level.board.displayMenuButton(false);
+		level.board.display();
 
 		return level; //chainable
 		}).done();
@@ -636,38 +639,42 @@ Level.findByName = function(levelName) {
 };
 
 Level.registerEventHandlers = function() {
+	var level, board;
+	level = Galapago.level;
+	board = level.board;
 	document.onclick = function(evt) {
 		console.log('x: ' + evt.clientX + ', y:' + evt.clientY);
 	};
 
 	$('#layer-grid').click(function(evt) {
-		Galapago.level.board.handleClickOrTap(evt);
+		board.handleClickOrTap(evt);
 	});
 
 	$('#layer-grid').tap(function(evt) { 
-		Galapago.level.board.handleClickOrTap(evt);
+		board.handleClickOrTap(evt);
 	});
 
-	window.onkeydown = function(evt) {
+	board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 13: // enter
-				Galapago.level.board.handleKeyboardSelect();
+				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow
-				Galapago.level.board.handleLeftArrow();
+				board.handleLeftArrow();
 				break;
 			case 38: // up arrow
-				Galapago.level.board.handleUpArrow();
+				board.handleUpArrow();
 				break;
 			case 39: // right arrow
-				Galapago.level.board.handleRightArrow();
+				board.handleRightArrow();
 				break;
 			case 40: // down arrow
-				Galapago.level.board.handleDownArrow();
+				board.handleDownArrow();
 				break;
+			//TODO code below here should removed before production
 			case 48: // numeric 0
-			Galapago.level.board.completeAnimationAsync();
+				board.completeAnimationAsync();
 				break;
 			case 49: // numeric 1
 				//Galapago.setLevel('level_01');
@@ -686,7 +693,6 @@ Level.prototype.styleCanvas = function() {
 	canvas = $('#' + Galapago.LAYER_BACKGROUND)[0];
 	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 0;
-	canvas.focus();
 
 	layers = $('.game-layer');
 	_.each( layers, function(layer) {
@@ -760,8 +766,13 @@ function Board() {
 	this.chainReactionCounter = 0;
 	this.scoreEvents = [];
 	this.handleTripletsDebugCounter = 0;
-	this.level = null;	
+	this.level = null;
 } //Board constructor
+
+Board.prototype.display = function() {
+	this.creatureLayer.canvas.focus();
+}; //Board.protoype.display()
+
 
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer;
@@ -860,7 +871,6 @@ Board.prototype.completeAnimationAsync = function() {
 	var /*rotateAngle, */board, layer;
 	console.debug("running level complete animation");
 	board = Galapago.level.board;
-	board.level.isCompleted = true;
 	layer = board.creatureLayer;
 	layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);	
 
@@ -1151,13 +1161,8 @@ Board.prototype.handleTriplets = function(tile) {
 			if( dangerBar.isRunning() ) {
 				dangerBar.stop();
 			}
+			board.setComplete();
 			board.completeAnimationAsync();
-			var levelHighestScore = localStorage.getItem("level"+board.level.id);
-			if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
-		     localStorage.setItem("level"+board.level.id , board.score);
-			}else if(!levelHighestScore){
-			 localStorage.setItem("level"+board.level.id , board.score);
-			}
 			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
@@ -1167,6 +1172,19 @@ Board.prototype.handleTriplets = function(tile) {
 	}
 	return this; //chainable
 }; //Board.prototype.handleTriplets()
+
+Board.prototype.setComplete = function() {
+	var levelHighestScore;
+	board.level.isCompleted = true;
+	localStorage.setItem("level"+board.level.id + ".completed" , true);
+	levelHighestScore = localStorage.getItem("level"+board.level.id);
+	if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
+		localStorage.setItem("level"+board.level.id , board.score);
+	}
+	else if(!levelHighestScore){
+		localStorage.setItem("level"+board.level.id , board.score);
+	}
+}
 
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
