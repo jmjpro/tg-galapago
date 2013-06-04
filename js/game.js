@@ -153,6 +153,8 @@ LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y = LevelMap.LEVEL_STATUS_Y + 30;
+LevelMap.LEVEL_COMPLETE_INDICATOR_X = LevelMap.LEVEL_STATUS_X + 10;
+LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 LevelMap.MAX_DIFFICULTY = 5;
@@ -226,7 +228,12 @@ LevelMap.prototype.updateLevelStatus = function() {
 	if(levelScore){
 	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
 	}
-	//this.layer.drawImage(this.images.level_stars_gold, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y, this.images.level_stars_gold.width, this.images.level_stars_gold.height);
+	if( this.hotspotLevel.isCompleted ) {
+		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
+	}
+	else {
+		this.layer.drawImage(this.images.level_lock, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.level_lock.width, this.images.level_lock.height);
+	}
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
 
@@ -281,9 +288,10 @@ LevelMap.prototype.registerEventHandlers = function() {
 				levelMap.handleDownArrow();
 				break;
 			case 48: // numeric 0
-				console.debug('reset map');
+				levelMap.reset();
 				break;
 			case 50: // numeric 2
+				//TODO
 				console.debug('start next level');
 				break;
 			default:
@@ -291,6 +299,12 @@ LevelMap.prototype.registerEventHandlers = function() {
 	};
 }; //LevelMap.prototype.registerEventHandlers
 
+// erase per-level high scores and completed indicators and set hotspot to level 1
+LevelMap.prototype.reset = function() {
+	//TODO
+	console.debug('reset map');
+	return this; //chainable
+}; //LevelMap.prototype.reset
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
 	x = evt.pageX - this.offsetLeft;
@@ -318,7 +332,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
-}; //LevelMap.prototype.handleLeftArrow()
+}; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.east);
@@ -417,6 +431,10 @@ Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
+Level.MENU_BUTTON_X = 20;
+Level.MENU_BUTTON_Y = 650;
+Level.MENU_BUTTON_WIDTH = 100;
+Level.MENU_BUTTON_HEIGHT = 35;
 
 function Level(id) {
 	this.id = id;
@@ -578,6 +596,8 @@ Level.prototype.display = function() {
 
 		level.board.addPowerups();
 
+		level.board.displayMenuButton(false);
+
 		return level; //chainable
 		}).done();
 	}
@@ -666,6 +686,7 @@ Level.prototype.styleCanvas = function() {
 	canvas = $('#' + Galapago.LAYER_BACKGROUND)[0];
 	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 0;
+	canvas.focus();
 
 	layers = $('.game-layer');
 	_.each( layers, function(layer) {
@@ -709,12 +730,18 @@ Board.IMAGE_MAGNIFICATION = 1;
 Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
+Board.HOTSPOT_MENU = 'hotspot-menu';
+Board.HOTSPOT_TILE = 'hotspot-tile';
+Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
+Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
+Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
 
 function Board() {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	
 	this.score = 0;
 	this.drawScore();
+	this.hotspot = null;
 
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.goldTileMatrix = [];
@@ -735,6 +762,22 @@ function Board() {
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;	
 } //Board constructor
+
+Board.prototype.displayMenuButton = function(isActive) {
+	var textColor, layer;
+	layer = this.gridLayer;
+	if( isActive ) {
+		textColor = 'green';
+	}
+	else {
+		textColor = 'white';
+	}
+	layer.fillStyle = 'brown';
+	layer.fillRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.MENU_BUTTON_WIDTH, Level.MENU_BUTTON_HEIGHT);
+	layer.font = Score.FONT_SIZE + ' ' + Score.FONT_NAME;
+	layer.fillStyle = textColor;
+	layer.fillText('Menu', Level.MENU_BUTTON_X + 10, Level.MENU_BUTTON_Y + 30);
+}; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
 	new Powerup(this.level.gameImages);
@@ -817,6 +860,7 @@ Board.prototype.completeAnimationAsync = function() {
 	var /*rotateAngle, */board, layer;
 	console.debug("running level complete animation");
 	board = Galapago.level.board;
+	board.level.isCompleted = true;
 	layer = board.creatureLayer;
 	layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);	
 
@@ -1124,7 +1168,7 @@ Board.prototype.handleTriplets = function(tile) {
 	return this; //chainable
 }; //Board.prototype.handleTriplets()
 
-Board.prototype.handleSelect = function(tile) {
+Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
 	board = this;
 	tilePrev = this.tileSelected;
@@ -1193,7 +1237,14 @@ Board.prototype.handleSelect = function(tile) {
 }; //Board.prototype.handleSelect
 
 Board.prototype.handleKeyboardSelect = function() {
-	this.handleSelect(this.tileActive);
+	switch( this.hotspot ) {
+		case Board.HOTSPOT_MENU:
+			gameMenu.show();
+		case null:
+		default:
+			this.handleTileSelect(this.tileActive);
+			break;
+	}
 	return this; //chainable
 }; //Board.prototype.handleKeyboardSelect
 
@@ -1219,6 +1270,9 @@ Board.prototype.handleLeftArrow = function() {
 		board.setActiveTile(tileLeft);
 		return this; //chainable
 		}).done();
+	} else {
+		board.displayMenuButton(true);
+		this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow
@@ -1589,7 +1643,7 @@ Board.prototype.handleClickOrTap = function(evt) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tile);
 		}).done();
-		this.handleSelect(tile);
+		this.handleTileSelect(tile);
 	}
 	else {
 		message += ' clicked outside of creature grid';
