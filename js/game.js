@@ -563,7 +563,7 @@ Level.prototype.loadImagesAsync = function() {
 Level.prototype.display = function() {
 	var level = this;
 	level.styleCanvas();
-	level.setBoard(new Board());
+	level.setBoard(new Board(level.id));
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
@@ -710,9 +710,14 @@ Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
 
-function Board() {
+function Board(levelNumber) {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
+	
 	this.score = 0;
+	
+	if(Number(levelNumber) > 1){
+		this.score=Number(localStorage.getItem("level"+(Number(levelNumber)-1)));
+	}
 	this.drawScore();
 
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
@@ -894,9 +899,6 @@ Board.prototype.toString = function() {
 Board.prototype.init = function(tilePositions) {
 	var board, tileMatrix, colIt, rowIt;
 	board = this;
-	if(Number(board.level.id) > 1){
-		board.score=Number(localStorage.getItem("level"+(Number(board.level.id)-1)));
-	}
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
