@@ -563,7 +563,7 @@ Level.prototype.loadImagesAsync = function() {
 Level.prototype.display = function() {
 	var level = this;
 	level.styleCanvas();
-	level.setBoard(new Board(level.id));
+	level.setBoard(new Board());
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
@@ -710,14 +710,10 @@ Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
 
-function Board(levelNumber) {
+function Board() {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	
 	this.score = 0;
-	
-	if(Number(levelNumber) > 1){
-		this.score=Number(localStorage.getItem("level"+(Number(levelNumber)-1)));
-	}
 	this.drawScore();
 
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
@@ -1112,7 +1108,12 @@ Board.prototype.handleTriplets = function(tile) {
 				dangerBar.stop();
 			}
 			board.completeAnimationAsync();
-		    localStorage.setItem("level"+board.level.id , board.score);
+			var levelHighestScore = localStorage.getItem("level"+board.level.id);
+			if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
+		     localStorage.setItem("level"+board.level.id , board.score);
+			}else if(!levelHighestScore){
+			 localStorage.setItem("level"+board.level.id , board.score);
+			}
 			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
@@ -1349,9 +1350,13 @@ Board.prototype.getCreatureTilesFromPoints = function(points) {
 }; //Board.prototype.getCreatureTilesFromPoints()
 
 Board.prototype.lowerTiles = function(tiles, numRows) {
-	var loweredPoint, board;
+	var loweredPoint, board, totalTilesLowered;
+	totalTilesLowered = 0;
 	board = this;
 	_.each( tiles, function(tile) {
+		if(null == tile || tile.isPlain()){
+			return false;
+		}
 		if( tile && !tile.isBlocked() && !tile.isCocooned()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			var keepLooping = false;
 			do {
@@ -1368,12 +1373,13 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 			while (keepLooping);
 			loweredPoint = board.getLowestPoint(loweredPoint);
 			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
+			totalTilesLowered++;
 		}
 		else{
 			numRows++;
 		}
 	});
-	return this; //chainable
+	return totalTilesLowered; //chainable
 }; //Board.prototype.lowerTiles()
 
 
@@ -1422,20 +1428,31 @@ Board.prototype.getLowestPoint = function(loweredPoint) {
 }; //Board.prototype.getLowestPoint()
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
-	var pointsAbove, tilesAbove, emptyPoints, triplet, board, spriteNumber;	
+	var pointsAbove, tilesAbove, emptyPoints, tileArray, pointsArray, board, spriteNumber;	
 	console.debug( 'lowering tiles above ' + Tile.tileArrayToPointsString(tileTriplet) );
 	board = this;
-	triplet = Tile.tileArrayToPointsArray(tileTriplet);
-	pointsAbove = MatrixUtil.getNeighborsAbovePoints(triplet);
-	tilesAbove = this.getCreatureTilesFromPoints(pointsAbove);
-
-	if( MatrixUtil.isVerticalPointSet(triplet) ) {
-		this.lowerTiles(tilesAbove, triplet.length);
-		emptyPoints = MatrixUtil.getFirstNRowPoints(triplet);
+	emptyPoints = [];
+	pointsArray = Tile.tileArrayToPointsArray(tileTriplet);
+		
+	if( MatrixUtil.isVerticalPointSet(pointsArray) ) {
+		pointsAbove = MatrixUtil.getNeighborsAbovePoints(pointsArray);
+		tilesAbove = this.getCreatureTilesFromPoints(pointsAbove);
+		var totalTilesLowered = this.lowerTiles(tilesAbove, pointsArray.length);
+		var startIndex = tilesAbove.length - totalTilesLowered;
+		emptyPoints = MatrixUtil.getFirstNRowPoints(pointsArray, startIndex);
 	}
 	else {
-		this.lowerTiles(tilesAbove, 1); 
-		emptyPoints = MatrixUtil.getNFirstRowPoints(triplet);
+		_.each( tileTriplet, function(tile) {
+			tileArray=[];
+			tileArray.push(tile);
+			pointsArray = Tile.tileArrayToPointsArray(tileArray);
+			pointsAbove = MatrixUtil.getNeighborsAbovePoints(pointsArray);
+			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
+			var totalTilesLowered = board.lowerTiles(tilesAbove, pointsArray.length);
+			var startIndex = tilesAbove.length - totalTilesLowered;
+			emptyPoints = emptyPoints.concat(MatrixUtil.getFirstNRowPoints(pointsArray, startIndex));
+		});
+		
 	}
 
 	//add a new random creature tile at each of the empty points
@@ -1849,7 +1866,7 @@ MatrixUtil.getNeighborsAbovePoints = function(points) {
 
 /* this is hard-coded right now for a triplet of points but it could be generalized */
 MatrixUtil.isVerticalPointSet = function(points) {
-	if( points[0][0] === points[1][0] && points[1][0] === points[2][0] ) {
+	if( points.length > 2 && points[0][0] === points[1][0] && points[1][0] === points[2][0] ) {
 		return true;
 	}
 	else {
@@ -1888,12 +1905,12 @@ MatrixUtil.lowerPointByNRows = function(point, numRows) {
 
 // depending on the number of rows N in the input verticalPoints,
 // return the points in the first N rows of the column that holds those points
-MatrixUtil.getFirstNRowPoints = function(verticalPoints) {
+MatrixUtil.getFirstNRowPoints = function(verticalPoints, startIndex) {
 	var firstPoints, rowIt, col;
 	firstPoints = [];
-	rowIt = 0;
+	rowIt = startIndex;
 	col = verticalPoints[0][0];
-	for(rowIt; rowIt < verticalPoints.length; rowIt++) {
+	for(rowIt; rowIt < (startIndex + verticalPoints.length); rowIt++) {
 		firstPoints.push([col, rowIt]);
 	}
 	return firstPoints;

@@ -5,11 +5,7 @@ ScreenLoader.STAGE_HEIGHT = 720;
 ScreenLoader.LAYER_MAP = 'layer-map';
 ScreenLoader.BACKGROUND_PATH_PREFIX = 'res/img/loading-screen/';
 ScreenLoader.BACKGROUND_PATH_SUFFIX = '.jpg)';
-ScreenLoader.progressBarImageNames = {
-	loadingprogressbar:"loading-progress-bar.png",
-	loadingprogressbarfill:"loading-progress-bar-fill.png",
-	loadingprogressbarleftcap:"loading-progress-bar-left-cap.png"
-};
+
 ScreenLoader.mapScreenImageNames = {
 	green_v:"green_v.png",
 	level_stars_gold:"level_stars_gold.png",
@@ -31,18 +27,25 @@ ScreenLoader.init = function(gameMode) {
 	this.canvas.style.zIndex = 0;
 	this.canvas.width = ScreenLoader.STAGE_WIDTH;
 	this.canvas.height = ScreenLoader.STAGE_HEIGHT;	
+	this.gameMode=gameMode;
 	this.registerEvent();
 	this.gal.init(function() {
-		ScreenLoader.gal.download('Map Screen and Level 1');
+		ScreenLoader.gal.download('loadingScreen');
 	});
 	
-	this.progressBar = new ProgressBar(this.layer, ScreenLoader.progressBarImageNames,gameMode);
+	
 	
 	//console.log( 'gameMode: ' + Galapago.gameMode );	
 };
 
 ScreenLoader.registerEvent = function(){
-		var screenLoader = this;
+	var screenLoader = this;
+	this.gal.onLoaded('loadingScreen', function(result) {
+		if (result.success) {
+		    screenLoader.progressBar = new ProgressBar(screenLoader.layer,screenLoader.gameMode);
+			screenLoader.gal.download('Map Screen and Level 1');	           			
+		}
+	});
 	this.gal.onProgress("Map Screen and Level 1", function(progress) { 
 		 var percentage = progress.current/progress.total ;
 		 screenLoader.progressBar.progress(percentage);
@@ -63,18 +66,19 @@ ProgressBar.LOADING_MESSAGE_TOP = 555;
 ProgressBar.LOADING_MESSAGE_LEFT =575;
 ProgressBar.CLICK_MESSAGE_LEFT =520;
 
-function ProgressBar(layerBackground, imageSource,gameMode){
+function ProgressBar(layerBackground,gameMode){
 	this.layerBackground = layerBackground;	
 	this.canvas = $('#' + ProgressBar.LAYER_DANGER_BAR)[0];
 	this.canvas.width=ScreenLoader.STAGE_WIDTH;
 	this.canvas.height=ScreenLoader.STAGE_HEIGHT;
 	this.layer = this.canvas.getContext('2d');
-	this.loadImages(imageSource,this.drawImages);
+	//this.loadImages(imageSource,this.drawImages);
+	this.drawImages();
 	this.isLoadingComplete = false;
 	this.registerEventHandlers(gameMode);
 }
 
-ProgressBar.prototype.loadImages = function (sources, callback) {
+/*ProgressBar.prototype.loadImages = function (sources, callback) {
 	var progressBar= this;
 	var images = {};
 	var loadedImages = 0;
@@ -92,51 +96,57 @@ ProgressBar.prototype.loadImages = function (sources, callback) {
 		};
 		images[src].src = ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY+sources[src];
 	}
-}
+}*/
 
 ProgressBar.prototype.drawImages = function(progressBar,images) {
-		progressBar.images=images;
-	progressBar.layerBackground.drawImage( images.loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, images.loadingprogressbar.width, images.loadingprogressbar.height );
+		//progressBar.images=images;
+	var loadingprogressbar = ScreenLoader.gal.get("loading-screen/loading-progress-bar.png");
+	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
+	this.layerBackground.drawImage( loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height );
 	
-	progressBar.layer.font = 'italic 20pt Calibri';
-	progressBar.layer.fillStyle = 'white';
-	progressBar.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
-	progressBar.layer.drawImage(images.loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,images.loadingprogressbarleftcap.width,images.loadingprogressbarleftcap.height);
-		progressBar.showCopywrite(progressBar.layer);
+	this.layer.font = 'italic 20pt Calibri';
+	this.layer.fillStyle = 'white';
+	this.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
+	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);
+	this.showCopywrite();
 }; //DangerBar.prototype.drawImages()
 
 ProgressBar.prototype.progress = function(percentdownload) {
 		 
 	var newWidth=  ProgressBar.PROGRESS_BAR_Width*percentdownload;
+	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
+	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png");
 	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
-	this.layer.drawImage(this.images.loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,this.images.loadingprogressbarleftcap.width,this.images.loadingprogressbarleftcap.height);	
-	this.layer.drawImage(this.images.loadingprogressbarfill,415, ProgressBar.TOP,newWidth,this.images.loadingprogressbarfill.height);
+	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
+	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
 	this.layer.font = 'italic 20pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...', ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
-	this.showCopywrite(this.layer);
+	this.showCopywrite();
 	
 	//alert((percentdownload*100)+"% ldccccdvvm..");
 };
 
 
-ProgressBar.prototype.loaded = function(result) {	 
-	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
-	this.layer.drawImage(this.images.loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,this.images.loadingprogressbarleftcap.width,this.images.loadingprogressbarleftcap.height);	
-	this.layer.drawImage(this.images.loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,this.images.loadingprogressbarfill.height);
+ProgressBar.prototype.loaded = function(result) {	
+	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
+	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png"); 
+	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
+	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
+	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
 	this.layer.font = 'italic 20pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
-		this.showCopywrite(this.layer);
+	this.showCopywrite();
 	this.isLoadingComplete=true;
 	//this.results=result;
 };
 
-ProgressBar.prototype.showCopywrite =function(context){
-		context.font='italic 9pt Calibri'
-		context.fillStyle = 'white';
-	context.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
-	context.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);
+ProgressBar.prototype.showCopywrite =function(){
+	this.layer.font='italic 9pt Calibri'
+	this.layer.fillStyle = 'white';
+	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
+	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);
 }
 
 ProgressBar.prototype.registerEventHandlers = function(gameMode) {
