@@ -222,6 +222,10 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
+	var levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
+	if(levelScore){
+	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
+	}
 	//this.layer.drawImage(this.images.level_stars_gold, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y, this.images.level_stars_gold.width, this.images.level_stars_gold.height);
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
@@ -559,7 +563,7 @@ Level.prototype.loadImagesAsync = function() {
 Level.prototype.display = function() {
 	var level = this;
 	level.styleCanvas();
-	level.setBoard(new Board());
+	level.setBoard(new Board(level.id));
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
@@ -706,9 +710,14 @@ Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
 
-function Board() {
+function Board(levelNumber) {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
+	
 	this.score = 0;
+	
+	if(Number(levelNumber) > 1){
+		this.score=Number(localStorage.getItem("level"+(Number(levelNumber)-1)));
+	}
 	this.drawScore();
 
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
@@ -1103,6 +1112,7 @@ Board.prototype.handleTriplets = function(tile) {
 				dangerBar.stop();
 			}
 			board.completeAnimationAsync();
+		    localStorage.setItem("level"+board.level.id , board.score);
 			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
