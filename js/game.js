@@ -222,6 +222,10 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
+	var levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
+	if(levelScore){
+	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
+	}
 	//this.layer.drawImage(this.images.level_stars_gold, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y, this.images.level_stars_gold.width, this.images.level_stars_gold.height);
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
@@ -890,6 +894,9 @@ Board.prototype.toString = function() {
 Board.prototype.init = function(tilePositions) {
 	var board, tileMatrix, colIt, rowIt;
 	board = this;
+	if(Number(board.level.id) > 1){
+		board.score=Number(localStorage.getItem("level"+(Number(board.level.id)-1)));
+	}
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
@@ -1058,8 +1065,12 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	tile = tileMatrix[col][row];
-	tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
+	if( 'CREATURE' == tile.blob.blobType ) {
+		tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
+	}
+	else {
+		tileMatrix[col][row] = null;
+	}
 	return this; //chainable
 }; //Board.prototype.removeTile()
 
@@ -1099,6 +1110,7 @@ Board.prototype.handleTriplets = function(tile) {
 				dangerBar.stop();
 			}
 			board.completeAnimationAsync();
+		    localStorage.setItem("level"+board.level.id , board.score);
 			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
