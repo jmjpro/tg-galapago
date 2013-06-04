@@ -1,6 +1,14 @@
 {
   "assetRoot": "res/img/",
-  "bundles": [{
+  "bundles": [
+    {
+	  "name": "loadingScreen",
+      "contents": [
+      "loading-screen/loading-progress-bar.png",
+	  "loading-screen/loading-progress-bar-fill.png",
+      "loading-screen/loading-progress-bar-left-cap.png"
+    ]},
+    {
     "name": "Map Screen and Level 1",
     "contents": [
 	 "background/background_map.jpg",
