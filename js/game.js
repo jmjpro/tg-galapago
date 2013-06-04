@@ -1148,10 +1148,19 @@ Board.prototype.handleSelect = function(tile) {
 				board.handleTripletsDebugCounter = 0;
 				board.chainReactionCounter = 0;
 				board.scoreEvents = [];
-				console.log( 'tilePrev triplets' );
-				board.handleTriplets(tilePrev);
-				console.log( 'tile triplets' );
-				board.handleTriplets(tile);
+				
+				if(tilePrev.coordinates[1] > tile.coordinates[1]){
+					console.log( 'tile triplets' );
+					board.handleTriplets(tile);
+					console.log( 'tilePrev triplets' );
+					board.handleTriplets(tilePrev);					
+				}
+				else{
+					console.log( 'tilePrev triplets' );
+					board.handleTriplets(tilePrev);
+					console.log( 'tile triplets' );
+					board.handleTriplets(tile);
+				}
 				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 				if( board.scoreEvents.length > 0 ) {
 					board.updateScore();
