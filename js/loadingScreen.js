@@ -13,6 +13,7 @@ ScreenLoader.progressBarImageNames = {
 ScreenLoader.mapScreenImageNames = {
 	green_v:"green_v.png",
 	level_stars_gold:"level_stars_gold.png",
+	level_lock:"level_lock.png",
 };
 
 ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/loading-screen/';

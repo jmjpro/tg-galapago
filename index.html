@@ -1,59 +1,92 @@
 <!DOCTYPE html>
-<html lang="en" manifest="game.appcache">    
-    <head>
-        <script>document.writeln('<title>' + document.domain + ': Galapagos</title>');</script>
-        <link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
-        <link rel="stylesheet" type="text/css" href="css/global.css"/>
-        <!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
-        <!--script src="ext/stacktrace-min-0.4.js"></script-->
-        <!--script src="js/debugConsole.js"></script-->
-        <script src="ext/lodash.min.js"></script>
-        <script src="ext/imgpreload.js"></script>
-        <!--script src="ext/queryString.js"></script-->
-        <script src="ext/q.min.js"></script>
-        <!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
-        <script src="ext/zepto-1.0.min.js"></script>
-        <script src="ext/zepto-touch-1.0.js"></script>
-        <!--script src="ext/imageFilters.js"></script-->
-        <script src="ext/gal.js"></script>
-        <script src="ext/gal.filesystem.js"></script>
-        <script src="js/score.js"></script>
-        <script src="js/tilesEventProcessor.js"></script>
-        <script src="js/spriteSheet.js"></script>
-        <script src="js/game.js"></script>
+<html lang="en">
+	<head>
+		<script>document.writeln('<title>' + document.domain + ': Galapago</title>');</script>
+		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
+		<link rel="stylesheet" type="text/css" href="css/global.css"/>
+		<!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
+		<!--script src="ext/stacktrace-min-0.4.js"></script-->
+		<!--script src="js/debugConsole.js"></script-->
+		<script src="ext/lodash.min.js"></script>
+		<script src="ext/imgpreload.js"></script>
+		<!--script src="ext/queryString.js"></script-->
+		<script src="ext/q.min.js"></script>
+		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
+		<script src="ext/zepto-1.0.min.js"></script>
+		<script src="ext/zepto-touch-1.0.js"></script>
+		<!--script src="ext/imageFilters.js"></script-->
+		<script src="ext/gal.js"></script>
+		<script src="ext/gal.filesystem.js"></script>
+		<script src="js/score.js"></script>
+		<script src="js/tilesEventProcessor.js"></script>
+		<script src="js/spriteSheet.js"></script>
+		<script src="js/dialogMenu.js"></script>
+		<script src="js/game.js"></script>
 		<script src="js/loadingScreen.js"></script>
-        <script>
-            var /*levelQueryString,*/ gameMode;
+		<script>
+			var /*levelQueryString,*/ gameMode;
 
-            if( typeof jsErrLog !== 'undefined' ) {
-                jsErrLog.debugMode = false;
-                jsErrLog.info = "Galapago debugging";                
-            }
+			if( typeof jsErrLog !== 'undefined' ) {
+					jsErrLog.debugMode = false;
+					jsErrLog.info = "Galapago debugging";                
+			}
 
-            //levelQueryString = QueryString.level || 'level_01';
-            gameMode = 'MODE_TIMED';
-        </script>
-    </head>
-    
-    <body onload="ScreenLoader.init(gameMode);" >
-        <audio id="sound-match-01" src="res/audio/Match_01.mp3" preload="auto"/></audio>
-        <audio id="sound-warning" src="res/audio/Warning.mp3" preload="auto"/></audio>
+			//levelQueryString = QueryString.level || 'level_01';
+			gameMode = 'MODE_TIMED';
+		</script>
+	</head>
+	
+	<body onload="ScreenLoader.init(gameMode);" >
+		<audio id="sound-match-01" src="res/audio/Match_01.mp3" preload="auto"/></audio>
+		<audio id="sound-warning" src="res/audio/Warning.mp3" preload="auto"/></audio>
 
-        <div id="nav">
-            <a href="#" onClick="Galapago.level.board.completeAnimationAsync();">Completed Level Animation</a>
-            <a id="debug-console-toggle" href="#" onClick="toggleDebugConsole();">Show Debug Console</a>
-        </div>
-        <img src=""/>
-        <div id="canvas-main" style="">
-            <canvas id="layer-background" class="game-layer" style="z-index: 1;"></canvas>
-            <canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
-            <canvas id="layer-gold" class="game-layer" style="z-index: 3;"></canvas>
-            <canvas id="layer-creature" class="game-layer" style="z-index: 4;"></canvas>
-            <canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;"></canvas>
-            <canvas id="layer-power-up" class="game-layer" style="z-index: 6;"></canvas>
-            <canvas id="layer-map" class="game-layer" style="z-index: 7;"></canvas>
-        </div>
+		<div id="nav">
+			<a href="#" onClick="Galapago.level.board.completeAnimationAsync();">Completed Level Animation</a>
+			<a id="debug-console-toggle" href="#" onClick="toggleDebugConsole();">Show Debug Console</a>
+		</div>
 
-        <div id="debug-console"></div>
-    </body>
+		<div id="canvas-main" style="">
+			<canvas id="layer-background" class="game-layer" style="z-index: 1;"></canvas>
+			<canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
+			<canvas id="layer-gold" class="game-layer" style="z-index: 3;"></canvas>
+			<canvas id="layer-creature" class="game-layer" style="z-index: 4;"></canvas>
+			<canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;"></canvas>
+			<canvas id="layer-power-up" class="game-layer" style="z-index: 6;"></canvas>
+			<canvas id="layer-map" class="game-layer" style="z-index: 7;"></canvas>
+		</div>
+
+		<div id="game-menu" class="overlay">
+			<div>
+				<ul class="menu">
+					<li><a href="#" onclick="gameMenu.hide();">Continue Playing</a></li>
+					<li><a href="#" onclick="Galapago.levelMap.display()">To The Main Menu</a></li>
+					<li>New Game</li>
+					<li>How to Play</li>
+					<li>Options</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="main-menu" class="overlay">
+			<div>
+				<!--img src="game-logo.png"/-->
+				<div id='timed'>Timed</div>
+				<div id='relaxed'>Relaxed</div>
+				<div id='player'>Hello Tim! Click here to change the player</div>       
+				<div>
+					<div>Options</div>
+					<div>How To Play</div>
+					<div>Top Scores</div>
+					<div><a href="#" onclick="mainMenu.hide();">Quit</a></div>
+				</div>
+			</div>
+		</div>
+
+		<div id="debug-console"></div>
+		<script>
+			var gameMenu, mainMenu;
+			gameMenu = new DialogMenu('layer-grid', 'game-menu');
+			mainMenu = new DialogMenu('layer-map', 'main-menu');
+		</script>
+	</body>
 </html>
