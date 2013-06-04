@@ -563,7 +563,7 @@ Level.prototype.loadImagesAsync = function() {
 Level.prototype.display = function() {
 	var level = this;
 	level.styleCanvas();
-	level.setBoard(new Board(level.id));
+	level.setBoard(new Board());
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
@@ -710,14 +710,10 @@ Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
 
-function Board(levelNumber) {
+function Board() {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	
 	this.score = 0;
-	
-	if(Number(levelNumber) > 1){
-		this.score=Number(localStorage.getItem("level"+(Number(levelNumber)-1)));
-	}
 	this.drawScore();
 
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
@@ -1112,7 +1108,12 @@ Board.prototype.handleTriplets = function(tile) {
 				dangerBar.stop();
 			}
 			board.completeAnimationAsync();
-		    localStorage.setItem("level"+board.level.id , board.score);
+			var levelHighestScore = localStorage.getItem("level"+board.level.id);
+			if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
+		     localStorage.setItem("level"+board.level.id , board.score);
+			}else if(!levelHighestScore){
+			 localStorage.setItem("level"+board.level.id , board.score);
+			}
 			return tileTriplets;
 		}
 		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
