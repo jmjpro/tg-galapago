@@ -1037,15 +1037,15 @@ Board.prototype.parseCell = function(cellId) {
 		cellObject.gold = this.level.getGold();
 	}
 	//if the third string char contains one of these color ids
-	if( cellId.length >=3 && cellId[2].search('[bgpurty]') !== -1 ) {
+	if( cellId.length >=3 && cellId[2].search('[bgprtvy]') !== -1 ) {
 		cellObject.blocking = this.level.getCreatureByColorId( cellId[2], Level.CREATURE_SPRITE_NUMBERS[1] );
 	}
 	//if the fourth string char contains one of these color ids
-	if( cellId.length >=4 && cellId[3].search('[bgpurty]') !== -1 ) {
+	if( cellId.length >=4 && cellId[3].search('[bgprtvy]') !== -1 ) {
 		cellObject.cocoon = this.level.getCreatureByColorId( cellId[3], Level.CREATURE_SPRITE_NUMBERS[2] );
 	}
 	//if the fifth string char contains one of these color ids
-	if( cellId.length >=5 && cellId[4].search('[bgpurty]') !== -1 ) {
+	if( cellId.length >=5 && cellId[4].search('[bgprtvy]') !== -1 ) {
 		cellObject.superFriend = this.level.getSuperFriendByColorId( cellId[4] );
 	}
 	//TODO yj: clarify requirements for lightning creatures
@@ -1687,8 +1687,8 @@ Tile.BORDER_COLOR = '#d3d3d3';
 Tile.BORDER_COLOR_ACTIVE = 'red';
 Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
-Tile.WIDTH = 62;
-Tile.HEIGHT = 62;
+Tile.WIDTH = 47;
+Tile.HEIGHT = 47;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
