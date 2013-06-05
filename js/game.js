@@ -1178,7 +1178,7 @@ Board.prototype.setComplete = function() {
 	this.level.isCompleted = true;
 	localStorage.setItem("level"+this.level.id + ".completed" , true);
 	levelHighestScore = localStorage.getItem("level"+this.level.id);
-	if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
+	if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
 		localStorage.setItem("level"+this.level.id , this.score);
 	}
 	else if(!levelHighestScore){
