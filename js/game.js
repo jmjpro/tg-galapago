@@ -229,7 +229,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	if(levelScore){
 	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
 	}
-	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed";
+	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed");
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
 	}
@@ -654,7 +654,7 @@ Level.registerEventHandlers = function() {
 		board.handleClickOrTap(evt);
 	});
 
-	board.creatureLayer.canvas.onkeydown = function(evt) {
+	window.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 13: // enter
@@ -1175,14 +1175,14 @@ Board.prototype.handleTriplets = function(tile) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore;
-	board.level.isCompleted = true;
-	localStorage.setItem("level"+board.level.id + ".completed" , true);
-	levelHighestScore = localStorage.getItem("level"+board.level.id);
+	this.level.isCompleted = true;
+	localStorage.setItem("level"+this.level.id + ".completed" , true);
+	levelHighestScore = localStorage.getItem("level"+this.level.id);
 	if(levelHighestScore && (Number(levelHighestScore) < Number(board.score)) ){
-		localStorage.setItem("level"+board.level.id , board.score);
+		localStorage.setItem("level"+this.level.id , this.score);
 	}
 	else if(!levelHighestScore){
-		localStorage.setItem("level"+board.level.id , board.score);
+		localStorage.setItem("level"+this.level.id , this.score);
 	}
 }
 
