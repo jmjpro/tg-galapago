@@ -1161,7 +1161,7 @@ Board.prototype.handleTriplets = function(tile) {
 			if( dangerBar.isRunning() ) {
 				dangerBar.stop();
 			}
-			board.setComplete();
+			//board.setComplete();  // board is not updated with final score yet.
 			board.completeAnimationAsync();
 			return tileTriplets;
 		}
@@ -1226,6 +1226,9 @@ Board.prototype.handleTileSelect = function(tile) {
 				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 				if( board.scoreEvents.length > 0 ) {
 					board.updateScore();
+					if( board.countGold() === 0){
+					  board.setComplete();
+					}
 					//reset grid lines and active tile
 					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
 					board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
