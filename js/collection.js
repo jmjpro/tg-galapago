@@ -8,6 +8,8 @@ Collection.ITEM_SPACE = 20;
 Collection.MAX_ITEMS = 10;
 
 function Collection(gridLayer){
+	Collection.ITEM_WIDTH = Tile.getWidth();
+	Collection.ITEM_HEIGHT = Tile.getHeight();
 	var imageId;
 	this.collection = {};
 	this.itemsCount=0;
