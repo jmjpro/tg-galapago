@@ -16,6 +16,7 @@ Galapago.gameImageNames = [
 	'button_quit',
 	'Bracket_Left',
 	'Bracket_Right',
+	'item_collected_mark',
 	'PowerUps_Flame_Activated',
 	'PowerUps_Flame_Disabled',
 	'PowerUps_Flame_Pressed',
@@ -1084,7 +1085,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	else {
 		if( 'CREATURE' === blobType ) {
 			tile = new Tile(this, blob, coordinates, spriteNumber);
-			if( spriteNumber === '1' ) {
+			if( spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER) {
 				//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
 				do {
 					this.creatureCounter++;
@@ -1094,7 +1095,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 				}
 				while( this.findTriplets(tile).length > 0 );
 			}
-			else if( spriteNumber === '2' ) {
+			else if( spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || spriteNumber === Tile.COCOONED_TILE_SPRITE_NUMBER ) {
 				imageName = blob.creatureType;
 				this.collection.addItem(tile);
 			}
