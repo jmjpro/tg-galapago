@@ -14,6 +14,8 @@ Galapago.LAYER_MAP = 'layer-map';
 Galapago.NUM_LEVELS = 70;
 Galapago.gameImageNames = [
 	'button_quit',
+	'Bracket_Left',
+	'Bracket_Right',
 	'PowerUps_Flame_Activated',
 	'PowerUps_Flame_Disabled',
 	'PowerUps_Flame_Pressed',
@@ -588,6 +590,7 @@ Level.prototype.display = function() {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.build( level.levelConfig.blobPositions );
+		level.board.displayCollections();
 
 		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
@@ -597,7 +600,6 @@ Level.prototype.display = function() {
 		console.debug(level.toString());
 
 		level.board.addPowerups();
-
 		level.board.displayMenuButton(false);
 		level.board.display();
 
@@ -761,6 +763,7 @@ function Board() {
 
 	this.rotateAngle = 0;
 	this.creatureYOffset = 0;
+	this.collection = new Collection(this.gridLayer);
 
 	this.creatureCounter = 0;
 	this.chainReactionCounter = 0;
@@ -773,6 +776,10 @@ Board.prototype.display = function() {
 	this.creatureLayer.canvas.focus();
 }; //Board.protoype.display()
 
+Board.prototype.displayCollections = function() {
+	this.collection.initImages(this.level.gameImages);
+	this.collection.display();
+};
 
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer;
@@ -1089,6 +1096,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			}
 			else if( spriteNumber === '2' ) {
 				imageName = blob.creatureType;
+				this.collection.addItem(tile);
 			}
 			tileMatrix[col][row] = tile;
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
@@ -1097,6 +1105,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			imageName = blob.blobType;
 			tile = new Tile(this, blob, coordinates, spriteNumber);
 			tileMatrix[col][row] = tile;
+			this.collection.addItem(tile);
 		}
 
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
@@ -1144,9 +1153,15 @@ Board.prototype.handleTriplets = function(tile) {
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
-		totalMatchedGoldTiles = tileMovedEventProcessorResult.totalMatchedGoldTiles;
-		if(totalMatchedGoldTiles && totalMatchedGoldTiles.length > 0 ) {
-			board.animateGoldRemovalAsync(totalMatchedGoldTiles);
+		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
+			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
+			board.collection.removeItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
+		}
+		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
+			board.collection.removeItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
+		}
+		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
+			board.collection.removeItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
 		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
@@ -1157,7 +1172,7 @@ Board.prototype.handleTriplets = function(tile) {
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		board.removeTriplets(tileTriplets);
 		board.animateTripletsRemovalAsync(tileTriplets);
-		if( board.countGold() === 0 ) {
+		if( board.collection.isEmpty() ) {
 			if( dangerBar.isRunning() ) {
 				dangerBar.stop();
 			}
