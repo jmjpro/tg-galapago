@@ -784,7 +784,7 @@ Board.prototype.displayCollections = function() {
 
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer;
-	layer = this.gridLayer;
+	layer = this.creatureLayer;
 	if( isActive ) {
 		textColor = 'green';
 	}
@@ -884,13 +884,16 @@ Board.prototype.completeAnimationAsync = function() {
 
 	this.rotateAngle = 0;
 	//setInterval(this.spinCreatures, 1000/30);
-
+/*
 	setInterval(this.drawFlyingCreatures, 1000/30);
 	if( board.creatureYOffset < 0) {
 		clearInterval(this.drawFlyingCreatures);
 	}
 
-	this.gridLayer.fillText('Level completed', 600, 350);
+	this.gridLayer.fillText('Level completed', 600, 350);*/
+	
+	gameMenu.board=this;
+	gameMenu.showMapScreen();
 	return this; //chainable
 }; //Board.prototype.completeAnimationAsync()
 
@@ -1242,7 +1245,7 @@ Board.prototype.handleTileSelect = function(tile) {
 				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 				if( board.scoreEvents.length > 0 ) {
 					board.updateScore();
-					if( board.countGold() === 0){
+					if( board.collection.isEmpty()){
 					  board.setComplete();
 					}
 					//reset grid lines and active tile
@@ -1276,7 +1279,7 @@ Board.prototype.handleTileSelect = function(tile) {
 Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			gameMenu.show();
+			gameMenu.show(this);
 		case null:
 		default:
 			this.handleTileSelect(this.tileActive);

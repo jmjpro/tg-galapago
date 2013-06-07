@@ -76,6 +76,7 @@ function ProgressBar(layerBackground,gameMode){
 	this.drawImages();
 	this.isLoadingComplete = false;
 	this.registerEventHandlers(gameMode);
+	this.canvas.focus();
 }
 
 /*ProgressBar.prototype.loadImages = function (sources, callback) {
@@ -151,14 +152,15 @@ ProgressBar.prototype.showCopywrite =function(){
 
 ProgressBar.prototype.registerEventHandlers = function(gameMode) {
 var progressBar = this;
-window.onkeydown = function(evt) {
+this.canvas.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 			case 13: // enter
 				 if(progressBar.isLoadingComplete){
 					progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
-				//alert();
-				Galapago.init(gameMode);
-				}
+					progressBar.canvas.onkeydown=null;
+				   //alert();
+				    Galapago.init(gameMode);
+				 }
 				break;
 		}
 	};

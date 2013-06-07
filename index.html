@@ -56,16 +56,16 @@
 			<canvas id="layer-map" class="game-layer" style="z-index: 7;" tabindex="7"></canvas>
 		</div>
 
-		<div id="game-menu" class="overlay">
-			<div>
+		<div id="game-menu" class="overlay" tabindex="8">
+			<div id="gmenu">
 				<ul class="menu">
-					<li><a href="#" onclick="gameMenu.hide();">Continue Playing</a></li>
-					<li><a href="#" onclick="Galapago.levelMap.display()">To The Main Menu</a></li>
+					<li><a href="#" onclick="gameMenu.hide(true);">Continue Playing</a></li>
+					<li><a href="#" onclick="gameMenu.showMapScreen();">To The Main Menu</a></li>
 					<li>New Game</li>
 					<li>How to Play</li>
 					<li>Options</li>
 				</ul>
-			</div>
+			<div>			
 		</div>
 
 		<div id="main-menu" class="overlay">
