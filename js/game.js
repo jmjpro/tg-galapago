@@ -1174,7 +1174,7 @@ Board.prototype.handleTriplets = function(tile) {
 		pointsArray = ArrayUtil.unique(pointsArray);
 		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(pointsArray) );
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
-		board.removeTriplets(tileTriplets);
+		tileTriplets  = board.removeTriplets(tileTriplets);
 		board.animateTripletsRemovalAsync(tileTriplets);
 		if( board.blobCollection.isEmpty() ) {
 			if( dangerBar.isRunning() ) {
@@ -1577,14 +1577,23 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 Board.prototype.removeTriplets = function(tileTriplets) {
 	var board;
 	board = this;
-	_.each( tileTriplets, function(tileTriplet) {
+	tileTriplets = _.map( tileTriplets, function(tileTriplet) {
+		tileTriplet = board.filterAlreadyRemovedTiles(tileTriplet);
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
 		_.each( tileTriplet, function(tile) {
 			board.removeTile(tile);
 		});
+		return tileTriplet;
 	});
-	return this; //chainable
+	return tileTriplets; //chainable
 }; //Board.prototype.removeTriplets
+
+Board.prototype.filterAlreadyRemovedTiles = function(tileTriplet) {
+	var filterdArray = _.filter(tileTriplet, function(tile){
+		return !tile.isPlain();
+	});
+	return filterdArray;
+};
 
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {
 	var tempCoordinates/*, deferred*/;

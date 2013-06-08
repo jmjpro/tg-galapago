@@ -49,8 +49,36 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 	if( !tileFocal ) { //YM: tileFocal could have been nulled by a previous matchingTilesSet formed from the same move
 		return matchingTiles;
 	}
-	col = coordinates[0];
-	row = coordinates[1];
+
+	y = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		y--;
+		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+	matchingTiles.push(tileFocal);
+	y = 0;
+	matchFound = true;
+	while(matchFound){
+		matchFound = false;
+		y++;
+		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
+		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+			matchingTiles.push(neighborTile);
+			matchFound = true;
+		}
+	}
+	
+	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
+		matchingTilesSet.push(matchingTiles);
+	}
+	
+	matchingTiles =[];
 	x = 0;
 	matchFound = true;
 	while(matchFound){
@@ -79,34 +107,6 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchingTilesSet.push(matchingTiles);
 	}
 
-	matchingTiles =[];
-	y = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		y--;
-		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-	matchingTiles.push(tileFocal);
-	y = 0;
-	matchFound = true;
-	while(matchFound){
-		matchFound = false;
-		y++;
-		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
-			matchingTiles.push(neighborTile);
-			matchFound = true;
-		}
-	}
-	
-	if(matchingTiles.length >= Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH) {
-		matchingTilesSet.push(matchingTiles);
-	}
 	return matchingTilesSet;
 };
 
