@@ -77,7 +77,7 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 			layer.fillText(blobItemCount, x + BlobCollection.ITEM_COUNT_X_OFFSET, BlobCollection.ITEM_COUNT_Y);
 		}
 		else{
-			layer.drawImage(this.blobItem_collected_mark, x + BlobCollection.ITEM_COUNT_X_OFFSET, BlobCollection.ITEM_COUNT_Y -15, BlobCollection.ITEM_WIDTH/2	, BlobCollection.ITEM_HEIGHT/2);
+			layer.drawImage(this.item_collected_mark, x + BlobCollection.ITEM_COUNT_X_OFFSET, BlobCollection.ITEM_COUNT_Y -15, BlobCollection.ITEM_WIDTH/2	, BlobCollection.ITEM_HEIGHT/2);
 		}
 		count ++;
 	}
