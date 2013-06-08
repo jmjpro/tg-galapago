@@ -33,6 +33,9 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 				cocoonTiles.length, null, null, false, tilesEventProcessor.board.chainReactionCounter));
 			affectedPointsArray = affectedPointsArray.concat(Tile.tileArrayToPointsArray(matchingTilesSet));
 		});
+		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
+		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
+		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
 	}
 	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, affectedPointsArray);
 }
