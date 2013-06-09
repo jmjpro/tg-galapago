@@ -820,6 +820,7 @@ function Board() {
 	this.scoreEvents = [];
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;
+	this.firstTileCoordinates = null;
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -872,8 +873,8 @@ Board.prototype.setActiveTile = function(tile) {
 		this.tileSelected = tileActive;
 	}	
 	else { //YJ: activate top left tile unless otherwise indicated
-		col = 0;
-		row = 0;
+		col = this.firstTileCoordinates[0];
+		row = this.firstTileCoordinates[1];
 		tileActive = this.creatureTileMatrix[col][row];
 	}
 	tileActive.setActiveAsync(function() {
@@ -1037,6 +1038,9 @@ Board.prototype.build = function(tilePositions) {
 			cellObject = this.parseCell(cellId);
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
+				if(null == this.firstTileCoordinates){
+					this.firstTileCoordinates = coordinates;
+				}
 				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
