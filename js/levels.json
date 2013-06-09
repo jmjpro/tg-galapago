@@ -1024,7 +1024,7 @@
 		{
 			"id" : "45",
 			"name" : "Death Cliff",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["46","54"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
@@ -1047,7 +1047,7 @@
 		{
 			"id" : "46",
 			"name" : "Rustic Rock",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["47"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
@@ -1070,7 +1070,7 @@
 		{
 			"id" : "47",
 			"name" : "Rix Ridge",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["48"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
@@ -1093,7 +1093,7 @@
 		{
 			"id" : "48",
 			"name" : "Intrepid Peak",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["49"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
@@ -1116,7 +1116,7 @@
 		{
 			"id" : "49",
 			"name" : "Pryde Promontory",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["50"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
@@ -1139,7 +1139,7 @@
 		{
 			"id" : "50",
 			"name" : "HOT POCKET",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["51"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
@@ -1162,7 +1162,7 @@
 		{
 			"id" : "51",
 			"name" : "PARTICLE RIDGE",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["52"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
@@ -1185,7 +1185,7 @@
 		{
 			"id" : "52",
 			"name" : "ROCK SLIDE",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["53"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1208,7 +1208,7 @@
 		{
 			"id" : "53",
 			"name" : "DEATH CLIMB",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["62"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1231,7 +1231,7 @@
 		{
 			"id" : "54",
 			"name" : "Obsidian Slide",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["47"],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4",
@@ -1254,7 +1254,7 @@
 	    {
 			"id" : "55",
 			"name" : "McAuley Alley",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["64"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1277,7 +1277,7 @@
 	   {
 			"id" : "56",
 			"name" : "Badlands",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["55"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1300,7 +1300,7 @@
 		{
 			"id" : "57",
 			"name" : "Blackrock Spire",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["56","63"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1323,7 +1323,7 @@
 		{
 			"id" : "58",
 			"name" : "Quanrud Quarry",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["57"],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4",
@@ -1346,7 +1346,7 @@
 		{
 			"id" : "59",
 			"name" : "CROWN HILL",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["58"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
@@ -1369,7 +1369,7 @@
 		{
 			"id" : "60",
 			"name" : "DECEPTION PASS",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["59"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1391,7 +1391,7 @@
 		{
 			"id" : "61",
 			"name" : "THOMPSON'S PASS",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["60"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1414,7 +1414,7 @@
 		{
 			"id" : "62",
 			"name" : "PANORAMIC VISTA",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["61"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1437,7 +1437,7 @@
 		{
 			"id" : "63",
 			"name" : "Pryor's Peak",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["64"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1459,7 +1459,7 @@
 		{
 			"id" : "64",
 			"name" : "Flaming Peak",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["55","65"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1483,7 +1483,7 @@
 	   {
 			"id" : "65",
 			"name" : "Risky Ravine",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["66"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1506,7 +1506,7 @@
 		{
 			"id" : "66",
 			"name" : "Flaming Pit",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["67"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
@@ -1530,7 +1530,7 @@
 		{
 			"id" : "67",
 			"name" : "ROCKY CRAG",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["68"],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4.5",
@@ -1553,7 +1553,7 @@
 		{
 			"id" : "68",
 			"name" : "BLANCHARD KNOLL",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["69"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"5",
@@ -1577,7 +1577,7 @@
 		{
 			"id" : "69",
 			"name" : "ATTICUS HILL",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :["70"],
 			"dangerBarSeconds" : "220",
 			"difficulty":"5",
@@ -1600,7 +1600,7 @@
 		{
 			"id" : "70",
 			"name" : "The Finale",
-			"bgTheme" : "mountain",
+			"bgTheme" : "mountains",
 			"unlocksLevels" :[],
 			"dangerBarSeconds" : "330",
 			"difficulty":"5",
