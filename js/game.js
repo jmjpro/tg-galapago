@@ -9,6 +9,7 @@ Galapago.STAGE_WIDTH = 1280;
 Galapago.STAGE_HEIGHT = 720;
 Galapago.BACKGROUND_PATH_PREFIX = 'res/img/background/background_';
 Galapago.BACKGROUND_PATH_SUFFIX = '.jpg)';
+Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.LAYER_MAP = 'layer-map';
 Galapago.NUM_LEVELS = 70;
@@ -57,6 +58,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 		level.levelConfig = levelJson;
 		level.name = levelJson.name;
 		level.difficulty = levelJson.difficulty;
+		level.creatureColors = levelJson.creatureColors;
 		level.setBgTheme(levelJson.bgTheme);
 		level.mapHotspotRegion = levelJson.mapHotspotRegion;
 		if( levelJson.neighbors ) {
@@ -100,7 +102,7 @@ Galapago.buildGameImagePaths = function() {
 	var gameImagePaths;
 	gameImagePaths = [];
 	_.each( Galapago.gameImageNames, function(imageName) {
-		gameImagePaths.push(Galapago.GAME_IMAGE_DIRECTORY + imageName + '.png');
+		gameImagePaths.push(Galapago.GAME_IMAGE_DIRECTORY + imageName + Galapago.IMAGE_PATH_SUFFIX);
 	});
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
@@ -109,7 +111,7 @@ Galapago.buildDangerBarImagePaths = function() {
 	var dangerBarImagePaths;
 	dangerBarImagePaths = [];
 	_.each( Galapago.dangerBarImageNames, function(imageName) {
-		dangerBarImagePaths.push(Galapago.DANGER_BAR_IMAGE_DIRECTORY + imageName + '.png');
+		dangerBarImagePaths.push(Galapago.DANGER_BAR_IMAGE_DIRECTORY + imageName + Galapago.IMAGE_PATH_SUFFIX);
 	});
 	return dangerBarImagePaths;
 }; //Galapago.buildDangerBarImagePaths()
@@ -427,6 +429,7 @@ MapCell.prototype.toString = function() {
 
 /* begin class Level */
 Level.CREATURE_PATH = 'res/img/creatures/';
+Level.SUPER_FRIEND_PATH = 'res/img/friends/';
 Level.GOLD_PATH = 'res/img/gold-tiles/';
 Level.BLOB_IMAGE_EXTENSION = 'png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
@@ -436,6 +439,7 @@ Level.LAYER_CREATURE = 'layer-creature';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
+Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 20;
 Level.MENU_BUTTON_Y = 650;
@@ -447,7 +451,9 @@ function Level(id) {
 	this.name = '';
 	this.bgTheme = '';
 	this.creatureImages = [];
+	this.superFriendImages = [];
 	this.creatureTypes = [];
+	this.creatureColors = []; //subset of creatureTypes
 	//TODO: do we need to store levelConfig?
 	this.levelConfig = ''; // original JSON text
 	this.goldImages = [];
@@ -470,6 +476,11 @@ Level.prototype.getGold = function() {
 Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
 	var creatureType, creatureImage, creature;
 
+	//for lightning tiles, display the teal blob
+	if( colorId === 'l') {
+		colorId = 't';
+	}
+
 	creatureType = _.filter( this.creatureTypes, function(creatureType) {
 		return creatureType.startsWith(colorId);
 	})[0];
@@ -479,9 +490,21 @@ Level.prototype.getCreatureByColorId = function(colorId, creatureSpriteNumber) {
 	return creature;
 }; //Level.prototype.getCreatureByColorId
 
+Level.prototype.getSuperFriendByColorId = function(colorId) {
+	var sfImage, sf, sfImagePath, sfType;
+
+	sfType = _.filter( Level.SUPER_FRIENDS, function(sfIt) {
+		return sfIt.startsWith(colorId);
+	})[0];
+	sfImagePath = Level.SUPER_FRIEND_PATH + sfType + Galapago.IMAGE_PATH_SUFFIX;
+	sfImage = this.getImageByPath(this.superFriendImages, sfImagePath);
+	sf = new SuperFriend(sfImage);
+	return sf;
+}; //Level.prototype.getCreatureByColorId
+
 Level.prototype.setBgTheme = function(bgTheme) {
 	this.bgTheme = bgTheme;
-	this.creatureTypes = Level.getCreatureTypesFromTheme(this.bgTheme);
+	this.creatureTypes = this.getCreatureTypesByTheme(this.bgTheme);
 };
 
 Level.prototype.toString = function() {
@@ -531,7 +554,17 @@ Level.prototype.buildGoldImagePaths = function() {
 	goldImagePaths = [];
 	goldImagePaths[0] = Level.GOLD_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
-};
+}; //Level.prototype.buildGoldImagePaths()
+
+Level.prototype.buildSuperFriendImagePaths = function() {
+	var superFriendPaths, superFriendPath, superFriendIt;
+	superFriendPaths = [];
+	for( superFriendIt = 0; superFriendIt < Level.SUPER_FRIENDS.length; superFriendIt++ ) {
+		superFriendPath = Level.SUPER_FRIEND_PATH + Level.SUPER_FRIENDS[superFriendIt] + Galapago.IMAGE_PATH_SUFFIX;
+		superFriendPaths[superFriendIt] = superFriendPath;
+	}
+	return superFriendPaths;
+}; //Level.prototype.buildSuperFriendImagePaths()
 
 Level.prototype.imgpreloadAsync = function(imagePaths) {
 	var deferred, imageObjectArray, imageObjectArrayAsString;
@@ -552,10 +585,11 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 };
 
 Level.prototype.loadImagesAsync = function() {
-	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths;
+	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths;
 	level = this;
 	creatureImagePaths = level.buildCreatureImagePaths();
 	goldImagePaths = level.buildGoldImagePaths();
+	superFriendImagePaths = level.buildSuperFriendImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 
@@ -573,6 +607,11 @@ Level.prototype.loadImagesAsync = function() {
 	})/*.done()*/,
 	level.imgpreloadAsync(creatureImagePaths).then( function(imageObjectArray) {
 		level.creatureImages = imageObjectArray;
+	}, function failure(message) {
+		throw new Error(message);
+	})/*.done()*/,
+	level.imgpreloadAsync(superFriendImagePaths).then( function(imageObjectArray) {
+		level.superFriendImages = imageObjectArray;
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/,
@@ -613,21 +652,29 @@ Level.prototype.display = function() {
 	}
 }; //Level.prototype.display()
 
-Level.getCreatureTypesFromTheme = function(bgTheme) {
+Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 	var creatureTypes;
+	creatureTypes = [];
 	switch( bgTheme ) {
 		case 'beach':
-			creatureTypes = Level.BG_THEME_BEACH_CREATURES;
+			creatureTypes = this.getCreatureSubset(Level.BG_THEME_BEACH_CREATURES);
 			break;
 		case 'forest':
-			creatureTypes = Level.BG_THEME_FOREST_CREATURES;
+			creatureTypes = this.getCreatureSubset(Level.BG_THEME_FOREST_CREATURES);
 			break;
 		case 'mountains':
-			creatureTypes = Level.BG_THEME_MOUNTAINS_CREATURES;
+			creatureTypes = this.getCreatureSubset(Level.BG_THEME_MOUNTAINS_CREATURES);
 			break;
 	}
 	return creatureTypes;
-}; //Level.getCreatureTypesFromTheme
+}; //Level.prototype.getCreatureTypesByTheme()
+
+Level.prototype.getCreatureSubset = function(creatureTypes) {
+	var level = this;
+	return _.filter( creatureTypes, function(creatureType) {
+		return _.contains(level.creatureColors, creatureType[0].toUpperCase());
+	});
+}; //Level.prototype.getCreatureSubset()
 
 Level.findById = function(id) {
 	return Galapago.levels[id - 1];
@@ -1000,30 +1047,18 @@ Board.prototype.build = function(tilePositions) {
 				spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
-			if( typeof cellObject.blocking === 'undefined' ) {
-				//this.blockingTileMatrix[colIt][rowIt] = null;
-			}
-			else {
+			if( typeof cellObject.blocking != 'undefined' ) {
 				spriteNumber = Tile.BLOCKED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
 				//console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
 			}
-			if( typeof cellObject.cocoon === 'undefined' ) {
-				//this.cocoonTileMatrix[colIt][rowIt] = null;
-			}
-			else {
+			if( typeof cellObject.cocoon != 'undefined' ) {
 				spriteNumber = Tile.COCOONED_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
-				//this.addTile();
 			}
-			if( typeof cellObject.superFriendImage === 'undefined' ) {
-				//this.superFriendTileMatrix[colIt][rowIt] = null;
+			if( typeof cellObject.superFriend != 'undefined' ) {
+				this.addTile(coordinates, 'SUPER_FRIEND', cellObject.superFriend);
 			}
-			else {
-				console.debug('TODO implement add super friend tile at ' + MatrixUtil.coordinatesToString(coordinates) );
-				//this.addTile();					
-			}
-			//TODO: logic for lighting creatures else if()
 		}
 	}
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
@@ -1051,15 +1086,15 @@ Board.prototype.parseCell = function(cellId) {
 		cellObject.gold = this.level.getGold();
 	}
 	//if the third string char contains one of these color ids
-	if( cellId.length >=3 && cellId[2].search('[bgprtvy]') !== -1 ) {
+	if( cellId.length >=3 && cellId[2].search('[bglprvy]') !== -1 ) {
 		cellObject.blocking = this.level.getCreatureByColorId( cellId[2], Level.CREATURE_SPRITE_NUMBERS[1] );
 	}
 	//if the fourth string char contains one of these color ids
-	if( cellId.length >=4 && cellId[3].search('[bgprtvy]') !== -1 ) {
+	if( cellId.length >=4 && cellId[3].search('[bglprvy]') !== -1 ) {
 		cellObject.cocoon = this.level.getCreatureByColorId( cellId[3], Level.CREATURE_SPRITE_NUMBERS[2] );
 	}
 	//if the fifth string char contains one of these color ids
-	if( cellId.length >=5 && cellId[4].search('[bgprtvy]') !== -1 ) {
+	if( cellId.length >=5 && cellId[4].search('[bglprvy]') !== -1 ) {
 		cellObject.superFriend = this.level.getSuperFriendByColorId( cellId[4] );
 	}
 	//TODO yj: clarify requirements for lightning creatures
@@ -1108,13 +1143,12 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tileMatrix[col][row] = tile;
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}		
-		else if( blob.blobType === 'GOLD' ) {
+		else if( blob.blobType === 'GOLD' || blob.blobType === 'SUPER_FRIEND' ) {
 			imageName = blob.blobType;
 			tile = new Tile(this, blob, coordinates, spriteNumber);
 			tileMatrix[col][row] = tile;
 			this.blobCollection.addBlobItem(tile);
 		}
-
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
 		layer.clearRect( x, y, width, height );
 		if( blob && blob.image ) {
@@ -1908,6 +1942,16 @@ function Gold(image) {
 	this.image = image;
 }
 /* end class Gold */
+
+/*
+begin class SuperFriend
+SuperFriends has an Image
+*/
+function SuperFriend(image) {
+	this.blobType = 'SUPER_FRIEND';
+	this.image = image;
+}
+/* end class SuperFriend */
 
 /* class MatrixUtil */
 // helper functions for manipulating matrices and points
