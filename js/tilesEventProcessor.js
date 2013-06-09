@@ -36,6 +36,7 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
 		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
 		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
+		affectedPointsArray = affectedPointsArray.concat(Tile.tileArrayToPointsArray(totalMatchedCocoonTiles));
 	}
 	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, affectedPointsArray);
 }
@@ -56,7 +57,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y--;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && !neighborTile.isBlocking() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -68,7 +69,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y++;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && !neighborTile.isBlocking() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -85,7 +86,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x--;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && !neighborTile.isBlocking() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -97,7 +98,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x++;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(neighborTile && !neighborTile.isPlain() && neighborTile.matches(tileFocal)){
+		if(neighborTile && !neighborTile.isPlain() && !neighborTile.isBlocking() && neighborTile.matches(tileFocal)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -143,7 +144,20 @@ TilesEventProcessor.prototype.getCocoonTiles = function(matchingTilesSet) {
 	cocoonTiles = [];
 	var board = this.board;
 	_.each( matchingTilesSet, function(creatureTile) {
-		if( creatureTile.isCocooned() ) {
+		var neighborTile = board.getNeighbor(creatureTile, [0, -1]);
+		if( neighborTile && neighborTile.isCocooned() ) {
+			cocoonTiles.push(creatureTile);
+		}
+		neighborTile = board.getNeighbor(creatureTile, [0, 1]);
+		if( neighborTile &&  neighborTile.isCocooned() ) {
+			cocoonTiles.push(creatureTile);
+		}
+		neighborTile = board.getNeighbor(creatureTile, [-1, 0]);
+		if( neighborTile && neighborTile.isCocooned() ) {
+			cocoonTiles.push(creatureTile);
+		}
+		neighborTile = board.getNeighbor(creatureTile, [1, 0]);
+		if( neighborTile && neighborTile.isCocooned() ) {
 			cocoonTiles.push(creatureTile);
 		}
 	});

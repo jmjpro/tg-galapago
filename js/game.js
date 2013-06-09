@@ -1166,6 +1166,8 @@ Board.prototype.handleTriplets = function(tile) {
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			//push cocoonedtiles to tiles Array for removal and lowering
+			tileTriplets.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
 		board.chainReactionCounter++;
 		//YM: pointsArray can contain duplicates due to overlapping triplets
@@ -1480,6 +1482,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 		}
 		else{
 			numRows++;
+			totalTilesLowered++;
 		}
 	});
 	return totalTilesLowered; //chainable
@@ -1493,7 +1496,7 @@ Board.prototype.getLowestPoint = function(loweredPoint) {
 	if(row < this.creatureTileMatrix[0].length){ 
 		tileToBeReplaced = this.creatureTileMatrix[col][row];
 	}
-	if(tileToBeReplaced === null){
+	if(tileToBeReplaced === null || tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
 		return loweredPoint;
 	}
 	else if (tileToBeReplaced.isPlain()){
