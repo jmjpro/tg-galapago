@@ -1180,7 +1180,6 @@ Board.prototype.handleTriplets = function(tile) {
 		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(pointsArray) );
 		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		tileTriplets  = board.removeTriplets(tileTriplets);
-		board.animateTripletsRemovalAsync(tileTriplets);
 		if( board.blobCollection.isEmpty() ) {
 			if( dangerBar.isRunning() ) {
 				dangerBar.stop();
@@ -1425,28 +1424,6 @@ Board.prototype.getNeighbor = function( tile, coordsDistance ) {
 	return tileNeighbor;
 };
 
-// run an animation removing a matching tile triplet and shifting down the creature tiles above the triplet
-Board.prototype.animateTripletsRemovalAsync = function(tileTriplets) {
-	var /*deferred, tileTriplet,*/ board;
-	board = this;
-	//deferred = Q.defer();
-	//TODO handle multiple tile triplets, not just first one
-	//tileTriplet = tileTriplets[0];
-	_.each( tileTriplets, function(tileTriplet) {
-		console.debug( 'animating triplet removal for ' + Tile.tileArrayToPointsString(tileTriplet) );
-		$('#sound-match-01')[0].play();
-		_.each( tileTriplet, function(tile) {
-			tile.clear();
-		});
-		board.lowerTilesAbove(tileTriplet);
-	});
-	//this.creatureLayer.draw();
-	//deferred.resolve();
-	//return deferred.promise;
-	return;
-}; //Board.prototype.animateTripletsRemovalAsync()
-
-
 Board.prototype.getCreatureTilesFromPoints = function(points) {
 	var creatureTiles, pointsIt, point;
 	creatureTiles = [];
@@ -1566,15 +1543,22 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
+		var tileToBeReplaced;
 		var lowestPoint = board.getLowestPoint(point);
 		while(lowestPoint != point)
 		{
-			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
+			tileToBeReplaced = board.creatureTileMatrix[lowestPoint[0]][lowestPoint[1]];
+			if(tileToBeReplaced && !tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned()){
+				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+				board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
+			}
 			lowestPoint = board.getLowestPoint(point);		
 		}
-		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-		board.addTile(point, 'CREATURE', null, spriteNumber);
+		tileToBeReplaced = board.creatureTileMatrix[lowestPoint[0]][lowestPoint[1]];
+		if(tileToBeReplaced && !tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned()){
+			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+			board.addTile(point, 'CREATURE', null, spriteNumber);
+		}
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTilesAbove()
@@ -1586,9 +1570,12 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	tileTriplets = _.map( tileTriplets, function(tileTriplet) {
 		tileTriplet = board.filterAlreadyRemovedTiles(tileTriplet);
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
+		$('#sound-match-01')[0].play();
 		_.each( tileTriplet, function(tile) {
 			board.removeTile(tile);
+			tile.clear();
 		});
+		board.lowerTilesAbove(tileTriplet);
 		return tileTriplet;
 	});
 	return tileTriplets; //chainable
