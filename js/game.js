@@ -14,6 +14,7 @@ Galapago.LAYER_MAP = 'layer-map';
 Galapago.NUM_LEVELS = 70;
 Galapago.gameImageNames = [
 	'button_quit',
+	'button_menu',
 	'Bracket_Left',
 	'Bracket_Right',
 	'item_collected_mark',
@@ -345,7 +346,7 @@ LevelMap.prototype.handleRightArrow = function() {
 
 LevelMap.prototype.handleDownArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.south);
-}; //LevelMap.prototype.handleRightArrow()
+}; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.west);
@@ -762,6 +763,7 @@ function Board() {
 	this.tileSelected = null;
 	this.tileActive = null;
 
+	this.buttonActive = null;
 	this.rotateAngle = 0;
 	this.creatureYOffset = 0;
 	this.blobCollection = new BlobCollection(this.gridLayer);
@@ -783,19 +785,20 @@ Board.prototype.displayBlobCollections = function() {
 };
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer;
+	var textColor, layer, menuButtonImage;
 	layer = this.creatureLayer;
+	menuButtonImage = this.blobCollection.button_menu;
 	if( isActive ) {
-		textColor = 'green';
+		this.buttonActive = 'menuButton';
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
+		layer.strokeRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
 	}
 	else {
-		textColor = 'white';
+		this.buttonActive = null;
+		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
 	}
-	layer.fillStyle = 'brown';
-	layer.fillRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.MENU_BUTTON_WIDTH, Level.MENU_BUTTON_HEIGHT);
-	layer.font = Score.FONT_SIZE + ' ' + Score.FONT_NAME;
-	layer.fillStyle = textColor;
-	layer.fillText('Menu', Level.MENU_BUTTON_X + 10, Level.MENU_BUTTON_Y + 30);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
