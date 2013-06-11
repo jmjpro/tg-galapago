@@ -860,7 +860,7 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
-	if(tile && (tile.isBlocked() || tile.isCocooned())){
+	if(tile && (tile.isBlocked() || tile.isCocooned() || tile.isPlain())){
 		tile = this.tileActive;
 	}
 	if(tile) {
