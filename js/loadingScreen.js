@@ -117,7 +117,7 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	var newWidth=  ProgressBar.PROGRESS_BAR_Width*percentdownload;
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png");
-	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
+	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
 	this.layer.font = 'italic 20pt Calibri';
@@ -132,7 +132,7 @@ ProgressBar.prototype.progress = function(percentdownload) {
 ProgressBar.prototype.loaded = function(result) {	
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png"); 
-	this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
+	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
 	this.layer.font = 'italic 20pt Calibri';
