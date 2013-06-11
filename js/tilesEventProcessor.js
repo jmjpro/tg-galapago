@@ -36,7 +36,7 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
 		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
 		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
-		affectedPointsArray = affectedPointsArray.concat(Tile.tileArrayToPointsArray(totalMatchedCocoonTiles));
+		affectedPointsArray = affectedPointsArray.concat(MatrixUtil.getChangingPoints(Tile.tileArrayToPointsArray(totalMatchedCocoonTiles)));
 	}
 	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, affectedPointsArray);
 }
