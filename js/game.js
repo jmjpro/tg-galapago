@@ -1188,12 +1188,11 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 }; //Board.prototype.addTileToLayer()
 
 Board.prototype.handleTriplets = function(tile) {
-	var board, dangerBar, tileTriplets, totalMatchedGoldTiles, pointsArray, changingPointsArray, changedTiles;
+	var board, dangerBar, tileTriplets, totalMatchedGoldTiles, pointsArray;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
 	pointsArray = [];
-	changingPointsArray = [];
 	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
@@ -1216,7 +1215,6 @@ Board.prototype.handleTriplets = function(tile) {
 		console.debug( 'pointsArray with possible duplicates ' + MatrixUtil.pointsArrayToString(pointsArray) );
 		pointsArray = ArrayUtil.unique(pointsArray);
 		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(pointsArray) );
-		changingPointsArray = MatrixUtil.getChangingPoints(pointsArray);
 		tileTriplets  = board.removeTriplets(tileTriplets);
 		if( board.blobCollection.isEmpty() ) {
 			if( dangerBar.isRunning() ) {
@@ -1226,9 +1224,11 @@ Board.prototype.handleTriplets = function(tile) {
 			board.completeAnimationAsync();
 			return tileTriplets;
 		}
-		changedTiles = board.getCreatureTilesFromPoints(changingPointsArray);
-		_.each( changedTiles, function( tile ) {
-			board.handleTriplets(tile);
+		_.each( pointsArray, function( point ) {
+			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
+			if(cahngedTile && !cahngedTile.isPlain()){
+				board.handleTriplets(cahngedTile);
+			}
 		});
 	}
 	return this; //chainable
@@ -1477,30 +1477,19 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	totalTilesLowered = 0;
 	board = this;
 	_.each( tiles, function(tile) {
-		if(null == tile || tile.isPlain()){
-			return false;
-		}
-		if( tile && !tile.isBlocked() && !tile.isCocooned()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
-			var keepLooping = false;
-			do {
-				loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
-				var tileToBeReplaced = board.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]];
-				if(tileToBeReplaced && (tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned())){
-					keepLooping = true;
-					numRows--;
-				}
-				else{
-					keepLooping = false;
-				}
-			} 
-			while (keepLooping);
-			loweredPoint = board.getLowestPoint(loweredPoint);
-			board.addTile(loweredPoint, tile.blob.blobType, null, null, tile);
+		if( tile && tile.isNonBlockingWithCreature()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
+			var lowestPoint = board.getLowestPoint(loweredPoint);
+			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
+			//Falling tile..Add plain tile so that it keeps falling
+			if(loweredPoint != lowestPoint){
+				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
+			}
+			board.addTile(lowestPoint, tile.blob.blobType, null, null, tile);
 			totalTilesLowered++;
 		}
 		else{
-			numRows++;
-			totalTilesLowered++;
+			return false;
 		}
 	});
 	return totalTilesLowered; //chainable
@@ -1581,22 +1570,15 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		var tileToBeReplaced;
 		var lowestPoint = board.getLowestPoint(point);
 		while(lowestPoint != point)
 		{
-			tileToBeReplaced = board.creatureTileMatrix[lowestPoint[0]][lowestPoint[1]];
-			if(tileToBeReplaced && !tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned()){
-				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-				board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
-			}
+			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
 			lowestPoint = board.getLowestPoint(point);		
 		}
-		tileToBeReplaced = board.creatureTileMatrix[lowestPoint[0]][lowestPoint[1]];
-		if(tileToBeReplaced && !tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned()){
-			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-			board.addTile(point, 'CREATURE', null, spriteNumber);
-		}
+		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+		board.addTile(point, 'CREATURE', null, spriteNumber);
 	});
 	return this; //chainable
 }; //Board.prototype.lowerTilesAbove()
@@ -1870,6 +1852,10 @@ Tile.prototype.isPlain = function()  {
 	return this.spriteNumber == Tile.PLAIN_TILE_SPRITE_NUMBER;
 };
 
+Tile.prototype.isNonBlockingWithCreature = function()  {
+	return this.spriteNumber == Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+};
+
 //static
 Tile.posToPixels = function(pos, basePixels, widthToHeightRatio, offset ) {
 	var unitPixels;
@@ -2019,12 +2005,18 @@ MatrixUtil.getNeighborsAbovePoints = function(points) {
 
 /* this is hard-coded right now for a triplet of points but it could be generalized */
 MatrixUtil.isVerticalPointSet = function(points) {
-	if( points.length > 2 && points[0][0] === points[1][0] && points[1][0] === points[2][0] ) {
+	if( points.length > 1){
+		var previousCol = points[0][0];
+		var cnt;
+		for( cnt = 1 ; cnt < points.length; cnt++){
+			var currentCol = points[cnt][0];
+			if(previousCol != currentCol){
+				return false;
+			}
+		}
 		return true;
-	}
-	else {
-		return false;
-	}
+	} 
+	return false;
 };
 
 //higher points have smaller row numbers
