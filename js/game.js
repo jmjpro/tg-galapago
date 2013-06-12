@@ -463,6 +463,7 @@ function Level(id) {
 	this.dangerBarImages = [];
 	this.layerBackground = null;
 	this.neighbors = {};
+	this.levelAnimation = new LevelAnimation();
 }
 
 Level.prototype.getGold = function() {
@@ -585,13 +586,14 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 };
 
 Level.prototype.loadImagesAsync = function() {
-	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths;
+	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths, levelAnimationImagePaths;
 	level = this;
 	creatureImagePaths = level.buildCreatureImagePaths();
 	goldImagePaths = level.buildGoldImagePaths();
 	superFriendImagePaths = level.buildSuperFriendImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
+	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
 
 	return Q.all([
 	level.imgpreloadAsync(gameImagePaths).then( function(imageObjectArray) {
@@ -618,6 +620,11 @@ Level.prototype.loadImagesAsync = function() {
 	level.imgpreloadAsync(goldImagePaths).then( function(imageObjectArray) {
 		level.goldImages = imageObjectArray;
 		console.debug('level.goldImages = ' + level.goldImages);
+	}, function failure(message) {
+		throw new Error(message);
+	})/*.done()*/,
+	level.imgpreloadAsync(levelAnimationImagePaths).then( function(imageObjectArray) {
+		level.levelAnimation.initImages(imageObjectArray);
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/]);
@@ -881,6 +888,7 @@ Board.prototype.setActiveTile = function(tile) {
 			return this; //chainable
 	}).done();
 	this.tileActive = tileActive;
+	this.level.levelAnimation.animateCreatureSelection(this.getLayer('CREATURE'), this);
 }; //Board.prototype.setActiveTile()
 
 Board.prototype.getTileMatrix = function(blobType) {
