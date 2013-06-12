@@ -173,11 +173,15 @@ LevelMap.STAR_SPRITE_MATRIX = [
 	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
 ];
 
+LevelMap.LAVA_SPRITE_MATRIX = [
+[{cell: [0, 0], id: 'lava-1'}, {cell: [190, 0], id: 'lava-2'}, {cell: [380, 0], id: 'lava-3'}, {cell: [570, 0], id: 'lava-4'}, {cell: [760, 0], id: 'lava-5'}, {cell: [950, 0], id: 'lava-6'}, {cell: [1140, 0], id: 'lava-7'}, {cell: [1330, 0], id: 'lava-8'}, {cell: [1520, 0], id: 'lava-9'}, {cell: [1710, 0], id: 'lava-10'}, {cell: [1900, 0], id: 'lava-11'}, {cell: [2090, 0], id: 'lava-12'}, {cell: [2280, 0], id: 'lava-13'}, {cell: [2470, 0], id: 'lava-14'}, {cell: [2660, 0], id: 'lava-15'}, {cell: [2850, 0], id: 'lava-16'}, {cell: [3040, 0], id: 'lava-17'}, {cell: [3230, 0], id: 'lava-18'}, {cell: [3420, 0], id: 'lava-19'}, {cell: [3610, 0], id: 'lava-20'}, {cell: [3800, 0], id: 'lava-21'}, {cell: [3990, 0], id: 'lava-22'}, {cell: [4180, 0], id: 'lava-23'}, {cell: [4370, 0], id: 'lava-24'}, {cell: [4560, 0], id: 'lava-25'}, {cell: [4750, 0], id: 'lava-26'}, {cell: [4940, 0], id: 'lava-27'}, {cell: [5130, 0], id: 'lava-28'}, {cell: [5320, 0], id: 'lava-29'}, {cell: [5510, 0], id: 'lava-30'}, {cell: [5700, 0], id: 'lava-31'}],
+];
+
 /* begin class LevelMap */
 function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
-	this.layer = this.canvas.getContext('2d');
+	this.layer = this.canvas.getContext('2d');	
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
@@ -217,9 +221,30 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 LevelMap.prototype.display = function() {	
 	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
-	this.canvas.height = Galapago.STAGE_HEIGHT;
+	this.canvas.height = Galapago.STAGE_HEIGHT;	
 	this.canvas.focus();
+	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX,[630 ,18]);
 };
+
+LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
+    var st=new SpriteSheet(image,spriteMatrix);
+	var xIndex =0;
+	var animationCanvas = $('#' + 'layer-map-animation')[0];
+    animationCanvas.width = Galapago.STAGE_WIDTH;
+	animationCanvas.height = Galapago.STAGE_HEIGHT;
+	this.animationLayer =  animationCanvas.getContext('2d');
+	var that=this;
+	function cycleSprite(){
+	    var imageData=st.getSpriteData([xIndex,0]);
+		that.animationLayer.clearRect(coordinates[0],coordinates[1],imageData.width,imageData.height);			
+		that.animationLayer.putImageData(imageData,coordinates[0],coordinates[1]);
+		xIndex=xIndex+1;
+		if(Number(xIndex)>spriteMatrix[0].length-2){
+		  xIndex=0;
+		}
+	}
+	this.handle =window.setInterval(cycleSprite,300);
+}
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
@@ -334,7 +359,9 @@ LevelMap.prototype.handleSelect = function(evt) {
 	}
 }; //LevelMap.prototype.handleSelect()
 
-LevelMap.prototype.handleKeyboardSelect = function() {
+LevelMap.prototype.handleKeyboardSelect = function() {   
+    this.animationLayer=null;
+	clearInterval(this.handle) 
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 

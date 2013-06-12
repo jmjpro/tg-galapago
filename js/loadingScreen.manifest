@@ -63,7 +63,8 @@
 	 "friends/yellow_friend.png",
 	 "gold-tiles/tile_gold_1.png",
 	 "map-screen/green_v.png",
-	 "map-screen/level_stars_gold.png"
+	 "map-screen/level_stars_gold.png",
+	 "map-screen/strip_lava_idle.png"
     ]
   }],
   "autoDownload": false
