@@ -1,9 +1,9 @@
 /* begin class Score */
-Score.FONT_SIZE = '30px';
-Score.FONT_NAME = 'Calibri';
+Score.FONT_SIZE = '26px';
+Score.FONT_NAME = 'Calibri'; //JungleFever
 Score.X = 500;
 Score.Y = 60;
-Score.COLOR = 'cyan';
+Score.COLOR = 'white';
 Score.MAX_WIDTH = 100;
 Score.MAX_HEIGHT = 25;
 Score.NUMBER_OF_TILES_CONSTITUTES_A_MATCH = 3;

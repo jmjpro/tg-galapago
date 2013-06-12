@@ -164,10 +164,9 @@ LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 LevelMap.MAX_DIFFICULTY = 5;
-Level
-LevelMap.LEVEL_STATUS_FONT_SIZE = '20px';
+LevelMap.LEVEL_STATUS_FONT_SIZE = '22px';
 LevelMap.LEVEL_STATUS_FONT_NAME = 'Calibri';
-LevelMap.LEVEL_STATUS_FONT_COLOR = 'cyan';
+LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 //TODO: define this in a JSON config file
 LevelMap.STAR_SPRITE_MATRIX = [
 	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
@@ -2149,11 +2148,11 @@ DangerBar.WARNING_5_SEC = 5;
 DangerBar.WARNING_SOUND_ID = 'sound-warning';
 DangerBar.WARNING_SOUND_LENGTH_SEC = 0.7;
 DangerBar.BOTTOM_CAP_TOP = 383;
-DangerBar.PROGRESS_BAR_TOP = 150;
+DangerBar.PROGRESS_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 173;
 DangerBar.FILL_TOP_ADJUSTMENT = 48;
 DangerBar.CAP_BOTTOM_TOP = 605;
-DangerBar.LEFT = 1105;
+DangerBar.LEFT = 1076;
 DangerBar.PROGRESS_BAR_LEFT_ADJUSTMENT = 12;
 DangerBar.FILL_WIDTH = 15;
 
@@ -2316,7 +2315,7 @@ BobCervantes.prototype.update = function() {
 
 /* begin class BobCervantes */
 Powerup.LEFT = 124;
-Powerup.TOP = 228;
+Powerup.TOP = 232;
 Powerup.MARGIN = 10;
 Powerup.LAYER_POWER_UP = 'layer-power-up';
 

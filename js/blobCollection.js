@@ -1,10 +1,10 @@
 BlobCollection.FONT_SIZE = '20px';
-BlobCollection.FONT_NAME = 'Calibri';
-BlobCollection.FONT_COLOR = 'blue';
-BlobCollection.ITEM_Y = 650;
+BlobCollection.FONT_NAME = 'Calibri'; //JungleFever
+BlobCollection.FONT_COLOR = 'white';
+BlobCollection.ITEM_Y = 662;
 BlobCollection.ITEM_WIDTH = 47;
 BlobCollection.ITEM_HEIGHT = 47;
-BlobCollection.ITEM_SPACE = 20;
+BlobCollection.ITEM_SPACE = 12;
 BlobCollection.MAX_ITEMS = 10;
 BlobCollection.ITEM_COUNT_Y= 652;
 BlobCollection.ITEM_COUNT_X_OFFSET= 25;
@@ -14,7 +14,7 @@ BlobCollection.LEFT_OFFSET= -50;
 function BlobCollection(gridLayer){
 	BlobCollection.ITEM_WIDTH = Tile.getWidth();
 	BlobCollection.ITEM_HEIGHT = Tile.getHeight();
-	BlobCollection.ITEM_COUNT_X_OFFSET = BlobCollection.ITEM_WIDTH / 1.5;
+	BlobCollection.ITEM_COUNT_X_OFFSET = BlobCollection.ITEM_WIDTH/2 - 5;
 	var imageId;
 	this.blobCollection = {};
 	this.blobItemsCount=0;
