@@ -1300,42 +1300,53 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
+
 		tile.setSelectedAsync().then(function() {
-			board.swapCreatures( tile, tilePrev );
-			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
-				board.handleTripletsDebugCounter = 0;
-				board.chainReactionCounter = 0;
-				board.scoreEvents = [];
-				
-				if(tilePrev.coordinates[1] > tile.coordinates[1]){
-					console.log( 'tile triplets' );
-					board.handleTriplets(tile);
-					console.log( 'tilePrev triplets' );
-					board.handleTriplets(tilePrev);					
-				}
-				else{
-					console.log( 'tilePrev triplets' );
-					board.handleTriplets(tilePrev);
-					console.log( 'tile triplets' );
-					board.handleTriplets(tile);
-				}
-				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-				if( board.scoreEvents.length > 0 ) {
-					board.updateScore();
-					if( board.blobCollection.isEmpty()){
-					  board.setComplete();
+			board.animateJumpCreaturesAsync( tile, tilePrev ).then(function() {
+				board.swapCreatures( tile, tilePrev );
+				board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
+					board.handleTripletsDebugCounter = 0;
+					board.chainReactionCounter = 0;
+					board.scoreEvents = [];
+
+					if(tilePrev.coordinates[1] > tile.coordinates[1]){
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);					
 					}
-					//reset grid lines and active tile
-					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-					board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-					board.tileActive.setActiveAsync().done();
-				}
-				else {
-					// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
-					console.debug( 'no triplet found: undoing last move');
-					board.swapCreatures( tile, tilePrev );
-					board.animateSwapCreaturesAsync( tile, tilePrev ).done();
-				}
+					else{
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+					}
+					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
+					if( board.scoreEvents.length > 0 ) {
+						board.updateScore();
+						if( board.blobCollection.isEmpty()){
+						  board.setComplete();
+						}
+						//reset grid lines and active tile
+						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+						board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
+						board.tileActive.setActiveAsync().done();
+					}
+					else {
+						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
+						console.debug( 'no triplet found: undoing last move');
+						board.animateJumpCreaturesAsync( tilePrev, tile ).then(function() {
+							board.swapCreatures( tile, tilePrev );
+							board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
+								board.setActiveTile(tile);
+							}).done();
+						}, function(error) {
+							console.error(error);
+						}).done();
+					}
+				}, function(error) {
+					console.error(error);
+				}).done();
 			}, function(error) {
 				console.error(error);
 			}).done();
@@ -1351,7 +1362,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		this.tileSelected = null;
 		return;
 	}
-}; //Board.prototype.handleSelect
+}; //Board.prototype.handleTileSelect
 
 Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
