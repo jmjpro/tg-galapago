@@ -173,15 +173,11 @@ LevelMap.STAR_SPRITE_MATRIX = [
 	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
 ];
 
-LevelMap.LAVA_SPRITE_MATRIX = [
-[{cell: [0, 0], id: 'lava-1'}, {cell: [190, 0], id: 'lava-2'}, {cell: [380, 0], id: 'lava-3'}, {cell: [570, 0], id: 'lava-4'}, {cell: [760, 0], id: 'lava-5'}, {cell: [950, 0], id: 'lava-6'}, {cell: [1140, 0], id: 'lava-7'}, {cell: [1330, 0], id: 'lava-8'}, {cell: [1520, 0], id: 'lava-9'}, {cell: [1710, 0], id: 'lava-10'}, {cell: [1900, 0], id: 'lava-11'}, {cell: [2090, 0], id: 'lava-12'}, {cell: [2280, 0], id: 'lava-13'}, {cell: [2470, 0], id: 'lava-14'}, {cell: [2660, 0], id: 'lava-15'}, {cell: [2850, 0], id: 'lava-16'}, {cell: [3040, 0], id: 'lava-17'}, {cell: [3230, 0], id: 'lava-18'}, {cell: [3420, 0], id: 'lava-19'}, {cell: [3610, 0], id: 'lava-20'}, {cell: [3800, 0], id: 'lava-21'}, {cell: [3990, 0], id: 'lava-22'}, {cell: [4180, 0], id: 'lava-23'}, {cell: [4370, 0], id: 'lava-24'}, {cell: [4560, 0], id: 'lava-25'}, {cell: [4750, 0], id: 'lava-26'}, {cell: [4940, 0], id: 'lava-27'}, {cell: [5130, 0], id: 'lava-28'}, {cell: [5320, 0], id: 'lava-29'}, {cell: [5510, 0], id: 'lava-30'}, {cell: [5700, 0], id: 'lava-31'}],
-];
-
 /* begin class LevelMap */
 function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
-	this.layer = this.canvas.getContext('2d');	
+	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
@@ -221,30 +217,9 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 LevelMap.prototype.display = function() {	
 	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
-	this.canvas.height = Galapago.STAGE_HEIGHT;	
+	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
-	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX,[630 ,18]);
 };
-
-LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
-    var st=new SpriteSheet(image,spriteMatrix);
-	var xIndex =0;
-	var animationCanvas = $('#' + 'layer-map-animation')[0];
-    animationCanvas.width = Galapago.STAGE_WIDTH;
-	animationCanvas.height = Galapago.STAGE_HEIGHT;
-	this.animationLayer =  animationCanvas.getContext('2d');
-	var that=this;
-	function cycleSprite(){
-	    var imageData=st.getSpriteData([xIndex,0]);
-		that.animationLayer.clearRect(coordinates[0],coordinates[1],imageData.width,imageData.height);			
-		that.animationLayer.putImageData(imageData,coordinates[0],coordinates[1]);
-		xIndex=xIndex+1;
-		if(Number(xIndex)>spriteMatrix[0].length-2){
-		  xIndex=0;
-		}
-	}
-	this.handle =window.setInterval(cycleSprite,300);
-}
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
@@ -359,9 +334,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 	}
 }; //LevelMap.prototype.handleSelect()
 
-LevelMap.prototype.handleKeyboardSelect = function() {   
-    this.animationLayer=null;
-	clearInterval(this.handle) 
+LevelMap.prototype.handleKeyboardSelect = function() {
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
@@ -1300,42 +1273,53 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
+			
 		tile.setSelectedAsync().then(function() {
-			board.swapCreatures( tile, tilePrev );
-			board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
-				board.handleTripletsDebugCounter = 0;
-				board.chainReactionCounter = 0;
-				board.scoreEvents = [];
-				
-				if(tilePrev.coordinates[1] > tile.coordinates[1]){
-					console.log( 'tile triplets' );
-					board.handleTriplets(tile);
-					console.log( 'tilePrev triplets' );
-					board.handleTriplets(tilePrev);					
-				}
-				else{
-					console.log( 'tilePrev triplets' );
-					board.handleTriplets(tilePrev);
-					console.log( 'tile triplets' );
-					board.handleTriplets(tile);
-				}
-				console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-				if( board.scoreEvents.length > 0 ) {
-					board.updateScore();
-					if( board.blobCollection.isEmpty()){
-					  board.setComplete();
+			board.animateJumpCreaturesAsync( tile, tilePrev ).then(function() {
+				board.swapCreatures( tile, tilePrev );
+				board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
+					board.handleTripletsDebugCounter = 0;
+					board.chainReactionCounter = 0;
+					board.scoreEvents = [];
+					
+					if(tilePrev.coordinates[1] > tile.coordinates[1]){
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);					
 					}
-					//reset grid lines and active tile
-					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-					board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-					board.tileActive.setActiveAsync().done();
-				}
-				else {
-					// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
-					console.debug( 'no triplet found: undoing last move');
-					board.swapCreatures( tile, tilePrev );
-					board.animateSwapCreaturesAsync( tile, tilePrev ).done();
-				}
+					else{
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+					}
+					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
+					if( board.scoreEvents.length > 0 ) {
+						board.updateScore();
+						if( board.blobCollection.isEmpty()){
+						  board.setComplete();
+						}
+						//reset grid lines and active tile
+						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+						board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
+						board.tileActive.setActiveAsync().done();
+					}
+					else {
+						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
+						console.debug( 'no triplet found: undoing last move');
+						board.animateJumpCreaturesAsync( tilePrev, tile ).then(function() {
+							board.swapCreatures( tile, tilePrev );
+							board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
+								board.setActiveTile(tile);
+							}).done();
+						}, function(error) {
+							console.error(error);
+						}).done();
+					}
+				}, function(error) {
+					console.error(error);
+				}).done();
 			}, function(error) {
 				console.error(error);
 			}).done();
@@ -1514,13 +1498,13 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	_.each( tiles, function(tile) {
 		if( tile && tile.isNonBlockingWithCreature()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
-			var lowestPoint = board.getLowestPoint(loweredPoint);
+			var fallingPoint = board.getFallingPoint(loweredPoint);
 			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 			//Falling tile..Add plain tile so that it keeps falling
-			if(loweredPoint != lowestPoint){
+			if(loweredPoint != fallingPoint){
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
 			}
-			board.addTile(lowestPoint, tile.blob.blobType, null, null, tile);
+			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
 			totalTilesLowered++;
 		}
 		else{
@@ -1531,49 +1515,57 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 }; //Board.prototype.lowerTiles()
 
 
-Board.prototype.getLowestPoint = function(loweredPoint) {
+Board.prototype.getFallingPoint = function(loweredPoint) {
 	var col = loweredPoint[0];
 	var row = loweredPoint[1] + 1;
 	var tileToBeReplaced = null;
 	if(row < this.creatureTileMatrix[0].length){ 
 		tileToBeReplaced = this.creatureTileMatrix[col][row];
 	}
-	if(tileToBeReplaced === null || tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
+	if(tileToBeReplaced === null){
+		return this.getLeftRightFallingPoint(loweredPoint, col, row);
+	}
+	if(tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
 		return loweredPoint;
 	}
 	else if (tileToBeReplaced.isPlain()){
-		return this.getLowestPoint(tileToBeReplaced.coordinates);
+		return this.getFallingPoint(tileToBeReplaced.coordinates);
 	}
 	else{
 		//If current point is plain check down and left
 		if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
-			tileToBeReplaced = null;
-			col = col -1;
-			if(col > -1){
-				tileToBeReplaced = this.creatureTileMatrix[col][row];
-			}
-			if(tileToBeReplaced && tileToBeReplaced.isPlain()){
-				return this.getLowestPoint(tileToBeReplaced.coordinates);
-			}
-			else{
-				tileToBeReplaced = null;
-				col = col + 2;
-				if(col < this.creatureTileMatrix.length){
-					tileToBeReplaced = this.creatureTileMatrix[col][row];
-				}
-				if(tileToBeReplaced && tileToBeReplaced.isPlain()){
-					return this.getLowestPoint(tileToBeReplaced.coordinates);
-				}
-				else{
-					return loweredPoint;
-				}
-			}
+			return this.getLeftRightFallingPoint(loweredPoint, col, row);				
 		}
 		else{
 			return loweredPoint;
 		}
 	} 
-}; //Board.prototype.getLowestPoint()
+}; //Board.prototype.getFallingPoint()
+
+Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
+	var tileToBeReplaced = null;
+	col = col -1;
+	if(col > -1){
+		tileToBeReplaced = this.creatureTileMatrix[col][row];
+	}
+	if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+		return this.getFallingPoint(tileToBeReplaced.coordinates);
+	}
+	else{
+		tileToBeReplaced = null;
+		col = col + 2;
+		if(col < this.creatureTileMatrix.length){
+			tileToBeReplaced = this.creatureTileMatrix[col][row];
+		}
+		if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+			return this.getFallingPoint(tileToBeReplaced.coordinates);
+		}
+		else{
+			return loweredPoint;
+		}
+	}
+}
+
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	var pointsAbove, tilesAbove, emptyPoints, tileArray, pointsArray, board, spriteNumber;	
@@ -1605,12 +1597,12 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		var lowestPoint = board.getLowestPoint(point);
-		while(lowestPoint != point)
+		var fallingPoint = board.getFallingPoint(point);
+		while(fallingPoint != point)
 		{
 			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
-			lowestPoint = board.getLowestPoint(point);		
+			board.addTile(fallingPoint, 'CREATURE', null, spriteNumber);
+			fallingPoint = board.getFallingPoint(point);		
 		}
 		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 		board.addTile(point, 'CREATURE', null, spriteNumber);
@@ -1659,10 +1651,32 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 	deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
+		
 	//this.creatureLayer.draw();
 	Q.delay(Tile.DELAY_AFTER_FLIP_MS).done(function() {
 		deferred.resolve();
 	});
+	return deferred.promise;
+};
+
+// switch the positions of two creature tiles on the board
+// we pause after a flip to give the player time to view the animation
+// since the flip can be reversed if no triplet is formed after the flip
+Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest) {
+	var deferred;
+	deferred = Q.defer();
+	tileSrc.setUnselected();
+	tileDest.setUnselected();
+	var animationStarted = this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest );
+	
+	if (animationStarted) {
+		Q.delay(Tile.DELAY_FOR_SWAP_MS).done(function() {
+			deferred.resolve();
+		});
+	}
+	else{
+		deferred.resolve();
+	}
 	return deferred.promise;
 };
 
@@ -1765,6 +1779,7 @@ Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
 Tile.WIDTH = 47;
 Tile.HEIGHT = 47;
+Tile.DELAY_FOR_SWAP_MS = 800;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
