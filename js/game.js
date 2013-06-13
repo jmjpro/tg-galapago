@@ -359,7 +359,6 @@ LevelMap.prototype.handleSelect = function(evt) {
 	}
 }; //LevelMap.prototype.handleSelect()
 
-LevelMap.prototype.handleKeyboardSelect = function() {
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
 	clearInterval(this.handle) ;
