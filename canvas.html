@@ -1,0 +1,30 @@
+<html>
+<head>
+  <script src="js/canvasUtil.js"></script>
+  <script src="ext/imgpreload.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+  var image1 = document.getElementById('crab');
+  var image2 = document.getElementById('turtle'); //this is the one we rotate
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext("2d");
+  var DEGREES_TO_ROTATE = 90;
+  var x, y;
+  var imagePaths = ['res/img/creatures/beach/blue_crab_1.png', 'res/img/creatures/beach/green_turtle_1.png'];
+  canvas.width = canvas.height = 400;
+  imgpreload(imagePaths, function( images ) {
+    image1 = images[0];
+    image2 = images[1];
+    ctx.drawImage(image1, 0, 0, image1.width, image1.height);    
+    ctx.drawImage(image2, image1.width, image1.height, image2.width, image2.height);
+    ctx.clearRect(image1.width, image1.height, image2.width, image2.height);
+    x = image1.width;
+    y = image1.height;
+    CanvasUtil.canvasImageRotate(ctx, image2, image2.width, image2.height, x, y, DEGREES_TO_ROTATE);
+  });
+  
+</script>
+</body>
+</html>

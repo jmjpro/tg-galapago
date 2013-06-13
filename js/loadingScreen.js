@@ -62,9 +62,9 @@ ProgressBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 ProgressBar.PROGRESS_BAR_Width = 475;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
-ProgressBar.LOADING_MESSAGE_TOP = 555;
-ProgressBar.LOADING_MESSAGE_LEFT =575;
-ProgressBar.CLICK_MESSAGE_LEFT =520;
+ProgressBar.LOADING_MESSAGE_TOP = 560;
+ProgressBar.LOADING_MESSAGE_LEFT =555;
+ProgressBar.CLICK_MESSAGE_LEFT =500;
 
 function ProgressBar(layerBackground,gameMode){
 	this.layerBackground = layerBackground;	
@@ -105,7 +105,7 @@ ProgressBar.prototype.drawImages = function(progressBar,images) {
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	this.layerBackground.drawImage( loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height );
 	
-	this.layer.font = 'italic 20pt Calibri';
+	this.layer.font = '32pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);
@@ -120,7 +120,7 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
-	this.layer.font = 'italic 20pt Calibri';
+	this.layer.font = '32pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...', ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
 	this.showCopywrite();
@@ -135,7 +135,7 @@ ProgressBar.prototype.loaded = function(result) {
 	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
-	this.layer.font = 'italic 20pt Calibri';
+	this.layer.font = '32pt Calibri';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
 	this.showCopywrite();
@@ -144,7 +144,7 @@ ProgressBar.prototype.loaded = function(result) {
 };
 
 ProgressBar.prototype.showCopywrite =function(){
-	this.layer.font='italic 9pt Calibri'
+	this.layer.font='13pt Arial'
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
 	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);
