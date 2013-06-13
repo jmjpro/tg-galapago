@@ -306,6 +306,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 			case 13: // enter
 				levelMap.handleKeyboardSelect();
+				evt.stopPropagation();
 				break;
 			case 37: // left arrow
 				levelMap.handleLeftArrow();
@@ -360,7 +361,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
-	clearInterval(this.handle) 
+	clearInterval(this.handle) ;
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
