@@ -98,26 +98,70 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 };
 
 LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev){
-	if(tilePrev.coordinates[1] > tile.coordinates[1]){
-		var imageId = tilePrev.blob.image.id + '_jumps';
+	var startedAnimation = false;
+	if(this.rolloverAnimation){
+		this.rolloverAnimation.stop();
+		this.rolloverAnimation = null;
+	}
+	if(tilePrev.coordinates[1] != tile.coordinates[1]){
+		var tileDown, tileUp, tileUpSelected;
+		if(tilePrev.coordinates[1] > tile.coordinates[1]){
+			tileDown = tilePrev;
+			tileUp = tile;
+			tileUpSelected = false;
+		}
+		else{
+			tileDown = tile;
+			tileUp = tilePrev;
+			tileUpSelected = true;
+		}
+		var imageId = tileDown.blob.image.id + '_jumps';
 		var rolloverImageSpriteSheet = this[imageId];
-		var x = tile.getXCoord();
-		var y = tile.getYCoord();
-		if(rolloverImageSpriteSheet){
+		imageId = tileUp.blob.image.id + '_jumps';
+		var rolloverImageSpriteSheet1 = this[imageId];
+		var x = tileUp.getXCoord();
+		var y = tileUp.getYCoord();
+		if(rolloverImageSpriteSheet || rolloverImageSpriteSheet1){
 			var imgCnt = 0
 			var interval = setInterval(function(){
-				var image = rolloverImageSpriteSheet.getSprite([imgCnt * 2, 0]);
-				layer.putImageData(image, x, y);
+				var image, image1, width, height;
+				if(rolloverImageSpriteSheet){
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0]);
+					width = image.width;
+					height = image.height;
+				}
+				if(rolloverImageSpriteSheet1){
+					image1 = rolloverImageSpriteSheet1.getSpriteNew([LevelAnimation.JUMP_SPRITE_MATRIX[0].length - 2 - (imgCnt * 2), 0]);
+					width = image1.width;
+					height = image1.height;
+				}
+				layer.clearRect(x, y, width, height);
+				if(tileUpSelected){
+					if(image){
+						layer.drawImage(image, x, y);
+					}
+					if(image1){
+						layer.drawImage(image1, x, y);
+					}
+				}
+				else{
+					if(image1){
+						layer.drawImage(image1, x, y);
+					}
+					if(image){
+						layer.drawImage(image, x, y);
+					}	
+				}
 				imgCnt++;
-				if(imgCnt * 2 == LevelAnimation.JUMP_SPRITE_MATRIX[0].length){
+				if(imgCnt == LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 2){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 				}
 			}, LevelAnimation.JUMP_TIME_INTERVAL);
-			return true;
+			startedAnimation = true;
 		}
 	}
-	return false;
+	return startedAnimation;
 };
 
 

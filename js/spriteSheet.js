@@ -44,6 +44,42 @@ SpriteSheet.prototype.getSprite = function (matrixCell) {
 	return spriteData;
 };
 
+SpriteSheet.prototype.getSpriteNew = function (matrixCell) {
+	var spriteData, x, y, width, height, col, row, numCols, numRows;
+	col = matrixCell[0];
+	row = matrixCell[1];
+	x = this.spriteMatrix[row][col].cell[0];
+	y = this.spriteMatrix[row][col].cell[1];
+	numRows = this.spriteMatrix.length;
+	numCols = this.spriteMatrix[0].length;
+	if( col + 1 < numCols ) {
+		width = this.spriteMatrix[row][col + 1].cell[0] - x;
+	} else { //last column of sprites
+		width = this.image.width - x;
+	}
+	if( row + 1 < numRows ) {
+		height = this.spriteMatrix[row + 1][col].cell[1] - y;
+	} else { //last row of sprites
+		height = this.image.height - y;
+	}
+	this._canvas.width = width;
+	this._canvas.height = height;
+	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
+	var savedImage = new Image()
+	savedImage.src = this._canvas.toDataURL("image/png")
+	//spriteData = this._ctx.getImageData(0, 0, width, height);
+	//returning the image data here is much faster than toDataURL(), but get/putImageData() don't account for css canvas stretching
+	//http://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
+	//just need to ensure that we don't stretch the canvas by defining it's width and height in CSS
+	/*
+	spriteURL = this._canvas.toDataURL( );
+	sprite = new Image();
+	sprite.src = spriteURL;
+	*/
+	return savedImage;
+};
+
+
 SpriteSheet.prototype.getSpriteData = function (matrixCell) {
 	var spriteData, x, y, width, height, col, row, numCols, numRows;
 	col = matrixCell[0];

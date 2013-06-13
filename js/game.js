@@ -180,7 +180,7 @@ LevelMap.LAVA_SPRITE_MATRIX = [
 function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
-	this.layer = this.canvas.getContext('2d');	
+	this.layer = this.canvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
@@ -220,7 +220,7 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 LevelMap.prototype.display = function() {	
 	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
-	this.canvas.height = Galapago.STAGE_HEIGHT;	
+	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX,[630 ,18]);
 };
@@ -359,6 +359,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 	}
 }; //LevelMap.prototype.handleSelect()
 
+LevelMap.prototype.handleKeyboardSelect = function() {
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
 	clearInterval(this.handle) ;
@@ -1514,13 +1515,13 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	_.each( tiles, function(tile) {
 		if( tile && tile.isNonBlockingWithCreature()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
-			var lowestPoint = board.getLowestPoint(loweredPoint);
+			var fallingPoint = board.getFallingPoint(loweredPoint);
 			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 			//Falling tile..Add plain tile so that it keeps falling
-			if(loweredPoint != lowestPoint){
+			if(loweredPoint != fallingPoint){
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
 			}
-			board.addTile(lowestPoint, tile.blob.blobType, null, null, tile);
+			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
 			totalTilesLowered++;
 		}
 		else{
@@ -1531,49 +1532,57 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 }; //Board.prototype.lowerTiles()
 
 
-Board.prototype.getLowestPoint = function(loweredPoint) {
+Board.prototype.getFallingPoint = function(loweredPoint) {
 	var col = loweredPoint[0];
 	var row = loweredPoint[1] + 1;
 	var tileToBeReplaced = null;
 	if(row < this.creatureTileMatrix[0].length){ 
 		tileToBeReplaced = this.creatureTileMatrix[col][row];
 	}
-	if(tileToBeReplaced === null || tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
+	if(tileToBeReplaced === null){
+		return this.getLeftRightFallingPoint(loweredPoint, col, row);
+	}
+	if(tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
 		return loweredPoint;
 	}
 	else if (tileToBeReplaced.isPlain()){
-		return this.getLowestPoint(tileToBeReplaced.coordinates);
+		return this.getFallingPoint(tileToBeReplaced.coordinates);
 	}
 	else{
 		//If current point is plain check down and left
 		if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
-			tileToBeReplaced = null;
-			col = col -1;
-			if(col > -1){
-				tileToBeReplaced = this.creatureTileMatrix[col][row];
-			}
-			if(tileToBeReplaced && tileToBeReplaced.isPlain()){
-				return this.getLowestPoint(tileToBeReplaced.coordinates);
-			}
-			else{
-				tileToBeReplaced = null;
-				col = col + 2;
-				if(col < this.creatureTileMatrix.length){
-					tileToBeReplaced = this.creatureTileMatrix[col][row];
-				}
-				if(tileToBeReplaced && tileToBeReplaced.isPlain()){
-					return this.getLowestPoint(tileToBeReplaced.coordinates);
-				}
-				else{
-					return loweredPoint;
-				}
-			}
+			return this.getLeftRightFallingPoint(loweredPoint, col, row);				
 		}
 		else{
 			return loweredPoint;
 		}
 	} 
-}; //Board.prototype.getLowestPoint()
+}; //Board.prototype.getFallingPoint()
+
+Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
+	var tileToBeReplaced = null;
+	col = col -1;
+	if(col > -1){
+		tileToBeReplaced = this.creatureTileMatrix[col][row];
+	}
+	if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+		return this.getFallingPoint(tileToBeReplaced.coordinates);
+	}
+	else{
+		tileToBeReplaced = null;
+		col = col + 2;
+		if(col < this.creatureTileMatrix.length){
+			tileToBeReplaced = this.creatureTileMatrix[col][row];
+		}
+		if(tileToBeReplaced && tileToBeReplaced.isPlain()){
+			return this.getFallingPoint(tileToBeReplaced.coordinates);
+		}
+		else{
+			return loweredPoint;
+		}
+	}
+}
+
 
 Board.prototype.lowerTilesAbove = function(tileTriplet) {
 	var pointsAbove, tilesAbove, emptyPoints, tileArray, pointsArray, board, spriteNumber;	
@@ -1605,12 +1614,12 @@ Board.prototype.lowerTilesAbove = function(tileTriplet) {
 
 	//add a new random creature tile at each of the empty points
 	_.each( emptyPoints, function(point) {
-		var lowestPoint = board.getLowestPoint(point);
-		while(lowestPoint != point)
+		var fallingPoint = board.getFallingPoint(point);
+		while(fallingPoint != point)
 		{
 			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-			board.addTile(lowestPoint, 'CREATURE', null, spriteNumber);
-			lowestPoint = board.getLowestPoint(point);		
+			board.addTile(fallingPoint, 'CREATURE', null, spriteNumber);
+			fallingPoint = board.getFallingPoint(point);		
 		}
 		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 		board.addTile(point, 'CREATURE', null, spriteNumber);
@@ -1659,10 +1668,32 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 	deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
+		
 	//this.creatureLayer.draw();
 	Q.delay(Tile.DELAY_AFTER_FLIP_MS).done(function() {
 		deferred.resolve();
 	});
+	return deferred.promise;
+};
+
+// switch the positions of two creature tiles on the board
+// we pause after a flip to give the player time to view the animation
+// since the flip can be reversed if no triplet is formed after the flip
+Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest) {
+	var deferred;
+	deferred = Q.defer();
+	tileSrc.setUnselected();
+	tileDest.setUnselected();
+	var animationStarted = this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest );
+	
+	if (animationStarted) {
+		Q.delay(Tile.DELAY_FOR_SWAP_MS).done(function() {
+			deferred.resolve();
+		});
+	}
+	else{
+		deferred.resolve();
+	}
 	return deferred.promise;
 };
 
@@ -1765,6 +1796,7 @@ Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
 Tile.WIDTH = 47;
 Tile.HEIGHT = 47;
+Tile.DELAY_FOR_SWAP_MS = 800;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
