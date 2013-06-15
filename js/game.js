@@ -894,9 +894,6 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
-	if(tile && (tile.isBlocked() || tile.isCocooned() || tile.isPlain())){
-		tile = this.tileActive;
-	}
 	if(tile) {
 		tileActive = tile;
 	}
@@ -1288,6 +1285,10 @@ Board.prototype.handleTileSelect = function(tile) {
 	tilePrev = this.tileSelected;
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
+	if(tile && !tile.isNonBlockingWithCreature()){
+		return;
+	}
+	
 	//YJ: one tile selected; select it and move on
 	if( tilePrev === null ) {
 		board.tileSelected = tile;
@@ -1377,9 +1378,17 @@ Board.prototype.handleKeyboardSelect = function() {
 }; //Board.prototype.handleKeyboardSelect
 
 Board.prototype.handleRightArrow = function() {
-	var board, tileRight;
+	var board, tileRight, col, row;
 	board = this;
-	tileRight = board.getNeighbor(board.tileActive, [1, 0]);
+	col = board.tileActive.coordinates[0];
+	row = board.tileActive.coordinates[1];
+	do{
+		col++;
+		if(col==board.creatureTileMatrix.length){
+			col =0;
+		}
+		tileRight = board.creatureTileMatrix[col][row];
+	}while(tileRight == null)
 	if( tileRight ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
@@ -1390,9 +1399,17 @@ Board.prototype.handleRightArrow = function() {
 }; //Board.prototype.handleRightArrow
 
 Board.prototype.handleLeftArrow = function() {
-	var board, tileLeft;
+	var board, tileLeft, col, row;
 	board = this;
-	tileLeft = board.getNeighbor(board.tileActive, [-1, 0]);
+	col = board.tileActive.coordinates[0];
+	row = board.tileActive.coordinates[1];
+	do{
+		col--;
+		if(col<0){
+			col = board.creatureTileMatrix.length - 1;
+		}
+		tileLeft = board.creatureTileMatrix[col][row];
+	}while(tileLeft == null)
 	if( tileLeft ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
@@ -1406,9 +1423,17 @@ Board.prototype.handleLeftArrow = function() {
 }; //Board.prototype.handleLeftArrow
 
 Board.prototype.handleDownArrow = function() {
-	var board, tileDown;
+	var board, tileDown, col, row;
 	board = this;
-	tileDown = board.getNeighbor(board.tileActive, [0, 1]);
+	col = board.tileActive.coordinates[0];
+	row = board.tileActive.coordinates[1];
+	do{
+		row++;
+		if(row==board.creatureTileMatrix[col].length){
+			row =0;
+		}
+		tileDown = board.creatureTileMatrix[col][row];
+	}while(tileDown == null)
 	if( tileDown ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileDown);
@@ -1419,9 +1444,17 @@ Board.prototype.handleDownArrow = function() {
 }; //Board.prototype.handleDownArrow
 
 Board.prototype.handleUpArrow = function() {
-	var board, tileUp;
+	var board, tileUp, col, row;
 	board = this;
-	tileUp = board.getNeighbor(board.tileActive, [0, -1]);
+	col = board.tileActive.coordinates[0];
+	row = board.tileActive.coordinates[1];
+	do{
+		row--;
+		if(row<0){
+			row = board.creatureTileMatrix[col].length - 1;
+		}
+		tileUp = board.creatureTileMatrix[col][row];
+	}while(tileUp == null)
 	if( tileUp ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileUp);
@@ -1845,7 +1878,7 @@ Tile.prototype.matches = function(that) {
 
 Tile.prototype.setActiveAsync = function() {
 	var deferred;
-	console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
+	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
@@ -1856,7 +1889,7 @@ Tile.prototype.setActiveAsync = function() {
 
 Tile.prototype.setInactiveAsync = function() {
 	var deferred;
-	console.debug('inactive tile ' + this.coordinates + ': ' + this.blob.creatureType);
+	//console.debug('inactive tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
