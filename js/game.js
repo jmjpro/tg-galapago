@@ -2163,9 +2163,9 @@ MatrixUtil.lowerPointByNRows = function(point, numRows) {
 MatrixUtil.getFirstNRowPoints = function(verticalPoints, startIndex) {
 	var firstPoints, rowIt, col;
 	firstPoints = [];
-	rowIt = startIndex;
+	rowIt = startIndex + verticalPoints.length - 1;
 	col = verticalPoints[0][0];
-	for(rowIt; rowIt < (startIndex + verticalPoints.length); rowIt++) {
+	for(rowIt; rowIt >= 0; rowIt--) {
 		firstPoints.push([col, rowIt]);
 	}
 	return firstPoints;
