@@ -1385,7 +1385,7 @@ Board.prototype.handleRightArrow = function() {
 	do{
 		col++;
 		if(col==board.creatureTileMatrix.length){
-			col =0;
+			break;
 		}
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
@@ -1406,7 +1406,7 @@ Board.prototype.handleLeftArrow = function() {
 	do{
 		col--;
 		if(col<0){
-			col = board.creatureTileMatrix.length - 1;
+			break;
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
@@ -1430,7 +1430,7 @@ Board.prototype.handleDownArrow = function() {
 	do{
 		row++;
 		if(row==board.creatureTileMatrix[col].length){
-			row =0;
+			break;
 		}
 		tileDown = board.creatureTileMatrix[col][row];
 	}while(tileDown == null)
@@ -1451,7 +1451,7 @@ Board.prototype.handleUpArrow = function() {
 	do{
 		row--;
 		if(row<0){
-			row = board.creatureTileMatrix[col].length - 1;
+			break;
 		}
 		tileUp = board.creatureTileMatrix[col][row];
 	}while(tileUp == null)

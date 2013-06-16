@@ -84,12 +84,15 @@ LevelAnimation.prototype.initImages = function(imageArray) {
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
-	var tileActive = board.tileActive;
-	var imageId = tileActive.blob.image.id + '_rollover';
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
+	var tileActive = board.tileActive;
+	if(!tileActive.blob){
+		return;
+	}
+	var imageId = tileActive.blob.image.id + '_rollover';
 	var rolloverImageSpriteSheet = this[imageId];
 	if(rolloverImageSpriteSheet){
 		this.rolloverAnimation = new RolloverAnimation(layer, board, tileActive, rolloverImageSpriteSheet);
