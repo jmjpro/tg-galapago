@@ -855,6 +855,12 @@ function Board() {
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;
 	this.firstTileCoordinates = null;
+
+	this.sounds = [];
+	this.sounds['sound-match-01'] = new Audio();
+	this.sounds['sound-warning'] = new Audio();
+	this.sounds['sound-match-01'].src = 'res/audio/Match_01.mp3';
+	this.sounds['sound-warning'].src = 'res/audio/Warning.mp3';
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1677,7 +1683,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	tileTriplets = _.map( tileTriplets, function(tileTriplet) {
 		tileTriplet = board.filterAlreadyRemovedTiles(tileTriplet);
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
-		$('#sound-match-01')[0].play();
+		board.sounds['sound-match-01'].play();
 		_.each( tileTriplet, function(tile) {
 			board.removeTile(tile);
 			tile.clear();
