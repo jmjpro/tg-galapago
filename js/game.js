@@ -2165,7 +2165,7 @@ MatrixUtil.getFirstNRowPoints = function(verticalPoints, startIndex) {
 	firstPoints = [];
 	rowIt = startIndex + verticalPoints.length - 1;
 	col = verticalPoints[0][0];
-	for(rowIt; rowIt >= 0; rowIt--) {
+	for(rowIt; rowIt >= startIndex; rowIt--) {
 		firstPoints.push([col, rowIt]);
 	}
 	return firstPoints;
