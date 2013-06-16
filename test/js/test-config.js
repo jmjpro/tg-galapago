@@ -3,7 +3,8 @@ require.config({
    paths: {
     mocha: 'ext/mocha',
     chai: 'ext/chai',
-    game: 'js/game',
+    lodash: '../ext/lodash.min',
+    game: '../js/game',
   }
 });
 
@@ -15,7 +16,7 @@ function(require)  {
   mocha.setup('bdd');
 
   require([
-    'js/test/TestMatrixUtil.js',
+    'js/TestMatrixUtil.js',
   ], function() {
     mocha.run();
   });

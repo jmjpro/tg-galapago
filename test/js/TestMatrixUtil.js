@@ -1,7 +1,7 @@
 define([
   'chai',
-  'js/game.js',
-  'ext/lodash.min'
+  'game',
+  'lodash'
 ], function(chai) { 
 
 var expect = chai.expect;
