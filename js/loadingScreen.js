@@ -24,7 +24,7 @@ ScreenLoader.init = function(gameMode) {
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.layer.clearRect( 0, 0, ScreenLoader.STAGE_WIDTH, ScreenLoader.STAGE_HEIGHT);
 		this.canvas.style.background = 'url(' + ScreenLoader.BACKGROUND_PATH_PREFIX + 'background-loading' + ScreenLoader.BACKGROUND_PATH_SUFFIX;
-	this.canvas.style.zIndex = 0;
+	//this.canvas.style.zIndex = 0;
 	this.canvas.width = ScreenLoader.STAGE_WIDTH;
 	this.canvas.height = ScreenLoader.STAGE_HEIGHT;	
 	this.gameMode=gameMode;
@@ -69,6 +69,7 @@ ProgressBar.CLICK_MESSAGE_LEFT =500;
 function ProgressBar(layerBackground,gameMode){
 	this.layerBackground = layerBackground;	
 	this.canvas = $('#' + ProgressBar.LAYER_DANGER_BAR)[0];
+	this.canvas.style.zIndex = 10;
 	this.canvas.width=ScreenLoader.STAGE_WIDTH;
 	this.canvas.height=ScreenLoader.STAGE_HEIGHT;
 	this.layer = this.canvas.getContext('2d');
@@ -158,6 +159,7 @@ this.canvas.onkeydown = function(evt) {
 				 if(progressBar.isLoadingComplete){
 					progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 					progressBar.canvas.onkeydown=null;
+					progressBar.canvas.style.zIndex = 5;
 				   //alert();
 				    Galapago.init(gameMode);
 				 }

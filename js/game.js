@@ -228,11 +228,14 @@ LevelMap.prototype.display = function() {
 LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
     var st=new SpriteSheet(image,spriteMatrix);
 	var xIndex =0;
+	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
+	animationCanvas.onclick = function(evt) {
+		that.canvas.focus();
+	}; 
     animationCanvas.width = Galapago.STAGE_WIDTH;
 	animationCanvas.height = Galapago.STAGE_HEIGHT;
-	this.animationLayer =  animationCanvas.getContext('2d');
-	var that=this;
+	this.animationLayer =  animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
 		that.animationLayer.clearRect(coordinates[0],coordinates[1],imageData.width,imageData.height);			
