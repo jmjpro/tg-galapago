@@ -235,6 +235,7 @@ LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
 	}; 
     animationCanvas.width = Galapago.STAGE_WIDTH;
 	animationCanvas.height = Galapago.STAGE_HEIGHT;
+	this.animationCanvas = animationCanvas;
 	this.animationLayer =  animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
@@ -364,6 +365,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
+	this.animationCanvas.onclick=null;
 	clearInterval(this.handle) ;
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
