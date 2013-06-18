@@ -2,7 +2,6 @@ function SpriteSheet(image, spriteMatrix) {
 	this.image = image;
 	this.spriteMatrix = spriteMatrix;
 	var tempCanvas = document.createElement('canvas');
-	document.body.appendChild(tempCanvas);
 	this._canvas = tempCanvas;
 	this._canvas.style.display = 'none';
 	this._canvas.style.position = 'absolute';
