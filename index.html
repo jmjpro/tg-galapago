@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="css/global.css"/>
 		<!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
 		<!--script src="ext/stacktrace-min-0.4.js"></script-->
-		<!--script src="js/debugConsole.js"></script-->
+		<script src="js/debugConsole.js"></script>
 		<script src="ext/lodash.min.js"></script>
 		<script src="ext/imgpreload.js"></script>
 		<!--script src="ext/queryString.js"></script-->
@@ -39,10 +39,7 @@
 	</head>
 	
 	<body onload="ScreenLoader.init(gameMode);" >
-		<div id="nav">
-			<a href="#" onClick="Galapago.level.board.completeAnimationAsync();">Completed Level Animation</a>
-			<a id="debug-console-toggle" href="#" onClick="toggleDebugConsole();">Show Debug Console</a>
-		</div>
+		<div id="debug-console"></div>
 
 		<div id="canvas-main" style="">
 			<canvas id="layer-background" class="game-layer" style="z-index: 1;" tabindex="1"></canvas>
@@ -82,7 +79,6 @@
 			</div>
 		</div>
 
-		<div id="debug-console"></div>
 		<script>
 			var gameMenu, mainMenu;
 			gameMenu = new DialogMenu('layer-grid', 'game-menu');

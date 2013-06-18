@@ -3,4 +3,30 @@
 	height: 200px;
     overflow:scroll;
     display: none;
+    position: fixed;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 2147483647;
+    overflow-x:hidden;;
+}
+
+#debug-console.top {
+    top: 0;
+}
+
+#debug-console.bottom {
+    top: 520px;
+}
+
+#debug-console p {
+	margin: 0;
+}
+
+#debug-console p.log {
+    color: lime;
+}
+
+#debug-console p.error {
+    color: red;
 }

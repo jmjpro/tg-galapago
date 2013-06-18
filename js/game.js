@@ -745,6 +745,7 @@ Level.registerEventHandlers = function() {
 	});
 
 	window.onkeydown = function(evt) {
+	//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 13: // enter
@@ -771,6 +772,12 @@ Level.registerEventHandlers = function() {
 				break;
 			case 50: // numeric 2
 				//Galapago.setLevel('level_02');
+				break;
+			case 56: // 8
+				toggleDebugConsole('top');
+				break;
+			case 57: // 9
+				toggleDebugConsole('bottom');
 				break;
 			default:
 		}
