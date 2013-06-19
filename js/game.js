@@ -230,6 +230,7 @@ LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
 	var xIndex =0;
 	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
+	animationCanvas.style.zIndex = 8;
 	animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	}; 
@@ -366,6 +367,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
+	this.animationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
