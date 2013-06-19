@@ -145,19 +145,19 @@ TilesEventProcessor.prototype.getCocoonTiles = function(matchingTilesSet) {
 	var board = this.board;
 	_.each( matchingTilesSet, function(creatureTile) {
 		var neighborTile = board.getNeighbor(creatureTile, [0, -1]);
-		if( neighborTile && neighborTile.isCocooned() ) {
+		if( neighborTile && neighborTile.isCocooned() && neighborTile.matches(creatureTile)) {
 			cocoonTiles.push(neighborTile);
 		}
 		neighborTile = board.getNeighbor(creatureTile, [0, 1]);
-		if( neighborTile &&  neighborTile.isCocooned() ) {
+		if( neighborTile &&  neighborTile.isCocooned() && neighborTile.matches(creatureTile)) {
 			cocoonTiles.push(neighborTile);
 		}
 		neighborTile = board.getNeighbor(creatureTile, [-1, 0]);
-		if( neighborTile && neighborTile.isCocooned() ) {
+		if( neighborTile && neighborTile.isCocooned() && neighborTile.matches(creatureTile)) {
 			cocoonTiles.push(neighborTile);
 		}
 		neighborTile = board.getNeighbor(creatureTile, [1, 0]);
-		if( neighborTile && neighborTile.isCocooned() ) {
+		if( neighborTile && neighborTile.isCocooned() && neighborTile.matches(creatureTile)) {
 			cocoonTiles.push(neighborTile);
 		}
 	});
