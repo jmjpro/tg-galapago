@@ -1667,6 +1667,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 			if(loweredPoint != fallingPoint){
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
 			}
+			tile.clear();
 			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
 			changedPoints.push(fallingPoint);
 		}
