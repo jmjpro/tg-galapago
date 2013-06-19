@@ -17,6 +17,7 @@ function(require)  {
 
   require([
     'js/TestMatrixUtil.js',
+    'js/TestBoard.js'
   ], function() {
     mocha.run();
   });

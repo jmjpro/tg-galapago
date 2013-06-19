@@ -1,10 +1,9 @@
 /* begin class TileMovedEventProcessorResult */
-function TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, affectedPointsArray){
+function TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles){
 	this.matchingTilesSets = matchingTilesSets;
 	this.totalMatchedGoldTiles = totalMatchedGoldTiles;
 	this.totalMatchedBlockingTiles = totalMatchedBlockingTiles;
 	this.totalMatchedCocoonTiles = totalMatchedCocoonTiles;
-	this.affectedPointsArray = affectedPointsArray;
 }
 /* end class TileMovedEventProcessorResult */
 
@@ -18,7 +17,6 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 	var totalMatchedBlockingTiles = [];
 	var totalMatchedCocoonTiles = [];
 	var scoreEvents = [];
-	var affectedPointsArray =[];
 	var matchingTilesSets = this.getMatchingTilesSets(tileFocal);
 	var tilesEventProcessor = this;
 	if( matchingTilesSets && matchingTilesSets.length >= 1 ) {
@@ -31,14 +29,12 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 			totalMatchedCocoonTiles = totalMatchedCocoonTiles.concat(cocoonTiles);
 			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
 				cocoonTiles.length, null, null, false, tilesEventProcessor.board.chainReactionCounter));
-			affectedPointsArray = affectedPointsArray.concat(MatrixUtil.getChangingPoints(Tile.tileArrayToPointsArray(matchingTilesSet)));
 		});
 		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
 		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
 		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
-		affectedPointsArray = affectedPointsArray.concat(MatrixUtil.getChangingPoints(Tile.tileArrayToPointsArray(totalMatchedCocoonTiles)));
 	}
-	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, affectedPointsArray);
+	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles);
 }
 
 TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {

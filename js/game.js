@@ -1238,15 +1238,18 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 }; //Board.prototype.addTileToLayer()
 
 Board.prototype.handleTriplets = function(tile) {
-	var board, dangerBar, tileTriplets, totalMatchedGoldTiles, pointsArray;
+	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
-	pointsArray = [];
+	changedPointsArray = [];
+	tileSetsToBeRemoved = [];
 	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
-		pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		board.removeTriplets(tileTriplets);
+		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
+		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
@@ -1256,16 +1259,19 @@ Board.prototype.handleTriplets = function(tile) {
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.removeTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocoonedtiles to tiles Array for removal and lowering
-			tileTriplets.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
+		
 		board.chainReactionCounter++;
+		var verticalPointsSets = Board.getVerticalPointsSets(tileSetsToBeRemoved);
+		changedPointsArray  = board.lowerTilesAbove(verticalPointsSets);
 		//YM: pointsArray can contain duplicates due to overlapping triplets
 		//remove the duplicates
-		console.debug( 'pointsArray with possible duplicates ' + MatrixUtil.pointsArrayToString(pointsArray) );
-		pointsArray = ArrayUtil.unique(pointsArray);
-		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(pointsArray) );
-		tileTriplets  = board.removeTriplets(tileTriplets);
+		console.debug( 'pointsArray with possible duplicates ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
+		changedPointsArray = ArrayUtil.unique(changedPointsArray);
+		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
 		if( board.blobCollection.isEmpty() ) {
 			if( dangerBar.isRunning() ) {
 				dangerBar.stop();
@@ -1274,7 +1280,7 @@ Board.prototype.handleTriplets = function(tile) {
 			board.completeAnimationAsync();
 			return tileTriplets;
 		}
-		_.each( pointsArray, function( point ) {
+		_.each( changedPointsArray, function( point ) {
 			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
 			if(cahngedTile && !cahngedTile.isPlain()){
 				board.handleTriplets(cahngedTile);
@@ -1283,6 +1289,40 @@ Board.prototype.handleTriplets = function(tile) {
 	}
 	return this; //chainable
 }; //Board.prototype.handleTriplets()
+
+Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
+	var verticalPointsSets = [];
+	var pointsSets = [];
+	_.each(tileSetsToBeRemoved, function(tileSetToBeRemoved){
+		_.each(tileSetToBeRemoved, function(tile){
+			if(!pointsSets[tile.coordinates[0]]){
+				pointsSets[tile.coordinates[0]] = [];
+			}
+			pointsSets[tile.coordinates[0]][tile.coordinates[1]] = tile.coordinates;
+		});
+	});
+
+	pointsSets = _.filter(pointsSets, function(pointsSet){
+			return pointsSet && pointsSet.length > 0;
+	});	
+	_.each(pointsSets, function(pointsSet){
+		var verticalPointsSet = [];
+		var lastTileRow;
+		_.each(pointsSet, function(point){
+			if(point){
+				if(lastTileRow && ((lastTileRow + 1) != point[1])){
+					verticalPointsSets.push(verticalPointsSet);
+					verticalPointsSet = [];
+				}
+				verticalPointsSet.push(point);
+				lastTileRow = point[1];
+			}
+		});	
+		verticalPointsSets.push(verticalPointsSet);
+	});	
+	return verticalPointsSets;
+}
+
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore;
@@ -1569,9 +1609,52 @@ Board.prototype.getCreatureTilesFromPoints = function(points) {
 	return creatureTiles;
 }; //Board.prototype.getCreatureTilesFromPoints()
 
+
+Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
+	var pointsAbove, tilesAbove, emptyPoints, changedPoints;
+	var board = this;
+	var changedPointsArray = [];
+	var nonFirstRowPoints = [];
+	_.each( verticalPointsSets, function( verticalPointsSet) {
+		console.debug( 'lowering tiles above ' + MatrixUtil.pointsArrayToString(verticalPointsSet) );
+		//filter already handled pointset if any
+		verticalPointsSet = _.filter(verticalPointsSet, function(point){
+			return !_.contains(changedPointsArray, point);
+		});
+		console.debug( 'lowering tiles above for filtered ' + MatrixUtil.pointsArrayToString(verticalPointsSet) );
+		if(verticalPointsSet.length > 0){
+			emptyPoints = [];
+			pointsAbove = MatrixUtil.getNeighborsAbovePoints(verticalPointsSet);
+			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
+			changedPoints = board.lowerTiles(tilesAbove, verticalPointsSet.length);
+			changedPointsArray = changedPointsArray.concat(changedPoints);
+			var startIndex = tilesAbove.length - changedPoints.length;
+			emptyPoints = MatrixUtil.getFirstNRowPoints(verticalPointsSet, startIndex);
+			if(startIndex > 0){
+				nonFirstRowPoints = nonFirstRowPoints.concat(emptyPoints);
+			}
+			else{
+				changedPoints = board.fillEmptyPoints(emptyPoints);
+				changedPointsArray = changedPointsArray.concat(changedPoints);
+			}
+			console.debug( 'changed points Array ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
+		}
+	});
+
+	nonFirstRowPoints = _.filter(nonFirstRowPoints, function(point){
+		return !_.contains(changedPointsArray, point);
+	});
+	
+	//TODO client to confirm non first row empty points functionality
+	changedPoints = board.fillEmptyPoints(nonFirstRowPoints);
+	changedPointsArray = changedPointsArray.concat(changedPoints);
+	return changedPointsArray; //chainable
+}; //Board.prototype.lowerTilesAbove()
+
+
 Board.prototype.lowerTiles = function(tiles, numRows) {
-	var loweredPoint, board, totalTilesLowered;
-	totalTilesLowered = 0;
+	var loweredPoint, board, changedPoints;
+	changedPoints = [];
 	board = this;
 	_.each( tiles, function(tile) {
 		if( tile && tile.isNonBlockingWithCreature()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
@@ -1583,13 +1666,13 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
 			}
 			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
-			totalTilesLowered++;
+			changedPoints.push(fallingPoint);
 		}
 		else{
 			return false;
 		}
 	});
-	return totalTilesLowered; //chainable
+	return changedPoints; //chainable
 }; //Board.prototype.lowerTiles()
 
 
@@ -1644,74 +1727,48 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 	}
 }
 
-
-Board.prototype.lowerTilesAbove = function(tileTriplet) {
-	var pointsAbove, tilesAbove, emptyPoints, tileArray, pointsArray, board, spriteNumber;	
-	console.debug( 'lowering tiles above ' + Tile.tileArrayToPointsString(tileTriplet) );
-	board = this;
-	emptyPoints = [];
-	pointsArray = Tile.tileArrayToPointsArray(tileTriplet);
-		
-	if( MatrixUtil.isVerticalPointSet(pointsArray) ) {
-		pointsAbove = MatrixUtil.getNeighborsAbovePoints(pointsArray);
-		tilesAbove = this.getCreatureTilesFromPoints(pointsAbove);
-		var totalTilesLowered = this.lowerTiles(tilesAbove, pointsArray.length);
-		var startIndex = tilesAbove.length - totalTilesLowered;
-		emptyPoints = MatrixUtil.getFirstNRowPoints(pointsArray, startIndex);
-	}
-	else {
-		_.each( tileTriplet, function(tile) {
-			tileArray=[];
-			tileArray.push(tile);
-			pointsArray = Tile.tileArrayToPointsArray(tileArray);
-			pointsAbove = MatrixUtil.getNeighborsAbovePoints(pointsArray);
-			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
-			var totalTilesLowered = board.lowerTiles(tilesAbove, pointsArray.length);
-			var startIndex = tilesAbove.length - totalTilesLowered;
-			emptyPoints = emptyPoints.concat(MatrixUtil.getFirstNRowPoints(pointsArray, startIndex));
-		});
-		
-	}
-
-	//add a new random creature tile at each of the empty points
+Board.prototype.fillEmptyPoints = function(emptyPoints) {
+	var changedPoints= [];
+	var spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+	var board = this;
 	_.each( emptyPoints, function(point) {
-		var fallingPoint = board.getFallingPoint(point);
-		while(fallingPoint != point)
-		{
-			spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-			board.addTile(fallingPoint, 'CREATURE', null, spriteNumber);
-			fallingPoint = board.getFallingPoint(point);		
-		}
-		spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
-		board.addTile(point, 'CREATURE', null, spriteNumber);
+		//var col = point[0];
+		//var row = point[1] + 1;
+		//var tile = board.creatureTileMatrix[col][row];
+		//if(tile && tile.isPlain()){
+			var fallingPoint = board.getFallingPoint(point);
+			while(fallingPoint != point){
+				board.addTile(fallingPoint, 'CREATURE', null, spriteNumber);
+				changedPoints.push(fallingPoint);
+				fallingPoint = board.getFallingPoint(point);
+			}
+			board.addTile(point, 'CREATURE', null, spriteNumber);
+			changedPoints.push(point);
+		//}
 	});
-	return this; //chainable
-}; //Board.prototype.lowerTilesAbove()
+	return changedPoints;
+}
 
-// run an animation removing a matching tile triplet and shifting down the creature tiles above the triplet
+// run an animation removing a matching tile triplet
 Board.prototype.removeTriplets = function(tileTriplets) {
 	var board;
 	board = this;
-	tileTriplets = _.map( tileTriplets, function(tileTriplet) {
-		tileTriplet = board.filterAlreadyRemovedTiles(tileTriplet);
+	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
 		board.sounds['sound-match-01'].play();
-		_.each( tileTriplet, function(tile) {
-			board.removeTile(tile);
-			tile.clear();
-		});
-		board.lowerTilesAbove(tileTriplet);
-		return tileTriplet;
+		board.removeTiles(tileTriplet);
 	});
-	return tileTriplets; //chainable
+	return this; //chainable
 }; //Board.prototype.removeTriplets
 
-Board.prototype.filterAlreadyRemovedTiles = function(tileTriplet) {
-	var filterdArray = _.filter(tileTriplet, function(tile){
-		return !tile.isPlain();
+Board.prototype.removeTiles = function(tiles) {
+	var board;
+	board = this;
+	_.each( tiles, function(tile) {
+		board.removeTile(tile);
+		tile.clear();
 	});
-	return filterdArray;
-};
+}
 
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {
 	var tempCoordinates/*, deferred*/;
