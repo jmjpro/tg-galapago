@@ -1261,7 +1261,7 @@ Board.prototype.handleTriplets = function(tile) {
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
-			board.removeTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocoonedtiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
@@ -1627,6 +1627,7 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 		if(verticalPointsSet.length > 0){
 			emptyPoints = [];
 			pointsAbove = MatrixUtil.getNeighborsAbovePoints(verticalPointsSet);
+			board.removeTiles(board.getCreatureTilesFromPoints(verticalPointsSet));
 			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
 			changedPoints = board.lowerTiles(tilesAbove, verticalPointsSet.length);
 			changedPointsArray = changedPointsArray.concat(changedPoints);
@@ -1689,10 +1690,7 @@ Board.prototype.getFallingPoint = function(loweredPoint) {
 	if(tileToBeReplaced === null){
 		return this.getLeftRightFallingPoint(loweredPoint, col, row);
 	}
-	if(tileToBeReplaced.isBlocked() || tileToBeReplaced.isCocooned()){
-		return loweredPoint;
-	}
-	else if (tileToBeReplaced.isPlain()){
+	if (tileToBeReplaced.isPlain()){
 		return this.getFallingPoint(tileToBeReplaced.coordinates);
 	}
 	else{
@@ -1759,7 +1757,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
 		board.sounds['sound-match-01'].play();
-		board.removeTiles(tileTriplet);
+		board.clearTiles(tileTriplet);
 	});
 	return this; //chainable
 }; //Board.prototype.removeTriplets
@@ -1769,6 +1767,13 @@ Board.prototype.removeTiles = function(tiles) {
 	board = this;
 	_.each( tiles, function(tile) {
 		board.removeTile(tile);
+	});
+}
+
+Board.prototype.clearTiles = function(tiles) {
+	var board;
+	board = this;
+	_.each( tiles, function(tile) {
 		tile.clear();
 	});
 }
