@@ -43,7 +43,7 @@ SpriteSheet.prototype.getSprite = function (matrixCell) {
 	return spriteData;
 };
 
-SpriteSheet.prototype.getSpriteNew = function (matrixCell) {
+SpriteSheet.prototype.getSpriteNew = function (matrixCell, degreesToRotate) {
 	var spriteData, x, y, width, height, col, row, numCols, numRows;
 	col = matrixCell[0];
 	row = matrixCell[1];
@@ -64,8 +64,14 @@ SpriteSheet.prototype.getSpriteNew = function (matrixCell) {
 	this._canvas.width = width;
 	this._canvas.height = height;
 	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
-	var savedImage = new Image()
-	savedImage.src = this._canvas.toDataURL("image/png")
+	var savedImage = new Image();
+	savedImage.src = this._canvas.toDataURL("image/png");
+	if(degreesToRotate && degreesToRotate > 0){
+		this._ctx.clearRect(0, 0, width, height);
+    	CanvasUtil.canvasRotateImageDirection(this._canvas, this._ctx, savedImage, degreesToRotate);
+		savedImage = new Image();
+		savedImage.src = this._canvas.toDataURL("image/png");
+	}
 	//spriteData = this._ctx.getImageData(0, 0, width, height);
 	//returning the image data here is much faster than toDataURL(), but get/putImageData() don't account for css canvas stretching
 	//http://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
