@@ -106,17 +106,32 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
-	if(tilePrev.coordinates[1] != tile.coordinates[1]){
-		var tileDown, tileUp, tileUpSelected;
+		var tileDown, tileUp, tileUpSelected, tileUpDegreesToRotate, tileDownDegreesToRotate;
 		if(tilePrev.coordinates[1] > tile.coordinates[1]){
 			tileDown = tilePrev;
 			tileUp = tile;
 			tileUpSelected = false;
+			tileUpDegreesToRotate = CanvasUtil.UP_DIRECTION_DEGREE;
 		}
-		else{
+		if(tilePrev.coordinates[1] < tile.coordinates[1]){
 			tileDown = tile;
 			tileUp = tilePrev;
 			tileUpSelected = true;
+			tileUpDegreesToRotate = CanvasUtil.UP_DIRECTION_DEGREE;
+		}
+		if(tilePrev.coordinates[0] > tile.coordinates[0]){
+			tileDown = tilePrev;
+			tileUp = tile;
+			tileUpSelected = false;
+			tileUpDegreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
+			tileDownDegreesToRotate = CanvasUtil.RIGHT_DIRECTION_DEGREE;
+		}
+		if(tilePrev.coordinates[0] < tile.coordinates[0]){
+			tileDown = tile;
+			tileUp = tilePrev;
+			tileUpSelected = true;
+			tileUpDegreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
+			tileDownDegreesToRotate = CanvasUtil.RIGHT_DIRECTION_DEGREE;
 		}
 		var imageId = tileDown.blob.image.id + '_jumps';
 		var rolloverImageSpriteSheet = this[imageId];
@@ -129,12 +144,12 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var interval = setInterval(function(){
 				var image, image1, width, height;
 				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0]);
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
 					width = image.width;
 					height = image.height;
 				}
 				if(rolloverImageSpriteSheet1){
-					image1 = rolloverImageSpriteSheet1.getSpriteNew([LevelAnimation.JUMP_SPRITE_MATRIX[0].length - 2 - (imgCnt * 2), 0]);
+					image1 = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
 					width = image1.width;
 					height = image1.height;
 				}
@@ -163,10 +178,8 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			}, LevelAnimation.JUMP_TIME_INTERVAL);
 			startedAnimation = true;
 		}
-	}
 	return startedAnimation;
 };
-
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
 function RolloverAnimation(layer, board, tile, rolloverImageSpriteSheet){
