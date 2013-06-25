@@ -1256,6 +1256,10 @@ Board.prototype.handleTriplets = function(tile) {
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+		}
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
@@ -1266,7 +1270,7 @@ Board.prototype.handleTriplets = function(tile) {
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
-			//push cocoonedtiles to tiles Array for removal and lowering
+			//push cocooned tiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
 		
@@ -2051,6 +2055,10 @@ Tile.prototype.isPlain = function()  {
 
 Tile.prototype.isNonBlockingWithCreature = function()  {
 	return this.spriteNumber == Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+};
+
+Tile.prototype.isLightning = function()  {
+	return this.blob.creatureType.startsWith('t');
 };
 
 //static

@@ -1,9 +1,10 @@
 /* begin class TileMovedEventProcessorResult */
-function TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles){
+function TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, totalTilesAffectedByLightning){
 	this.matchingTilesSets = matchingTilesSets;
 	this.totalMatchedGoldTiles = totalMatchedGoldTiles;
 	this.totalMatchedBlockingTiles = totalMatchedBlockingTiles;
 	this.totalMatchedCocoonTiles = totalMatchedCocoonTiles;
+	;this.totalTilesAffectedByLightning = totalTilesAffectedByLightning;
 }
 /* end class TileMovedEventProcessorResult */
 
@@ -16,6 +17,7 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 	var totalMatchedGoldTiles = [];
 	var totalMatchedBlockingTiles = [];
 	var totalMatchedCocoonTiles = [];
+	var totalTilesAffectedByLightning = [];
 	var scoreEvents = [];
 	var matchingTilesSets = this.getMatchingTilesSets(tileFocal);
 	var tilesEventProcessor = this;
@@ -27,14 +29,23 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 			totalMatchedBlockingTiles = totalMatchedBlockingTiles.concat(blockedTiles);
 			var cocoonTiles = tilesEventProcessor.getCocoonTiles(matchingTilesSet);
 			totalMatchedCocoonTiles = totalMatchedCocoonTiles.concat(cocoonTiles);
+			var tilesAffectedByLightning = tilesEventProcessor.getTilesAffectedByLightning(matchingTilesSet);
+			totalTilesAffectedByLightning = totalTilesAffectedByLightning.concat(tilesAffectedByLightning);
+			var goldTilesAffectedByLightning = tilesEventProcessor.getGoldTiles(tilesAffectedByLightning);
+			goldTiles = goldTiles.concat(goldTilesAffectedByLightning);
+			totalMatchedGoldTiles = totalMatchedGoldTiles.concat(goldTilesAffectedByLightning);
+			var blockedTilesAffectedByLightning = tilesEventProcessor.getBlockedTiles(tilesAffectedByLightning);
+			blockedTiles = blockedTiles.concat(blockedTilesAffectedByLightning);
+			totalMatchedBlockingTiles = totalMatchedBlockingTiles.concat(blockedTilesAffectedByLightning);
 			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
-				cocoonTiles.length, null, null, false, tilesEventProcessor.board.chainReactionCounter));
+				cocoonTiles.length, totalTilesAffectedByLightning.length, null, false, tilesEventProcessor.board.chainReactionCounter));
 		});
 		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
 		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
 		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
+		totalTilesAffectedByLightning = ArrayUtil.unique(totalTilesAffectedByLightning);
 	}
-	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles);
+	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, totalTilesAffectedByLightning);
 }
 
 TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
@@ -159,5 +170,36 @@ TilesEventProcessor.prototype.getCocoonTiles = function(matchingTilesSet) {
 	});
 	return cocoonTiles;
 };
+
+TilesEventProcessor.prototype.getTilesAffectedByLightning = function(matchingTilesSet) {
+	var tilesAffectedByLightning = [];
+	var row, col, rowIncrementer, colIncrementer;
+	var creatureTile = matchingTilesSet[0];
+	var creatureTile1 = matchingTilesSet[1];
+	var	tileMatrix = this.board.creatureTileMatrix;
+	if(creatureTile.isLightning()){
+		if(creatureTile.coordinates[0] == creatureTile1.coordinates[0]){
+			col = creatureTile.coordinates[0];
+			row = 0;
+			colIncrementer = 0;
+			rowIncrementer = 1;
+		}
+		else{
+			col = 0;
+			row = creatureTile.coordinates[1];
+			colIncrementer = 1;
+			rowIncrementer = 0;	
+		}
+		while(col < tileMatrix.length && row < tileMatrix[col].length){
+			var tile = tileMatrix[col][row];
+			if(tile && !_.contains(matchingTilesSet, tile) && (tile.isBlocked() || tile.isNonBlockingWithCreature())){
+				tilesAffectedByLightning.push(tile);
+			}
+			col += colIncrementer;
+			row += rowIncrementer;	
+		}
+	}
+	return tilesAffectedByLightning;
+}
 
 /* end class TilesEventProcessor */

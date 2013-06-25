@@ -44,10 +44,12 @@ BlobCollection.prototype.addBlobItem= function(tile) {
 
 BlobCollection.prototype.removeBlobItem= function(tile) {
 	var key = tile.blob.image.id;
-	var count = this.blobCollection[key].count;
-	count -- ;
-	this.blobCollection[key].count = count;
-	this.blobItemsCount--;
+	if (key in this.blobCollection) {
+		var count = this.blobCollection[key].count;
+		count -- ;
+		this.blobCollection[key].count = count;
+		this.blobItemsCount--;
+	}
 }
 
 BlobCollection.prototype.display= function(skipDrawingImage) {
