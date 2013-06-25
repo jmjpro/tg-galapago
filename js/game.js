@@ -1257,6 +1257,7 @@ Board.prototype.handleTriplets = function(tile) {
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
 		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 		}
@@ -1850,6 +1851,10 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	//deferred.resolve();
 	//return deferred.promise;
 	return;
+};
+
+Board.prototype.animateLightningStrikeAsync = function(goldTiles) {
+	console.log('Ligthning Struck');
 };
 
 //generate a random number r between 0 and creatureTypes.length - 1
