@@ -908,7 +908,7 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
-	new Powerup(this.level.gameImages);
+	this.powerUp=new Powerup(this.level.gameImages);
 };
 
 /* req 4.4.2
@@ -1254,6 +1254,7 @@ Board.prototype.handleTriplets = function(tile) {
 	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
+	    this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
@@ -1375,7 +1376,8 @@ Board.prototype.handleTileSelect = function(tile) {
 		}).done();
 	}
 	//YJ: two different tiles selected; swap them and look for triplets
-	else if( tile !== tilePrev && this.adjacent(tile, tilePrev) ) {
+
+	else if( tile !== tilePrev && (this.adjacent(tile, tilePrev) || this.powerUp.isFlipFlopSelected()) ) {
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
@@ -1401,6 +1403,9 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.handleTriplets(tile);
 					}
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
+					if(board.powerUp.isFlipFlopSelected()){
+					  board.powerUp.powerUsed();
+					}
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if( board.blobCollection.isEmpty()){
@@ -1494,8 +1499,14 @@ Board.prototype.handleLeftArrow = function() {
 		return this; //chainable
 		}).done();
 	} else {
-		board.displayMenuButton(true);
-		this.hotspot = Board.HOTSPOT_MENU;
+	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
+	    if(this.powerUp.isPowerAchieved()){
+			//this.powerUp.focus();
+			this.powerUp.addListner();
+			//this.powerUp.canvas.focus();
+		}
+		//board.displayMenuButton(true);
+		//this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow
@@ -1517,6 +1528,9 @@ Board.prototype.handleDownArrow = function() {
 		board.setActiveTile(tileDown);
 		return this; //chainable
 		}).done();
+	}else {
+		board.displayMenuButton(true);
+		this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleDownArrow
@@ -2514,6 +2528,7 @@ BobCervantes.prototype.update = function() {
 /* end class BobCervantes */
 
 /* begin class BobCervantes */
+/*
 Powerup.LEFT = 124;
 Powerup.TOP = 232;
 Powerup.MARGIN = 10;
@@ -2552,7 +2567,7 @@ Powerup.prototype.update = function() {
 	top += this.PowerUps_Shuffle_Disabled.height + Powerup.MARGIN;
 	ctx.drawImage( this.PowerUps_Shuffle_Disabled, left, top );
 }; //BobCervantes.prototype.update()
-
+*/
 /* class FileUtil */
 // helper functions for manipulating files and filenames
 function FileUtil() {}
