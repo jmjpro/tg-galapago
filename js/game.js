@@ -1228,7 +1228,7 @@ Board.prototype.removeTile = function(tile) {
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
 	//tile.canvasImage.destroy();
-	if( 'CREATURE' == tile.blob.blobType ) {
+	if( 'CREATURE' == tile.blob.blobType || 'SUPER_FRIEND' == tile.blob.blobType) {
 		tile.spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER;
 	}
 	else {
