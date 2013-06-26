@@ -537,7 +537,7 @@ Level.prototype.getSuperFriendByColorId = function(colorId) {
 	})[0];
 	sfImagePath = Level.SUPER_FRIEND_PATH + sfType + Galapago.IMAGE_PATH_SUFFIX;
 	sfImage = this.getImageByPath(this.superFriendImages, sfImagePath);
-	sf = new SuperFriend(sfImage);
+	sf = new SuperFriend(sfImage, sfType.replace('_friend',''));
 	return sf;
 }; //Level.prototype.getCreatureByColorId
 
@@ -1182,6 +1182,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		tileMatrix[col][row] = tile;
 		layer.clearRect( x, y, width, height );
 		layer.drawImage(tile.blob.image, x, y, width, height);
+		tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	}
 	else {
 		if( 'CREATURE' === blobType ) {
@@ -1261,6 +1262,11 @@ Board.prototype.handleTriplets = function(tile) {
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 		}
+		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
+			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
+			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+		}
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
@@ -1273,6 +1279,9 @@ Board.prototype.handleTriplets = function(tile) {
 			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+		}
+		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 		}
 		
 		board.chainReactionCounter++;
@@ -1318,10 +1327,10 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 	});	
 	_.each(pointsSets, function(pointsSet){
 		var verticalPointsSet = [];
-		var lastTileRow;
+		var lastTileRow = -1;
 		_.each(pointsSet, function(point){
 			if(point){
-				if(lastTileRow && ((lastTileRow + 1) != point[1])){
+				if(lastTileRow > -1 && ((lastTileRow + 1) != point[1])){
 					verticalPointsSets.push(verticalPointsSet);
 					verticalPointsSet = [];
 				}
@@ -1972,6 +1981,16 @@ Tile.prototype.matches = function(that) {
 	return isMatch;
 };
 
+//return true if this tile has the same color superfriend as that tile
+Tile.prototype.matchesSuperFriend = function(that) {
+	var isMatch;
+	isMatch = false;
+	if( that instanceof Tile && that && this.blob.creatureType.indexOf(that.blob.color) > -1) {
+		isMatch = true;
+	}
+	return isMatch;
+};
+
 Tile.prototype.setActiveAsync = function() {
 	var deferred;
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
@@ -2062,8 +2081,12 @@ Tile.prototype.isNonBlockingWithCreature = function()  {
 	return this.spriteNumber == Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
 };
 
-Tile.prototype.isLightning = function()  {
+Tile.prototype.hasLightningCreature = function()  {
 	return this.blob.creatureType.startsWith('t');
+};
+
+Tile.prototype.hasSuperFriend = function()  {
+	return this.blob.blobType === 'SUPER_FRIEND';
 };
 
 //static
@@ -2147,9 +2170,10 @@ function Gold(image) {
 begin class SuperFriend
 SuperFriends has an Image
 */
-function SuperFriend(image) {
+function SuperFriend(image, color) {
 	this.blobType = 'SUPER_FRIEND';
 	this.image = image;
+	this.color = color;
 }
 /* end class SuperFriend */
 
