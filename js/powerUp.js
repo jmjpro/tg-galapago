@@ -248,7 +248,7 @@ Powerup.prototype.focus = function(){
 	console.log('this.shufflerPowerAchieved : '+this.shufflerPowerAchieved);
 	console.log('this.currentFocus : '+this.currentFocus);
 	console.log('this.nextFocus : '+this.nextFocus);
-  if(  (this.flipflopPowerAchieved && this.currentFocus == 0) || (this.nextFocus == Powerup.FLIPFLOP_SELECTED)  ){
+  if(  (this.flipflopPowerAchieved && (this.currentFocus == 0 || this.currentFocus == Powerup.FLIPFLOP_SELECTED)) || (this.nextFocus == Powerup.FLIPFLOP_SELECTED)  ){
 		this.drawFlipFlop(Powerup.POWER_ROLLOVER);
 		this.currentFocus=Powerup.FLIPFLOP_SELECTED;
 		
@@ -264,7 +264,7 @@ Powerup.prototype.focus = function(){
 			this.drawShuffler();
 		}
 		
-  }else if((this.firePowerAchieved && this.currentFocus == 0 ) || (this.nextFocus == Powerup.FIRE_SELECTED) ){
+  }else if((this.firePowerAchieved && (this.currentFocus == 0 || this.currentFocus == Powerup.FIRE_SELECTED)) || (this.nextFocus == Powerup.FIRE_SELECTED) ){
 		if(this.flipflopPowerAchieved){
 			this.drawFlipFlop(Powerup.POWER_ACTIVATED);
 		}else{
@@ -279,7 +279,7 @@ Powerup.prototype.focus = function(){
 			this.drawShuffler();
 		}
 		this.currentFocus=Powerup.FIRE_SELECTED;
-  }else if((this.shufflerPowerAchieved && this.currentFocus == 0) || (this.nextFocus == Powerup.SHUFFLER_SELECTED) ){
+  }else if((this.shufflerPowerAchieved && (this.currentFocus == 0 || this.currentFocus == Powerup.SHUFFLER_SELECTED ) ) || (this.nextFocus == Powerup.SHUFFLER_SELECTED) ){
   
 		if(this.flipflopPowerAchieved){
 			this.drawFlipFlop(Powerup.POWER_ACTIVATED);
