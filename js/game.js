@@ -908,7 +908,7 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
-	this.powerUp=new Powerup(this.level.gameImages);
+	this.powerUp=new Powerup(this.level.gameImages , this);
 };
 
 /* req 4.4.2
@@ -1492,6 +1492,18 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 }; //Board.prototype.handleTileSelect
 
+Board.prototype.shuffleBoard = function() {
+var tileMatrix = this.creatureTileMatrix;
+var board= this;
+_.each(tileMatrix, function(columnArray){
+  _.each(columnArray, function(tile){
+       if(tile && tile.isNonBlockingWithCreature()){
+          board.addTile(tile.coordinates, 'CREATURE', null,Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
+        }
+    });
+  });
+  board.tileActive.setActiveAsync().done();
+}
 Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:

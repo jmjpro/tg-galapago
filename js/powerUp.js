@@ -79,8 +79,9 @@ Powerup.POWER_ROLLOVER= 2;
 Powerup.POWER_PRESSED= 3;
 
 
-function Powerup(images) {
+function Powerup(images,board) {
 	this.initImages(images);
+	this.board=board;
 	this.canvas = $('#' + Powerup.LAYER_POWER_UP)[0];
 	this.layer = $('#' + Powerup.LAYER_POWER_UP)[0].getContext('2d');
 	this.update();
@@ -166,6 +167,8 @@ Powerup.prototype.handleSelect = function(){
 	}else if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
 	    this.powerSelected = Powerup.SHUFFLER_SELECTED;
 		this.drawShuffler(Powerup.POWER_PRESSED);
+		this.board.shuffleBoard();
+		this.powerUsed();
 	}
 }
 
