@@ -1355,12 +1355,12 @@ Board.prototype.handleTileSelect = function(tile) {
 	tilePrev = this.tileSelected;
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
-	if(tile && !tile.isNonBlockingWithCreature()){
+	if((tile && !tile.isNonBlockingWithCreature()) && (!this.powerUp.isFireSelected()) ){
 		return;
 	}
 	
 	//YJ: one tile selected; select it and move on
-	if( tilePrev === null ) {
+	if( (!this.powerUp.isFireSelected()) && tilePrev === null ) {
 		board.tileSelected = tile;
 		tile.setSelectedAsync().then( function() {
 			return;
@@ -1368,7 +1368,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 	//YJ: two different tiles selected; swap them and look for triplets
 
-	else if( tile !== tilePrev && (this.adjacent(tile, tilePrev) || this.powerUp.isFlipFlopSelected()) ) {
+	else if((!this.powerUp.isFireSelected()) &&  tile !== tilePrev && (this.adjacent(tile, tilePrev) || this.powerUp.isFlipFlopSelected()) ) {
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
@@ -1430,6 +1430,35 @@ Board.prototype.handleTileSelect = function(tile) {
 		}).done();
 		board.tileSelected = null;
 		return;
+	}else if(this.powerUp.isFireSelected()){
+		tile.clear();
+		var goldTile = this.getGoldTile(tile);
+		if(goldTile){
+			this.animateGoldRemovalAsync([tile]);
+			this.blobCollection.removeBlobItems([goldTile]);
+		}
+		if(tile.isBlocked() || tile.isCocooned()){
+		    this.blobCollection.removeBlobItems([tile]);
+		}
+		var tileSet = [[tile]];
+		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
+		_.each( changedPointsArray, function( point ) {
+			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
+			if(cahngedTile && !cahngedTile.isPlain()){
+				board.handleTriplets(cahngedTile);
+			}
+		});
+		if( board.scoreEvents.length > 0 ) {
+				board.updateScore();
+				if( board.blobCollection.isEmpty()){
+				  board.setComplete();
+				}
+				//reset grid lines and active tile
+				board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+				board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
+				board.tileActive.setActiveAsync().done();
+		}
+		this.powerUp.powerUsed();	
 	}
 	// same tile selected; unselect it and move on
 	else {
