@@ -1440,6 +1440,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		board.tileSelected = null;
 		return;
 	}else if(this.powerUp.isFireSelected()){
+		this.scoreEvents = [];
+		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
+		this.updateScore();			
 		tile.clear();
 		var goldTile = this.getGoldTile(tile);
 		if(goldTile){
@@ -1999,7 +2002,7 @@ Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
 Tile.WIDTH = 47;
 Tile.HEIGHT = 47;
-Tile.DELAY_FOR_SWAP_MS = 800;
+Tile.DELAY_FOR_SWAP_MS = 1000;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';

@@ -39,7 +39,6 @@ function ScoreEvent(totalTilesMatched,
 					totalCocoonTilesMatched,
 					totalNonEmptyTilesHitByLightning,
 					totalNonEmptyTilesRemoveBySuperFriend,
-					firePowerUsed,
 					chainReactionCounter){
 	this.totalTilesMatched = totalTilesMatched;
 	this.totalGoldTilesMatched = totalGoldTilesMatched;
@@ -47,7 +46,6 @@ function ScoreEvent(totalTilesMatched,
 	this.totalCocoonTilesMatched = totalCocoonTilesMatched;
 	this.totalNonEmptyTilesHitByLightning = totalNonEmptyTilesHitByLightning;
 	this.totalNonEmptyTilesRemoveBySuperFriend = totalNonEmptyTilesRemoveBySuperFriend;
-	this.firePowerUsed = firePowerUsed;
 	this.chainReactionCounter = chainReactionCounter;
 }
 
@@ -68,10 +66,7 @@ ScoreEvent.prototype.score= function() {
 	if(this.totalNonEmptyTilesRemoveBySuperFriend > 0){
 		score += this.totalNonEmptyTilesRemoveBySuperFriend * Score.TILE_REMOVED_BY_SUPER_FRIEND_POINTS;
 	}
-	if(this.firePowerUsed){
-		score += Score.FIREPOWER_POERUP_USED_POINTS;
-	}
-	if(!this.firePowerUsed && (this.totalGoldTilesMatched > 0 || this.totalBlockedTilesMatched > 0)){
+	if(this.totalGoldTilesMatched > 0 || this.totalBlockedTilesMatched > 0){
 		score *= Score.MULTIPLIER_GOLD_OR_BLOCKED_TILE_MATCH; 
 	}
 	if(this.chainReactionCounter > 0){
