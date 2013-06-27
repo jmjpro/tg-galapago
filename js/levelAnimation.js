@@ -1,4 +1,4 @@
-LevelAnimation.JUMP_TIME_INTERVAL=50;
+LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [46, 0], id: '2'}, 
