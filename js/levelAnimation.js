@@ -140,18 +140,32 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		var x = tileUp.getXCoord();
 		var y = tileUp.getYCoord();
 		if(rolloverImageSpriteSheet || rolloverImageSpriteSheet1){
-			var imgCnt = 0
-			var interval = setInterval(function(){
-				var image, image1, width, height;
+			var width, height;
+			var imageArray = [];
+			var imageArray1 = [];
+			var imgCnt = 0;
+			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
+					var image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
+					imageArray.push(image);
 					width = image.width;
 					height = image.height;
 				}
 				if(rolloverImageSpriteSheet1){
-					image1 = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
-					width = image1.width;
-					height = image1.height;
+					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
+					imageArray1.push(image);
+					width = image.width;
+					height = image.height;
+				}	
+			}
+			imgCnt = 0;
+			var interval = setInterval(function(){
+				var image, image1;
+				if(rolloverImageSpriteSheet){
+					image = imageArray[imgCnt];
+				}
+				if(rolloverImageSpriteSheet1){
+					image1 = imageArray1[imgCnt];
 				}
 				layer.clearRect(x, y, width, height);
 				if(tileUpSelected){
