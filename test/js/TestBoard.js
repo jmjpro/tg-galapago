@@ -34,7 +34,7 @@ define([
 			 	expect(returnedCoordinatesArray).to.eql(expectedCoordinatesArray);
 			})
 		});
-		describe('#getVerticalPointsSetsGorHorizontalVerticalAndCocoonMatch', function(){
+		describe('#getVerticalPointsSetsForHorizontalVerticalAndCocoonMatch', function(){
 			it('should return vertical point sets for horizontal, vertical and cocoon match', function(){
 				
 				var expectedCoordinatesArray = [
@@ -54,6 +54,18 @@ define([
 								,getTile([5,3]),getTile([7,4]),getTile([5,6]),getTile([7,7])
 								,getTile([4,4]),getTile([4,6]),getTile([8,6]),getTile([8,4])]
 				];
+				var returnedCoordinatesArray = Board.getVerticalPointsSets(tileSets);
+			 	expect(returnedCoordinatesArray).to.eql(expectedCoordinatesArray);
+			})
+		});
+		describe('#getVerticalPointsSetsRandomTiles', function(){
+			it('should return vertical point sets for horizontal, vertical and cocoon match', function(){
+				
+				var expectedCoordinatesArray = [
+					[[4,0]],
+					[[4,7]]
+				];
+				var tileSets = [[getTile([4,0]),getTile([4,7])]];
 				var returnedCoordinatesArray = Board.getVerticalPointsSets(tileSets);
 			 	expect(returnedCoordinatesArray).to.eql(expectedCoordinatesArray);
 			})
