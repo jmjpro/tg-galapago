@@ -1383,7 +1383,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		}
 
 		tile.setSelectedAsync().then(function() {
-			board.animateJumpCreaturesAsync( tile, tilePrev ).then(function() {
+			board.animateJumpCreaturesAsync( tile, tilePrev, function() {
 				board.swapCreatures( tile, tilePrev );
 				board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 					board.handleTripletsDebugCounter = 0;
@@ -1419,21 +1419,21 @@ Board.prototype.handleTileSelect = function(tile) {
 					else {
 						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 						console.debug( 'no triplet found: undoing last move');
-						board.animateJumpCreaturesAsync( tilePrev, tile ).then(function() {
+						board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
 							board.swapCreatures( tile, tilePrev );
 							board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 								board.setActiveTile(tile);
 							}).done();
 						}, function(error) {
 							console.error(error);
-						}).done();
+						});
 					}
 				}, function(error) {
 					console.error(error);
 				}).done();
 			}, function(error) {
 				console.error(error);
-			}).done();
+			});
 		}, function(error) {
 			console.error(error);
 		}).done();
@@ -1893,22 +1893,14 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 // switch the positions of two creature tiles on the board
 // we pause after a flip to give the player time to view the animation
 // since the flip can be reversed if no triplet is formed after the flip
-Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest) {
+Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest, callback) {
 	var deferred;
-	deferred = Q.defer();
+	//deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
-	var animationStarted = this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest );
-	
-	if (animationStarted) {
-		Q.delay(Tile.DELAY_FOR_SWAP_MS).done(function() {
-			deferred.resolve();
-		});
-	}
-	else{
-		deferred.resolve();
-	}
-	return deferred.promise;
+	this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+		callback();
+	} );
 };
 
 //get the gold tile backing an individual creature tiles
@@ -2014,7 +2006,6 @@ Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
 Tile.WIDTH = 47;
 Tile.HEIGHT = 47;
-Tile.DELAY_FOR_SWAP_MS = 1000;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';

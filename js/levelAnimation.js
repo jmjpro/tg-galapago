@@ -100,7 +100,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 	}
 };
 
-LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev){
+LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev, callback){
 	var startedAnimation = false;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
@@ -188,11 +188,14 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				if(imgCnt == LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 2){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
+					callback();
 				}
 			}, LevelAnimation.JUMP_TIME_INTERVAL);
 			startedAnimation = true;
 		}
-	return startedAnimation;
+		if(!startedAnimation){
+			callback();
+		}
 };
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
