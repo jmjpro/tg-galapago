@@ -1443,13 +1443,25 @@ Board.prototype.handleTileSelect = function(tile) {
 		tile.clear();
 		var goldTile = this.getGoldTile(tile);
 		if(goldTile){
-			this.animateGoldRemovalAsync([tile]);
+			this.animateGoldRemovalAsync([goldTile]);
 			this.blobCollection.removeBlobItems([goldTile]);
 		}
 		if(tile.isBlocked() || tile.isCocooned()){
 		    this.blobCollection.removeBlobItems([tile]);
 		}
 		var tileSet = [[tile]];
+		if(tile.hasSuperFriend()){
+			this.blobCollection.removeBlobItems([tile]);
+			var tilesEventProcessor = new TilesEventProcessor(this);
+			var tilesAffectedBySuperFriend = tilesEventProcessor.getTilesAffectedBySuperFriend([tile],[]);
+			board.clearTiles(tilesAffectedBySuperFriend);
+			tileSet.push(tilesAffectedBySuperFriend);
+			var goldTilesAffectedBySuperFriend = tilesEventProcessor.getGoldTiles(tilesAffectedBySuperFriend);
+			if(goldTilesAffectedBySuperFriend.length){
+				this.animateGoldRemovalAsync(goldTilesAffectedBySuperFriend);
+				this.blobCollection.removeBlobItems(goldTilesAffectedBySuperFriend);
+			}
+		}
 		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
 		_.each( changedPointsArray, function( point ) {
 			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
