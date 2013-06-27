@@ -64,7 +64,7 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 			totalMatchedGoldTiles = totalMatchedGoldTiles.concat(goldTilesAffectedBySuperFriend);
 			// Score
 			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
-				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, false, tilesEventProcessor.board.chainReactionCounter));
+				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, tilesEventProcessor.board.powerUp.isFlipFlopSelected(), tilesEventProcessor.board.chainReactionCounter));
 		});
 		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
 		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
