@@ -1,6 +1,6 @@
 /* begin class Score */
 Score.FONT_SIZE = '26px';
-Score.FONT_NAME = 'Calibri'; //JungleFever
+Score.FONT_NAME = 'JungleFever';
 Score.X = 500;
 Score.Y = 60;
 Score.COLOR = 'white';
