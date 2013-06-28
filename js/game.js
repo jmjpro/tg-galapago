@@ -158,6 +158,8 @@ LevelMap.LEVEL_STATUS_X = 997;
 LevelMap.LEVEL_STATUS_Y = 75;
 LevelMap.LEVEL_NAV_X = 257;
 LevelMap.LEVEL_NAV_Y = 647;
+LevelMap.LEVEL_NAV_BUTTON_WIDTH = 145;
+LevelMap.LEVEL_NAV_BUTTON_MARGIN = 16;
 LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
@@ -225,8 +227,8 @@ LevelMap.prototype.display = function() {
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
+	//showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), LevelMap.LEVEL_NAV_X, LevelMap.LEVEL_NAV_Y);
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -256,10 +258,22 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 }
 
 LevelMap.prototype.showNav = function() {
-}
+	var x = LevelMap.LEVEL_NAV_X;
+	var y = LevelMap.LEVEL_NAV_Y;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_start_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_reset_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_menu_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_quit_map.png"), x, y);
+} //LevelMap.prototype.showNav()
+
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
-	//this.layer.drawImage(this.images.button_play_map, LevelMap.LEVEL_NAV_X, LevelMap.LEVEL_NAV_Y);
+	this.showNav();
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
