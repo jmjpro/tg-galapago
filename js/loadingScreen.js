@@ -7,6 +7,12 @@ ScreenLoader.BACKGROUND_PATH_PREFIX = 'res/img/loading-screen/';
 ScreenLoader.BACKGROUND_PATH_SUFFIX = '.jpg)';
 
 ScreenLoader.mapScreenImageNames = {
+	button_cursor_map: "button_cursor_map.png",
+	button_menu_map: "button_menu_map.png",
+	button_play_map: "button_play_map.png",
+	button_quit_map: "button_quit_map.png",
+	button_reset_map: "button_reset_map.png",
+	button_start_map: "button_start_map.png",
 	green_v:"green_v.png",
 	level_stars_gold:"level_stars_gold.png",
 	level_lock:"level_lock.png",

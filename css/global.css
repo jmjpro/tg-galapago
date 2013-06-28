@@ -35,6 +35,12 @@ canvas.game-layer {
 	top: 0;
 }
 
+#layer-map-animation {
+	position: absolute;
+	left: 643px;
+	top: 0px;
+}
+
 .overlay {
 	visibility: hidden;
 	position: absolute;

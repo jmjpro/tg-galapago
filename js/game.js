@@ -153,8 +153,10 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
-LevelMap.LEVEL_STATUS_X = 957;
-LevelMap.LEVEL_STATUS_Y = 45;
+LevelMap.LEVEL_STATUS_X = 997;
+LevelMap.LEVEL_STATUS_Y = 75;
+LevelMap.LEVEL_NAV_X = 257;
+LevelMap.LEVEL_NAV_Y = 647;
 LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
@@ -218,30 +220,32 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 }; //LevelMap.prototype.loadImages()
 
 LevelMap.prototype.display = function() {	
-	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
+	this.canvas.style.background = 'url(' + 'res/img/map-screen/Map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
-	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX,[630 ,18]);
+	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), LevelMap.LEVEL_NAV_X, LevelMap.LEVEL_NAV_Y);
 };
 
-LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
+LevelMap.prototype.animate = function(image, spriteMatrix){
     var st=new SpriteSheet(image,spriteMatrix);
 	var xIndex =0;
 	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
+	var imageData=st.getSpriteData([xIndex,0]);
 	animationCanvas.style.zIndex = 8;
 	animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
-	}; 
-    animationCanvas.width = Galapago.STAGE_WIDTH;
-	animationCanvas.height = Galapago.STAGE_HEIGHT;
+	};
+	animationCanvas.width = imageData.width;
+	animationCanvas.height = imageData.height;
 	this.animationCanvas = animationCanvas;
 	this.animationLayer =  animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
-		that.animationLayer.clearRect(coordinates[0],coordinates[1],imageData.width,imageData.height);			
-		that.animationLayer.putImageData(imageData,coordinates[0],coordinates[1]);
+	    that.animationLayer.clearRect(0,0,imageData.width,imageData.height);			
+		that.animationLayer.putImageData(imageData,0,0);
 		xIndex=xIndex+1;
 		if(Number(xIndex)>spriteMatrix[0].length-2){
 		  xIndex=0;
@@ -252,6 +256,7 @@ LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
+	//this.layer.drawImage(this.images.button_play_map, LevelMap.LEVEL_NAV_X, LevelMap.LEVEL_NAV_Y);
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -262,7 +267,8 @@ LevelMap.prototype.updateLevelStatus = function() {
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
 	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
 	if(levelScore){
-	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
+		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
+		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
 	}
 	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed");
 	if( this.hotspotLevel.isCompleted ) {
