@@ -874,11 +874,9 @@ function Board() {
 	this.level = null;
 	this.firstTileCoordinates = null;
 
-	this.sounds = [];
-	this.sounds['sound-match-01'] = new Audio();
-	this.sounds['sound-warning'] = new Audio();
-	this.sounds['sound-match-01'].src = 'res/audio/Match_01.mp3';
-	this.sounds['sound-warning'].src = 'res/audio/Warning.mp3';
+	//this.sounds = [];
+	var galAudio = new GalAudio();
+	this.sounds = galAudio.load();
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1365,6 +1363,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
 	if((tile && !tile.isNonBlockingWithCreature()) && (!this.powerUp.isFireSelected()) ){
+		board.sounds['cannot-select'].play();
 		return;
 	}
 	
@@ -1844,7 +1843,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
-		board.sounds['sound-match-01'].play();
+		board.sounds['sound-match-1'].play();
 		board.clearTiles(tileTriplet);
 	});
 	return this; //chainable
@@ -2080,6 +2079,7 @@ Tile.prototype.setSelectedAsync = function() {
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
 	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+	this.board.sounds['select'].play();
 	deferred.resolve();
 	return deferred.promise;
 
