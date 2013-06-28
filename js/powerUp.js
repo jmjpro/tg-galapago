@@ -1,3 +1,4 @@
+// see @Tyler Whitehouse's answer at http://stackoverflow.com/a/11196395/567525
 function PauseableInterval(func, delay , sender){
     this.func = func;
     this.delay = delay;  

@@ -2403,7 +2403,7 @@ MatrixUtil.getChangingPoints = function(pointsArray) {
 /* begin class DangerBar */
 DangerBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 DangerBar.REFRESH_INTERVAL_SEC = 5;
-DangerBar.RATIO_DANGER = 0.85;
+DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.WARNING_SOUND_ID = 'sound-warning';
@@ -2512,10 +2512,10 @@ DangerBar.prototype.update = function() {
 	if( ratio > DangerBar.RATIO_DANGER ) {
 		dangerBar.layer.drawImage( fillNormal, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
 	}
-	else if( ratio <= DangerBar.RATIO_DANGER && this.numTimesBelowDangerRatio === 0 ||
-		dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5 ||
-		dangerBar.timeRemainingMs/1000 <= 5 && dangerBar.timeRemainingMs/1000 > 0) {
-		this.numTimesBelowDangerRatio++;
+	else if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
+		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
+		(dangerBar.timeRemainingMs/1000 <= 5 && dangerBar.timeRemainingMs/1000 > 0) ) {
+		dangerBar.numTimesBelowDangerRatio++;
 		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
 		//dangerBar.layer.drawImage( bottomCapDanger, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, bottomCapDanger.width, bottomCapDanger.height );
 		DangerBar.playWarningSoundRepeated();
@@ -2656,11 +2656,12 @@ if (typeof String.prototype.startsWith !== 'function') {
 function SoundUtil() {}
 
 SoundUtil.playSoundAsync = function(soundElementId, soundLengthSec) {
-	var deferred, selector;
+	var deferred, sound;
 	deferred = Q.defer();
-	selector = '#' + soundElementId;
-	$(selector)[0].addEventListener('ended', function() {SoundUtil[soundElementId] = 'ended';});
-	$(selector)[0].play();
+	//selector = '#' + soundElementId;
+	sound = Galapago.level.board.sounds[soundElementId];
+	sound.addEventListener('ended', function() {SoundUtil[soundElementId] = 'ended';});
+	sound.play();
 	setTimeout(function() {
 		if(SoundUtil[soundElementId] === 'ended') {
 			deferred.resolve();
