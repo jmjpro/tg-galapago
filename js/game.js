@@ -60,6 +60,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 		level.difficulty = levelJson.difficulty;
 		level.creatureColors = levelJson.creatureColors;
 		level.setBgTheme(levelJson.bgTheme);
+		level.bgSubTheme = levelJson.bgSubTheme;
 		level.mapHotspotRegion = levelJson.mapHotspotRegion;
 		if( levelJson.neighbors ) {
 			if( levelJson.neighbors.north ) {
@@ -140,7 +141,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 Galapago.setLevel = function(levelId) {
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
-	console.log( 'theme: ' + this.level.bgTheme );
+	console.log( 'theme: ' + this.level.bgTheme + '_' + this.level.bgSubTheme );
 	this.level.display();
 	Level.registerEventHandlers();
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
@@ -254,6 +255,8 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	this.handle =window.setInterval(cycleSprite,300);
 }
 
+LevelMap.prototype.showNav = function() {
+}
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
 	//this.layer.drawImage(this.images.button_play_map, LevelMap.LEVEL_NAV_X, LevelMap.LEVEL_NAV_Y);
@@ -482,7 +485,7 @@ Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
-Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
+Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
 Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 20;
@@ -494,6 +497,7 @@ function Level(id) {
 	this.id = id;
 	this.name = '';
 	this.bgTheme = '';
+	this.bgSubTheme = '';
 	this.creatureImages = [];
 	this.superFriendImages = [];
 	this.creatureTypes = [];
@@ -556,6 +560,7 @@ Level.prototype.toString = function() {
 	var output;
 	output = 'name: ' + this.name + ', ' +
 			'bgTheme: ' + this.bgTheme + ', ' +
+			'bgSubTheme: ' + this.bgSubTheme + ', ' +
 			'creatureTypes: ' + this.creatureTypes + ', ' +
 			'board: ' + this.board.toString();
 	return output;
@@ -713,8 +718,8 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 		case 'forest':
 			creatureTypes = this.getCreatureSubset(Level.BG_THEME_FOREST_CREATURES);
 			break;
-		case 'mountains':
-			creatureTypes = this.getCreatureSubset(Level.BG_THEME_MOUNTAINS_CREATURES);
+		case 'cave':
+			creatureTypes = this.getCreatureSubset(Level.BG_THEME_CAVE_CREATURES);
 			break;
 	}
 	return creatureTypes;
@@ -800,7 +805,7 @@ Level.prototype.styleCanvas = function() {
 	var canvas, layers;
 
 	canvas = $('#' + Galapago.LAYER_BACKGROUND)[0];
-	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + Galapago.BACKGROUND_PATH_SUFFIX;
+	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 0;
 
 	layers = $('.game-layer');

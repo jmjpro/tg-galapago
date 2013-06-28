@@ -11,7 +11,7 @@
     {
     "name": "Map Screen and Level 1",
     "contents": [
-	 "background/background_beach.jpg",
+	 "background/background_beach_a.jpg",
 	 "progress-bar/danger_bar.png",
 	 "progress-bar/progress_bar.png",
 	 "progress-bar/progress_bar_fill01.png",
