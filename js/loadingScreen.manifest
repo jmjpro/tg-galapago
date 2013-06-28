@@ -86,7 +86,45 @@
 	 "map-screen/strip_bonfire.png",
 	 "map-screen/strip_game_start_arrow.png",
 	 "map-screen/strip_lava_idle.png"
-    ]
-  }],
+    ]},
+  	{
+	  "name": "dialogs",
+      "contents": [
+		"dialog/arrow_down.png",
+		"dialog/arrow_left.png",
+		"dialog/arrow_right.png",
+		"dialog/arrow_up.png",
+		"dialog/bg_large.png",
+		"dialog/bg_regular.png",
+		"dialog/bg_regular_noTitle.png",
+		"dialog/bg_small.png",
+		"dialog/bg_small_noTitle.png",
+		"dialog/button_big_highlight.png",
+		"dialog/button_big_regular.png",
+		"dialog/button_huge_highlight.png",
+		"dialog/button_huge_regular.png",
+		"dialog/button_medium_highlight.png",
+		"dialog/button_medium_regular.png",
+		"dialog/button_small_highlight.png",
+		"dialog/button_small_regular.png",
+		"dialog/drop_down_menu.png",
+		"dialog/keyboard/profiles_name_area.png",
+		"dialog/keyboard/V_dis.png",
+		"dialog/keyboard/V_regular.png",
+		"dialog/keyboard/X_dis.png",
+		"dialog/keyboard/X_regular.png",
+		"dialog/keyboard/keypad_button_delete_pressed.png",
+		"dialog/keyboard/keypad_button_done_pressed.png",
+		"dialog/keyboard/keypad_button_letter_pressed.png",
+		"dialog/keyboard/keypad_button_reset_pressed.png",
+		"dialog/keyboard/keypad_button_space_pressed.png",
+		"dialog/keyboard/keypad_cursor_delete.png",
+		"dialog/keyboard/keypad_cursor_done.png",
+		"dialog/keyboard/keypad_cursor_letter.png",
+		"dialog/keyboard/keypad_cursor_reset.png",
+		"dialog/keyboard/keypad_cursor_space.png",
+		"dialog/keyboard/keypad_regular.png"
+    ]}
+   ],
   "autoDownload": false
 }
