@@ -1278,14 +1278,29 @@ Board.prototype.handleTriplets = function(tile) {
 	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
+		var validMatchWithCollection = false;
 	    this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
+			board.level.audioPlayer.playSuperFriendMatch();
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
+			validMatchWithCollection = true;
+		}
+		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
+			board.level.audioPlayer.playCocoonMatch();
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			//push cocooned tiles to tiles Array for removal and lowering
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			validMatchWithCollection = true;
+		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
 			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+			validMatchWithCollection = true;
 		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
 			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
@@ -1295,23 +1310,16 @@ Board.prototype.handleTriplets = function(tile) {
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
+			validMatchWithCollection = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			board.level.audioPlayer.playGoldOrBlockingMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
+			validMatchWithCollection = true;
 		}
-		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
-			board.level.audioPlayer.playCocoonMatch();
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
-			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
-			//push cocooned tiles to tiles Array for removal and lowering
-			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+		if(!validMatchWithCollection){
+			board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
 		}
-		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
-			board.level.audioPlayer.playSuperFriendMatch();
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
-		}
-		
 		board.chainReactionCounter++;
 		var verticalPointsSets = Board.getVerticalPointsSets(tileSetsToBeRemoved);
 		changedPointsArray  = board.lowerTilesAbove(verticalPointsSets);
@@ -1879,7 +1887,6 @@ Board.prototype.fillEmptyPoints = function(emptyPoints) {
 Board.prototype.removeTriplets = function(tileTriplets) {
 	var board;
 	board = this;
-	board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
 		board.clearTiles(tileTriplet);
