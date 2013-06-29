@@ -29,8 +29,15 @@ AudioPlayer.prototype.play = function(){
 }
 
 AudioPlayer.prototype.playInLoop = function(key){
+	var audioPlayer = this;
 	this.loop = true;
 	this.currentAudio = ScreenLoader.gal.get(key);
+	//keep retrying, assets might be loading;
+	if(!this.currentAudio){
+		setTimeout(function() {
+			audioPlayer.playInLoop(key);
+		}, 1000);
+	}
 	this.keepPlaying();
 }
 
