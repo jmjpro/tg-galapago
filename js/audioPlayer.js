@@ -38,6 +38,11 @@ AudioPlayer.prototype.playInLoop = function(key){
 			audioPlayer.playInLoop(key);
 		}, 1000);
 	}
+	else{
+		this.currentAudio.addEventListener('ended', function() {
+			audioPlayer.keepPlaying();
+		});
+	}
 	this.keepPlaying();
 }
 
@@ -50,9 +55,6 @@ AudioPlayer.prototype.keepPlaying = function(){
 	var audioPlayer = this;
 	var currentAudio = audioPlayer.currentAudio;
 	if(currentAudio && this.loop){
-		currentAudio.addEventListener('ended', function() {
-			audioPlayer.keepPlaying();
-		})
 		setTimeout(function() {
 			currentAudio.play();
 		}, 0);
