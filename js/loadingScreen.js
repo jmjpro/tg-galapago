@@ -52,7 +52,14 @@ ScreenLoader.registerEvent = function(){
 	});
 	this.gal.onLoaded('Map Screen and Level 1', function(result) {
 		if (result.success) {
-			 screenLoader.progressBar.loaded(result);	  
+			 screenLoader.progressBar.loaded(result);
+			 ScreenLoader.gal.download('allLevels');	  
+		}
+	});
+	this.gal.onLoaded('allLevels', function(result) {
+		if (result.success) {
+			alert("loaded");
+			 console.debug('allLevels content loaded');	  
 		}
 	});
 }

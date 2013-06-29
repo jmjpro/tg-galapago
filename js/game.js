@@ -52,9 +52,10 @@ function Galapago() {
 
 Galapago.setLevelsFromJson = function (levelsJson) {
 	var level;
-
+	var audioPlayer = new AudioPlayer();
 	_.each( levelsJson.levels, function(levelJson) {
 		level = Level.findById(levelJson.id);
+		level.audioPlayer = audioPlayer;
 		level.levelConfig = levelJson;
 		level.name = levelJson.name;
 		level.difficulty = levelJson.difficulty;
@@ -502,6 +503,7 @@ function Level(id) {
 	this.layerBackground = null;
 	this.neighbors = {};
 	this.levelAnimation = new LevelAnimation();
+	this.audioPlayer = null;
 }
 
 Level.prototype.getGold = function() {
@@ -1271,15 +1273,18 @@ Board.prototype.handleTriplets = function(tile) {
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 		}
 		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
+			board.level.audioPlayer.playGoldOrBlockingMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
+			board.level.audioPlayer.playCocoonMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 		}
 		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
+			board.level.audioPlayer.playSuperFriendMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 		}
 		
@@ -1363,10 +1368,12 @@ Board.prototype.handleTileSelect = function(tile) {
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
 	if((tile && !tile.isNonBlockingWithCreature()) && (!this.powerUp.isFireSelected()) ){
-		board.sounds['cannot-select'].play();
+		//board.sounds['cannot-select'].play();
+		this.level.audioPlayer.playInvalidTileSelect();
 		return;
 	}
 	
+	this.level.audioPlayer.playTileSelect();
 	//YJ: one tile selected; select it and move on
 	if( (!this.powerUp.isFireSelected()) && tilePrev === null ) {
 		board.tileSelected = tile;
@@ -1377,6 +1384,9 @@ Board.prototype.handleTileSelect = function(tile) {
 	//YJ: two different tiles selected; swap them and look for triplets
 
 	else if((!this.powerUp.isFireSelected()) &&  tile !== tilePrev && (this.adjacent(tile, tilePrev) || this.powerUp.isFlipFlopSelected()) ) {
+		if(this.powerUp.isFlipFlopSelected()){
+			this.level.audioPlayer.playFlipFlopSwap();
+		}
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
@@ -1408,7 +1418,8 @@ Board.prototype.handleTileSelect = function(tile) {
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if( board.blobCollection.isEmpty()){
-						  board.setComplete();
+							board.level.audioPlayer.playLevelWon();
+							board.setComplete();
 						}
 						//reset grid lines and active tile
 						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1416,6 +1427,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.tileActive.setActiveAsync().done();
 					}
 					else {
+						board.level.audioPlayer.playInvalidSwap();
 						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 						console.debug( 'no triplet found: undoing last move');
 						board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
@@ -1439,6 +1451,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		board.tileSelected = null;
 		return;
 	}else if(this.powerUp.isFireSelected()){
+		this.level.audioPlayer.playFirePowerUsed();
 		this.scoreEvents = [];
 		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
 		this.updateScore();			
@@ -1474,7 +1487,8 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
 				if( board.blobCollection.isEmpty()){
-				  board.setComplete();
+					board.level.audioPlayer.playLevelWon();
+					board.setComplete();
 				}
 				//reset grid lines and active tile
 				board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1841,9 +1855,9 @@ Board.prototype.fillEmptyPoints = function(emptyPoints) {
 Board.prototype.removeTriplets = function(tileTriplets) {
 	var board;
 	board = this;
+	board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
-		board.sounds['sound-match-1'].play();
 		board.clearTiles(tileTriplet);
 	});
 	return this; //chainable
@@ -1914,6 +1928,7 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
 	//deferred = Q.defer();
 	board = this;
+	board.level.audioPlayer.playGoldOrBlockingMatch();
 	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
 		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight() );
@@ -1924,6 +1939,7 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 };
 
 Board.prototype.animateLightningStrikeAsync = function(goldTiles) {
+	this.level.audioPlayer.playLightningStrike();
 	console.log('Ligthning Struck');
 };
 

@@ -84,21 +84,38 @@ GAL.prototype.download = function(bundleName) {
     }
  
     var key = bundle[index];
-    // Get the full url to the asset.
-    var url = that.manifest.assetRoot + key;
- 
-    var image = new Image();
+    if(!(key in that.lookupTable)){
+      // Get the full url to the asset.
+      var audioExts = that.manifest.audioExts;
+      var keyArray = key.split(".");
+      if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
+        var url = that.manifest.assetRootAudio + key;
+        var audio = new Audio();
+        audio.addEventListener('canplaythrough', function() {
+          that.lookupTable[key] = audio;
+          fireCallback_(that.progress, bundleName, {
+            current: index + 1,
+            total: bundle.length
+          });
+          loop(index + 1);
+        },false);
+        audio.src = url;
+        audio.id = key;
+      }else{
+        var url = that.manifest.assetRootImage + key;
+        var image = new Image();
         image.onload =function() {
-                that.lookupTable[key] = image;
-        fireCallback_(that.progress, bundleName, {
-        current: index + 1,
-        total: bundle.length
-            });
-                loop(index + 1);
-           }
-    image.src = url;
-    image.id = key;
- 
+          that.lookupTable[key] = image;
+          fireCallback_(that.progress, bundleName, {
+            current: index + 1,
+            total: bundle.length
+          });
+          loop(index + 1);
+        }
+        image.src = url;
+        image.id = key;
+      }
+    }
   })(0);
 };
  
