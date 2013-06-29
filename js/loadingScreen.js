@@ -7,6 +7,12 @@ ScreenLoader.BACKGROUND_PATH_PREFIX = 'res/img/loading-screen/';
 ScreenLoader.BACKGROUND_PATH_SUFFIX = '.jpg)';
 
 ScreenLoader.mapScreenImageNames = {
+	button_cursor_map: "button_cursor_map.png",
+	button_menu_map: "button_menu_map.png",
+	button_play_map: "button_play_map.png",
+	button_quit_map: "button_quit_map.png",
+	button_reset_map: "button_reset_map.png",
+	button_start_map: "button_start_map.png",
 	green_v:"green_v.png",
 	level_stars_gold:"level_stars_gold.png",
 	level_lock:"level_lock.png",
@@ -69,9 +75,9 @@ ProgressBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 ProgressBar.PROGRESS_BAR_Width = 475;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
-ProgressBar.LOADING_MESSAGE_TOP = 560;
+ProgressBar.LOADING_MESSAGE_TOP = 565;
 ProgressBar.LOADING_MESSAGE_LEFT =555;
-ProgressBar.CLICK_MESSAGE_LEFT =500;
+ProgressBar.CLICK_MESSAGE_LEFT =415;
 
 function ProgressBar(layerBackground,gameMode){
 	this.layerBackground = layerBackground;	
@@ -113,7 +119,7 @@ ProgressBar.prototype.drawImages = function(progressBar,images) {
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	this.layerBackground.drawImage( loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height );
 	
-	this.layer.font = '32pt Calibri';
+	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);
@@ -128,7 +134,7 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
-	this.layer.font = '32pt Calibri';
+	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...', ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
 	this.showCopywrite();
@@ -143,7 +149,7 @@ ProgressBar.prototype.loaded = function(result) {
 	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
-	this.layer.font = '32pt Calibri';
+	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
 	this.showCopywrite();
@@ -152,7 +158,7 @@ ProgressBar.prototype.loaded = function(result) {
 };
 
 ProgressBar.prototype.showCopywrite =function(){
-	this.layer.font='13pt Arial'
+	this.layer.font='13pt ArialBold'
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
 	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);

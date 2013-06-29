@@ -61,6 +61,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 		level.difficulty = levelJson.difficulty;
 		level.creatureColors = levelJson.creatureColors;
 		level.setBgTheme(levelJson.bgTheme);
+		level.bgSubTheme = levelJson.bgSubTheme;
 		level.mapHotspotRegion = levelJson.mapHotspotRegion;
 		if( levelJson.neighbors ) {
 			if( levelJson.neighbors.north ) {
@@ -141,7 +142,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 Galapago.setLevel = function(levelId) {
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
-	console.log( 'theme: ' + this.level.bgTheme );
+	console.log( 'theme: ' + this.level.bgTheme + '_' + this.level.bgSubTheme );
 	this.level.display();
 	Level.registerEventHandlers();
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
@@ -154,8 +155,12 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
-LevelMap.LEVEL_STATUS_X = 957;
-LevelMap.LEVEL_STATUS_Y = 45;
+LevelMap.LEVEL_STATUS_X = 997;
+LevelMap.LEVEL_STATUS_Y = 75;
+LevelMap.LEVEL_NAV_X = 257;
+LevelMap.LEVEL_NAV_Y = 647;
+LevelMap.LEVEL_NAV_BUTTON_WIDTH = 145;
+LevelMap.LEVEL_NAV_BUTTON_MARGIN = 16;
 LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
@@ -165,8 +170,8 @@ LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 LevelMap.MAX_DIFFICULTY = 5;
-LevelMap.LEVEL_STATUS_FONT_SIZE = '22px';
-LevelMap.LEVEL_STATUS_FONT_NAME = 'Calibri';
+LevelMap.LEVEL_STATUS_FONT_SIZE = '17px';
+LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
 LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 //TODO: define this in a JSON config file
 LevelMap.STAR_SPRITE_MATRIX = [
@@ -219,30 +224,32 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 }; //LevelMap.prototype.loadImages()
 
 LevelMap.prototype.display = function() {	
-	this.canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + 'map' + Galapago.BACKGROUND_PATH_SUFFIX;
+	this.canvas.style.background = 'url(' + 'res/img/map-screen/Map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
-	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX,[630 ,18]);
+	//showNav();
+	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 };
 
-LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
+LevelMap.prototype.animate = function(image, spriteMatrix){
     var st=new SpriteSheet(image,spriteMatrix);
 	var xIndex =0;
 	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
+	var imageData=st.getSpriteData([xIndex,0]);
 	animationCanvas.style.zIndex = 8;
 	animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
-	}; 
-    animationCanvas.width = Galapago.STAGE_WIDTH;
-	animationCanvas.height = Galapago.STAGE_HEIGHT;
+	};
+	animationCanvas.width = imageData.width;
+	animationCanvas.height = imageData.height;
 	this.animationCanvas = animationCanvas;
 	this.animationLayer =  animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
-		that.animationLayer.clearRect(coordinates[0],coordinates[1],imageData.width,imageData.height);			
-		that.animationLayer.putImageData(imageData,coordinates[0],coordinates[1]);
+	    that.animationLayer.clearRect(0,0,imageData.width,imageData.height);			
+		that.animationLayer.putImageData(imageData,0,0);
 		xIndex=xIndex+1;
 		if(Number(xIndex)>spriteMatrix[0].length-2){
 		  xIndex=0;
@@ -251,8 +258,23 @@ LevelMap.prototype.animate = function(image , spriteMatrix , coordinates ){
 	this.handle =window.setInterval(cycleSprite,300);
 }
 
+LevelMap.prototype.showNav = function() {
+	var x = LevelMap.LEVEL_NAV_X;
+	var y = LevelMap.LEVEL_NAV_Y;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_start_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_reset_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_menu_map.png"), x, y);
+	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
+	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_quit_map.png"), x, y);
+} //LevelMap.prototype.showNav()
+
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
+	this.showNav();
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -263,7 +285,8 @@ LevelMap.prototype.updateLevelStatus = function() {
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
 	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
 	if(levelScore){
-	this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+150, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+85);
+		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
+		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
 	}
 	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed");
 	if( this.hotspotLevel.isCompleted ) {
@@ -477,7 +500,7 @@ Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
-Level.BG_THEME_MOUNTAINS_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
+Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
 Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 20;
@@ -489,6 +512,7 @@ function Level(id) {
 	this.id = id;
 	this.name = '';
 	this.bgTheme = '';
+	this.bgSubTheme = '';
 	this.creatureImages = [];
 	this.superFriendImages = [];
 	this.creatureTypes = [];
@@ -552,6 +576,7 @@ Level.prototype.toString = function() {
 	var output;
 	output = 'name: ' + this.name + ', ' +
 			'bgTheme: ' + this.bgTheme + ', ' +
+			'bgSubTheme: ' + this.bgSubTheme + ', ' +
 			'creatureTypes: ' + this.creatureTypes + ', ' +
 			'board: ' + this.board.toString();
 	return output;
@@ -709,8 +734,8 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 		case 'forest':
 			creatureTypes = this.getCreatureSubset(Level.BG_THEME_FOREST_CREATURES);
 			break;
-		case 'mountains':
-			creatureTypes = this.getCreatureSubset(Level.BG_THEME_MOUNTAINS_CREATURES);
+		case 'cave':
+			creatureTypes = this.getCreatureSubset(Level.BG_THEME_CAVE_CREATURES);
 			break;
 	}
 	return creatureTypes;
@@ -796,7 +821,7 @@ Level.prototype.styleCanvas = function() {
 	var canvas, layers;
 
 	canvas = $('#' + Galapago.LAYER_BACKGROUND)[0];
-	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + Galapago.BACKGROUND_PATH_SUFFIX;
+	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 0;
 
 	layers = $('.game-layer');

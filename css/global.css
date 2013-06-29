@@ -1,7 +1,19 @@
 @font-face {
   font-family: 'JungleFever';
-  src: url('../res/fonts/JUNGLEFE.TTF');
-  src: local('☺'), url('../res/fonts/JUNGLEFE.TTF') format('truetype');
+  src: url('../res/fonts/JungleFever.ttf');
+  src: local('☺'), url('../res/fonts/JungleFever.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('../res/fonts/arial.ttf');
+  src: local('☺'), url('../res/fonts/arial.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ArialBold';
+  src: url('../res/fonts/arialbd.ttf');
+  src: local('☺'), url('../res/fonts/arialbd.ttf') format('truetype');
 }
 
 .jungle {
@@ -33,6 +45,12 @@ canvas.game-layer {
 	position: absolute;
 	left: 0;
 	top: 0;
+}
+
+#layer-map-animation {
+	position: absolute;
+	left: 643px;
+	top: 0px;
 }
 
 .overlay {

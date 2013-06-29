@@ -1,5 +1,5 @@
 BlobCollection.FONT_SIZE = '20px';
-BlobCollection.FONT_NAME = 'Calibri'; //JungleFever
+BlobCollection.FONT_NAME = 'JungleFever';
 BlobCollection.FONT_COLOR = 'white';
 BlobCollection.ITEM_Y = 662;
 BlobCollection.ITEM_WIDTH = 47;
