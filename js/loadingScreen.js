@@ -64,8 +64,8 @@ ScreenLoader.registerEvent = function(){
 	});
 	this.gal.onLoaded('allLevels', function(result) {
 		if (result.success) {
-			alert("loaded");
-			 console.debug('allLevels content loaded');	  
+			//alert("loaded");
+			console.debug('allLevels content loaded');	  
 		}
 	});
 }

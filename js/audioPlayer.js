@@ -7,6 +7,7 @@ function AudioPlayer(){
 	});
 	this.queue = PriorityQueue({low:true});
 	this.currentAudio = null;
+	this.loop = false;
 }
 
 AudioPlayer.prototype.play = function(){
@@ -24,6 +25,30 @@ AudioPlayer.prototype.play = function(){
 				audio.play();
 			}, 0);
 		}
+	}
+}
+
+AudioPlayer.prototype.playInLoop = function(key){
+	this.loop = true;
+	this.currentAudio = ScreenLoader.gal.get(key);
+	this.keepPlaying();
+}
+
+AudioPlayer.prototype.stopLoop = function(key){
+	this.currentAudio = null;
+	this.loop = false;
+}
+
+AudioPlayer.prototype.keepPlaying = function(){
+	var audioPlayer = this;
+	var currentAudio = audioPlayer.currentAudio;
+	if(currentAudio && this.loop){
+		currentAudio.addEventListener('ended', function() {
+			audioPlayer.keepPlaying();
+		})
+		setTimeout(function() {
+			currentAudio.play();
+		}, 0);
 	}
 }
 
@@ -97,6 +122,8 @@ AudioPlayer.prototype.playGameOver = function(){
 AudioPlayer.prototype.playTimeWarning = function(){
 	var key = "Warning.mp3";
 	this.queue.push(key, this.priorities[key]);
+	this.queue.push(key, this.priorities[key]);
+	this.queue.push(key, this.priorities[key]);
 	this.play();
 }
 
@@ -131,14 +158,24 @@ AudioPlayer.prototype.playShufflePowerUsed = function(){
 	this.play();
 }
 
-AudioPlayer.prototype.playClickSound = function(){
-	var key = "click.mp3";
+AudioPlayer.prototype.playClick = function(){
+	var key = "Click.mp3";
 	this.queue.push(key, this.priorities[key]);
 	this.play();
 }
 
-AudioPlayer.prototype.playBounceSound = function(){
+AudioPlayer.prototype.playBounce = function(){
 	var key = "MahJong_PieceClack02.mp3";
 	this.queue.push(key, this.priorities[key]);
 	this.play();
+}
+
+AudioPlayer.prototype.playVolcanoLoop = function(){
+	var key = "Volcano_01.mp3";
+	this.playInLoop(key);
+}
+
+AudioPlayer.prototype.playVolcanoEruptionLoop = function(){
+	var key = "Volcano_Eruption.mp3";
+	this.playInLoop(key);
 }

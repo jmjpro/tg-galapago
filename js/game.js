@@ -52,10 +52,8 @@ function Galapago() {
 
 Galapago.setLevelsFromJson = function (levelsJson) {
 	var level;
-	var audioPlayer = new AudioPlayer();
 	_.each( levelsJson.levels, function(levelJson) {
 		level = Level.findById(levelJson.id);
-		level.audioPlayer = audioPlayer;
 		level.levelConfig = levelJson;
 		level.name = levelJson.name;
 		level.difficulty = levelJson.difficulty;
@@ -81,12 +79,14 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(gameMode) {
+	var audioPlayer = new AudioPlayer();
 	var levelTemp, level, levelIt;
 	Galapago.gameMode = gameMode;
 	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
+		levelTemp.audioPlayer = audioPlayer;
 		Galapago.levels.push(levelTemp);
 	}
 	Galapago.loadJsonAsync(Galapago.CONFIG_FILE_PATH).then(function(data) {
@@ -192,6 +192,7 @@ function LevelMap(level) {
 	this.levelCounter = 0;
 	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
+	this.audioPlayer = level.audioPlayer;
 } //LevelMap constructor
 
 LevelMap.prototype.initImages = function( instance, images ) {
@@ -230,6 +231,7 @@ LevelMap.prototype.display = function() {
 	this.canvas.focus();
 	//showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
+	this.audioPlayer.playVolcanoLoop();
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -397,6 +399,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	this.animationCanvas.onclick=null;
 	this.animationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
+	this.audioPlayer.stopLoop();
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
@@ -709,7 +712,7 @@ Level.prototype.display = function() {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
 		level.board.setActiveTile();
-		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.audioPlayer);
 		console.debug(level.toString());
 
 		level.board.addPowerups();
@@ -900,10 +903,6 @@ function Board() {
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;
 	this.firstTileCoordinates = null;
-
-	//this.sounds = [];
-	var galAudio = new GalAudio();
-	this.sounds = galAudio.load();
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1398,7 +1397,6 @@ Board.prototype.handleTileSelect = function(tile) {
 		return;
 	}
 	
-	this.level.audioPlayer.playTileSelect();
 	//YJ: one tile selected; select it and move on
 	if( (!this.powerUp.isFireSelected()) && tilePrev === null ) {
 		board.tileSelected = tile;
@@ -1533,6 +1531,7 @@ Board.prototype.handleTileSelect = function(tile) {
 Board.prototype.shuffleBoard = function() {
 var tileMatrix = this.creatureTileMatrix;
 var board= this;
+board.level.audioPlayer.playShufflePowerUsed();
 _.each(tileMatrix, function(columnArray){
   _.each(columnArray, function(tile){
        if(tile && tile.isNonBlockingWithCreature()){
@@ -2120,7 +2119,7 @@ Tile.prototype.setSelectedAsync = function() {
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
 	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	this.board.sounds['select'].play();
+	this.board.level.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
 
@@ -2447,8 +2446,6 @@ DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
-DangerBar.WARNING_SOUND_ID = 'sound-warning';
-DangerBar.WARNING_SOUND_LENGTH_SEC = 0.7;
 DangerBar.BOTTOM_CAP_TOP = 383;
 DangerBar.PROGRESS_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 173;
@@ -2460,7 +2457,7 @@ DangerBar.FILL_WIDTH = 15;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(layerBackground, imageArray, initialTimeMs) {
+function DangerBar(layerBackground, imageArray, initialTimeMs, audioPlayer) {
 	this.layerBackground = layerBackground;
 	this.layer = $('#' + DangerBar.LAYER_DANGER_BAR)[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
@@ -2481,6 +2478,7 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	*/
 	this.numTimesBelowDangerRatio = 0;
 	this.drawImages();
+	this.audioPlayer = audioPlayer;
 }
 
 //dynamically add properties to the DangerBar for each image
@@ -2559,7 +2557,7 @@ DangerBar.prototype.update = function() {
 		dangerBar.numTimesBelowDangerRatio++;
 		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
 		//dangerBar.layer.drawImage( bottomCapDanger, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, bottomCapDanger.width, bottomCapDanger.height );
-		DangerBar.playWarningSoundRepeated();
+		dangerBar.playWarningSoundRepeated();
 	}
 	else { //timeout
 		//clear the space between the top cap and the bottom cap, including the bottom cap
@@ -2570,11 +2568,8 @@ DangerBar.prototype.update = function() {
 }; //DangerBar.prototype.update()
 
 //req 4.9.11 time warning
-DangerBar.playWarningSoundRepeated = function() {
-	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC).then(function() {
-	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC).then(function() {
-	SoundUtil.playSoundAsync(DangerBar.WARNING_SOUND_ID, DangerBar.WARNING_SOUND_LENGTH_SEC);
-	});}).done();
+DangerBar.prototype.playWarningSoundRepeated = function() {
+	this.audioPlayer.playTimeWarning();
 }; //DangerBar.playWarningSoundRepeated()
 
 /* end class DangerBar */
@@ -2693,23 +2688,3 @@ if (typeof String.prototype.startsWith !== 'function') {
 		return this.slice(0, str.length) === str;
 	};
 }
-
-function SoundUtil() {}
-
-SoundUtil.playSoundAsync = function(soundElementId, soundLengthSec) {
-	var deferred, sound;
-	deferred = Q.defer();
-	//selector = '#' + soundElementId;
-	sound = Galapago.level.board.sounds[soundElementId];
-	sound.addEventListener('ended', function() {SoundUtil[soundElementId] = 'ended';});
-	sound.play();
-	setTimeout(function() {
-		if(SoundUtil[soundElementId] === 'ended') {
-			deferred.resolve();
-		}
-		else {
-			deferred.reject();
-		}
-	}, soundLengthSec * 1000);
-	return deferred.promise;
-}; //SoundUtil.playSoundAsync
