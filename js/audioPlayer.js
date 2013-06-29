@@ -7,6 +7,7 @@ function AudioPlayer(){
 	});
 	this.queue = PriorityQueue({low:true});
 	this.currentAudio = null;
+	this.currentAudioInLoop = null;
 	this.loop = false;
 }
 
@@ -16,10 +17,8 @@ AudioPlayer.prototype.play = function(){
 		var key = audioPlayer.queue.pop();
 		if(key){
 			var audio = ScreenLoader.gal.get(key);
-			audio.addEventListener('ended', function() {
-				audioPlayer.currentAudio = null;
-				audioPlayer.play();
-			})
+			audio.audioPlayer = this;
+			audio.addEventListener('ended', this.playEnded);
 			audioPlayer.currentAudio = audio;
 			setTimeout(function() {
 				audio.play();
@@ -28,35 +27,39 @@ AudioPlayer.prototype.play = function(){
 	}
 }
 
+AudioPlayer.prototype.playEnded = function(){
+	this.audioPlayer.currentAudio = null;
+	this.audioPlayer.play();
+}
+
 AudioPlayer.prototype.playInLoop = function(key){
 	var audioPlayer = this;
 	this.loop = true;
-	this.currentAudio = ScreenLoader.gal.get(key);
+	this.currentAudioInLoop = ScreenLoader.gal.get(key);
 	//keep retrying, assets might be loading;
-	if(!this.currentAudio){
+	if(!this.currentAudioInLoop){
 		setTimeout(function() {
 			audioPlayer.playInLoop(key);
 		}, 1000);
 	}
 	else{
-		this.currentAudio.addEventListener('ended', function() {
-			audioPlayer.keepPlaying();
-		});
+		this.currentAudioInLoop.audioPlayer = this;
+		this.currentAudioInLoop.addEventListener('ended', this.keepPlaying);
+		this.currentAudioInLoop.play();
 	}
-	this.keepPlaying();
 }
 
 AudioPlayer.prototype.stopLoop = function(key){
-	this.currentAudio = null;
+	this.currentAudioInLoop = null;
 	this.loop = false;
 }
 
 AudioPlayer.prototype.keepPlaying = function(){
-	var audioPlayer = this;
-	var currentAudio = audioPlayer.currentAudio;
-	if(currentAudio && this.loop){
+	var audioPlayer = this.audioPlayer;
+	var currentAudioInLoop = audioPlayer.currentAudioInLoop;
+	if(currentAudioInLoop && audioPlayer.loop){
 		setTimeout(function() {
-			currentAudio.play();
+			currentAudioInLoop.play();
 		}, 0);
 	}
 }
