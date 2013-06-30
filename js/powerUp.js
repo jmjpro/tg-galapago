@@ -156,6 +156,7 @@ Powerup.prototype.powerUsed = function(){
  }
  this.update();
  this.powerSelected=0;
+ //this.board.saveBoard(); // auto save state when power is used.
 }
 
 Powerup.prototype.handleSelect = function(){
@@ -330,6 +331,7 @@ Powerup.prototype.updatePowerAchieved = function(){
 		}
 		this.score -= Powerup.POWER_POINTS;
 		this.update();
+		//this.board.saveBoard();
 	}
 
 }

@@ -1104,7 +1104,31 @@ Board.prototype.init = function(tilePositions) {
 
 Board.prototype.build = function(tilePositions) {
 	var colIt, rowIt, coordinates, cellId, cellObject, spriteNumber;
-
+    var restoreLookupString = localStorage.getItem("level"+this.level.id+"restore");
+	var restoreLookup;
+	if(restoreLookupString != undefined){
+	 restoreLookup = JSON.parse(restoreLookupString);
+	 this.score = restoreLookup['score'];
+	 this.drawScore();
+	 var nilCollection = restoreLookup['nilCollection'];
+	 var image ;
+	 var id;
+	 for(var key in nilCollection){
+	    image=null;
+		id=null;
+		var tempimages = [];
+		tempimages=tempimages.concat(this.level.creatureImages, this.level.superFriendImages, this.level.goldImages);
+	    for(var creatureKey in tempimages){
+		 id = tempimages[creatureKey].id;
+		  if(id == nilCollection[key]){
+		     image = tempimages[creatureKey];
+		      break;
+		  }
+		  }
+		  var blobItem = new BlobItem(image, 0);
+		  this.blobCollection.blobCollection[id] = blobItem;
+	 }
+	}
 	//yj: populate the grid
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		for( colIt = 0; colIt < tilePositions[rowIt].length; colIt++ ) {
@@ -1116,6 +1140,16 @@ Board.prototype.build = function(tilePositions) {
 			//because tilePositions is loaded by external code
 			cellId = tilePositions[rowIt][colIt];
 			cellObject = this.parseCell(cellId);
+			if((typeof cellObject.gold != 'undefined') && restoreLookup && restoreLookup[colIt+'_'+rowIt] != undefined ){
+			    cellObject = this.parseCell(restoreLookup[colIt+'_'+rowIt]);
+			}else if( ((typeof cellObject.gold != 'undefined') || (typeof cellObject.blocking != 'undefined') ||
+                (typeof cellObject.cocoon != 'undefined') || (typeof cellObject.superFriend != 'undefined') || cellObject.hasTileOnly) 
+				&&	restoreLookup && restoreLookup[colIt+'_'+rowIt] == undefined	){
+				cellObject = this.parseCell('1');
+				//this.blobCollection.addBlobItem(tile);
+			}
+
+			
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
 				if(null == this.firstTileCoordinates){
@@ -1145,6 +1179,7 @@ Board.prototype.build = function(tilePositions) {
 			}
 		}
 	}
+	
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
 	return;
 }; //Board.prototype.build
@@ -1549,6 +1584,43 @@ _.each(tileMatrix, function(columnArray){
   });
   board.tileActive.setActiveAsync().done();
 }
+
+
+Board.prototype.saveBoard = function() {
+var restoreLookup = {};
+var originalblogPositions = this.level.levelConfig.blobPositions;
+var tileMatrix =this.creatureTileMatrix;
+var gameboard = this;
+var x,y;
+_.each(tileMatrix, function(columnArray){
+  _.each(columnArray, function(tile){
+          if(tile){
+           y =tile.coordinates[0];
+           x=tile.coordinates[1];
+           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() ){
+		      var originalBlogconfig = originalblogPositions[x][y];
+		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isNonBlockingWithCreature()){
+			  restoreLookup[y+'_'+x]='11'; 
+			  }else{
+               restoreLookup[y+'_'+x]=originalBlogconfig; 
+			  }
+            }
+          }
+    })
+ });
+ restoreLookup['score'] = gameboard.score;
+ var blogColl = gameboard.blobCollection.blobCollection;
+ var nilcollections = [];
+    for(var key in blogColl){
+		if(blogColl[key].count == 0 )
+		  nilcollections.push(key);
+	}
+ restoreLookup['nilCollection'] =  nilcollections; 
+ localStorage.setItem("level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
+}
+
+
+
 Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
