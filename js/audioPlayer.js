@@ -52,6 +52,9 @@ AudioPlayer.prototype.playInLoop = function(key){
 }
 
 AudioPlayer.prototype.stopLoop = function(key){
+	if(this.currentAudioInLoop){
+		this.currentAudioInLoop.pause();
+	}
 	this.currentAudioInLoop = null;
 	this.loop = false;
 }

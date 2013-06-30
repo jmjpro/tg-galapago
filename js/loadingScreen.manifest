@@ -14,6 +14,8 @@
 	{
 	    "name": "Map Screen and Level 1",
 	    "contents": [
+	    	"Volcano_01.mp3",
+			"Volcano_Eruption.mp3",
 	 		"background/background_beach_a.jpg",
 			"progress-bar/danger_bar.png",
 			"progress-bar/progress_bar.png",
@@ -156,8 +158,6 @@
 			"Shuffle3.mp3",
 			"SuperMatch.mp3",
 			"Swap.mp3",
-			"Volcano_01.mp3",
-			"Volcano_Eruption.mp3",
 			"Warning.mp3",
 			"Win.mp3"
     	]
