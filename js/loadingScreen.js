@@ -127,17 +127,17 @@ ProgressBar.prototype.drawImages = function(progressBar,images) {
 }; //DangerBar.prototype.drawImages()
 
 ProgressBar.prototype.progress = function(percentdownload) {
-		 
+	var loadingprogressbar = ScreenLoader.gal.get("loading-screen/loading-progress-bar.png");	 
 	var newWidth=  ProgressBar.PROGRESS_BAR_Width*percentdownload;
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png");
-	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
+	this.layer.clearRect(ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height);
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
 	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('LOADING...', ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
-	this.showCopywrite();
+	//this.showCopywrite();
 	
 	//alert((percentdownload*100)+"% ldccccdvvm..");
 };
@@ -152,7 +152,7 @@ ProgressBar.prototype.loaded = function(result) {
 	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
-	this.showCopywrite();
+	//this.showCopywrite();
 	this.isLoadingComplete=true;
 	//this.results=result;
 };
