@@ -2266,7 +2266,7 @@ Tile.prototype.hasLightningCreature = function()  {
 };
 
 Tile.prototype.hasSuperFriend = function()  {
-	return this.blob.blobType === 'SUPER_FRIEND';
+	return this.blob && this.blob.blobType === 'SUPER_FRIEND';
 };
 
 //static
