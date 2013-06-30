@@ -17,12 +17,14 @@ AudioPlayer.prototype.play = function(){
 		var key = audioPlayer.queue.pop();
 		if(key){
 			var audio = ScreenLoader.gal.get(key);
-			audio.audioPlayer = this;
-			audio.addEventListener('ended', this.playEnded);
-			audioPlayer.currentAudio = audio;
-			setTimeout(function() {
-				audio.play();
-			}, 0);
+			if(audio){
+				audio.audioPlayer = this;
+				audio.addEventListener('ended', this.playEnded);
+				audioPlayer.currentAudio = audio;
+				setTimeout(function() {
+					audio.play();
+				}, 0);
+			}
 		}
 	}
 }
