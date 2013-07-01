@@ -7,8 +7,7 @@ DialogMenu.prototype.show = function(board) {
     this.windowKeyHandler= window.onkeydown;
 	window.onkeydown=null;
     this.board=board;
-    this.audioPlayer = board.level.audioPlayer;
-	this.menu.style.visibility = 'visible';
+    this.menu.style.visibility = 'visible';
 	this.registerEvents();
 	//this.menu.focus();
 	//alert($('#game-menu'));
@@ -20,20 +19,18 @@ DialogMenu.prototype.show = function(board) {
 DialogMenu.prototype.registerEvents=function(){
    var dialog = this;
    window.onkeydown = function(e) {
+   		Galapago.audioPlayer.playClick();
 		switch(e.keyCode) { 
 			// User pressed "up" arrow
 			case 38:
-				dialog.audioPlayer.playClick();
 				dialog.navigate('up');
 			    break;
 			// User pressed "down" arrow
 			case 40:
-				dialog.audioPlayer.playClick();
 				dialog.navigate('down');
 			    break;
 			// User pressed "enter"
 			case 13:
-				dialog.audioPlayer.playClick();
 				window.onkeydown = dialog.windowKeyHandler;
 				$("#gmenu ul li a").eq(dialog.currentSelection).click();
 				break;

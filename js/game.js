@@ -80,14 +80,13 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(gameMode) {
-	var audioPlayer = new AudioPlayer();
 	var levelTemp, level, levelIt;
+	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.gameMode = gameMode;
 	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
-		levelTemp.audioPlayer = audioPlayer;
 		Galapago.levels.push(levelTemp);
 	}
 	Galapago.loadJsonAsync(Galapago.CONFIG_FILE_PATH).then(function(data) {
@@ -193,7 +192,6 @@ function LevelMap(level) {
 	this.levelCounter = 0;
 	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
-	this.audioPlayer = level.audioPlayer;
 	this.profile = 'Default';
 } //LevelMap constructor
 
@@ -233,7 +231,7 @@ LevelMap.prototype.display = function() {
 	this.canvas.focus();
 	//showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
-	this.audioPlayer.playVolcanoLoop();
+	Galapago.audioPlayer.playVolcanoLoop();
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -339,7 +337,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
-		levelMap.audioPlayer.playClick();
+		Galapago.audioPlayer.playClick();
 		switch( evt.keyCode ) {
 			case 13: // enter
 				levelMap.handleKeyboardSelect();
@@ -405,7 +403,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	this.animationCanvas.onclick=null;
 	this.animationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
-	this.audioPlayer.stopLoop();
+	Galapago.audioPlayer.stopLoop();
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
@@ -584,7 +582,6 @@ function Level(id) {
 	this.layerBackground = null;
 	this.neighbors = {};
 	this.levelAnimation = new LevelAnimation();
-	this.audioPlayer = null;
 	this.isUnlocked = false;
 }
 
@@ -767,7 +764,7 @@ Level.prototype.display = function() {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
 		level.board.setActiveTile();
-		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.audioPlayer);
+		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 		console.debug(level.toString());
 
 		level.board.addPowerups();
@@ -1395,13 +1392,13 @@ Board.prototype.handleTriplets = function(tile) {
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
 		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
-			board.level.audioPlayer.playSuperFriendMatch();
+			Galapago.audioPlayer.playSuperFriendMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
-			board.level.audioPlayer.playCocoonMatch();
+			Galapago.audioPlayer.playCocoonMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
@@ -1429,13 +1426,13 @@ Board.prototype.handleTriplets = function(tile) {
 			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
-			board.level.audioPlayer.playGoldOrBlockingMatch();
+			Galapago.audioPlayer.playGoldOrBlockingMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
 		if(!validMatchWithCollection){
-			board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
+			Galapago.audioPlayer.playValidMatch(board.chainReactionCounter);
 		}
 		board.chainReactionCounter++;
 		var verticalPointsSets = Board.getVerticalPointsSets(tileSetsToBeRemoved);
@@ -1518,7 +1515,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	dangerBar = board.level.dangerBar;
 	if((tile && !tile.isNonBlockingWithCreature()) && (!this.powerUp.isFireSelected()) ){
 		//board.sounds['cannot-select'].play();
-		this.level.audioPlayer.playInvalidTileSelect();
+		Galapago.audioPlayer.playInvalidTileSelect();
 		return;
 	}
 	
@@ -1533,7 +1530,7 @@ Board.prototype.handleTileSelect = function(tile) {
 
 	else if((!this.powerUp.isFireSelected()) &&  tile !== tilePrev && (this.adjacent(tile, tilePrev) || this.powerUp.isFlipFlopSelected()) ) {
 		if(this.powerUp.isFlipFlopSelected()){
-			this.level.audioPlayer.playFlipFlopSwap();
+			Galapago.audioPlayer.playFlipFlopSwap();
 		}
 		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
@@ -1570,7 +1567,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						   board.collectionModified = false;
 						}
 						if( board.blobCollection.isEmpty()){
-							board.level.audioPlayer.playLevelWon();
+							Galapago.audioPlayer.playLevelWon();
 							board.setComplete();
 						}
 						//reset grid lines and active tile
@@ -1579,7 +1576,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.tileActive.setActiveAsync().done();
 					}
 					else {
-						board.level.audioPlayer.playInvalidSwap();
+						Galapago.audioPlayer.playInvalidSwap();
 						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 						console.debug( 'no triplet found: undoing last move');
 						board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
@@ -1603,7 +1600,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		board.tileSelected = null;
 		return;
 	}else if(this.powerUp.isFireSelected()){
-		this.level.audioPlayer.playFirePowerUsed();
+		Galapago.audioPlayer.playFirePowerUsed();
 		this.scoreEvents = [];
 		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
 		this.updateScore();			
@@ -1643,7 +1640,7 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.collectionModified = false;
 				}
 				if( board.blobCollection.isEmpty()){
-					board.level.audioPlayer.playLevelWon();
+					Galapago.audioPlayer.playLevelWon();
 					board.setComplete();
 				}
 				//reset grid lines and active tile
@@ -1665,7 +1662,7 @@ Board.prototype.handleTileSelect = function(tile) {
 Board.prototype.shuffleBoard = function() {
 var tileMatrix = this.creatureTileMatrix;
 var board= this;
-board.level.audioPlayer.playShufflePowerUsed();
+Galapago.audioPlayer.playShufflePowerUsed();
 _.each(tileMatrix, function(columnArray){
   _.each(columnArray, function(tile){
        if(tile && tile.isNonBlockingWithCreature()){
@@ -2122,7 +2119,7 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
 	//deferred = Q.defer();
 	board = this;
-	board.level.audioPlayer.playGoldOrBlockingMatch();
+	Galapago.audioPlayer.playGoldOrBlockingMatch();
 	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
 		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight() );
@@ -2133,7 +2130,7 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 };
 
 Board.prototype.animateLightningStrikeAsync = function(goldTiles) {
-	this.level.audioPlayer.playLightningStrike();
+	Galapago.audioPlayer.playLightningStrike();
 	console.log('Ligthning Struck');
 };
 
@@ -2289,7 +2286,7 @@ Tile.prototype.setSelectedAsync = function() {
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
 	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	this.board.level.audioPlayer.playTileSelect();
+	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
 
@@ -2627,7 +2624,7 @@ DangerBar.FILL_WIDTH = 15;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(layerBackground, imageArray, initialTimeMs, audioPlayer) {
+function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
 	this.layer = $('#' + DangerBar.LAYER_DANGER_BAR)[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
@@ -2648,7 +2645,6 @@ function DangerBar(layerBackground, imageArray, initialTimeMs, audioPlayer) {
 	*/
 	this.numTimesBelowDangerRatio = 0;
 	this.drawImages();
-	this.audioPlayer = audioPlayer;
 }
 
 //dynamically add properties to the DangerBar for each image
@@ -2739,7 +2735,7 @@ DangerBar.prototype.update = function() {
 
 //req 4.9.11 time warning
 DangerBar.prototype.playWarningSoundRepeated = function() {
-	this.audioPlayer.playTimeWarning();
+	Galapago.audioPlayer.playTimeWarning();
 }; //DangerBar.playWarningSoundRepeated()
 
 /* end class DangerBar */
