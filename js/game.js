@@ -334,6 +334,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
+		levelMap.audioPlayer.playClick();
 		switch( evt.keyCode ) {
 			case 13: // enter
 				levelMap.handleKeyboardSelect();
