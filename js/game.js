@@ -764,7 +764,9 @@ Level.prototype.display = function() {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
 		level.board.setActiveTile();
-		level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+		if( Galapago.gameMode === 'MODE_TIMED') {
+			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+		}
 		console.debug(level.toString());
 
 		level.board.addPowerups();
@@ -1443,7 +1445,7 @@ Board.prototype.handleTriplets = function(tile) {
 		changedPointsArray = ArrayUtil.unique(changedPointsArray);
 		console.debug( 'pointsArray with any duplicates removed ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
 		if( board.blobCollection.isEmpty() ) {
-			if( dangerBar.isRunning() ) {
+			if(dangerBar && dangerBar.isRunning() ) {
 				dangerBar.stop();
 			}
 			//board.setComplete();  // board is not updated with final score yet.
@@ -1532,7 +1534,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		if(this.powerUp.isFlipFlopSelected()){
 			Galapago.audioPlayer.playFlipFlopSwap();
 		}
-		if( Galapago.gameMode === 'MODE_TIMED' && !dangerBar.isRunning() ) {
+		if(dangerBar && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
 
