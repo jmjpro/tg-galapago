@@ -60,6 +60,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 		level.creatureColors = levelJson.creatureColors;
 		level.setBgTheme(levelJson.bgTheme);
 		level.bgSubTheme = levelJson.bgSubTheme;
+		level.unlocksLevels = levelJson.unlocksLevels;
 		level.mapHotspotRegion = levelJson.mapHotspotRegion;
 		if( levelJson.neighbors ) {
 			if( levelJson.neighbors.north ) {
@@ -91,7 +92,7 @@ Galapago.init = function(gameMode) {
 	}
 	Galapago.loadJsonAsync(Galapago.CONFIG_FILE_PATH).then(function(data) {
 		Galapago.setLevelsFromJson(data);
-		level = Level.findById(1);
+		level = LevelMap.getNextLevel();
 		Galapago.levelMap = new LevelMap(level);
 	}, function(status) {
 		console.log('failed to load JSON level config with status ' + status);
@@ -193,6 +194,7 @@ function LevelMap(level) {
 	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
 	this.audioPlayer = level.audioPlayer;
+	this.profile = 'Default';
 } //LevelMap constructor
 
 LevelMap.prototype.initImages = function( instance, images ) {
@@ -293,6 +295,9 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed");
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
+	}
+	else if( this.hotspotLevel.id === 1 || this.hotspotLevel.isUnlocked ) {
+		//don't draw anything
 	}
 	else {
 		this.layer.drawImage(this.images.level_lock, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.level_lock.width, this.images.level_lock.height);
@@ -478,6 +483,52 @@ LevelMap.mapCellsFromJson = function (mapCellsJson) {
 	return mapCells;
 }; //LevelMap.mapCellsFromJson()
 
+LevelMap.getHighestLevelCompleted = function() {
+	var highestLevelCompletedId, highestLevelCompleted, keyIt, levelId, matchResult;
+	highestLevelCompletedId = 0;
+	
+	for (var i = 0; i < localStorage.length; i++){
+		keyIt = localStorage.key(i);
+		if( matchResult = keyIt.match(/^level(\d+)\.completed$/) ) {
+			levelId = matchResult[1];
+			if( parseInt(levelId) > highestLevelCompletedId) {
+				highestLevelCompletedId = levelId;
+				highestLevelCompleted = Level.findById(highestLevelCompletedId);
+				_.each(highestLevelCompleted.unlocksLevels, function( unlockedLevelId ) {
+					Level.findById(unlockedLevelId).isUnlocked = true;
+				});
+			}
+		};
+	}
+
+	console.debug('highest level completed = ' + highestLevelCompletedId);
+	return highestLevelCompleted;
+}; //LevelMap.getHighestLevelCompleted()
+
+// we want to know the level unlocked by the highest level completed;
+// when the highest level completed unlocks multiple levels return the minimum of those levels
+LevelMap.getNextLevel = function() {
+	var highestLevelCompleted, unlockedLevels, nextLevelId;
+	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
+	if( typeof highestLevelCompleted === 'undefined' ) {
+		nextLevelId = 1;
+	}
+	else {
+		unlockedLevels = highestLevelCompleted.unlocksLevels;
+		console.debug('unlocked levels for highest level completed = ' + unlockedLevels);
+		nextLevelId = _.min(unlockedLevels);
+	}
+	return Level.findById(nextLevelId);
+} //LevelMap.getNextLevel()
+
+LevelMap.reset = function() {
+	var keyIt;
+	for (var i = 0; i < localStorage.length; i++) {
+		keyIt = localStorage.key(i);
+		localStorage.removeItem(keyIt);
+	}
+}
+
 /* end class LevelMap */
 
 /* begin class MapCell */
@@ -518,6 +569,7 @@ function Level(id) {
 	this.name = '';
 	this.bgTheme = '';
 	this.bgSubTheme = '';
+	this.unlocksLevels = [];
 	this.creatureImages = [];
 	this.superFriendImages = [];
 	this.creatureTypes = [];
@@ -533,6 +585,7 @@ function Level(id) {
 	this.neighbors = {};
 	this.levelAnimation = new LevelAnimation();
 	this.audioPlayer = null;
+	this.isUnlocked = false;
 }
 
 Level.prototype.getGold = function() {
@@ -913,6 +966,8 @@ function Board() {
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;
 	this.firstTileCoordinates = null;
+	this.collectionModified = false;
+	this.powerAchieved = false;
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1335,7 +1390,7 @@ Board.prototype.handleTriplets = function(tile) {
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		var validMatchWithCollection = false;
-	    this.powerUp.updatePowerup(tileTriplets.length);
+	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
@@ -1343,6 +1398,7 @@ Board.prototype.handleTriplets = function(tile) {
 			board.level.audioPlayer.playSuperFriendMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.level.audioPlayer.playCocoonMatch();
@@ -1351,27 +1407,32 @@ Board.prototype.handleTriplets = function(tile) {
 			//push cocooned tiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
 			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
 			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			board.level.audioPlayer.playGoldOrBlockingMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(!validMatchWithCollection){
 			board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
@@ -1504,6 +1565,10 @@ Board.prototype.handleTileSelect = function(tile) {
 					}
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
+						if(board.collectionModified || board.powerAchieved){
+						   board.saveBoard();
+						   board.collectionModified = false;
+						}
 						if( board.blobCollection.isEmpty()){
 							board.level.audioPlayer.playLevelWon();
 							board.setComplete();
@@ -1573,6 +1638,10 @@ Board.prototype.handleTileSelect = function(tile) {
 		});
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
+				if(board.collectionModified || board.powerAchieved){
+					board.saveBoard();
+					board.collectionModified = false;
+				}
 				if( board.blobCollection.isEmpty()){
 					board.level.audioPlayer.playLevelWon();
 					board.setComplete();
@@ -1583,6 +1652,7 @@ Board.prototype.handleTileSelect = function(tile) {
 				board.tileActive.setActiveAsync().done();
 		}
 		this.powerUp.powerUsed();	
+		this.saveBoard();
 	}
 	// same tile selected; unselect it and move on
 	else {
