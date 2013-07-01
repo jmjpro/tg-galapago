@@ -37,6 +37,7 @@ AudioPlayer.prototype.playEnded = function(){
 AudioPlayer.prototype.playInLoop = function(key){
 	var audioPlayer = this;
 	this.loop = true;
+	audioPlayer.stopLoop();
 	this.currentAudioInLoop = ScreenLoader.gal.get(key);
 	//keep retrying, assets might be loading;
 	if(!this.currentAudioInLoop){
@@ -45,8 +46,7 @@ AudioPlayer.prototype.playInLoop = function(key){
 		}, 1000);
 	}
 	else{
-		this.currentAudioInLoop.audioPlayer = this;
-		this.currentAudioInLoop.addEventListener('ended', this.keepPlaying);
+		this.currentAudioInLoop.loop = true;
 		this.currentAudioInLoop.play();
 	}
 }
@@ -55,19 +55,8 @@ AudioPlayer.prototype.stopLoop = function(key){
 	if(this.currentAudioInLoop){
 		this.currentAudioInLoop.pause();
 	}
-	this.currentAudioInLoop = null;
-	this.loop = false;
 }
 
-AudioPlayer.prototype.keepPlaying = function(){
-	var audioPlayer = this.audioPlayer;
-	var currentAudioInLoop = audioPlayer.currentAudioInLoop;
-	if(currentAudioInLoop && audioPlayer.loop){
-		setTimeout(function() {
-			currentAudioInLoop.play();
-		}, 0);
-	}
-}
 
 AudioPlayer.prototype.playInvalidTileSelect = function(){
 	var key = "Cannot_select.mp3";
