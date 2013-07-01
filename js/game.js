@@ -296,7 +296,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
 	}
-	else if( this.hotspotLevel.isUnlocked ) {
+	else if( this.hotspotLevel.id === 1 || this.hotspotLevel.isUnlocked ) {
 		//don't draw anything
 	}
 	else {
@@ -509,7 +509,7 @@ LevelMap.getHighestLevelCompleted = function() {
 LevelMap.getNextLevel = function() {
 	var highestLevelCompleted, unlockedLevels, nextLevelId;
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
-	if( highestLevelCompleted === null ) {
+	if( typeof highestLevelCompleted === 'undefined' ) {
 		nextLevelId = 1;
 	}
 	else {
