@@ -307,7 +307,7 @@ Powerup.prototype.updatePowerup = function(tripletCount){
   this.timer.reset(this);
   this.score += tripletCount;
   console.log('incrementScore' +this.score );
-  this.updatePowerAchieved();
+  return this.updatePowerAchieved();
 }
 
 Powerup.prototype.decrementScore = function(sender){
@@ -331,8 +331,10 @@ Powerup.prototype.updatePowerAchieved = function(){
 		}
 		this.score -= Powerup.POWER_POINTS;
 		this.update();
+		return true;
 		//this.board.saveBoard();
 	}
+	return false;
 
 }
 

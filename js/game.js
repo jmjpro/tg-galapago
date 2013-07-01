@@ -965,6 +965,8 @@ function Board() {
 	this.handleTripletsDebugCounter = 0;
 	this.level = null;
 	this.firstTileCoordinates = null;
+	this.collectionModified = false;
+	this.powerAchieved = false;
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1387,7 +1389,7 @@ Board.prototype.handleTriplets = function(tile) {
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		var validMatchWithCollection = false;
-	    this.powerUp.updatePowerup(tileTriplets.length);
+	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
@@ -1395,6 +1397,7 @@ Board.prototype.handleTriplets = function(tile) {
 			board.level.audioPlayer.playSuperFriendMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			board.level.audioPlayer.playCocoonMatch();
@@ -1403,27 +1406,32 @@ Board.prototype.handleTriplets = function(tile) {
 			//push cocooned tiles to tiles Array for removal and lowering
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
 			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
 			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
 			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
 			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
 			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			board.level.audioPlayer.playGoldOrBlockingMatch();
 			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
+			board.collectionModified = true;
 		}
 		if(!validMatchWithCollection){
 			board.level.audioPlayer.playValidMatch(board.chainReactionCounter);
@@ -1556,6 +1564,10 @@ Board.prototype.handleTileSelect = function(tile) {
 					}
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
+						if(board.collectionModified || board.powerAchieved){
+						   board.saveBoard();
+						   board.collectionModified = false;
+						}
 						if( board.blobCollection.isEmpty()){
 							board.level.audioPlayer.playLevelWon();
 							board.setComplete();
@@ -1625,6 +1637,10 @@ Board.prototype.handleTileSelect = function(tile) {
 		});
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
+				if(board.collectionModified || board.powerAchieved){
+					board.saveBoard();
+					board.collectionModified = false;
+				}
 				if( board.blobCollection.isEmpty()){
 					board.level.audioPlayer.playLevelWon();
 					board.setComplete();
@@ -1635,6 +1651,7 @@ Board.prototype.handleTileSelect = function(tile) {
 				board.tileActive.setActiveAsync().done();
 		}
 		this.powerUp.powerUsed();	
+		this.saveBoard();
 	}
 	// same tile selected; unselect it and move on
 	else {
