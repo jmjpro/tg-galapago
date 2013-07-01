@@ -432,7 +432,8 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 
 LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
 	var x, y;
-	this.layer.strokeStyle = 'white';
+	this.layer.strokeStyle = 'yellow';
+	this.layer.lineWidth = 5;
 	this.layer.beginPath();
 	this.layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
 	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
@@ -716,6 +717,7 @@ Level.prototype.display = function() {
 		console.debug(level.toString());
 
 		level.board.addPowerups();
+		level.board.displayLevelName();
 		level.board.displayMenuButton(false);
 		level.board.display();
 
@@ -874,6 +876,13 @@ Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
+Board.LEVEL_NAME_X = 600;
+Board.LEVEL_NAME_Y = 60;
+Board.LEVEL_NAME_MAX_WIDTH = 100;
+Board.LEVEL_NAME_MAX_HEIGHT = 30;
+Board.LEVEL_NAME_FONT_SIZE = '30px';
+Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
+Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
 
 function Board() {
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
@@ -913,6 +922,17 @@ Board.prototype.displayBlobCollections = function() {
 	this.blobCollection.initImages(this.level.gameImages);
 	this.blobCollection.display();
 };
+
+Board.prototype.displayLevelName = function() {
+	var layer, levelNameText;
+	layer = this.creatureLayer;
+	layer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
+	layer.font = Board.LEVEL_NAME_FONT_SIZE + ' ' + Board.LEVEL_NAME_FONT_NAME;
+	layer.fillStyle = Board.LEVEL_NAME_FONT_COLOR;
+	levelNameText = this.level.name;
+	levelNameText += ' ' + this.level.id; //TODO for debugging only remove before production!!!
+	layer.fillText(levelNameText, Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y);
+}; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage;
