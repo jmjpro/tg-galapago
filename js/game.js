@@ -83,6 +83,7 @@ Galapago.init = function(gameMode) {
 	var levelTemp, level, levelIt;
 	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.gameMode = gameMode;
+	Galapago.profile = 'profile';
 	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -765,7 +766,17 @@ Level.prototype.display = function() {
 		}
 		level.board.setActiveTile();
 		if( Galapago.gameMode === 'MODE_TIMED') {
+			var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+level.id+"restore");
+			var restoreLookup ,dengerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			if(restoreLookupString != undefined){
+			   restoreLookup = JSON.parse(restoreLookupString);
+			   dengerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+			   if(dengerBarTimeRemaining != undefined){
+				  level.dangerBar.timeRemainingMs  = dengerBarTimeRemaining;
+				  level.dangerBar.start();
+			   }
+			}
 		}
 		console.debug(level.toString());
 
@@ -1179,7 +1190,7 @@ Board.prototype.init = function(tilePositions) {
 
 Board.prototype.build = function(tilePositions) {
 	var colIt, rowIt, coordinates, cellId, cellObject, spriteNumber;
-    var restoreLookupString = localStorage.getItem("level"+this.level.id+"restore");
+    var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore");
 	var restoreLookup;
 	if(restoreLookupString != undefined){
 	 restoreLookup = JSON.parse(restoreLookupString);
@@ -1687,7 +1698,7 @@ _.each(tileMatrix, function(columnArray){
           if(tile){
            y =tile.coordinates[0];
            x=tile.coordinates[1];
-           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() ){
+           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() || tile.hasSuperFriend() ){
 		      var originalBlogconfig = originalblogPositions[x][y];
 		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isNonBlockingWithCreature()){
 			  restoreLookup[y+'_'+x]='11'; 
@@ -1705,8 +1716,11 @@ _.each(tileMatrix, function(columnArray){
 		if(blogColl[key].count == 0 )
 		  nilcollections.push(key);
 	}
- restoreLookup['nilCollection'] =  nilcollections; 
- localStorage.setItem("level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
+ restoreLookup['nilCollection'] =  nilcollections; 	
+ if(gameboard.level.dangerBar && gameboard.level.dangerBar.isRunning()){
+	restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
+  }
+ localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
 }
 
 
