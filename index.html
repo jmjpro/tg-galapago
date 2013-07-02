@@ -29,6 +29,8 @@
 		<script src="js/powerUp.js"></script>
 		<script src="js/audioPlayer.js"></script>
 		<script src="js/priorityQueue.js"></script>
+		<script src="ext/i18next-1.6.3.min.js"></script>
+		
 		<script>
 			var /*levelQueryString,*/ gameMode;
 
@@ -42,7 +44,7 @@
 		</script>
 	</head>
 	
-	<body onload="ScreenLoader.init(gameMode);">
+	<body onload="i18n.init({fallbackLng: 'ru'});ScreenLoader.init(gameMode);">
 		<div id="debug-console"></div>
 
 		<div id="canvas-main" style="">
