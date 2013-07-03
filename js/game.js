@@ -83,6 +83,7 @@ Galapago.init = function(gameMode) {
 	var levelTemp, level, levelIt;
 	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.gameMode = gameMode;
+	Galapago.profile = 'profile';
 	Galapago.levels = [];
 	console.log( 'gameMode: ' + Galapago.gameMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -155,7 +156,7 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
-LevelMap.LEVEL_STATUS_X = 997;
+LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
 LevelMap.LEVEL_NAV_X = 257;
 LevelMap.LEVEL_NAV_Y = 647;
@@ -285,9 +286,11 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
-	text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
+	//text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
+	text = $.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id
 	//this.layer.fillRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
+	this.layer.drawImage(this.images.level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
 	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
@@ -783,7 +786,17 @@ Level.prototype.display = function() {
 		}
 		level.board.setActiveTile();
 		if( Galapago.gameMode === 'MODE_TIMED') {
+			var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+level.id+"restore");
+			var restoreLookup ,dengerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			if(restoreLookupString != undefined){
+			   restoreLookup = JSON.parse(restoreLookupString);
+			   dengerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+			   if(dengerBarTimeRemaining != undefined){
+				  level.dangerBar.timeRemainingMs  = dengerBarTimeRemaining;
+				  level.dangerBar.start();
+			   }
+			}
 		}
 		console.debug(level.toString());
 
@@ -1197,7 +1210,7 @@ Board.prototype.init = function(tilePositions) {
 
 Board.prototype.build = function(tilePositions) {
 	var colIt, rowIt, coordinates, cellId, cellObject, spriteNumber;
-    var restoreLookupString = localStorage.getItem("level"+this.level.id+"restore");
+    var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore");
 	var restoreLookup;
 	if(restoreLookupString != undefined){
 	 restoreLookup = JSON.parse(restoreLookupString);
@@ -1577,9 +1590,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.handleTriplets(tile);
 					}
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-					if(board.powerUp.isFlipFlopSelected()){
-					  board.powerUp.powerUsed();
-					}
+
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if(board.collectionModified || board.powerAchieved){
@@ -1595,7 +1606,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
 						board.tileActive.setActiveAsync().done();
 					}
-					else {
+					else if(!board.powerUp.isFlipFlopSelected()) {
 						Galapago.audioPlayer.playInvalidSwap();
 						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 						console.debug( 'no triplet found: undoing last move');
@@ -1608,6 +1619,10 @@ Board.prototype.handleTileSelect = function(tile) {
 							console.error(error);
 						});
 					}
+					if(board.powerUp.isFlipFlopSelected()){
+					  board.powerUp.powerUsed();
+					}
+					
 				}, function(error) {
 					console.error(error);
 				}).done();
@@ -1705,7 +1720,7 @@ _.each(tileMatrix, function(columnArray){
           if(tile){
            y =tile.coordinates[0];
            x=tile.coordinates[1];
-           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() ){
+           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() || tile.hasSuperFriend() ){
 		      var originalBlogconfig = originalblogPositions[x][y];
 		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isNonBlockingWithCreature()){
 			  restoreLookup[y+'_'+x]='11'; 
@@ -1723,8 +1738,11 @@ _.each(tileMatrix, function(columnArray){
 		if(blogColl[key].count == 0 )
 		  nilcollections.push(key);
 	}
- restoreLookup['nilCollection'] =  nilcollections; 
- localStorage.setItem("level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
+ restoreLookup['nilCollection'] =  nilcollections; 	
+ if(gameboard.level.dangerBar && gameboard.level.dangerBar.isRunning()){
+	restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
+  }
+ localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
 }
 
 
