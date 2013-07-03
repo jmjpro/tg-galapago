@@ -70,5 +70,16 @@
 			"68": "BLANCHARDHÜGEL",
 			"69": "ATTICUSHÜGEL",
 			"70": "DAS FINALE"
+  },
+  "Loading Screen" :{
+    "Instruction Text" : "Laden ...",
+	"Hot Spots" : "Zum Spielen hier klicken"
+  },
+  "Game Menu Screen":{
+      "Option1" : "Weiterspielen",
+	  "Option2" : "Zum Hauptmenü",
+	  "Option3" : "Neues Spiel",
+	  "Option4" : "Spielanleitung",
+	  "Option5" : "Optionen"
   }
 }

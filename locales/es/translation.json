@@ -70,5 +70,16 @@
 			"68": "COLINA BLANCHARD",
 			"69": "COLINA ATTICUS",
 			"70": "EL GRAN FINAL"
-    }
+    },
+  "Loading Screen" :{
+    "Instruction Text" : "Cargando…",
+	"Hot Spots" : "Haz clic aquí para jugar"
+  },
+  "Game Menu Screen":{
+      "Option1" : "Seguir jugando",
+	  "Option2" : "Volver al menú principal",
+	  "Option3" : "Partida nueva",
+	  "Option4" : "Cómo se juega",
+	  "Option5" : "Opciones"
+  }
 }
