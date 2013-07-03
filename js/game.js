@@ -156,7 +156,7 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
-LevelMap.LEVEL_STATUS_X = 997;
+LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
 LevelMap.LEVEL_NAV_X = 257;
 LevelMap.LEVEL_NAV_Y = 647;
@@ -285,6 +285,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	text = $.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id
 	//this.layer.fillRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
+	this.layer.drawImage(this.images.level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
 	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);

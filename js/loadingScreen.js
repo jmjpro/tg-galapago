@@ -15,6 +15,7 @@ ScreenLoader.mapScreenImageNames = {
 	button_start_map: "button_start_map.png",
 	green_v:"green_v.png",
 	level_stars_gold:"level_stars_gold.png",
+	level_stars_silver:"level_stars_silver.png",
 	level_lock:"level_lock.png",
 };
 
