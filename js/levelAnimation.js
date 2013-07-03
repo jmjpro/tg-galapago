@@ -1,4 +1,6 @@
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
+LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
+LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
@@ -236,7 +238,9 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 		_.each(animatedLevels, function(animatedLevel){
 			var level = Level.findById(animatedLevel);
 			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
-			coordinates.push(centroid);
+			var x = centroid[0] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_WIDTH / 3);
+			var y = centroid[1] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_HEIGHT / 1.4);
+			coordinates.push([x, y]);
 		});
 		if(coordinates.length){
 			if(levelAnimation.bonFireAnimation){
@@ -330,15 +334,17 @@ BonFireAnimation.prototype.start = function(){
 
 BonFireAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
+	var bonFireAnimation = this;
+	_.each(this.coordinates, function(coordinate){
+		bonFireAnimation.layer.clearRect(coordinate[0], coordinate[1], LevelAnimation.BONFIRE_IMAGE_WIDTH,LevelAnimation.BONFIRE_IMAGE_HEIGHT);
+	});
 };
 
 BonFireAnimation.prototype.animate = function(){
 	var image = this.bonfireImageSpriteSheet.getSprite([this.bonfireSpriteId, 0]);
 	var bonFireAnimation = this;
 	_.each(this.coordinates, function(coordinate){
-		var x = coordinate[0] - Math.ceil(image.width / 3);
-		var y = coordinate[1] - Math.ceil(image.height / 1.4);
-		bonFireAnimation.layer.putImageData(image, x, y);
+		bonFireAnimation.layer.putImageData(image, coordinate[0], coordinate[1]);
 	});
 	this.bonfireSpriteId++;
 	this.bonfireSpriteId = this.bonfireSpriteId % LevelAnimation.BONFIRE_SPRITE_MATRIX[0].length;
