@@ -1572,9 +1572,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.handleTriplets(tile);
 					}
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-					if(board.powerUp.isFlipFlopSelected()){
-					  board.powerUp.powerUsed();
-					}
+
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if(board.collectionModified || board.powerAchieved){
@@ -1590,7 +1588,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
 						board.tileActive.setActiveAsync().done();
 					}
-					else {
+					else if(!board.powerUp.isFlipFlopSelected()) {
 						Galapago.audioPlayer.playInvalidSwap();
 						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 						console.debug( 'no triplet found: undoing last move');
@@ -1603,6 +1601,10 @@ Board.prototype.handleTileSelect = function(tile) {
 							console.error(error);
 						});
 					}
+					if(board.powerUp.isFlipFlopSelected()){
+					  board.powerUp.powerUsed();
+					}
+					
 				}, function(error) {
 					console.error(error);
 				}).done();
