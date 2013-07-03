@@ -193,6 +193,7 @@ function LevelMap(level) {
 	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
 	this.profile = 'Default';
+	this.levelAnimation = new LevelAnimation();
 } //LevelMap constructor
 
 LevelMap.prototype.initImages = function( instance, images ) {
@@ -232,6 +233,10 @@ LevelMap.prototype.display = function() {
 	//showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	Galapago.audioPlayer.playVolcanoLoop();
+	var completedLevelIds = LevelMap.getLevelsCompleted();
+	if(completedLevelIds.length){
+		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.layer);
+	}
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -404,6 +409,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	this.animationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
+	this.levelAnimation.stopAllAnimations();
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
@@ -501,6 +507,18 @@ LevelMap.getHighestLevelCompleted = function() {
 
 	console.debug('highest level completed = ' + highestLevelCompletedId);
 	return highestLevelCompleted;
+}; //LevelMap.getHighestLevelCompleted()
+
+LevelMap.getLevelsCompleted = function() {
+	var levelsCompleted = [], keyIt, levelId, matchResult;
+	for (var i = 0; i < localStorage.length; i++){
+		keyIt = localStorage.key(i);
+		if( matchResult = keyIt.match(/^level(\d+)\.completed$/) ) {
+			levelId = matchResult[1];
+			levelsCompleted.push(parseInt(levelId));
+		};
+	}
+	return levelsCompleted;
 }; //LevelMap.getHighestLevelCompleted()
 
 // we want to know the level unlocked by the highest level completed;
