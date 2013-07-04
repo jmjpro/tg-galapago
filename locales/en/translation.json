@@ -70,5 +70,16 @@
 	"68": "BLANCHARD KNOLL",
 	"69": "ATTICUS HILL",
 	"70": "THE FINALE"
+  },
+  "Loading Screen" :{
+    "Instruction Text" : "Loading…",
+	"Hot Spots" : "Click Here to Play"
+  },
+  "Game Menu Screen":{
+      "Option1" : "Continue playing",
+	  "Option2" : "To the main menu",
+	  "Option3" : "New Game",
+	  "Option4" : "How to play",
+	  "Option5" : "Options"
   }
 }

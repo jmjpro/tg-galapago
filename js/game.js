@@ -79,8 +79,18 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 	});
 }; //Galapago.setLevelsFromJson()
 
+Galapago.localization = function(){
+    $("#Option1").i18n();
+    $("#Option2").i18n();
+    $("#Option3").i18n();
+    $("#Option4").i18n();
+    $("#Option5").i18n();
+    $("#Option6").i18n();
+}
+
 Galapago.init = function(gameMode) {
 	var levelTemp, level, levelIt;
+	Galapago.localization();
 	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.gameMode = gameMode;
 	Galapago.profile = 'profile';
@@ -288,7 +298,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	//text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
-	text = $.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id
+	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id
 	//this.layer.fillRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
 	this.layer.drawImage(this.images.level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
@@ -1016,7 +1026,7 @@ Board.prototype.displayLevelName = function() {
 	layer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 	layer.font = Board.LEVEL_NAME_FONT_SIZE + ' ' + Board.LEVEL_NAME_FONT_NAME;
 	layer.fillStyle = Board.LEVEL_NAME_FONT_COLOR;
-	levelNameText = this.level.name;
+	levelNameText =  i18n.t('levels.'+this.level.id) ;
 	levelNameText += ' ' + this.level.id; //TODO for debugging only remove before production!!!
 	layer.fillText(levelNameText, Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y);
 }; //Board.protoype.displayLevelName()

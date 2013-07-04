@@ -70,5 +70,16 @@
 			"68": "MONTICULE CHAUVE",
 			"69": "COLLINE DE L'ATTIQUE",
 			"70": "FINALE"
+  },
+  "Loading Screen" :{
+    "Instruction Text" : "Chargement...",
+	"Hot Spots" : "Cliquez ici pour jouer."
+  },
+  "Game Menu Screen":{
+      "Option1" : "Reprendre",
+	  "Option2" : "Retour au menu principal",
+	  "Option3" : "Nouvelle partie",
+	  "Option4" : "Comment jouer",
+	  "Option5" : "Options"
   }
 }

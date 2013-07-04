@@ -122,7 +122,7 @@ ProgressBar.prototype.drawImages = function(progressBar,images) {
 	
 	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
-	this.layer.fillText('LOADING...',ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'),ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP );
 	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);
 	this.showCopywrite();
 }; //DangerBar.prototype.drawImages()
@@ -137,7 +137,8 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
 	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
-	this.layer.fillText('LOADING...', ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);
+	
 	//this.showCopywrite();
 	
 	//alert((percentdownload*100)+"% ldccccdvvm..");
@@ -152,7 +153,7 @@ ProgressBar.prototype.loaded = function(result) {
 	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
 	this.layer.font = '32pt JungleFever';
 	this.layer.fillStyle = 'white';
-	this.layer.fillText('CLICK HERE TO PLAY', ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
+	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.LOADING_MESSAGE_TOP);	
 	//this.showCopywrite();
 	this.isLoadingComplete=true;
 	//this.results=result;
