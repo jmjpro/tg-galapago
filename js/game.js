@@ -898,15 +898,19 @@ Level.registerEventHandlers = function() {
 				break;
 			case 37: // left arrow
 				board.handleLeftArrow();
+				evt.preventDefault();
 				break;
 			case 38: // up arrow
 				board.handleUpArrow();
+				evt.preventDefault();
 				break;
 			case 39: // right arrow
 				board.handleRightArrow();
+				evt.preventDefault();
 				break;
 			case 40: // down arrow
 				board.handleDownArrow();
+				evt.preventDefault();
 				break;
 			//TODO code below here should removed before production
 			case 48: // numeric 0
