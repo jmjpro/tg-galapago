@@ -356,7 +356,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 
 LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
 	var levelAnimation = this;
-	this.bonFireParentAnimationInterval = setInterval(function(){
+	function animateRandomBornFires(){
 		var coordinates = [];
 		var bonfireImageSpriteSheet = new SpriteSheet(ScreenLoader.gal.get("map-screen/strip_bonfire.png"), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
@@ -383,7 +383,9 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 			bonFireAnimation.start();
 			levelAnimation.bonFireAnimation = bonFireAnimation;
 		}
-	}, LevelAnimation.BONFIRE_TIME_INTERVAL);
+	}
+	animateRandomBornFires();
+	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
 }
 
 LevelAnimation.prototype.animateBombs = function(layer){
