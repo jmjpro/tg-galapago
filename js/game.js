@@ -244,11 +244,20 @@ LevelMap.prototype.display = function() {
 	//showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	Galapago.audioPlayer.playVolcanoLoop();
+	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
+	otherAnimationCanvas.style.zIndex = 9;
+	otherAnimationCanvas.width = Galapago.STAGE_WIDTH;
+	otherAnimationCanvas.height = Galapago.STAGE_HEIGHT;
+	var levelAnimation = this;
+	otherAnimationCanvas.onclick = function(evt) {
+		levelAnimation.canvas.focus();
+	};
+	var otherAnimationLayer = otherAnimationCanvas.getContext('2d'); 
 	var completedLevelIds = LevelMap.getLevelsCompleted();
 	if(completedLevelIds.length){
-		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.layer);
+		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, otherAnimationLayer);
 	}
-	this.levelAnimation.animateBombs(this.layer);
+	this.levelAnimation.animateBombs(otherAnimationLayer);
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -257,7 +266,7 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
 	var imageData=st.getSpriteData([xIndex,0]);
-	animationCanvas.style.zIndex = 8;
+	animationCanvas.style.zIndex = 9;
 	animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
@@ -422,6 +431,8 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	this.animationCanvas.onclick=null;
 	
 	this.animationCanvas.style.zIndex = 0;
+	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
+	otherAnimationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
 	this.levelAnimation.stopAllAnimations();
