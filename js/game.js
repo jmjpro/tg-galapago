@@ -420,6 +420,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 LevelMap.prototype.handleKeyboardSelect = function() {   
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
+	
 	this.animationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
@@ -926,8 +927,10 @@ Level.prototype.styleCanvas = function() {
 
 	layers = $('.game-layer');
 	_.each( layers, function(layer) {
-		layer.width = Galapago.STAGE_WIDTH;
-		layer.height = Galapago.STAGE_HEIGHT;
+	    if(layer.id !='layer-map-animation'){
+			layer.width = Galapago.STAGE_WIDTH;
+			layer.height = Galapago.STAGE_HEIGHT;
+		}
 	});
 	this.layerBackground = canvas.getContext('2d');
 }; //Level.prototype.styleCanvas()
