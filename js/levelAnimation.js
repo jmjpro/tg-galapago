@@ -388,7 +388,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 
 LevelAnimation.prototype.animateBombs = function(layer){
 	var levelAnimation = this;
-	this.bombParentAnimationInterval = setInterval(function(){
+	function animateBomb(){
 		var randomBombId = Math.ceil( Math.random() * 4);
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
@@ -419,7 +419,9 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer);		
 		bombAnimation.start();
 		levelAnimation.bombAnimation = bombAnimation;
-	}, LevelAnimation.BOMB_TIME_INTERVAL);
+	};
+	animateBomb();
+	this.bombParentAnimationInterval = setInterval(animateBomb, LevelAnimation.BOMB_TIME_INTERVAL);
 }
 
 LevelAnimation.prototype.stopAllAnimations = function(){
