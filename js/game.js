@@ -241,7 +241,7 @@ LevelMap.prototype.display = function() {
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
-	//showNav();
+	this.showNav();
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	Galapago.audioPlayer.playVolcanoLoop();
 	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
@@ -287,6 +287,10 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 }
 
 LevelMap.prototype.showNav = function() {
+	$('ul#map-nav').css('display', 'block');
+} //LevelMap.prototype.showNav()
+
+LevelMap.prototype.showNavOld = function() {
 	var x = LevelMap.LEVEL_NAV_X;
 	var y = LevelMap.LEVEL_NAV_Y;
 	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), x, y);
@@ -302,7 +306,6 @@ LevelMap.prototype.showNav = function() {
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
-	this.showNav();
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -364,6 +367,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 	}; //onclick
 
 	levelMap.canvas.onkeydown = function(evt) {
+		var mapScreen;
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
 		switch( evt.keyCode ) {
@@ -388,11 +392,14 @@ LevelMap.prototype.registerEventHandlers = function() {
 				evt.preventDefault();
 				break;
 			case 48: // numeric 0
-				levelMap.reset();
+				//levelMap.reset();
+				$('ul#map-nav').focus();
+				mapScreen = new MapScreen();
+				mapScreen.registerEventHandlers();
 				break;
 			case 50: // numeric 2
 				//TODO
-				console.debug('start next level');
+				//console.debug('start next level');
 				break;
 			default:
 		}
@@ -514,25 +521,24 @@ LevelMap.mapCellsFromJson = function (mapCellsJson) {
 }; //LevelMap.mapCellsFromJson()
 
 LevelMap.getHighestLevelCompleted = function() {
-	var highestLevelCompletedId, highestLevelCompleted, keyIt, levelId, matchResult;
+	var highestLevelCompletedId, keyIt, levelId, matchResult;
 	highestLevelCompletedId = 0;
 	
 	for (var i = 0; i < localStorage.length; i++){
 		keyIt = localStorage.key(i);
 		if( matchResult = keyIt.match(/^level(\d+)\.completed$/) ) {
 			levelId = matchResult[1];
+			_.each(Level.findById(levelId).unlocksLevels, function( unlockedLevelId ) {
+				Level.findById(unlockedLevelId).isUnlocked = true;
+			});
 			if( parseInt(levelId) > highestLevelCompletedId) {
 				highestLevelCompletedId = levelId;
-				highestLevelCompleted = Level.findById(highestLevelCompletedId);
-				_.each(highestLevelCompleted.unlocksLevels, function( unlockedLevelId ) {
-					Level.findById(unlockedLevelId).isUnlocked = true;
-				});
 			}
 		};
 	}
 
 	console.debug('highest level completed = ' + highestLevelCompletedId);
-	return highestLevelCompleted;
+	return Level.findById(highestLevelCompletedId);
 }; //LevelMap.getHighestLevelCompleted()
 
 LevelMap.getLevelsCompleted = function() {

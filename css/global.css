@@ -94,3 +94,40 @@ ul.menu li {
 	display: none;
 }
 */
+
+ul#map-nav {
+	display: none;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	position: absolute;
+	left: 257px;
+	top: 647px;
+	z-index: 8;
+}
+
+ul#map-nav>li {
+	display:inline-block;
+	margin-right:8px;
+	padding:0;
+	width: 150px;
+	height: 55px;
+}
+
+.map-nav-border {
+	background: url('res/img/map-screen/button_cursor_map.png') no-repeat left top;
+}
+
+img.cursor {
+	position:relative;
+	z-index: 2;
+	top: -54px;
+	left: -3px;
+}
+
+img.nav-button {
+	position:relative;
+	z-index: 1;
+	top: 0px;
+	left: 0px;
+}
