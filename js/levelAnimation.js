@@ -390,7 +390,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 
 LevelAnimation.prototype.animateBombs = function(layer){
 	var levelAnimation = this;
-	function animateBomb(){
+	function animateBomb(callback){
 		var randomBombId = Math.ceil( Math.random() * 4);
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
@@ -418,12 +418,11 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		if(levelAnimation.bombAnimation){
 			levelAnimation.bombAnimation.stop();
 		}
-		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer);		
+		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer,callback);		
 		bombAnimation.start();
 		levelAnimation.bombAnimation = bombAnimation;
 	};
-	animateBomb();
-	this.bombParentAnimationInterval = setInterval(animateBomb, LevelAnimation.BOMB_TIME_INTERVAL);
+	animateBomb(animateBomb);
 }
 
 LevelAnimation.prototype.stopAllAnimations = function(){
@@ -441,7 +440,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.bombParentAnimationInterval){
 		clearInterval(this.bombParentAnimationInterval);
 	}
-	if(this.bombireAnimation){
+	if(this.bombAnimation){
 		this.bombAnimation.stop();
 		this.bombAnimation = null;
 	}
@@ -531,12 +530,13 @@ BonFireAnimation.prototype.animate = function(){
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
-function BombAnimation(coordinates, bombImageSpriteSheet, layer){
+function BombAnimation(coordinates, bombImageSpriteSheet, layer, callback){
 	this.bombImageSpriteSheet = bombImageSpriteSheet;
 	this.interval = null;
 	this.bombSpriteId = 0;
 	this.coordinates = coordinates;
 	this.layer = layer;
+	this.callback = callback;
 }
 
 BombAnimation.prototype.start = function(){
@@ -562,7 +562,6 @@ BombAnimation.prototype.animate = function(){
 	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
 	this.bombSpriteId++;
 	if(this.bombSpriteId >= this.bombImageSpriteSheet.spriteMatrix[0].length){
-		this.stop();
-		this.interval = null;
+		this.callback(this.callback);
 	}
 };
