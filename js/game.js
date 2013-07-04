@@ -853,6 +853,18 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 	return creatureTypes;
 }; //Level.prototype.getCreatureTypesByTheme()
 
+Level.prototype.quit = function(){
+// 1.clear level cache
+	localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.id+"restore" );
+// 2.clear dangerbar time interval
+     this.dangerBar.stop();
+// 3. // stop power ups	 
+     this.board.powerUp.timer.clearInterval();
+ //4.levelanimation.clear all
+
+ //5: stopAllAnimations
+ 
+}
 Level.prototype.getCreatureSubset = function(creatureTypes) {
 	var level = this;
 	return _.filter( creatureTypes, function(creatureType) {
@@ -1567,6 +1579,7 @@ Board.prototype.setComplete = function() {
 	else if(!levelHighestScore){
 		localStorage.setItem("level"+this.level.id , this.score);
 	}
+	this.level.quit();
 }
 
 Board.prototype.handleTileSelect = function(tile) {
