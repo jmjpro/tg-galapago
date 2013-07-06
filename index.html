@@ -30,21 +30,38 @@
 		<script src="js/audioPlayer.js"></script>
 		<script src="js/priorityQueue.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
+		<script src="../SDK/TGH5.min.js" type="text/javascript"></script>
 		
 		<script>
-			var /*levelQueryString,*/ gameMode;
-
-			if( typeof jsErrLog !== 'undefined' ) {
-					jsErrLog.debugMode = false;
-					jsErrLog.info = "Galapago debugging";                
+			var sdkApi;
+			function loadGame(){
+				var gameMode = 'MODE_TIMED';
+				if( typeof jsErrLog !== 'undefined' ) {
+						jsErrLog.debugMode = false;
+						jsErrLog.info = "Galapago debugging";                
+				}
+				TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../SDK/" }).done(function (api) {
+					sdkApi = api;
+			        // SDK successfully initialized
+			        api.preferredLanguage().always(function (language) {
+				        /* Update the UI to use the selected language */
+				        i18n.init({ lng: language , fallbackLng: 'en'});
+				    });
+				    api.requestModalAd("preRoll").done(function(){
+					    if(api.inDemoMode()){
+					    	ScreenLoader.init(gameMode);
+					    }else{
+					    	ScreenLoader.init(gameMode);
+					    }
+					});
+			    }).fail(function (error) {
+			        console.log(error);
+			    });
 			}
-
-			//levelQueryString = QueryString.level || 'level_01';
-			gameMode = 'MODE_TIMED';
 		</script>
 	</head>
 	
-	<body onload="i18n.init({ lng: 'en' ,fallbackLng: 'en'});ScreenLoader.init(gameMode);">
+	<body onload = "loadGame()">
 		<div id="debug-console"></div>
 
 		<div id="canvas-main" style="">

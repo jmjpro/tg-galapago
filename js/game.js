@@ -237,6 +237,7 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 }; //LevelMap.prototype.loadImages()
 
 LevelMap.prototype.display = function() {	
+	sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
 	this.canvas.style.background = 'url(' + 'res/img/map-screen/Map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
@@ -390,6 +391,10 @@ LevelMap.prototype.registerEventHandlers = function() {
 			case 48: // numeric 0
 				levelMap.reset();
 				break;
+			case 49: // numeric 1
+				levelMap.quit();
+				evt.stopPropagation();
+				break;
 			case 50: // numeric 2
 				//TODO
 				console.debug('start next level');
@@ -400,6 +405,10 @@ LevelMap.prototype.registerEventHandlers = function() {
 }; //LevelMap.prototype.registerEventHandlers
 
 // erase per-level high scores and completed indicators and set hotspot to level 1
+LevelMap.prototype.quit = function() {
+	sdkApi.exit();
+	return this; //chainable
+};
 LevelMap.prototype.reset = function() {
 	//TODO
 	console.debug('reset map');
@@ -968,6 +977,14 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
 };
+
+Level.prototype.won = function() {
+	Galapago.audioPlayer.playLevelWon();
+	gameMenu.board=this.board;
+	sdkApi.requestModalAd("inGame").done(function(){
+		gameMenu.showMapScreen();
+	});
+}
 /* end class Level */
 
 /*
@@ -1157,9 +1174,8 @@ Board.prototype.completeAnimationAsync = function() {
 	}
 
 	this.gridLayer.fillText('Level completed', 600, 350);*/
-	
-	gameMenu.board=this;
-	gameMenu.showMapScreen();
+	this.level.levelAnimation.stopAllAnimations();
+	Galapago.audioPlayer.stop();
 	return this; //chainable
 }; //Board.prototype.completeAnimationAsync()
 
@@ -1627,8 +1643,8 @@ Board.prototype.handleTileSelect = function(tile) {
 						   board.collectionModified = false;
 						}
 						if( board.blobCollection.isEmpty()){
-							Galapago.audioPlayer.playLevelWon();
 							board.setComplete();
+							board.level.won();
 						}
 						//reset grid lines and active tile
 						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1704,8 +1720,8 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.collectionModified = false;
 				}
 				if( board.blobCollection.isEmpty()){
-					Galapago.audioPlayer.playLevelWon();
 					board.setComplete();
+					board.level.won();
 				}
 				//reset grid lines and active tile
 				board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1779,6 +1795,7 @@ _.each(tileMatrix, function(columnArray){
 Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
+			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
 			gameMenu.show(this);
 		case null:
 		default:

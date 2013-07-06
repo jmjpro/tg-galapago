@@ -29,13 +29,20 @@ AudioPlayer.prototype.play = function(){
 	}
 }
 
+AudioPlayer.prototype.stop = function(){
+	this.queue.clear();
+	if(this.currentAudio){
+		this.currentAudio.pause();
+	}
+}
+
 AudioPlayer.prototype.playEnded = function(){
 	this.audioPlayer.currentAudio = null;
 	this.audioPlayer.play();
 }
 
 AudioPlayer.prototype.playInLoop = function(key){
-	var audioPlayer = this;
+	audioPlayer = this;
 	this.loop = true;
 	audioPlayer.stopLoop();
 	this.currentAudioInLoop = ScreenLoader.gal.get(key);

@@ -26,6 +26,7 @@ function ScreenLoader() {
 }
 
 ScreenLoader.init = function(gameMode) {
+	sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
 	this.canvas = $('#' + ScreenLoader.LAYER_MAP)[0];
 	this.layer = this.canvas.getContext('2d');
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
