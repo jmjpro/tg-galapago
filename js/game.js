@@ -872,10 +872,14 @@ Level.prototype.won = function(){
 	localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.id+"restore" );
 	this.cleanUp();
     Galapago.audioPlayer.playLevelWon();
-	this.showLevelMap();
+    var level = this;
+	sdkApi.requestModalAd("inGame").done(function(){
+		level.showLevelMap();
+	});
 }
 
 Level.prototype.quit = function(){
+	this.board.saveBoard();
 	this.cleanUp();
     this.showLevelMap();
 }
@@ -888,12 +892,9 @@ Level.prototype.cleanUp = function(){
 }
 
 Level.prototype.showLevelMap = function(){
-	var level = this;
-	sdkApi.requestModalAd("inGame").done(function(){
-		Galapago.levelMap = new LevelMap(level);
- 		Galapago.levelMap.canvas.style.zIndex = 7;
-		Galapago.levelMap.canvas.focus();	
-	});
+	Galapago.levelMap = new LevelMap(this);
+ 	Galapago.levelMap.canvas.style.zIndex = 7;
+	Galapago.levelMap.canvas.focus();	
 }
 
 Level.prototype.getCreatureSubset = function(creatureTypes) {
