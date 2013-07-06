@@ -868,18 +868,34 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 	return creatureTypes;
 }; //Level.prototype.getCreatureTypesByTheme()
 
-Level.prototype.quit = function(){
-// 1.clear level cache
+Level.prototype.won = function(){
 	localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.id+"restore" );
-// 2.clear dangerbar time interval
-     this.dangerBar.stop();
-// 3. // stop power ups	 
-     this.board.powerUp.timer.clearInterval();
- //4.levelanimation.clear all
-
- //5: stopAllAnimations
- 
+	this.cleanUp();
+    Galapago.audioPlayer.playLevelWon();
+	this.showLevelMap();
 }
+
+Level.prototype.quit = function(){
+	this.cleanUp();
+    this.showLevelMap();
+}
+
+Level.prototype.cleanUp = function(){
+	this.dangerBar.stop();
+    this.board.powerUp.timer.clearInterval();
+ 	this.levelAnimation.stopAllAnimations();
+ 	Galapago.audioPlayer.stop();
+}
+
+Level.prototype.showLevelMap = function(){
+	var level = this;
+	sdkApi.requestModalAd("inGame").done(function(){
+		Galapago.levelMap = new LevelMap(level);
+ 		Galapago.levelMap.canvas.style.zIndex = 7;
+		Galapago.levelMap.canvas.focus();	
+	});
+}
+
 Level.prototype.getCreatureSubset = function(creatureTypes) {
 	var level = this;
 	return _.filter( creatureTypes, function(creatureType) {
@@ -996,13 +1012,6 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
 };
 
-Level.prototype.won = function() {
-	Galapago.audioPlayer.playLevelWon();
-	gameMenu.board=this.board;
-	sdkApi.requestModalAd("inGame").done(function(){
-		gameMenu.showMapScreen();
-	});
-}
 /* end class Level */
 
 /*
@@ -1192,8 +1201,6 @@ Board.prototype.completeAnimationAsync = function() {
 	}
 
 	this.gridLayer.fillText('Level completed', 600, 350);*/
-	this.level.levelAnimation.stopAllAnimations();
-	Galapago.audioPlayer.stop();
 	return this; //chainable
 }; //Board.prototype.completeAnimationAsync()
 
@@ -1601,7 +1608,7 @@ Board.prototype.setComplete = function() {
 	else if(!levelHighestScore){
 		localStorage.setItem("level"+this.level.id , this.score);
 	}
-	this.level.quit();
+	this.level.won();
 }
 
 Board.prototype.handleTileSelect = function(tile) {
@@ -1663,7 +1670,6 @@ Board.prototype.handleTileSelect = function(tile) {
 						}
 						if( board.blobCollection.isEmpty()){
 							board.setComplete();
-							board.level.won();
 						}
 						//reset grid lines and active tile
 						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
@@ -1740,7 +1746,6 @@ Board.prototype.handleTileSelect = function(tile) {
 				}
 				if( board.blobCollection.isEmpty()){
 					board.setComplete();
-					board.level.won();
 				}
 				//reset grid lines and active tile
 				board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );

@@ -33,6 +33,7 @@ AudioPlayer.prototype.stop = function(){
 	this.queue.clear();
 	if(this.currentAudio){
 		this.currentAudio.pause();
+		this.currentAudio = null;
 	}
 }
 

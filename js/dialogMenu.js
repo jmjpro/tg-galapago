@@ -80,21 +80,7 @@ DialogMenu.prototype.hide = function(showCreatureBoard) {
 	
 }
 
-DialogMenu.prototype.showMapScreen = function() {
+DialogMenu.prototype.quitGame = function() {
    this.hide(false);
-   // document.getElementById('layer-background').style.zIndex=100000;
-  /* layers = $('.game-layer');
-	_.each( layers, function(layer) {
-		layer.width = 0;
-		layer.height = 0;
-	});*/
-	//this.board.level.layerBackground.clearRect( 0, 0, ScreenLoader.STAGE_WIDTH, ScreenLoader.STAGE_HEIGHT);
-	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 7;
-	$('#' + Galapago.LAYER_MAP)[0].focus();
-	//Galapago.levelMap.display();
-	//window.onkeydown=null;
-	Galapago.levelMap = new LevelMap(this.board.level);
-	
-	
-	
+   this.board.level.quit();
 }
