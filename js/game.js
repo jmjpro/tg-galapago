@@ -259,6 +259,10 @@ LevelMap.prototype.display = function() {
 		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, otherAnimationLayer);
 	}
 	this.levelAnimation.animateBombs(otherAnimationLayer);
+	var level1Completed =localStorage.getItem("level1.completed");
+	if(!level1Completed){
+	  this.levelAnimation.animateGameStartArrow(otherAnimationLayer);
+	}
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){

@@ -196,12 +196,26 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [315, 0], id: '16'}
  ]];
 
+LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}, 
+{cell: [27, 0], id: '2'}, 
+{cell: [54, 0], id: '3'}, 
+{cell: [81, 0], id: '4'}, 
+{cell: [108, 0], id: '5'}, 
+{cell: [135, 0], id: '6'}, 
+{cell: [162, 0], id: '7'}, 
+{cell: [189, 0], id: '8'}, 
+{cell: [216, 0], id: '9'}, 
+{cell: [243, 0], id: '10'}],
+];
+
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
 	this.bombAnimation = null;
 	this.bombParentAnimationInterval = null;
+	this.gameStartArrowAnimation = null;
 }
 
 LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
@@ -425,6 +439,23 @@ LevelAnimation.prototype.animateBombs = function(layer){
 	animateBomb(animateBomb);
 }
 
+LevelAnimation.prototype.animateGameStartArrow = function(layer){
+	var levelAnimation = this;
+	function animateGameStartArrow(){
+		var coordinates, image, gameStartArrowImageSpriteSheet;
+		image = ScreenLoader.gal.get("map-screen/strip_game_start_arrow.png");
+		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
+		coordinates = [200 , 265 ];
+		if(levelAnimation.gameStartArrowAnimation){
+			levelAnimation.gameStartArrowAnimation.stop();
+		}
+		var gameStartArrowAnimation = new GameStartArrowAnimation(coordinates, gameStartArrowImageSpriteSheet,layer,animateGameStartArrow);		
+		gameStartArrowAnimation.start();
+		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
+	}
+	animateGameStartArrow();
+}
+
 LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
@@ -443,6 +474,10 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.bombAnimation){
 		this.bombAnimation.stop();
 		this.bombAnimation = null;
+	}
+	if(this.gameStartArrowAnimation){
+		this.gameStartArrowAnimation.stop();
+		this.gameStartArrowAnimation = null;
 	}
 }
 
@@ -563,5 +598,44 @@ BombAnimation.prototype.animate = function(){
 	this.bombSpriteId++;
 	if(this.bombSpriteId >= this.bombImageSpriteSheet.spriteMatrix[0].length){
 		this.callback(this.callback);
+	}
+};
+
+//
+
+GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
+function GameStartArrowAnimation(coordinates, imageSpriteSheet, layer ,callback){
+	this.imageSpriteSheet = imageSpriteSheet;
+	this.interval = null;
+	this.spriteId = 0;
+	this.coordinates = coordinates;
+	this.layer = layer;
+	this.callback = callback;
+}
+
+GameStartArrowAnimation.prototype.start = function(){
+	this.spriteId = 0;
+	var animation = this;
+	this.interval = setInterval(function(){
+		animation.animate()}, 
+		GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+GameStartArrowAnimation.prototype.stop = function(){
+	if(this.interval){
+		clearInterval(this.interval);
+		var animation = this;
+		animation.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+	}
+};
+
+GameStartArrowAnimation.prototype.animate = function(){
+	var image = this.imageSpriteSheet.getSprite([this.spriteId, 0]);
+	this.imageHeight = image.height;
+	this.imageWidth = image.width;
+	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
+	this.spriteId++;
+	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-2){
+		this.callback();
 	}
 };
