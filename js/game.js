@@ -398,6 +398,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 				mapScreen = new MapScreen();
 				mapScreen.registerEventHandlers();
 				break;
+			//TODO remove 49.. its for testing purpose	
 			case 49: // numeric 1
 				levelMap.quit();
 				evt.stopPropagation();
