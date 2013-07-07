@@ -175,6 +175,6 @@ function fly(){
      }
 }
 
- this.intervalHandle = window.setInterval(fly ,2000 );
+ this.intervalHandle = window.setInterval(fly ,500 );
 }
 
