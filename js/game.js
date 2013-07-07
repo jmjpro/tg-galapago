@@ -1556,7 +1556,7 @@ Board.prototype.handleTriplets = function(tile) {
 				dangerBar.stop();
 			}
 			//board.setComplete();  // board is not updated with final score yet.
-			board.completeAnimationAsync();
+			//board.completeAnimationAsync();
 			return tileTriplets;
 		}
 		_.each( changedPointsArray, function( point ) {
@@ -1614,7 +1614,8 @@ Board.prototype.setComplete = function() {
 	else if(!levelHighestScore){
 		localStorage.setItem("level"+this.level.id , this.score);
 	}
-	this.level.won();
+	new BonusFrenzy(this);
+	//this.level.won();
 }
 
 Board.prototype.handleTileSelect = function(tile) {

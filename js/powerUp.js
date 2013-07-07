@@ -317,7 +317,7 @@ Powerup.prototype.decrementScore = function(sender){
     sender.timer.reset(sender);
     sender.score -= 1;
   }
-  console.log('decrementScore' +sender.score );
+ // console.log('decrementScore' +sender.score );
 }
 
 Powerup.prototype.updatePowerAchieved = function(){
