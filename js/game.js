@@ -242,7 +242,7 @@ LevelMap.prototype.display = function() {
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
 	this.canvas.focus();
-	this.showNav();
+	$('ul#map-nav').css('display', 'block');
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	Galapago.audioPlayer.playVolcanoLoop();
 	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
@@ -290,10 +290,6 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	}
 	this.handle =window.setInterval(cycleSprite,300);
 }
-
-LevelMap.prototype.showNav = function() {
-	$('ul#map-nav').css('display', 'block');
-} //LevelMap.prototype.showNav()
 
 LevelMap.prototype.showNavOld = function() {
 	var x = LevelMap.LEVEL_NAV_X;
@@ -457,6 +453,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
 	this.levelAnimation.stopAllAnimations();
+	$('ul#map-nav').css('display', 'none');
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
