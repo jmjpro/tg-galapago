@@ -49,13 +49,13 @@
 				        /* Update the UI to use the selected language */
 				        i18n.init({ lng: language , fallbackLng: 'en'});
 				    });
-				    api.requestModalAd("preRoll").done(function(){
+				    //api.requestModalAd("preRoll").done(function(){
 					    if(api.inDemoMode()){
 					    	ScreenLoader.init(gameMode);
 					    }else{
 					    	ScreenLoader.init(gameMode);
 					    }
-					});
+					//});
 			    }).fail(function (error) {
 			        console.log(error);
 			    });
