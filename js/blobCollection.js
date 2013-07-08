@@ -91,7 +91,7 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 }
 
 BlobCollection.prototype.isEmpty= function() {
-	if(this.blobItemsCount == 0){
+  if(this.blobItemsCount == 0){
 		return true;
 	}
 }
