@@ -1641,17 +1641,26 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore;
-	this.level.isCompleted = true;
-	localStorage.setItem("level"+this.level.id + ".completed" , true);
-	levelHighestScore = localStorage.getItem("level"+this.level.id);
-	if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-		localStorage.setItem("level"+this.level.id , this.score);
+	if(this.bonusFrenzy == undefined){
+		this.bonusFrenzy = new BonusFrenzy(this);
+	}else{
+		this.score += (50 * this.bonusFrenzy.getScore()) ;
+		if( Galapago.gameMode === 'MODE_TIMED') {
+		 var timeleft = this.level.dangerBar.timeRemainingMs;
+		 this.score += (timeleft/10);
+		}
+		this.drawScore();
+		this.level.isCompleted = true;
+		localStorage.setItem("level"+this.level.id + ".completed" , true);
+		levelHighestScore = localStorage.getItem("level"+this.level.id);
+		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
+			localStorage.setItem("level"+this.level.id , this.score);
+		}
+		else if(!levelHighestScore){
+			localStorage.setItem("level"+this.level.id , this.score);
+		}
+		this.level.won();
 	}
-	else if(!levelHighestScore){
-		localStorage.setItem("level"+this.level.id , this.score);
-	}
-	new BonusFrenzy(this);
-	//this.level.won();
 }
 
 Board.prototype.handleTileSelect = function(tile) {
