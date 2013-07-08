@@ -1449,7 +1449,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		if( blob && blob.image ) {
 			layer.drawImage(blob.image, x, y, width, height);
 		}
-		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || blob.blobType === 'SUPER_FRIEND'){
+		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
 			this.regenerateMatchingCreatureIfAny(tile);
 		}	
 	}
