@@ -1074,6 +1074,7 @@ function Board() {
 	this.firstTileCoordinates = null;
 	this.collectionModified = false;
 	this.powerAchieved = false;
+	this.tilesEventProcessor = new TilesEventProcessor(this);
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1275,7 +1276,7 @@ Board.prototype.init = function(tilePositions) {
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
 			tileMatrix.push([]);
 			for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
-				tileMatrix[colIt].push([]);
+				tileMatrix[colIt].push(null);
 			}
 		}
 	});
@@ -1426,14 +1427,9 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		if( 'CREATURE' === blobType ) {
 			tile = new Tile(this, blob, coordinates, spriteNumber);
 			if( spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER) {
-				//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
-				do {
-					this.creatureCounter++;
-					blob = this.randomCreature(this.level.creatureTypes);
-					imageName = blob.creatureType;
-					tile = new Tile(this, blob, coordinates, spriteNumber);
-				}
-				while( this.findTriplets(tile).length > 0 );
+				tile = this.getNonMatchingCreatureTile(tile);
+				blob = tile.blob;
+				imageName = tile.blob.creatureType;
 			}
 			else if( spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || spriteNumber === Tile.COCOONED_TILE_SPRITE_NUMBER ) {
 				imageName = blob.creatureType;
@@ -1453,9 +1449,52 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		if( blob && blob.image ) {
 			layer.drawImage(blob.image, x, y, width, height);
 		}
+		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
+			this.regenerateMatchingCreatureIfAny(tile);
+		}	
 	}
 	return this; //chainable
 }; //Board.prototype.addTile()
+
+Board.prototype.regenerateMatchingCreatureIfAny = function(tile) {
+	var layer, tileMatrix, col, row, x, y, width, height, imageName;
+	var fixedTile = tile;
+	tileMatrix = this.creatureTileMatrix;
+	layer = this.creatureLayer;
+	width = Tile.getWidth();
+	height = Tile.getHeight();
+	var found = false;
+	var board = this;
+	var matchingTilesSets = this.tilesEventProcessor.getMatchingTilesSets(fixedTile);
+	_.each(matchingTilesSets, function(matchingTilesSet){
+		found = false;
+		_.each(matchingTilesSet, function(matchingTile){
+			if(!found && fixedTile != matchingTile){
+				found = true;
+				var tile = board.getNonMatchingCreatureTile(matchingTile);
+				col = tile.coordinates[0];
+				row = tile.coordinates[1];
+				x = Tile.getXCoord(col);
+				y = Tile.getYCoord(row);
+				tileMatrix[col][row] = tile; 
+				layer.clearRect( x, y, width, height );
+				layer.drawImage(tile.blob.image, x, y, width, height);
+				return;
+			}
+		});
+	});
+}
+
+Board.prototype.getNonMatchingCreatureTile = function(tile) {
+	//YJ: keep generating new creatures until we find one that doesn't form a triplet with its neighbors
+	do {
+		this.creatureCounter++;
+		var blob = this.randomCreature(this.level.creatureTypes);
+		tile = new Tile(this, blob, tile.coordinates, tile.spriteNumber);
+	}
+	while( this.tilesEventProcessor.getMatchingTilesSets(tile).length > 0 );
+	return tile;
+}
 
 Board.prototype.removeTile = function(tile) {
 	var layer, tileMatrix, col, row;
@@ -1489,7 +1528,7 @@ Board.prototype.handleTriplets = function(tile) {
 	board.handleTripletsDebugCounter++;
 	changedPointsArray = [];
 	tileSetsToBeRemoved = [];
-	var tileMovedEventProcessorResult = (new TilesEventProcessor(board)).tileMoved(tile);
+	var tileMovedEventProcessorResult = this.tilesEventProcessor.tileMoved(tile);
 	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		var validMatchWithCollection = false;
@@ -1602,17 +1641,26 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore;
-	this.level.isCompleted = true;
-	localStorage.setItem("level"+this.level.id + ".completed" , true);
-	levelHighestScore = localStorage.getItem("level"+this.level.id);
-	if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-		localStorage.setItem("level"+this.level.id , this.score);
+	if(this.bonusFrenzy == undefined){
+		this.bonusFrenzy = new BonusFrenzy(this);
+	}else{
+		this.score += (50 * this.bonusFrenzy.getScore()) ;
+		if( Galapago.gameMode === 'MODE_TIMED') {
+		 var timeleft = this.level.dangerBar.timeRemainingMs;
+		 this.score += (timeleft/10);
+		}
+		this.drawScore();
+		this.level.isCompleted = true;
+		localStorage.setItem("level"+this.level.id + ".completed" , true);
+		levelHighestScore = localStorage.getItem("level"+this.level.id);
+		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
+			localStorage.setItem("level"+this.level.id , this.score);
+		}
+		else if(!levelHighestScore){
+			localStorage.setItem("level"+this.level.id , this.score);
+		}
+		this.level.won();
 	}
-	else if(!levelHighestScore){
-		localStorage.setItem("level"+this.level.id , this.score);
-	}
-	new BonusFrenzy(this);
-	//this.level.won();
 }
 
 Board.prototype.handleTileSelect = function(tile) {
@@ -1725,11 +1773,10 @@ Board.prototype.handleTileSelect = function(tile) {
 		var tileSet = [[tile]];
 		if(tile.hasSuperFriend()){
 			this.blobCollection.removeBlobItems([tile]);
-			var tilesEventProcessor = new TilesEventProcessor(this);
-			var tilesAffectedBySuperFriend = tilesEventProcessor.getTilesAffectedBySuperFriend([tile],[]);
+			var tilesAffectedBySuperFriend = this.tilesEventProcessor.getTilesAffectedBySuperFriend([tile],[]);
 			board.clearTiles(tilesAffectedBySuperFriend);
 			tileSet.push(tilesAffectedBySuperFriend);
-			var goldTilesAffectedBySuperFriend = tilesEventProcessor.getGoldTiles(tilesAffectedBySuperFriend);
+			var goldTilesAffectedBySuperFriend = this.tilesEventProcessor.getGoldTiles(tilesAffectedBySuperFriend);
 			if(goldTilesAffectedBySuperFriend.length){
 				this.animateGoldRemovalAsync(goldTilesAffectedBySuperFriend);
 				this.blobCollection.removeBlobItems(goldTilesAffectedBySuperFriend);
@@ -1947,48 +1994,6 @@ Board.prototype.adjacent = function(tile1, tile2) {
 Board.prototype.addTriplet = function(triplets, triplet) {
 	console.debug( 'found triplet ' + Tile.tileArrayToPointsString(triplet) );
 	triplets.push(triplet);
-};
-/*
-* search tileFocal and at most the six possible triplets formed with the
-* 8 surrounding tiles (2 in each direction up, down, left, right for three)
-* for three creatures all the same
-*/
-Board.prototype.findTriplets = function(tileFocal) {
-	var triplets, tileUp2, tileUp1, tileLeft2, tileLeft1, tileDown2, tileDown1, tileRight2, tileRight1, coordinates;
-	triplets = [];
-	coordinates = tileFocal ? tileFocal.coordinates : null;
-	console.debug( 'called Board.findTriplets with focal tile ' + coordinates );
-	if( !tileFocal ) { //YM: tileFocal could have been nulled by a previous triplet formed from the same move
-		return triplets;
-	}
-	tileUp2 = this.getNeighbor(tileFocal, [0, -2]);
-	tileUp1 = this.getNeighbor(tileFocal, [0, -1]);
-	tileLeft2 = this.getNeighbor(tileFocal, [-2, 0]);
-	tileLeft1 = this.getNeighbor(tileFocal, [-1, 0]);
-	tileDown1 = this.getNeighbor(tileFocal, [0, 1]);
-	tileDown2 = this.getNeighbor(tileFocal, [0, 2]);
-	tileRight1 = this.getNeighbor(tileFocal, [1, 0]);
-	tileRight2 = this.getNeighbor(tileFocal, [2, 0]);
-
-	if( tileUp2 && tileUp1 && tileUp2.matches(tileFocal) && tileUp1.matches(tileFocal) ) {
-		this.addTriplet(triplets, [tileUp2, tileUp1, tileFocal]);
-	}
-	if( tileLeft2 && tileLeft1 && tileLeft2.matches(tileFocal) && tileLeft1.matches(tileFocal) ) {
-		this.addTriplet(triplets, [tileLeft2, tileLeft1, tileFocal]);
-	}
-	if( tileDown1 && tileDown2 && tileFocal.matches(tileDown1) && tileFocal.matches(tileDown2) ) {
-		this.addTriplet(triplets, [tileFocal, tileDown1, tileDown2]);
-	}
-	if( tileRight1 && tileRight2 && tileFocal.matches(tileRight1) && tileFocal.matches(tileRight2) ) {
-		this.addTriplet(triplets, [tileFocal, tileRight1, tileRight2]);
-	}
-	if( tileUp1 && tileDown1 && tileUp1.matches(tileFocal) && tileFocal.matches(tileDown1) ) {
-		this.addTriplet(triplets, [tileUp1, tileFocal, tileDown1]);
-	}
-	if( tileLeft1 && tileRight1 && tileLeft1.matches(tileFocal) && tileFocal.matches(tileRight1) ) {
-		this.addTriplet(triplets, [tileLeft1, tileFocal, tileRight1]);
-	}
-	return triplets;
 };
 
 Board.prototype.getNeighbor = function( tile, coordsDistance ) {

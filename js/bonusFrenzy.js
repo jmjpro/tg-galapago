@@ -171,7 +171,8 @@ function fly(){
 	if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
          window.clearInterval(bonusFrenzy.intervalHandle);
 		 console.log('score : '+bonusFrenzy.score);
-		 bonusFrenzy.board.level.won()
+		 //bonusFrenzy.board.level.won()
+		 bonusFrenzy.board.setComplete();
      }
 }
 
