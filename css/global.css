@@ -5,15 +5,15 @@
 }
 
 @font-face {
-  font-family: 'Arial';
-  src: url('../res/fonts/arial.ttf');
-  src: local('☺'), url('../res/fonts/arial.ttf') format('truetype');
+  font-family: 'Helvetica';
+  src: url('../res/fonts/HelveticaRegular.ttf');
+  src: local('☺'), url('../res/fonts/HelveticaRegular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'ArialBold';
-  src: url('../res/fonts/arialbd.ttf');
-  src: local('☺'), url('../res/fonts/arialbd.ttf') format('truetype');
+  font-family: 'HelveticaBold';
+  src: url('../res/fonts/HelveticaBold.ttf');
+  src: local('☺'), url('../res/fonts/HelveticaBold.ttf') format('truetype');
 }
 
 .jungle {

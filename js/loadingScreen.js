@@ -161,10 +161,10 @@ ProgressBar.prototype.loaded = function(result) {
 };
 
 ProgressBar.prototype.showCopywrite =function(){
-	this.layer.font='13pt ArialBold'
+	this.layer.font='13pt HelveticaBold'
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
-	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 440, 665);
+	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 340, 665);
 }
 
 ProgressBar.prototype.registerEventHandlers = function(gameMode) {
