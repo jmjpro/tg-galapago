@@ -81,5 +81,10 @@
 	  "Option3" : "New Game",
 	  "Option4" : "How to play",
 	  "Option5" : "Options"
+  },
+  "Dialog Quit": {
+   	  "Title" : "Your game will be saved, are you sure you want to quit the game?",
+      "OptionYes" : "Yes",
+	  "OptionNo" : "No"
   }
 }

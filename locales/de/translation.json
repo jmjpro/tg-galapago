@@ -81,5 +81,10 @@
 	  "Option3" : "Neues Spiel",
 	  "Option4" : "Spielanleitung",
 	  "Option5" : "Optionen"
+  },
+  "Dialog Quit": {
+   	  "Title" : "Dein Spiel wird gespeichert, willst du das Spiel wirklich verlassen?",
+      "OptionYes" : "Ja",
+	  "OptionNo" : "Nein"
   }
 }

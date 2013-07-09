@@ -11,30 +11,40 @@ MapScreen.prototype.setNavItem = function(item) {
 	var cursor;
 	cursor = '<img class="cursor" src="res/img/map-screen/button_cursor_map.png"/>';
 	// remove cursor from old item
-	this.currentNavItem.children('img:nth-child(2)').remove();
+	this.unsetNavItem();
 	this.currentNavItem = item;
 	// add cursor to new item
 	this.currentNavItem.append(cursor);
 }; //MapScreen.prototype.setNavItem()
 
+MapScreen.prototype.unsetNavItem = function() {
+	this.currentNavItem.children('img:nth-child(2)').remove();
+}
+
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
-	var itemId;
+	var itemId, levelMap;
 	itemId = navItem.children('img:nth-child(1)')[0].id;
+	levelMap = Galapago.levelMap;
 	//console.log(itemId);
+	this.unsetNavItem();
 	switch( itemId ) {
 		case 'menu-map' :
 			console.log( 'selected menu map button');
 			break;
 		case 'play-map' :
-			console.log( 'selected play map button');
+			levelMap.handleKeyboardSelect();
+			//console.log( 'selected play map button');
 			break;
 		case 'quit-map' :
-			console.log( 'selected quit map button');
+			var dialogQuit = new DialogQuit();
 			break;
 		case 'reset-map' :
-			console.log( 'selected reset map button');
+			//console.log( 'selected reset map button');
+			levelMap.reset();
 			break;
-		case 'start-map' :
+		case 'start-next-map' :
+			levelMap.setHotspotLevel(LevelMap.getNextLevel());
+			levelMap.handleKeyboardSelect();
 			console.log( 'selected start map button');
 			break;
 	}
@@ -44,7 +54,8 @@ MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav;
 	mapScreen = this;
 	mapNav = $('#map-nav');
-	mapNav.onkeydown = function(evt) {
+	//mapNav.onkeydown = function(evt) {
+	window.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
@@ -57,6 +68,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
+			mapScreen.unsetNavItem();
+			mapScreen.unregisterEventHandlers();
+			Galapago.levelMap.display();
 			evt.preventDefault();
 			break;
 		case 39: // right arrow
@@ -68,10 +82,6 @@ MapScreen.prototype.registerEventHandlers = function() {
 		case 40: // down arrow
 			mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
 			evt.preventDefault();
-			break;
-		case 48: //numeric 0
-			mapScreen.unregisterEventHandlers();
-			Galapago.levelMap.display();
 			break;
 		}
 	};

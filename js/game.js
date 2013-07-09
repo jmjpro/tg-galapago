@@ -166,6 +166,8 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 };
 /* end class Galapago */
 
+LevelMap.WIDTH = 1280;
+LevelMap.HEIGHT = 640;
 LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
 LevelMap.LEVEL_NAV_X = 257;
@@ -201,7 +203,6 @@ function LevelMap(level) {
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
-	this.registerEventHandlers();
 	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
 	this.profile = 'Default';
 	this.levelAnimation = new LevelAnimation();
@@ -247,8 +248,8 @@ LevelMap.prototype.display = function() {
 	Galapago.audioPlayer.playVolcanoLoop();
 	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	otherAnimationCanvas.style.zIndex = 9;
-	otherAnimationCanvas.width = Galapago.STAGE_WIDTH;
-	otherAnimationCanvas.height = Galapago.STAGE_HEIGHT;
+	otherAnimationCanvas.width = LevelMap.WIDTH;
+	otherAnimationCanvas.height = LevelMap.HEIGHT;
 	var levelAnimation = this;
 	otherAnimationCanvas.onclick = function(evt) {
 		levelAnimation.canvas.focus();
@@ -263,6 +264,7 @@ LevelMap.prototype.display = function() {
 	if(!level1Completed){
 	  this.levelAnimation.animateGameStartArrow(otherAnimationLayer);
 	}
+	this.registerEventHandlers();
 };
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -290,20 +292,6 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	}
 	this.handle =window.setInterval(cycleSprite,300);
 }
-
-LevelMap.prototype.showNavOld = function() {
-	var x = LevelMap.LEVEL_NAV_X;
-	var y = LevelMap.LEVEL_NAV_Y;
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_play_map.png"), x, y);
-	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_start_map.png"), x, y);
-	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_reset_map.png"), x, y);
-	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_menu_map.png"), x, y);
-	x = x + LevelMap.LEVEL_NAV_BUTTON_WIDTH + LevelMap.LEVEL_NAV_BUTTON_MARGIN;
-	this.layer.drawImage(ScreenLoader.gal.get("map-screen/button_quit_map.png"), x, y);
-} //LevelMap.prototype.showNav()
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
@@ -334,6 +322,14 @@ LevelMap.prototype.updateLevelStatus = function() {
 	}
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
+
+LevelMap.prototype.unregisterEventHandlers = function() {
+	var levelMap;
+	levelMap = this;
+	levelMap.canvas.onmousemove = null;
+	levelMap.canvas.onclick = null;
+	levelMap.canvas.onkeydown = null;
+} //LevelMap.prototype.unregisterEventHandlers()
 
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
@@ -368,7 +364,6 @@ LevelMap.prototype.registerEventHandlers = function() {
 	}; //onclick
 
 	levelMap.canvas.onkeydown = function(evt) {
-		var mapScreen;
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
 		switch( evt.keyCode ) {
@@ -393,10 +388,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 				evt.preventDefault();
 				break;
 			case 48: // numeric 0
-				//levelMap.reset();
-				$('ul#map-nav').focus();
-				mapScreen = new MapScreen();
-				mapScreen.registerEventHandlers();
+				//levelMap.reset();				
 				break;
 			//TODO remove 49.. its for testing purpose	
 			case 49: // numeric 1
@@ -412,16 +404,18 @@ LevelMap.prototype.registerEventHandlers = function() {
 	};
 }; //LevelMap.prototype.registerEventHandlers
 
-// erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.quit = function() {
 	sdkApi.exit();
 	return this; //chainable
 };
+
+// erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.reset = function() {
 	//TODO
 	console.debug('reset map');
 	return this; //chainable
 }; //LevelMap.prototype.reset
+
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
 	x = evt.pageX - this.offsetLeft;
@@ -466,7 +460,19 @@ LevelMap.prototype.handleRightArrow = function() {
 }; //LevelMap.prototype.handleRightArrow()
 
 LevelMap.prototype.handleDownArrow = function() {
-	this.setHotspotLevel(this.hotspotLevel.neighbors.south);
+	var mapScreen, mapNav, level;
+	level = this.hotspotLevel.neighbors.south;
+	if( level && level.mapHotspotRegion.length > 2 ) {
+		this.setHotspotLevel(level);
+	}
+	else {
+		this.unregisterEventHandlers();
+		$('ul#map-nav').focus();
+		mapScreen = new MapScreen();
+		mapScreen.registerEventHandlers();
+		mapNav = $('#map-nav');
+		mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
+	}
 }; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
