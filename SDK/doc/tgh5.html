@@ -1,0 +1,1574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>TGH5 SDK</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="TGH5 SDK"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2013-06-02T14:23+0100"/>
+<meta name="author" content="Transgaming"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="man.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">TGH5 SDK</h1>
+
+
+<div style="text-align: center">
+<p><img src="./logo.png" class="logo" alt="./logo.png" />
+</p>
+
+<hr/>
+<p>
+© 2013 transgaming Inc. And its affiliates. All rights reserved.
+</p>
+<p>
+Registered trademarks and logos property of their respective owners.
+
+</p>
+<hr/>
+
+</div>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Rationale</a></li>
+<li><a href="#sec-2">2 API</a></li>
+<li><a href="#sec-3">3 Development Environment Setup</a></li>
+<li><a href="#sec-4">4 Recommended Directory Structure:</a></li>
+<li><a href="#sec-5">5 Api class</a>
+<ul>
+<li><a href="#sec-5-1">5.1 General Functions</a>
+<ul>
+<li><a href="#sec-5-1-1">5.1.1 init</a></li>
+<li><a href="#sec-5-1-2">5.1.2 exit</a></li>
+<li><a href="#sec-5-1-3">5.1.3 inDemoMode</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-2">5.2 Ads API</a>
+<ul>
+<li><a href="#sec-5-2-1">5.2.1 reportPageView</a></li>
+<li><a href="#sec-5-2-2">5.2.2 requestModalAd</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-3">5.3 Language API</a>
+<ul>
+<li><a href="#sec-5-3-1">5.3.1 preferredLanguage</a></li>
+<li><a href="#sec-5-3-2">5.3.2 changePlayersLanguage</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 Configuration</a>
+<ul>
+<li><a href="#sec-6-1">6.1 Fields</a>
+<ul>
+<li><a href="#sec-6-1-1">6.1.1 logging</a></li>
+<li><a href="#sec-6-1-2">6.1.2 inDemoMode</a></li>
+<li><a href="#sec-6-1-3">6.1.3 ads</a></li>
+<li><a href="#sec-6-1-4">6.1.4 sdkHome</a></li>
+<li><a href="#sec-6-1-5">6.1.5 platformLangluages</a></li>
+<li><a href="#sec-6-1-6">6.1.6 reporting</a></li>
+<li><a href="#sec-6-1-7">6.1.7 exitUrl</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 IDeferred interface</a>
+<ul>
+<li><a href="#sec-7-1">7.1 always</a></li>
+<li><a href="#sec-7-2">7.2 done</a></li>
+<li><a href="#sec-7-3">7.3 fail</a></li>
+<li><a href="#sec-7-4">7.4 then</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8 IConsole interface</a>
+<ul>
+<li><a href="#sec-8-1">8.1 error</a></li>
+<li><a href="#sec-8-2">8.2 warn</a></li>
+<li><a href="#sec-8-3">8.3 log</a></li>
+<li><a href="#sec-8-4">8.4 debug</a></li>
+<li><a href="#sec-8-5">8.5 format</a></li>
+<li><a href="#sec-8-6">8.6 show</a></li>
+<li><a href="#sec-8-7">8.7 hide</a></li>
+</ul>
+</li>
+<li><a href="#sec-9">9 Files</a></li>
+<li><a href="#sec-10">10 Examples</a>
+<ul>
+<li><a href="#sec-10-1">10.1 Basic Example</a></li>
+</ul>
+</li>
+<li><a href="#sec-11">11 Reading this document</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Rationale</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>  TransGaming is the world's leading provider of game services for the TV.
+  TransGaming's goal is to reduce the complexity of deploying to multiple
+  platforms by providing game developers with an SDK that provides
+  seamless integration of content in the diverse TV market.
+</p>
+<p>
+  TGH5 SDK provides the game developer with means of service abstraction.
+  The goal of the SDK is to provide an interface between the TGH5 services
+  such as advertisement, user profiles, locale, persistent storage on one
+  hand and the games deployed to the TransGaming game services on the other.
+</p>
+<p>
+  The diagram below illustrates the role of the SDK in the TransGaming game
+  services deployment.
+</p>
+
+
+<p>
+  <img src="integration.png"  alt="integration.png" />
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> API</h2>
+<div class="outline-text-2" id="text-2">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="org-table">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">API</th><th scope="col" class="left">Description</th><th scope="col" class="left">Mandatory / Optional</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">Ads API</td><td class="left">an API that delivers ads to the game</td><td class="left">Mandatory</td></tr>
+<tr><td class="left">Language setting API</td><td class="left">allowing setting of language to current app. Selection of language in one of the TG apps affects all TG apps as the default language</td><td class="left">Mandatory</td></tr>
+<tr><td class="left">Reporting API</td><td class="left">allowing unified usage data collection and reports</td><td class="left">Mandatory</td></tr>
+<tr><td class="left">Subscription API</td><td class="left">identifying if the user is a non-subscriber and if the game is free or demo for non-subscribers and executes demo/free flows accordingly</td><td class="left">Mandatory</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Development Environment Setup</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>  The SDK package includes an archive containing JavaScript files
+  <a href="../TGH5.js">TGH5.js</a> and <a href="../TGH5.min.js">TGH5.min.js</a>. There are several other assets the SDK uses
+  internally.
+</p>
+<p>
+  To set up the development environment unpack the archive to the directory
+  of your development site. Include TGH5.js in HTML file(s) alongside the game;
+  both absolute and relative paths can be used. SDK refers to the location of
+  TGH5.js as <code>sdkHome</code>. The game may be required to adjust this setting when
+  calling <a href="#sec-5-1-1"><code>TGH5.init()</code></a> function.
+</p>
+
+
+
+<pre class="src src-javascript">&lt;script src=<span style="color: #a0ffff; background-color: #0d131f;">"../SDK/TGH5.js"</span> type=<span style="color: #a0ffff; background-color: #0d131f;">"text/javascript"</span>&gt;&lt;/script&gt;
+&lt;script type=<span style="color: #a0ffff; background-color: #0d131f;">"text/javascript"</span>&gt;
+    TGH5.init(<span style="color: #a0ffff; background-color: #0d131f;">"My-Game"</span>, { }, { sdkHome: <span style="color: #a0ffff; background-color: #0d131f;">"../SDK/"</span> }).done(<span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) {
+        <span style="color: #306158;">// </span><span style="color: #306158;">SDK successfully initialized</span>
+    }).fail(<span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">error</span>) {
+        console.log(error);
+    });
+&lt;/script&gt;
+</pre>
+
+
+<p>
+  When the game is ready for production, replace TGH5.js with TGH5.min.js to
+  reduce the application size.
+</p>
+<p>
+  Please review the demo projects for additional examples.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Recommended Directory Structure:</h2>
+<div class="outline-text-2" id="text-4">
+
+
+
+
+<pre class="example">/
+|- SDK
+|  |- TGH5.js
+|  |- TGH5.min.js
+|  |- media
+|  |  |- out.mp4 
+|  |  |- out.ogv 
+|  |  +- out.webm
+|- MyGame1 (develop your game here)
+|  |- MyGame.html
+|  +- MyGame.js
++- MyGame2 (develop your second game here)
+   |- MyGame.html
+   +- MyGame.js
+</pre>
+
+
+<p>  
+  We anticipate the need for settings specific to the platforms targeted
+  (e.g. Philips, Panasonic, Samsung.) Hence, you may need to account for the
+  lack or divergence in provided functionality. Thus, we recommend that the
+  game be designed as having two parts: the generic part, which would be
+  reused on every platform and the configuration settings, wich would change
+  according to the targeted platform.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Api class</h2>
+<div class="outline-text-2" id="text-5">
+
+<p>  When this guide uses <code>Api.foo</code> <i>(note capitalization)</i>, it means static
+  method <code>foo</code> defined on <code>Api</code> class. <code>api.foo</code> is the instance method of <code>api</code>.
+</p>
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> General Functions</h3>
+<div class="outline-text-3" id="text-5-1">
+
+
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> init</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">Api.init(productId: <span style="color: #f0ffff; background-color: #0d1719;">string</span>, productSettings?: <span style="color: #f0ffff; background-color: #0d1719;">any</span>, overrides?: <span style="color: #f0ffff; background-color: #0d1719;">any</span>): IDefered
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">TGH5.Api.init(<span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>).done(
+      <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) { <span style="color: #306158;">/* </span><span style="color: #306158;">do something with api here */</span> });   
+</pre>
+
+
+
+<pre class="src src-javascript">TGH5.Api.init(
+    <span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>,
+    { supportedLanguages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>] }).done(
+        <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) { <span style="color: #306158;">/* </span><span style="color: #306158;">do something with api here */</span> });
+</pre>
+
+
+
+<pre class="src src-javascript">TGH5.Api.init(
+    <span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>,
+    { supportedLanguages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>] },
+    { sdkHome: <span style="color: #a0ffff; background-color: #0d131f;">"../TGH5-SDK"</span>, logging: <span style="color: #dd9aa7; background-color: #0a1519;">false</span> }).done(
+        <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) { <span style="color: #306158;">/* </span><span style="color: #306158;">do something with api here */</span> });
+</pre>
+
+
+
+<pre class="src src-javascript">TGH5.Api.init(
+    <span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>,
+    { supportedLanguages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>], page: <span style="color: #a0ffff; background-color: #0d131f;">"help"</span> },
+    { sdkHome: <span style="color: #a0ffff; background-color: #0d131f;">"../TGH5-SDK"</span>, logging: <span style="color: #dd9aa7; background-color: #0a1519;">false</span> }).done(
+        <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) { <span style="color: #306158;">/* </span><span style="color: #306158;">do something with api here */</span> });
+</pre>
+
+
+<p>   
+   The function should be called before any interaction with the SDK by a page.
+   The function returns a deferred object, which is in many ways similar
+   to <a href="http://api.jquery.com/category/deferred-object/">Deferred</a> from jQuery library. This deferred object will execute your
+   success and error callbacks once the operation is completed.
+</p>
+<p>   
+   Success callback receives the initialized api instance that is used for
+   invoking all other SDK methods.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>productId</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The identifier for your game.</td></tr>
+<tr><td class="left"><code>productSettings</code></td><td class="left"><code>any</code></td><td class="left"><code>yes</code></td><td class="left">These are the settings that developers provide to SDK. At present, the only required setting is the <code>supportedLanguages</code>, which must be an array of language codes the game supports. You can also supply <code>page</code> key set to the name of the page you wish to appear in statistics report. This setting only makes sense for multi-page applications. For example, if you were to display the "help" page in your game by navigating away from the original game to a different HTML page, you would still need to initialize the SDK on the "help" page and to pass it <code>{ page: "help" }</code> in <code>init()</code>. Page names are constructed as if they were UNIX-style paths.</td></tr>
+<tr><td class="left"><code>overrides</code></td><td class="left"><code>any</code></td><td class="left"><code>yes</code></td><td class="left">Use this parameter to override some of the SDK default behavior. The detailed information on available options is listed in the <a href="#sec-6" class="funargs">Configuration</a> section.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> exit</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.exit(): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.exit();
+</pre>
+
+
+<p>
+   Terminates the game in the way most appropriate for the given browser
+   and deployment. <i>Do not display postRoll ad before exiting this function</i>
+   <i>will display the postRoll ad for you.</i>
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-3" class="outline-4">
+<h4 id="sec-5-1-3"><span class="section-number-4">5.1.3</span> inDemoMode</h4>
+<div class="outline-text-4" id="text-5-1-3">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.inDemoMode(): <span style="color: #f0ffff; background-color: #0d1719;">bool</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #f0ffff; background-color: #0d1719;">if</span> (api.inDemoMode()) newLevel.available = <span style="color: #dd9aa7; background-color: #0a1519;">false</span>;
+</pre>
+
+
+<p>   
+   Depending on the deployment and kind of user's subscription, the game may
+   be requested to run in "demo" mode with limited functionality. 
+   Call this function to determine if the "demo" mode was requested.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Ads API</h3>
+<div class="outline-text-3" id="text-5-2">
+
+
+</div>
+
+<div id="outline-container-5-2-1" class="outline-4">
+<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> reportPageView</h4>
+<div class="outline-text-4" id="text-5-2-1">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.reportPageView(page: Page): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.reportPageView(TGH5.Reporting.Page.GameMenu);
+</pre>
+
+
+<p>   
+   Call this function whenever the game changes to either of the following
+   screens:
+</p>
+<ul>
+<li><code>TGH5.Reporting.Page.Language</code>
+     When the game prompts player to select the language of the game.
+</li>
+<li><code>TGH5.Reporting.Page.Promotion</code>
+     When the game offers the player to try a different game.
+</li>
+<li><code>TGH5.Reporting.Page.Leaderboards</code>
+     When the game displays high-scores screen.
+</li>
+<li><code>TGH5.Reporting.Page.GameMenu</code>
+     When the game displays the game menu.
+</li>
+<li><code>TGH5.Reporting.Page.Loading</code>
+     When the game displays the loading screen.
+</li>
+<li><code>TGH5.Reporting.Page.Profile</code>
+     When the game displays the player's profile page.
+</li>
+<li><code>TGH5.Reporting.Page.Help</code>
+     When the game displays the game manual.
+</li>
+<li><code>TGH5.Reporting.Page.MainMenu</code>
+     When the game shows the main menu (portal or equivalent game-selection
+     screen).
+</li>
+</ul>
+
+
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>event</code></td><td class="left"><code>Page</code></td><td class="left"><code>no</code></td><td class="left">One of the values defined on the <code>TGH5.Reporting.Page</code> class. the <code>path</code> property of <code>Page</code> objects is the date reported to Google Analytics as page view.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-2-2" class="outline-4">
+<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> requestModalAd</h4>
+<div class="outline-text-4" id="text-5-2-2">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.requestModalAd(event: <span style="color: #f0ffff; background-color: #0d1719;">string</span>): IDeferred
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.requestModalAd(<span style="color: #a0ffff; background-color: #0d131f;">"preRoll"</span>).done(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () { <span style="color: #306158;">/* </span><span style="color: #306158;">continue with the game flow */</span> });
+</pre>
+
+
+<p>   
+   Call this function whenever the game is ready to display a video ad
+   or promotion screen.
+   Note that it is up to the SDK to either display or to skip an ad
+   or promotion.
+</p>
+<p>
+   Whenever an ad is displayed, the player cannot interact with the game in any
+   way. The game must be prepared to pause at this time.
+</p>
+<p>
+   In the way very similar to <a href="#sec-5-1-1">init</a>, this function returns a deferred object.
+   An application should wait for ad completion before continuing. 
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>event</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">There are these events defined: "preRoll", "inGame" and "postRoll". You would dispatch them before launching the game during the game and before exiting. Note that there is no guarantee that the video will be actually displayed. This depends on the platform, where the game is deployed.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Language API</h3>
+<div class="outline-text-3" id="text-5-3">
+
+
+</div>
+
+<div id="outline-container-5-3-1" class="outline-4">
+<h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> preferredLanguage</h4>
+<div class="outline-text-4" id="text-5-3-1">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.preferredLanguage(): IDeferred
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.preferredLanguage().always(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">language</span>) {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Update the UI to use the selected language */</span>
+    });
+</pre>
+
+
+<p>   
+   Call this function to select the language which best suites player's location,
+   deployment preferences and the player's previous choice.
+   This language is guaranteed to be one of the languages the game supports
+   as it is chosen from <a href="#sec-5-1-1">productSettings</a>. The language codes follow that
+   of <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=22109">ISO 639-1</a> standard (two characters).
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-3-2" class="outline-4">
+<h4 id="sec-5-3-2"><span class="section-number-4">5.3.2</span> changePlayersLanguage</h4>
+<div class="outline-text-4" id="text-5-3-2">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.changePlayersLanguage(newLanguage:<span style="color: #f0ffff; background-color: #0d1719;">string</span>): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #f0ffff; background-color: #0d1719;">if</span> (confirm(<span style="color: #a0ffff; background-color: #0d131f;">"Should game text display in English?"</span>))
+    api.changePlayersLanguage(<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>);
+</pre>
+
+
+<p>   
+   Stores the language selected by the player for future launches of the game.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Configuration</h2>
+<div class="outline-text-2" id="text-6">
+
+<p>  SDK has a set of configuration options, which take care of various aspects of
+  its functionality. Some of them may be overridden while testing. Note that
+  overriding is not supported in production.
+</p>
+<p>
+  Below is the illustration of some settings you may wish to override and their
+  possible values:
+</p>
+
+
+
+<pre class="src src-javascript">TGH5.Api.init(
+    <span style="color: #306158;">// </span><span style="color: #306158;">The productId, will be specific to your game.</span>
+    <span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>,
+    <span style="color: #306158;">// </span><span style="color: #306158;">Additional game settings.</span>
+    { supportedLanguages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>] },
+    {
+        <span style="color: #306158;">// </span><span style="color: #306158;">Location of TGH5 SDK relative to HTML page with your game</span>
+        sdkHome: <span style="color: #a0ffff; background-color: #0d131f;">"../TGH5-SDK"</span>,
+        <span style="color: #306158;">// </span><span style="color: #306158;">How to print debugging info</span>
+        logging: { level: TGH5.LogLevel.Debug, console: <span style="color: #a0ffff; background-color: #0d131f;">"overlay"</span> },
+        <span style="color: #306158;">// </span><span style="color: #306158;">Does the SDK require the game to run in demo mode</span>
+        inDemoMode: <span style="color: #dd9aa7; background-color: #0a1519;">false</span>,
+        <span style="color: #306158;">// </span><span style="color: #306158;">Where should the SDK redirect after exiting the game</span>
+        exitUrl: <span style="color: #a0ffff; background-color: #0d131f;">"about:blank"</span>,
+        <span style="color: #306158;">// </span><span style="color: #306158;">When (and how) should the ads be displayed</span>
+        ads:
+        {
+            <span style="color: #306158;">// </span><span style="color: #306158;">How to display the ads before the game</span>
+            preRoll: <span style="color: #dd9aa7; background-color: #0a1519;">true</span>,
+            <span style="color: #306158;">// </span><span style="color: #306158;">How to display the ads during the game</span>
+            inGame:
+            {
+                internalPromo_Galapago: 10,
+                none: 2
+            },
+            <span style="color: #306158;">// </span><span style="color: #306158;">How to display the ads upon game exit</span>
+            postRoll: <span style="color: #dd9aa7; background-color: #0a1519;">false</span>
+        },
+        <span style="color: #306158;">// </span><span style="color: #306158;">What languages does the SDK support</span>
+        languages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ko"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>],
+        <span style="color: #306158;">// </span><span style="color: #306158;">Reporting settings</span>
+        reporting: <span style="color: #dd9aa7; background-color: #0a1519;">false</span>
+    ).always(<span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) { <span style="color: #306158;">/* </span><span style="color: #306158;">Game initialization code */</span> });
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Fields</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>  Below are the fields you can expect to be in the configuration.
+</p>
+<p>
+  The format of the sectioning is as follows:
+</p>
+
+</div>
+
+<div id="outline-container-6-1-1" class="outline-4">
+<h4 id="sec-6-1-1"><span class="section-number-4">6.1.1</span> logging</h4>
+<div class="outline-text-4" id="text-6-1-1">
+
+<p>    <i>Type</i>: <code>bool | number | { level: number; console: string; }</code>
+</p>
+<p>
+    This field is <code>true</code> if the SDK was compiled with debugging enabled.
+    This setting is equivalent to only outputting the error messages recorded
+    by SDK. If it is <code>false</code>, then no messages are printed.
+</p>
+<p>
+    If set to a number, then numbers 0 through 4 have the following meaning:
+    <i>(<code>TGH5.LogLevel</code> enum provides mnemonics for these values)</i>
+</p>
+<ul>
+<li><code>TGH5.LogLevel.Nothing (0)</code>
+      Print nothing.
+</li>
+<li><code>TGH5.LogLevel.Error (1)</code>
+      Print error messages only.
+</li>
+<li><code>TGH5.LogLevel.Warn (2)</code>
+      Print errors and warnings.
+</li>
+<li><code>TGH5.LogLevel.Log (3)</code>
+      Print errors, warnings and logs.
+</li>
+<li><code>TGH5.LogLevel.Debug (4)</code>
+      Print everything.
+</li>
+</ul>
+
+
+<p>
+    Field <code>console</code>, accepts the following values:
+</p>
+<ul>
+<li><code>"overlay"</code>
+      Creates an HTML element, placed on top of the page and prints the
+      messages there.
+</li>
+<li><code>"native"</code>
+      Uses the native browser's console (<code>window.console</code>).
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6-1-2" class="outline-4">
+<h4 id="sec-6-1-2"><span class="section-number-4">6.1.2</span> inDemoMode</h4>
+<div class="outline-text-4" id="text-6-1-2">
+
+<p>    <i>Type</i>: <code>bool</code>
+</p>
+<p>  
+    This field is <code>true</code> if the game needs to run in the mode with limited
+    functionality.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-1-3" class="outline-4">
+<h4 id="sec-6-1-3"><span class="section-number-4">6.1.3</span> ads</h4>
+<div class="outline-text-4" id="text-6-1-3">
+
+<p>    <i>Type</i>: <code>{ preRoll: *; inGame: *; postRoll: * }</code>
+</p>
+<p>    
+    Settings for displaying advertisement before, after and during the game.
+</p>
+<ul>
+<li id="sec-6-1-3-1">preRoll<br/>
+     <i>Type</i>: <code>bool | Hashtable[string, number]</code>
+
+<p>     
+     When set to <code>false</code> will prevent displaying advertisement before the game.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-6-1-3-2">inGame<br/>
+     <i>Type</i>: <code>bool | Hashtable[string, number]</code>
+
+<p>     
+     When set to <code>false</code> will prevent displaying advertisement during the game.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-6-1-3-3">postRoll<br/>
+     <i>Type</i>: <code>bool | Hashtable[string, number]</code>
+
+<p>          
+     When set to <code>false</code> will prevent displaying advertisement after the game.
+</p>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-6-1-4" class="outline-4">
+<h4 id="sec-6-1-4"><span class="section-number-4">6.1.4</span> sdkHome</h4>
+<div class="outline-text-4" id="text-6-1-4">
+
+<p>    <i>Type</i>: <code>string</code>
+</p>
+<p>
+    The location of the SDK's root directory. You may specify this in several
+    ways. Choose the most appropriate for your development process.
+</p><ol>
+<li>Relative to HTML file embedding the SDK's JavaScript.
+       For example, if you embedded the SDK using this code:
+
+
+
+<pre class="example">&lt;script src="../TGH5.js"&gt;&lt;/script&gt;
+</pre>
+
+<p>
+       then you need to specify <code>..</code> for this field.
+</p></li>
+<li>If you are serving the SDK from a location unrelated to the HTML page
+       where it is embedded, for example:
+
+
+
+<pre class="example">&lt;script src="http://localhost:8080/TGH5.js"&gt;&lt;/script&gt;
+</pre>
+
+<p>
+       then you need to specify <code>http://localhost:8080/</code> for this field.
+</p></li>
+</ol>
+
+
+<p>      
+    The idea is that this path is resolved relative to the HTML page that
+    loads the SDK, all conventions used in path names should be applicable here
+    as well.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-1-5" class="outline-4">
+<h4 id="sec-6-1-5"><span class="section-number-4">6.1.5</span> platformLangluages</h4>
+<div class="outline-text-4" id="text-6-1-5">
+
+<p>    <i>Type</i>: <code>string[]</code>
+</p>
+<p>
+    The languages that the platform supports in order of most to least preference.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-1-6" class="outline-4">
+<h4 id="sec-6-1-6"><span class="section-number-4">6.1.6</span> reporting</h4>
+<div class="outline-text-4" id="text-6-1-6">
+
+<p>    <i>Type</i>: <code>bool | Hashtable[string, any]</code>
+</p>
+<p>
+    The settings for Google Analytics service. If set to <code>false</code> will prevent
+    analytics from being sent.
+</p>
+<p>
+    However, if this is a hash-table, then it may contain the following keys:
+</p>
+<ul>
+<li id="sec-6-1-6-1">analyticsId<br/>
+     <i>Type</i>: <code>string</code>
+
+<p>
+     This is the Google Analytics id, usually it looks something like:
+     "UA-XXXXXXXX-X".
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-6-1-6-2">site<br/>
+     <i>Type</i>: <code>string</code>
+
+<p>
+     The site, as reported to Google Analytics.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-6-1-6-3">virtualPageRoot<br/>
+     <i>Type</i>: <code>string</code>
+
+<p>
+     The prefix to prepend to all pages reported from this site. The rules
+     for prepending follow that of UNIX file system, after normalization.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-6-1-6-4">initParams<br/>
+     <i>Type</i>: <code>Hashtable[string, any]</code>
+
+<p>
+     List of additional paramters to pass to the Google Analytics tracker
+     upon initialization. An important argument is the <code>cookieDomain</code>. When
+     set to "none" will allow reporting from the locally deployed pages.
+</p>
+<p>
+     For the exhaustive list of parameters see <a href="https://developers.google.com/analytics/devguides/collection/analyticsjs/method-reference#create">Google Analytics API</a>.
+</p>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-6-1-7" class="outline-4">
+<h4 id="sec-6-1-7"><span class="section-number-4">6.1.7</span> exitUrl</h4>
+<div class="outline-text-4" id="text-6-1-7">
+
+<p>    <i>Type</i>: <code>string</code>
+</p>
+<p>    
+    The URL to navigate to when exiting. See <a href="#sec-5-1-2">Api.exit()</a> for more info.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> IDeferred interface</h2>
+<div class="outline-text-2" id="text-7">
+
+<p>  <code>IDeferred</code> interface offers the methods listed below. Note that since all of
+  them return an <code>IDeferred</code> in their turn, you can chain one method call
+  to another.
+</p>
+<p>
+  The <code>IDeferred</code> returned from the chained method is handling the same task
+  as the one to which you added the previous handler(s).
+</p>
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> always</h3>
+<div class="outline-text-3" id="text-7-1">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">deferred.always(...callbacks: { (...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>; }[]): IDefered
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #306158;">// </span><span style="color: #306158;">api.requestModalAd() returns an IDefered</span>
+api.requestModalAd(<span style="color: #a0ffff; background-color: #0d131f;">"preRoll"</span>).always(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Called when deferred is either resolved or rejected */</span>
+    });
+</pre>
+
+
+<p>
+   In the example above <code>Deferred</code> is a hypothetical concrete implementation
+   of <code>IDefered</code> interface.
+</p>
+<p>
+   This guide refers to the function you pass as arguments to <code>IDefered</code>
+   methods as <i>handlers</i>.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>...handlers</code></td><td class="left"><code>() =&gt; any</code></td><td class="left"><code>no</code></td><td class="left">Number of handlers to be called when <code>IDefered</code> is either resolved or rejected.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> done</h3>
+<div class="outline-text-3" id="text-7-2">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">deferred.done(...callbacks: { (...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>; }[]): IDeferred;
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #306158;">// </span><span style="color: #306158;">Api.init() returns an IDefered</span>
+TGH5.Api.init(<span style="color: #a0ffff; background-color: #0d131f;">"ProductId"</span>).done(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Called when deferred is resolved */</span>
+    });
+</pre>
+
+
+<p>
+   <code>done()</code> handlers are called when the <code>IDeferred</code> was resolved (completed
+   the task successfully).
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>...handlers</code></td><td class="left"><code>() =&gt; any</code></td><td class="left"><code>no</code></td><td class="left">Number of handlers to be called when <code>IDefered</code> is resolved (finished the task successfully).</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7-3" class="outline-3">
+<h3 id="sec-7-3"><span class="section-number-3">7.3</span> fail</h3>
+<div class="outline-text-3" id="text-7-3">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">deferred.fail(...callbacks: { (...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>; }[]): IDeferred;
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #306158;">// </span><span style="color: #306158;">api.requestModalAd() returns IDefered</span>
+api.requestModalAd(<span style="color: #a0ffff; background-color: #0d131f;">"inGame"</span>).done(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Called when deferred is rejected */</span>
+    });   
+</pre>
+
+
+<p>
+   <code>fail()</code> handlers are called when the <code>IDeferred</code> was rejected (failed to
+   complete the task).
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>...handlers</code></td><td class="left"><code>() =&gt; any</code></td><td class="left"><code>no</code></td><td class="left">Number of handlers to be called when <code>IDefered</code> is rejected (failed to complete the task).</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7-4" class="outline-3">
+<h3 id="sec-7-4"><span class="section-number-3">7.4</span> then</h3>
+<div class="outline-text-3" id="text-7-4">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">deferred.then(success: { (...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>; },
+              fail: { (...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>; }): IDeferred
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript"><span style="color: #306158;">// </span><span style="color: #306158;">api.requestModalAd() returns IDefered</span>
+api.requestModalAd(<span style="color: #a0ffff; background-color: #0d131f;">"postRoll"</span>).then(
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Called when deferred is resolved */</span>
+    },
+    <span style="color: #f0ffff; background-color: #0d1719;">function</span> () {
+        <span style="color: #306158;">/* </span><span style="color: #306158;">Called when deferred is rejected */</span>
+    });
+</pre>
+
+
+<p>
+   <code>then()</code> takes two handlers, the first handler is called when deferred resolves
+   successfully, the second is called when the deferred is rejected.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>...handlers</code></td><td class="left"><code>() =&gt; any</code></td><td class="left"><code>no</code></td><td class="left">The handler to be called when <code>IDefered</code> is resolved (completes the task successfully).</td></tr>
+<tr><td class="left"><code>...handlers</code></td><td class="left"><code>() =&gt; any</code></td><td class="left"><code>no</code></td><td class="left">The handler to be called when <code>IDefered</code> is rejected (failed to complete the task).</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> IConsole interface</h2>
+<div class="outline-text-2" id="text-8">
+
+<p>  <code>api.console</code> provides convenient logging interface. Depending on configuration
+  settings, this may be either the native browser's console, or an HTML element
+  showing the logs. Whilst the browser's console may provide more functions,
+  the HTML version supports only <code>error(message)</code>, <code>warn(message)</code>,
+  <code>log(message)</code>, <code>debug(message)</code> and <code>format(level, pattern, ...args)</code>.
+</p>
+<p>
+  <code>format</code> accepts values from <code>TGH5.LogLevel</code> enum as described in
+  <a href="#sec-8-4">Configuration</a>, the pattern string - a string that supports a limited subset of
+  <code>printf</code> format, and a number of arguments to substitute in the pattern.
+</p>
+<p>
+  If using the overlay console, you will have to activate and deactivate it using
+  code similar to the one below:
+</p>
+
+
+
+<pre class="src src-javascript">TGH5.Api.init(
+    <span style="color: #a0ffff; background-color: #0d131f;">"Your-Game-Id"</span>,
+    { supportedLanguages: [<span style="color: #a0ffff; background-color: #0d131f;">"en"</span>, <span style="color: #a0ffff; background-color: #0d131f;">"ru"</span>] }).done(
+        <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">api</span>) {
+            document.body.addEventListener(
+                <span style="color: #a0ffff; background-color: #0d131f;">"keydown"</span>,
+                <span style="color: #f0ffff; background-color: #0d1719;">function</span> (<span style="color: #4186d2;">event</span>) {
+                    <span style="color: #306158;">// </span><span style="color: #306158;">Show the console when pressing the red button on</span>
+                    <span style="color: #306158;">// </span><span style="color: #306158;">remote control</span>
+                    <span style="color: #f0ffff; background-color: #0d1719;">if</span> ((event.key || event.keyCode) == <span style="color: #a0ffff; background-color: #0d131f;">"Red"</span>) {
+                        take5.console.show();
+                        <span style="color: #306158;">// </span><span style="color: #306158;">Hide the console when pressing the green button</span>
+                        <span style="color: #306158;">// </span><span style="color: #306158;">on remote control</span>
+                    } <span style="color: #f0ffff; background-color: #0d1719;">else</span> <span style="color: #f0ffff; background-color: #0d1719;">if</span> ((event.key || event.keyCode) == <span style="color: #a0ffff; background-color: #0d131f;">"Green"</span>) {
+                        take5.console.hide();
+                    }
+                });
+        });
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> error</h3>
+<div class="outline-text-3" id="text-8-1">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.error(message: <span style="color: #f0ffff; background-color: #0d1719;">string</span>): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.error(<span style="color: #a0ffff; background-color: #0d131f;">"Something went terribly wrong"</span>);
+</pre>
+
+
+<p>
+   Use this function to log application errors, i.e. errors anticipated by the
+   program, but those, which will most likely cause the program to fail to
+   perform the requested operation.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>message</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The message to log.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> warn</h3>
+<div class="outline-text-3" id="text-8-2">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.warn(message: <span style="color: #f0ffff; background-color: #0d1719;">string</span>): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.warn(<span style="color: #a0ffff; background-color: #0d131f;">"The user may expect something else!"</span>);
+</pre>
+
+
+<p>
+   Use this function to log events which may potentially exhibit behavior not
+   expected from your application. A good example of such behavior would be a
+   deprecated function call, a data that looks bogus, an operation that takes
+   greatly more time then expected etc.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>message</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The message to log.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3" class="outline-3">
+<h3 id="sec-8-3"><span class="section-number-3">8.3</span> log</h3>
+<div class="outline-text-3" id="text-8-3">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.log(message: <span style="color: #f0ffff; background-color: #0d1719;">string</span>): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.log(<span style="color: #a0ffff; background-color: #0d131f;">"An important event occured"</span>);
+</pre>
+
+
+<p>
+   Use this function to log significant events in the life of the application,
+   normally, these would be the events which indicate progress made by the user of
+   the application so far. For example, loading a resourse is an event worth
+   logging. Level completion in the game is, likewise, an event worth logging.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>message</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The message to log.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-4" class="outline-3">
+<h3 id="sec-8-4"><span class="section-number-3">8.4</span> debug</h3>
+<div class="outline-text-3" id="text-8-4">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.debug(message: <span style="color: #f0ffff; background-color: #0d1719;">string</span>): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.debug(<span style="color: #a0ffff; background-color: #0d131f;">"My code works correctly"</span>);
+</pre>
+
+
+<p>
+   Use this function to log technical information about your code, such as
+   assertions about values of the variables, code execution path reaching the
+   desired destination and so on.
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>message</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The message to log.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-5" class="outline-3">
+<h3 id="sec-8-5"><span class="section-number-3">8.5</span> format</h3>
+<div class="outline-text-3" id="text-8-5">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.format(level: LogLevel, message: <span style="color: #f0ffff; background-color: #0d1719;">string</span>, ...args: <span style="color: #f0ffff; background-color: #0d1719;">any</span>[]): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.format(TGH5.LogLevel.Debug,
+                   <span style="color: #a0ffff; background-color: #0d131f;">"A = %s, B = %s, A + B = %s"</span>,
+                   1, 2, (1 + 2));
+</pre>
+
+
+<p>
+   Use this function to print formatted text. This function is a very reduced
+   version of the standard C <code>printf</code> function. All the syntax it supports
+   currently is either <code>%s</code> or <code>%%</code>. First will call <code>String(x)</code> on the given
+   argument, the second will print literal "%".
+</p>
+<table  border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="funargs">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Arguments</th><th scope="col" class="left">Type</th><th scope="col" class="left">Optional</th><th scope="col" class="left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>level</code></td><td class="left"><code>number</code></td><td class="left"><code>no</code></td><td class="left">Verbosity level, an integer 1 through 4. For convenience, the class <code>TGH5.LogLevel</code> defines the following constants: <code>Debug</code> = 1, <code>Log</code> = 2, <code>Warn</code> = 3 and <code>Error</code> = 4.</td></tr>
+<tr><td class="left"><code>message</code></td><td class="left"><code>string</code></td><td class="left"><code>no</code></td><td class="left">The message to log.</td></tr>
+<tr><td class="left"><code>...args</code></td><td class="left"><code>any[]</code></td><td class="left"><code>yes</code></td><td class="left">Arguments to substitute in the message.</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-6" class="outline-3">
+<h3 id="sec-8-6"><span class="section-number-3">8.6</span> show</h3>
+<div class="outline-text-3" id="text-8-6">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.show(): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.show();
+</pre>
+
+
+<p>
+   Have you used HTML-based console, this function will cause it to become
+   visible, otherwise it does nothing.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-7" class="outline-3">
+<h3 id="sec-8-7"><span class="section-number-3">8.7</span> hide</h3>
+<div class="outline-text-3" id="text-8-7">
+
+<p>   <i>Signature</i>:
+</p>
+
+
+<pre class="src src-typescript">api.console.hide(): <span style="color: #f0ffff; background-color: #0d1719;">void</span>
+</pre>
+
+
+<p>
+   <i>Example</i>:
+</p>
+
+
+<pre class="src src-javascript">api.console.hide();
+</pre>
+
+
+<p>
+   Have you used HTML-based console, this function will cause it to disappear
+   from the screen, otherwise it does nothing.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Files</h2>
+<div class="outline-text-2" id="text-9">
+
+<p>  <a href="../media">media</a> - the directory containing several media files (videos) needed to display
+  video ads.
+</p>
+<p>  
+  <a href="../TGH5.js">JavaScript sources (no minification)</a> - development SDK version.
+</p>
+<p>  
+  <a href="../TGH5.min.js">JavaScript sources (minified)</a> - production SDK version.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Examples</h2>
+<div class="outline-text-2" id="text-10">
+
+
+</div>
+
+<div id="outline-container-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Basic Example</h3>
+<div class="outline-text-3" id="text-10-1">
+
+<p>   <a href="../examples/InteractiveDemo.html">InteractiveDemo</a> - interactive sample that illustrates main SDK concepts and common usage.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Reading this document</h2>
+<div class="outline-text-2" id="text-11">
+
+<p>  The syntax of types follows that of <a href="http://www.typescriptlang.org/Content/TypeScript%20Language%20Specification.pdf">TypeScript</a>. 
+</p></div>
+</div>
+</div>
+
+</body>
+</html>

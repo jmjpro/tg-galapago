@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Game Demo</title>
+    <style type="text/css">
+    /* @import url(http://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Droid+Serif); */
+
+    html, body {
+        background-color: #DBD4C4;
+        /*
+        font: 300 .9em/1.6em "Droid Serif", "Open Sans",
+        Cambria, Georgia, "DejaVu Serif", serif;
+        */
+        font: 300 .9em/1.6em sans-serif;
+        font-size: 12pt;
+        color: beige;
+        margin: auto;
+    }
+    .game-screen {
+        display: block;
+        width: 720px;
+        padding-left: 50px;
+        padding-right: 50px;
+        background-color: #A0A0A0;
+        padding: 20px 40px 20px 40px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        -moz-box-shadow: 3px 3px 4px #909090;
+        -webkit-box-shadow: 3px 3px 4px #909090;
+        box-shadow: 3px 3px 4px #909090;
+        border: 1px solid #BFBFBF;
+    }
+    .game-screen p:nth-child(1) {
+        text-align: right;
+        font-size: 10pt;
+        color: #666;
+        font-weight: bold;
+        float: left;
+        display: block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    .game-screen p:nth-child(2) {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 32pt;
+        color: white;
+        -moz-text-shadow: 2px 2px #909090;
+        -webkit-text-shadow: 2px 2px #909090;
+        text-shadow: 2px 2px #909090;
+    }
+    pre { overflow: auto; color: white; }
+    em { font-size: 10pt; text-align: right }
+    /*
+      109 instead of 108 because of rounding error in Opera
+     */
+    .game {
+        width: 720px;
+        height: 109pt;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background-color: #888888;
+    }
+    .tic-tac-toe {
+        display: block;
+        width: 109pt;
+        height: 109pt;
+        text-align: center;
+        margin: auto;
+    }
+    .tic-tac-toe div {
+        width: 32pt;
+        height: 26pt;
+        font-family: monospace;
+        font-weight: bold;
+        padding-top: 6pt;
+        background-color: #555;
+        float: left;
+        margin: 0;
+        -moz-box-shadow: 3px 3px 4px #909090;
+        -webkit-box-shadow: 3px 3px 4px #909090;
+        box-shadow: 3px 3px 4px #909090;
+    }
+    .tic-tac-toe div:nth-child(1),
+    .tic-tac-toe div:nth-child(4),
+    .tic-tac-toe div:nth-child(7) {
+        margin-right: 6pt;
+    }
+    .tic-tac-toe div:nth-child(3),
+    .tic-tac-toe div:nth-child(6),
+    .tic-tac-toe div:nth-child(9) {
+        margin-left: 6pt;
+    }
+    .tic-tac-toe div:nth-child(1),
+    .tic-tac-toe div:nth-child(2),
+    .tic-tac-toe div:nth-child(3) {
+        margin-bottom: 6pt;
+    }
+    .tic-tac-toe div:nth-child(7),
+    .tic-tac-toe div:nth-child(8),
+    .tic-tac-toe div:nth-child(9) {
+        margin-top: 6pt;
+    }
+    .cross { color: red; }
+    .zero { color: white; }
+    .winner { background-color: indianred !important; }
+    </style>
+</head>
+<body>
+    <script src="../TGH5.js" type="text/javascript"></script>
+     <div class="game-screen">
+       <p>screen 6</p>
+       <p>See you!</p>
+       <pre>api.exit();</pre>
+       <div class="game">
+         <div class="tic-tac-toe">
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+           <div></div>
+         </div>
+       </div>
+       <p><em>Press any key or click to exit the demo.</em></p>
+    </div>
+    <div class="game-screen">
+      <p>screen 1</p>
+      <p>Interactive demo</p>
+      <p>Define configuration variables:</p>
+      <pre>
+// The unique id you received from TransGaming
+var productId = "Interactive-Demo";
+// Additional game settings
+var gameSettings = { supportedLanguages: ["en", "ko"] };
+// Override TGH5 SDK settings (developer mode only)
+var sdkOverrides = { skdHome: ".." };</pre>
+      <div class="game">
+        <div class="tic-tac-toe">
+          <div class="zero">T</div>
+          <div class="zero">I</div>
+          <div class="zero">C</div>
+          <div class="zero winner">T</div>
+          <div class="zero winner">A</div>
+          <div class="zero winner">C</div>
+          <div class="cross">T</div>
+          <div class="cross">O</div>
+          <div class="cross">E</div>
+        </div>
+      </div>
+      <br/><em>Press any key or click to go to the next screen.</em>
+    </div>
+    <div class="game-screen">
+      <p>screen 2</p>
+      <p>Interactive demo</p>
+      <p>First step is to initialize the SDK:</p>
+      <pre>
+TGH5.Api.init(productId, gameSettings, sdkOverrides).done(
+    function (api) {
+        if (api.inDemoMode()) runGameInDemoMode();
+        else runFullGame();
+    }).fail(function () {
+        // Make sure `sdkHome' points to the directory of TGH5.js
+    });</pre>
+      <div class="game">
+        <div class="tic-tac-toe">
+          <div class="zero">T</div>
+          <div class="zero">I</div>
+          <div class="zero">C</div>
+          <div class="zero winner">T</div>
+          <div class="zero winner">A</div>
+          <div class="zero winner">C</div>
+          <div class="cross">T</div>
+          <div class="cross">O</div>
+          <div class="cross">E</div>
+        </div>
+      </div>
+      <br/><em>Press any key or click to go to the next screen.</em>
+    </div>
+    <div class="game-screen">
+      <p>screen 3</p>
+      <p>Welcome - loading screen</p>
+      <p>Before the game starts a pre roll advertisement should be displayed.</p>
+      <pre>
+api.requestModalAd("preRoll").always(function () {
+    // Start the game
+});</pre>
+      <div class="game">
+        <div class="tic-tac-toe">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <br/><em>Press any key or click to go to the next screen.</em>
+    </div>
+    <div class="game-screen">
+      <p>screen 4</p>
+      <p>Midgame</p>
+      <p>Player plays the game.</p>
+      <div class="game">
+        <div class="tic-tac-toe">
+          <div class="cross">X</div>
+          <div class="cross">X</div>
+          <div class="zero">O</div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div class="zero">O</div>
+        </div>
+      </div>
+      <br/><em>Press any key or click to go to the next screen.</em>
+    </div>
+    <div class="game-screen">
+      <p>screen 5</p>
+      <p>Round ended</p>
+      <p>After end of a round an in-game advertisement may be displayed.</p>
+      <pre>
+api.requestModalAd("inGame").always(function () {
+    // Resume the game
+});</pre>
+      <div class="game">
+        <div class="tic-tac-toe">
+          <div class="cross">X</div>
+          <div class="cross">X</div>
+          <div class="zero winner">O</div>
+          <div class="cross">X</div>
+          <div class="zero winner">O</div>
+          <div class="cross">X</div>
+          <div class="zero winner">O</div>
+          <div></div>
+          <div class="zero">O</div>
+        </div>
+      </div>
+      <br/><em>Press any key or click to go to the next screen.</em>
+    </div>
+    <script type="text/javascript">
+    function initDemo() {
+        var screens = document.getElementsByClassName("game-screen");
+          
+        for (var i = 0; i < screens.length; i++) {
+            screens[i].setAttribute("style", "display: none");
+        }
+        nextScreen();
+        document.body.addEventListener(
+            "keydown",
+            function (event) {
+                if (["Red", 403].indexOf(event.key || event.keyCode) > -1) {
+                    tgh5.console.show();
+                } else if (["Green", 404].indexOf(event.key || event.keyCode) > -1) {
+                    tgh5.console.hide();
+                } else {
+                    if (progress == curentScreen) nextScreen();
+                }
+            });
+
+        document.addEventListener(
+            "click",
+            function (event) {
+                if (progress == curentScreen) nextScreen(event);
+            });
+    }
+
+    function nextBaloon() {
+        var screens = document.getElementsByClassName("game-screen"),
+        current = screens[0], next = screens[1], parent = current.parentNode;
+        parent.removeChild(current);
+        current.setAttribute("style", "display: none");
+        next.setAttribute("style", "display: block");
+        parent.appendChild(current);
+        curentScreen++;
+    }
+
+    function nextScreen(event) {
+        screenActions[0](nextBaloon);
+        screenActions.push(screenActions.shift());
+        if (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+        progress++;
+        return false;
+    }
+
+    var tgh5, gameLanguage, progress = 0, curentScreen = 0,
+        screenActions = [
+            function (f) { f(); },
+            function (f) { f(); },
+            function (f) {
+                if (!tgh5)
+                    TGH5.Api.init("Interactive-Demo",
+                                   { supportedLanguages: ["en", "ko"] },
+                                   {
+                                       sdkHome: "../",
+                                       logging: { console: "overlay" },
+                                       ads: { preRoll: true },
+                                       exitUrl: "about:blank"
+                                   }).done(initGame).fail(
+                                       logErrorAndQuit); },
+            function (f) { tgh5.requestModalAd("preRoll").done(f); },
+            function (f) { tgh5.console.log("preRoll ad finished"); f(); },
+            function (f) { tgh5.requestModalAd("inGame").done(f); },
+            function (f) { tgh5.exit(); }
+        ];
+
+    function initGame(api) {
+        tgh5 = api;
+        tgh5.console.log("SDK loaded, initializing the game");
+        
+        // This deferred will never be rejected, so done() is equivalent to
+        // always()
+        tgh5.preferredLanguage().always(
+            function (language) {
+                tgh5.console.log("User prefers language: " + language);
+            });
+        tgh5.console.log("SDK resolved in: " + tgh5.resolve("TGH5.js"));
+        var games = document.getElementsByClassName("tic-tac-toe");
+        loadingAnimation(games[1]);
+        vanishAnimation(games[4]);
+        if (tgh5.inDemoMode()) {
+            runGameInDemoMode();
+        } else {
+            runFullGame();
+        }
+        nextBaloon();
+    }
+
+    function logErrorAndQuit() {
+        tgh5.console.log("There was an error calling TGH5 API");
+        if (arguments.length) {
+            tgh5.console.log("Error details:");
+            for (var i = 0; i < arguments.length; i++) {
+                tgh5.console.log("  " + arguments[i]);
+            }
+        }
+    }
+
+    function runGameInDemoMode() {
+        tgh5.console.log("This game is running in demo mode");
+    }
+
+    function runFullGame() {
+        tgh5.console.log("This game enables full functionality");
+    }
+
+    function loadingAnimation(div) {
+        var squareTimer = 0, opacity = 0, childNo = 0, child,
+        children = div.getElementsByTagName("div"), i,
+        timer = setInterval(
+            function () {
+                clearInterval(squareTimer);
+                child = children[childNo];
+                childNo = (childNo + 1) % (children.length + 1);
+                if (!child)
+                    for (i = 0; i < children.length; i++)
+                        children[i].style.opacity = 0;
+                else {
+                    opacity = 0;
+                    squareTimer = setInterval(
+                        function () {
+                            opacity += 0.1;
+                            child.style.opacity = opacity;
+                        }, 2000 / 90);
+                }
+            }, 2000);
+        for (i = 0; i < children.length; i++)
+            children[i].style.opacity = 0;
+    }
+
+    function vanishAnimation(div) {
+        var i, zoom = 1, zoomTimer,
+        timer = setInterval(
+            function () {
+                // div.style.zoom = 1;
+                // div.style.transform = "scale(x)";
+                // would also work, but only in Opera or FF
+                div.style.MozTransform = "scale(1)";
+                div.style.OTransform = "scale(1)";
+                div.style.msTransform = "scale(1)";
+                div.style.webkitTransform = "scale(1)";
+                zoom = 1;
+                zoomTimer = setInterval(
+                    function () {
+                        zoom -= 0.01;
+                        if (zoom <= 0.1){
+                            clearInterval(zoomTimer);
+                            zoom = 1;
+                        }
+                        else {
+                            // div.style.zoom = zoom;
+                            div.style.MozTransform = "scale(" + zoom + ")";
+                            div.style.OTransform = "scale(" + zoom + ")";
+                            div.style.msTransform = "scale(" + zoom + ")";
+                            div.style.webkitTransform = "scale(" + zoom + ")";
+                        }
+                    }, 2000 / 90);
+            }, 10000);
+        // div.style.zoom = 1;
+        div.style.MozTransform = "scale(1)";
+        div.style.OTransform = "scale(1)";
+        div.style.msTransform = "scale(1)";
+        div.style.webkitTransform = "scale(1)";
+    }
+
+    initDemo();
+  </script>
+</body>
+</html>
