@@ -1,0 +1,121 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/global.css"/>
+	<script src="ext/zepto-1.0.min.js"></script>
+	<!--script src="js/mapScreen.js"></script-->
+	<!--script src="js/dialogQuit.js"></script-->
+	<script src="ext/i18next-1.6.3.min.js"></script>
+	<script src="js/dialogMenu2.js"></script>
+	<script>
+	function loadGame() {
+		i18n.init({ lng: 'en' , fallbackLng: 'en'});
+		var testClass = new TestClass();
+		testClass.registerEventHandlers();
+	}
+
+	function TestClass() {
+
+	}
+
+	TestClass.prototype.registerEventHandlers = function() {
+		window.onkeydown = function(evt) {
+			switch( evt.keyCode ) {
+			case 13: // enter
+				alert('You hit enter');
+				evt.stopPropagation();
+				evt.preventDefault();
+				break;
+			}
+		}
+	}
+	</script>
+</head>
+<!--body onload="mapScreen = new MapScreen(); mapScreen.registerEventHandlers();"-->
+<!--body onload="dialogQuit = new DialogQuit();"-->
+<body onLoad="loadGame()">
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight', dialogQuitHandleNavButtonSelect);">Show Quit Dialog</a> | <a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight', dialogGameMenuHandleNavButtonSelect);">Show Game Menu Dialog</a>
+<div id="test-layer" style="z-index: -1; width: 100%; height: 100%; background: url(res/img/map-screen/Map.jpg)"></div>
+
+<ul id="map-nav">
+<li><img id="menu-map" class="nav-button" src="res/img/map-screen/button_menu_map.png"/></li>
+<li><img id="play-map" class="nav-button" src="res/img/map-screen/button_play_map.png"/></li>
+<li><img id="quit-map" class="nav-button" src="res/img/map-screen/button_quit_map.png"/></li>
+<li><img id="reset-map" class="nav-button" src="res/img/map-screen/button_reset_map.png"/></li>
+<li><img id="start-map" class="nav-button" src="res/img/map-screen/button_start_map.png"/></li>
+</ul>
+
+<div id="dialog-quit" class="overlay2">
+	<div>
+		<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
+		<ul class="vertical-button-nav">
+			<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
+			<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge">No</li>
+		</ul>
+	</div>
+</div>
+
+<script>
+var dialogQuitHandleNavButtonSelect = function(navItem) {
+	switch( navItem[0].id ) {
+		case 'option-yes' :
+			this.hide();
+			Galapago.levelMap.quit();
+			break;
+		case 'option-no' :
+			this.hide();
+			break;
+	};
+}
+</script>
+
+<div id="dialog-game-menu" class="overlay2">
+	<span class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</span>
+	<div>
+		<ul class="vertical-button-nav">
+			<li id="option-continue-playing" data-i18n="Dialog Game Menu.OptionContinuePlaying" class="button-huge button-huge-hilight">Continue Playing</li>
+			<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
+			<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
+			<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
+			<li id="option-options" data-i18n="Dialog Game Menu.OptionOptions" class="button-huge">Options</li>
+		</ul>
+	</div>
+</div>
+
+<script>
+var dialogGameMenuHandleNavButtonSelect = function(navItem) {
+	switch( navItem[0].id ) {
+		case 'option-continue-playing' :
+			this.hide();
+			break;
+		case 'option-main-menu' :
+			this.hide();
+			console.debug('option-main-menu');
+			break;
+		case 'option-new-game' :
+			this.hide();
+			console.debug('option-new-game');
+			break;
+		case 'option-how-to-play' :
+			this.hide();
+			console.debug('option-how-to-play');
+			break;
+		case 'option-options' :
+			this.hide();
+			console.debug('option-options');
+			break;
+	};
+}
+</script>
+
+<script>
+	var gameMenu, mainMenu//, dialogQuit, dialogGameMenu;
+	//gameMenu = new DialogMenu('layer-grid', 'game-menu');
+	//mainMenu = new DialogMenu('layer-map', 'main-menu');
+	/*
+	dialogQuit = new DialogMenu('layer-background', 'dialog-quit', 'button-huge-hilight');
+	dialogGameMenu = new DialogMenu('layer-background', 'dialog-game-menu', 'button-huge-hilight');
+	*/
+</script>
+
+</body>
+</html>

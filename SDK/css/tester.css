@@ -1,0 +1,66 @@
+.__take5__{ color: #314159 }
+.console-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 600px;
+    margin: 0;
+    padding: 0;
+    z-index: 2147483647;
+}
+.console-wrapper p {
+    font-weight: bold;
+    color: white;
+    background-color: black;
+    display: block;
+    float: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+.console-wrapper:hover .console-background {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.console-wrapper:hover .console-lines {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.console-wrapper:hover p {
+    display: none;
+}
+.console-background {
+    background-color: #000;
+    opacity: 0.3;
+    width: 600px;
+    float: left;
+    display: none;
+}
+.console-lines {
+    color: white;
+    float: left;
+    display: none;
+    width: 600px;
+    -moz-text-shadow: 1pt 1pt #444;
+    -webkit-text-shadow: 1pt 1pt #444;
+    text-shadow: 1pt 1pt #444;
+}
+.console-background, .console-lines {
+    font-family: monospace;
+    font-size: 14pt;
+    margin: 0;
+    padding: 2pt;
+    line-spacing: 16pt;
+}
+.console-debug { color: chartreuse; }
+.console-log { color: white }
+.console-warn { color: khaki }
+.console-error { color: fuchsia; font-weight: bold; }
+
+console-lines li { padding-left: 12pt }

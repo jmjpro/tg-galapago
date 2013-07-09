@@ -81,5 +81,10 @@
 	  "Option3" : "Nouvelle partie",
 	  "Option4" : "Comment jouer",
 	  "Option5" : "Options"
+  },
+  "Dialog Quit": {
+   	  "Title" : "Voulez-vous créer une nouvelle partie ?",
+      "OptionYes" : "Oui",
+	  "OptionNo" : "Non"
   }
 }

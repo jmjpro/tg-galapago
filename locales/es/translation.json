@@ -81,5 +81,10 @@
 	  "Option3" : "Partida nueva",
 	  "Option4" : "Cómo se juega",
 	  "Option5" : "Opciones"
+  },
+  "Dialog Quit": {
+   	  "Title" : "La partida se guardará, ¿seguro que quieres salir del juego?",
+      "OptionYes" : "Sí",
+	  "OptionNo" : "No"
   }
 }

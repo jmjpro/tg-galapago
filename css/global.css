@@ -5,15 +5,15 @@
 }
 
 @font-face {
-  font-family: 'Arial';
-  src: url('../res/fonts/arial.ttf');
-  src: local('☺'), url('../res/fonts/arial.ttf') format('truetype');
+  font-family: 'Helvetica';
+  src: url('../res/fonts/HelveticaRegular.ttf');
+  src: local('☺'), url('../res/fonts/HelveticaRegular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'ArialBold';
-  src: url('../res/fonts/arialbd.ttf');
-  src: local('☺'), url('../res/fonts/arialbd.ttf') format('truetype');
+  font-family: 'HelveticaBold';
+  src: url('../res/fonts/HelveticaBold.ttf');
+  src: local('☺'), url('../res/fonts/HelveticaBold.ttf') format('truetype');
 }
 
 .jungle {
@@ -54,7 +54,7 @@ canvas.game-layer {
 }
 
 .overlay {
-	visibility: hidden;
+	display: none;
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -71,6 +71,20 @@ canvas.game-layer {
 	border:1px solid #000;
 	padding:15px;
 	text-align:center;
+}
+
+.overlay2 {
+	display: none;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width:100%;
+	height:100%;
+	text-align:center;
+	z-index: 1000;
+	font-family: 'JungleFever';
+	font-size: 24px;
+	color: white;
 }
 
 .transparent {
@@ -130,4 +144,61 @@ img.nav-button {
 	z-index: 1;
 	top: 0px;
 	left: 0px;
+}
+
+#dialog-quit {
+	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
+	width: 717px;
+	height: 590px;
+}
+
+#dialog-quit>div {
+	/*display: inline-block;*/
+ 	width:388px;
+	height:360px;
+	position:absolute;
+	top:180px;
+	left:165px; /*717 - 388 / 2*/
+}
+
+span.dialog-title {
+	position: relative;
+	color: brown;
+	top: 50px;
+}
+
+#dialog-game-menu {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 690px;
+}
+
+#dialog-game-menu>div {
+	/*display: inline-block;*/
+ 	width:388px;
+	height:460px;
+	position:absolute;
+	top:100px;
+	left:165px; /*717 - 388 / 2*/
+}
+
+li.button-huge {
+	background: url('../res/img/dialogs/button_huge_regular.png') no-repeat left top;
+	width: 388px;
+	height: 94px;
+	vertical-align: middle;
+	line-height: 114px;
+}
+
+ul.vertical-button-nav {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
+ul.vertical-button-nav > li {
+	list-style-type: none;
+}
+
+li.button-huge-hilight {
+	background-image: url('../res/img/dialogs/button_huge_highlight.png');
 }

@@ -224,10 +224,10 @@ LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
 	creatureImagePathIt = 0;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
 			creatureType = creatureTypes[creatureTypeIt];
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_1_rollover.' + Level.BLOB_IMAGE_EXTENSION;
+			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION;
 			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
 			creatureImagePathIt++;
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_1_jumps.' + Level.BLOB_IMAGE_EXTENSION;
+			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION;
 			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
 			creatureImagePathIt++;
 	}
