@@ -7,7 +7,7 @@ DialogMenu.prototype.show = function(board) {
     this.windowKeyHandler= window.onkeydown;
 	window.onkeydown=null;
     this.board=board;
-    this.menu.style.visibility = 'visible';
+    this.menu.style.display = 'block';
 	this.registerEvents();
 	//this.menu.focus();
 	//alert($('#game-menu'));
@@ -68,7 +68,7 @@ DialogMenu.prototype.setSelected =function (menuitem) {
 
 DialogMenu.prototype.hide = function(showCreatureBoard) {
 	//this.main.className = '';
-	this.menu.style.visibility = 'hidden';
+	this.menu.style.display = 'none';
 	//this.board.handleTileSelect(this.board.tileActive);
 	//this.board.displayMenuButton(false);
 	if(showCreatureBoard){
