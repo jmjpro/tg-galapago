@@ -819,6 +819,7 @@ Level.prototype.display = function() {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.build( level.levelConfig.blobPositions );
+		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.displayBlobCollections();
 
 		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
@@ -1015,6 +1016,11 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	return this.getImageByPath(this.creatureImages, creatureImagePath);
 };
 
+Level.prototype.isNew = function() {
+	var levelSaved = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+ this.id +"restore");
+	var levelCompleted = localStorage.getItem("level"+ this.id + ".completed");	
+	return !levelSaved && !levelCompleted;
+};
 /* end class Level */
 
 /*
@@ -1364,6 +1370,19 @@ Board.prototype.build = function(tilePositions) {
 	return;
 }; //Board.prototype.build
 
+Board.prototype.buildInitialSwapForTriplet = function(initialSwapForTripletInfo) {
+	var board = this;
+	if(board.level.isNew() && initialSwapForTripletInfo){
+		var coordinates = initialSwapForTripletInfo.coordinates; 
+		var colorId = initialSwapForTripletInfo.color;
+		_.each(coordinates,function(coordinate){
+			var creature = board.level.getCreatureByColorId(colorId, Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
+			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
+			board.regenerateMatchingCreatureIfAny(tile, coordinates);
+		});
+	}
+};
+
 Board.prototype.parseCell = function(cellId) {
 	var cellObject;
 	cellObject = [];
@@ -1426,10 +1445,13 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	else {
 		if( 'CREATURE' === blobType ) {
 			tile = new Tile(this, blob, coordinates, spriteNumber);
-			if( spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER) {
+			if(!blob && spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER) {
 				tile = this.getNonMatchingCreatureTile(tile);
 				blob = tile.blob;
 				imageName = tile.blob.creatureType;
+			} 
+			else if(blob && spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER){
+				imageName = blob.creatureType;
 			}
 			else if( spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || spriteNumber === Tile.COCOONED_TILE_SPRITE_NUMBER ) {
 				imageName = blob.creatureType;
@@ -1453,24 +1475,21 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			this.regenerateMatchingCreatureIfAny(tile);
 		}	
 	}
-	return this; //chainable
+	return tile; 
 }; //Board.prototype.addTile()
 
-Board.prototype.regenerateMatchingCreatureIfAny = function(tile) {
+Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoords) {
 	var layer, tileMatrix, col, row, x, y, width, height, imageName;
 	var fixedTile = tile;
 	tileMatrix = this.creatureTileMatrix;
 	layer = this.creatureLayer;
 	width = Tile.getWidth();
 	height = Tile.getHeight();
-	var found = false;
 	var board = this;
 	var matchingTilesSets = this.tilesEventProcessor.getMatchingTilesSets(fixedTile);
 	_.each(matchingTilesSets, function(matchingTilesSet){
-		found = false;
 		_.each(matchingTilesSet, function(matchingTile){
-			if(!found && fixedTile != matchingTile){
-				found = true;
+			if(fixedTile != matchingTile && !(excludeTileCoords && _.contains(excludeTileCoords, matchingTile.coordinates))){
 				var tile = board.getNonMatchingCreatureTile(matchingTile);
 				col = tile.coordinates[0];
 				row = tile.coordinates[1];

@@ -327,7 +327,7 @@
 			"unlocksLevels" :["5","6","7","15"],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
-			"creatureColors":["R","G","B","V","T"],
+			"creatureColors":["R","G","B","V","T","P"],
 			"blobPositions" : [
 				["1","1","1","1","1","1","1","1","1","0","0","1"],
 				["1","1","1","1","00l","1","1","1","0","0","1","1"],
@@ -341,7 +341,15 @@
 				["0","0","11","1","1","1","1","1","1","1","1","1"]
 			],
 			"mapHotspotRegion" : [[501,498],[516,471],[552,465],[620,469],[634,478],[638,480],[612,530],[542,526]],
-			"neighbors"	: {"north":"39","east":"15","south":"7","west":"5"}
+			"neighbors"	: {"north":"39","east":"15","south":"7","west":"5"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[6,8],[6,7],[7,6]],
+				"color":"v",
+				"tipInfo":{
+					"initialTile":[7,6],
+					"swapTile":[6,6]
+				}
+			}
 		},
 		
 		{
@@ -367,7 +375,15 @@
 				["1","1","1","000g","1","1","1","1","0","0","0","0"]
 			],
 			"mapHotspotRegion" : [[612,530],[638,480],[647,485],[682,498],[710,504],[710,539],[652,546]],
-			"neighbors"	: {"north":"38","east":"16","south":"8","west":"14"}
+			"neighbors"	: {"north":"38","east":"16","south":"8","west":"14"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[0,7],[0,6],[1,5]],
+				"color":"b",
+				"tipInfo":{
+					"initialTile":[1,5],
+					"swapTile":[0,5]
+				}
+			}
 		},		
 		{
 			"id" : "16",
@@ -392,7 +408,15 @@
 				["0","0","000g","11","11","000v","100r","11","11","000g","0","0"]
 			],
 			"mapHotspotRegion" : [[710,504],[794,480],[811,546],[786,554],[710,539]],
-			"neighbors"	: {"north":"37","east":"17","south":"9","west":"15"}
+			"neighbors"	: {"north":"37","east":"17","south":"9","west":"15"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[1,9],[2,9],[3,8]],
+				"color":"g",
+				"tipInfo":{
+					"initialTile":[3,8],
+					"swapTile":[3,9]
+				}
+			}
 		},
 		{
 			"id" : "17",
@@ -416,7 +440,15 @@
 				["0","000l","2","2","2","21","21","2","2","2","000p","0"]
 			],
 			"mapHotspotRegion" : [[794,480],[798,479],[862,470],[891,513],[889,515],[814,546],[811,546]],
-			"neighbors"	: {"north":"36","east":"18","south":"10","west":"16"}
+			"neighbors"	: {"north":"36","east":"18","south":"10","west":"16"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[1,4],[2,4],[3,3]],
+				"color":"r",
+				"tipInfo":{
+					"initialTile":[3,3],
+					"swapTile":[3,4]
+				}
+			}
 		},
 		{
 			"id" : "18",
@@ -440,7 +472,15 @@
 				["0","0","00v","1","1","0","0","0","1","1","00v","0","0"]
 			],
 			"mapHotspotRegion" : [[862,470],[882,461],[934,440],[946,470],[891,513]],
-			"neighbors"	: {"north":"35","east":"19","south":"11","west":"17"}
+			"neighbors"	: {"north":"35","east":"19","south":"11","west":"17"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[2,2],[3,3],[3,4]],
+				"color":"p",
+				"tipInfo":{
+					"initialTile":[2,2],
+					"swapTile":[3,2]
+				}
+			}
 		},
 		{
 			"id" : "19",
@@ -464,7 +504,15 @@
 				["0","0","11","1","1","1","1","1","1","1","1","1"]
 			],
 			"mapHotspotRegion" : [[934,440],[958,428],[976,416],[1017,423],[1057,432],[1012,451],[986,492],[946,470]],
-			"neighbors"	: {"north":"29","east":"20","south":"12","west":"18"}
+			"neighbors"	: {"north":"29","east":"20","south":"12","west":"18"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[5,8],[6,7],[7,7]],
+				"color":"v",
+				"tipInfo":{
+					"initialTile":[5,8],
+					"swapTile":[5,7]
+				}
+			}
 		},
 		{
 			"id" : "20",
