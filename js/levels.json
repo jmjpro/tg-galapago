@@ -344,11 +344,11 @@
 			"mapHotspotRegion" : [[501,498],[516,471],[552,465],[620,469],[634,478],[638,480],[612,530],[542,526]],
 			"neighbors"	: {"north":"39","east":"15","south":"7","west":"5"},
 			"initialSwapForTripletInfo":{
-				"coordinates":[[6,8],[6,7],[7,6]],
-				"color":"v",
+				"coordinates":[[4,3],[5,3],[3,4]],
+				"color":"b",
 				"tipInfo":{
-					"initialTile":[7,6],
-					"swapTile":[6,6]
+					"initialTile":[3,4],
+					"swapTile":[3,3]
 				}
 			}
 		},
