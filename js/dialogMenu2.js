@@ -1,5 +1,6 @@
-function DialogMenu(backgroundId, menuId, hilightClass, selectHandler) {
-	this.backgroundDOM = $('#' + backgroundId);
+function DialogMenu(callingScreenId, callingClass, menuId, hilightClass, selectHandler) {
+	this.callingScreen = $('#' + callingScreenId);
+	this.callingClass = callingClass;
 	this.dialogMenuDOM = $('#' + menuId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = hilightClass;
@@ -11,12 +12,14 @@ function DialogMenu(backgroundId, menuId, hilightClass, selectHandler) {
 
 DialogMenu.prototype.show = function() {
 	this.dialogMenuDOM.css('display', 'block');
-	this.backgroundDOM.addClass('transparent');
+	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.hide = function() {
+	this.unregisterEventHandlers();
 	this.dialogMenuDOM.css('display', 'none');
-	this.backgroundDOM.removeClass('transparent');
+	this.callingClass.call('registerEventHandlers');
+	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.setNavItem = function(item) {
