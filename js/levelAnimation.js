@@ -30,22 +30,8 @@ LevelAnimation.JUMP_SPRITE_MATRIX = [[
  {cell: [483, 0], id: '11'}, 
  {cell: [529, 0], id: '12'}, 
  {cell: [576, 0], id: '13'}, 
- {cell: [621, 0], id: '14'},
- {cell: [667, 0], id: '15'}, 
- {cell: [713, 0], id: '16'}, 
- {cell: [759, 0], id: '17'}, 
- {cell: [805, 0], id: '18'}, 
- {cell: [851, 0], id: '19'}, 
- {cell: [897, 0], id: '20'},
- {cell: [943, 0], id: '21'}, 
- {cell: [989, 0], id: '22'}, 
- {cell: [1035, 0], id: '23'}, 
- {cell: [1081, 0], id: '24'}, 
- {cell: [1127, 0], id: '25'}, 
- {cell: [1173, 0], id: '26'}, 
- {cell: [1219, 0], id: '27'}, 
- {cell: [1265, 0], id: '28'}
- ]];
+ {cell: [621, 0], id: '14'}
+]];
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
@@ -262,7 +248,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 	if(!tileActive.blob){
 		return;
 	}
-	var imageId = tileActive.blob.image.id + '_rollover';
+	var imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
 	var rolloverImageSpriteSheet = this[imageId];
 	if(rolloverImageSpriteSheet){
 		this.rolloverAnimation = new RolloverAnimation(layer, board, tileActive, rolloverImageSpriteSheet);
@@ -276,18 +262,22 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
-		var tileDown, tileUp, tileUpSelected, tileUpDegreesToRotate, tileDownDegreesToRotate;
+		var tileDown, tileUp, tileUpSelected, tileUpDegreesToRotate, tileDownDegreesToRotate, width, height;			
 		if(tilePrev.coordinates[1] > tile.coordinates[1]){
 			tileDown = tilePrev;
 			tileUp = tile;
 			tileUpSelected = false;
 			tileUpDegreesToRotate = CanvasUtil.UP_DIRECTION_DEGREE;
+			width=46; 
+			height=92;
 		}
 		if(tilePrev.coordinates[1] < tile.coordinates[1]){
 			tileDown = tile;
 			tileUp = tilePrev;
 			tileUpSelected = true;
 			tileUpDegreesToRotate = CanvasUtil.UP_DIRECTION_DEGREE;
+			width=46; 
+			height=92;
 		}
 		if(tilePrev.coordinates[0] > tile.coordinates[0]){
 			tileDown = tilePrev;
@@ -295,6 +285,8 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			tileUpSelected = false;
 			tileUpDegreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
 			tileDownDegreesToRotate = CanvasUtil.RIGHT_DIRECTION_DEGREE;
+			width=92; 
+			height=46;
 		}
 		if(tilePrev.coordinates[0] < tile.coordinates[0]){
 			tileDown = tile;
@@ -302,10 +294,12 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			tileUpSelected = true;
 			tileUpDegreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
 			tileDownDegreesToRotate = CanvasUtil.RIGHT_DIRECTION_DEGREE;
+			width=92; 
+			height=46;
 		}
-		var imageId = tileDown.blob.image.id + '_jumps';
+		var imageId = tileDown.blob.image.id.replace('_1','') + '_jumps';
 		var rolloverImageSpriteSheet = this[imageId];
-		imageId = tileUp.blob.image.id + '_jumps';
+		imageId = tileUp.blob.image.id.replace('_1','') + '_jumps';
 		var rolloverImageSpriteSheet1 = this[imageId];
 		var x = tileUp.getXCoord();
 		var y = tileUp.getYCoord();
@@ -318,14 +312,10 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				if(rolloverImageSpriteSheet){
 					var image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
-					width = image.width;
-					height = image.height;
 				}
 				if(rolloverImageSpriteSheet1){
 					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
-					width = image.width;
-					height = image.height;
 				}	
 			}
 			imgCnt = 0;
