@@ -80,12 +80,12 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.localization = function(){
-    $("#Option1").i18n();
-    $("#Option2").i18n();
-    $("#Option3").i18n();
-    $("#Option4").i18n();
-    $("#Option5").i18n();
-    $("#Option6").i18n();
+    $("#option-continue-playing").i18n();
+    $("#option-main-menu").i18n();
+    $("#option-new-game").i18n();
+    $("#option-how-to-play").i18n();
+    $("#option-options").i18n();
+    $("#dialog-title").i18n();
 }
 
 Galapago.init = function(gameMode) {
@@ -1896,7 +1896,9 @@ Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
-			gameMenu.show(this);
+			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight', dialogGameMenuHandleNavButtonSelect);
+			break;
+			//gameMenu.show(this);
 		case null:
 		default:
 			this.handleTileSelect(this.tileActive);
