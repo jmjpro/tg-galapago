@@ -193,3 +193,9 @@ AudioPlayer.prototype.playVolcanoEruptionLoop = function(){
 	var key = "Volcano_Eruption.mp3";
 	this.playInLoop(key);
 }
+
+AudioPlayer.prototype.playReshuffle = function(){
+	var key = "Reshuffle.mp3";
+	this.queue.push(key, this.priorities[key]);
+	this.play();
+}

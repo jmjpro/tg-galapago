@@ -374,18 +374,22 @@ LevelMap.prototype.registerEventHandlers = function() {
 			case 37: // left arrow
 				levelMap.handleLeftArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 38: // up arrow
 				levelMap.handleUpArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 39: // right arrow
 				levelMap.handleRightArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 40: // down arrow
 				levelMap.handleDownArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 48: // numeric 0
 				//levelMap.reset();				
@@ -880,8 +884,7 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 
 Level.prototype.won = function(){
 	localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.id+"restore" );
-	this.cleanUp();
-    Galapago.audioPlayer.playLevelWon();
+	Galapago.audioPlayer.playLevelWon();
     var level = this;
 	sdkApi.requestModalAd("inGame").done(function(){
 		level.showLevelMap();
@@ -898,6 +901,7 @@ Level.prototype.cleanUp = function(){
 	this.dangerBar.stop();
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
+ 	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
 }
 
@@ -1088,10 +1092,12 @@ function Board() {
 	this.collectionModified = false;
 	this.powerAchieved = false;
 	this.tilesEventProcessor = new TilesEventProcessor(this);
+	this.reshuffleService = new ReshuffleService(this);
 } //Board constructor
 
 Board.prototype.display = function() {
 	this.creatureLayer.canvas.focus();
+	this.reshuffleService.start();
 }; //Board.protoype.display()
 
 Board.prototype.displayBlobCollections = function() {
@@ -1153,11 +1159,10 @@ Board.prototype.setActiveTile = function(tile) {
 		row = this.firstTileCoordinates[1];
 		tileActive = this.creatureTileMatrix[col][row];
 	}
+	this.tileActive = tileActive;
 	tileActive.setActiveAsync(function() {
 			return this; //chainable
 	}).done();
-	this.tileActive = tileActive;
-	this.level.levelAnimation.animateCreatureSelection(this.getLayer('CREATURE'), this);
 }; //Board.prototype.setActiveTile()
 
 Board.prototype.getTileMatrix = function(blobType) {
@@ -1349,7 +1354,7 @@ Board.prototype.build = function(tilePositions) {
 				if(null == this.firstTileCoordinates){
 					this.firstTileCoordinates = coordinates;
 				}
-				spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+				spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
 			}
 			if( typeof cellObject.gold != 'undefined' ) {
@@ -1384,8 +1389,8 @@ Board.prototype.buildInitialSwapForTriplet = function(initialSwapForTripletInfo)
 		var coordinates = initialSwapForTripletInfo.coordinates; 
 		var colorId = initialSwapForTripletInfo.color;
 		_.each(coordinates,function(coordinate){
-			var creature = board.level.getCreatureByColorId(colorId, Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
-			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
+			var creature = board.level.getCreatureByColorId(colorId, Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
+			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
 			board.regenerateMatchingCreatureIfAny(tile, coordinates);
 		});
 	}
@@ -1453,12 +1458,12 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	else {
 		if( 'CREATURE' === blobType ) {
 			tile = new Tile(this, blob, coordinates, spriteNumber);
-			if(!blob && spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER) {
+			if(!blob && spriteNumber === Tile.CREATUREONLY_TILE_SPRITE_NUMBER) {
 				tile = this.getNonMatchingCreatureTile(tile);
 				blob = tile.blob;
 				imageName = tile.blob.creatureType;
 			} 
-			else if(blob && spriteNumber === Tile.UNBLOCKED_TILE_SPRITE_NUMBER){
+			else if(blob && spriteNumber === Tile.CREATUREONLY_TILE_SPRITE_NUMBER){
 				imageName = blob.creatureType;
 			}
 			else if( spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || spriteNumber === Tile.COCOONED_TILE_SPRITE_NUMBER ) {
@@ -1623,9 +1628,9 @@ Board.prototype.handleTriplets = function(tile) {
 			return tileTriplets;
 		}
 		_.each( changedPointsArray, function( point ) {
-			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
-			if(cahngedTile && !cahngedTile.isPlain()){
-				board.handleTriplets(cahngedTile);
+			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
+			if(changedTile && !changedTile.isPlain()){
+				board.handleTriplets(changedTile);
 			}
 		});
 	}
@@ -1668,6 +1673,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore;
+	this.level.cleanUp();
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
@@ -1697,7 +1703,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	tilePrev = this.tileSelected;
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
-	if((tile && !tile.isNonBlockingWithCreature()) && (!this.powerUp.isFireSelected()) ){
+	if((tile && !tile.isCreatureOnly()) && (!this.powerUp.isFireSelected()) ){
 		//board.sounds['cannot-select'].play();
 		Galapago.audioPlayer.playInvalidTileSelect();
 		return;
@@ -1750,11 +1756,12 @@ Board.prototype.handleTileSelect = function(tile) {
 						}
 						if( board.blobCollection.isEmpty()){
 							board.setComplete();
+						}else{
+							//reset grid lines and active tile
+							board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+							board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
+							board.tileActive.setActiveAsync().done();
 						}
-						//reset grid lines and active tile
-						board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-						board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-						board.tileActive.setActiveAsync().done();
 					}
 					else if(!board.powerUp.isFlipFlopSelected()) {
 						Galapago.audioPlayer.playInvalidSwap();
@@ -1825,11 +1832,12 @@ Board.prototype.handleTileSelect = function(tile) {
 				}
 				if( board.blobCollection.isEmpty()){
 					board.setComplete();
+				}else{
+					//reset grid lines and active tile
+					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+					board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
+					board.tileActive.setActiveAsync().done();
 				}
-				//reset grid lines and active tile
-				board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-				board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-				board.tileActive.setActiveAsync().done();
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
@@ -1845,14 +1853,16 @@ Board.prototype.handleTileSelect = function(tile) {
 Board.prototype.shuffleBoard = function() {
 var tileMatrix = this.creatureTileMatrix;
 var board= this;
-Galapago.audioPlayer.playShufflePowerUsed();
+board.level.levelAnimation.stopAllAnimations();
 _.each(tileMatrix, function(columnArray){
   _.each(columnArray, function(tile){
-       if(tile && tile.isNonBlockingWithCreature()){
-          board.addTile(tile.coordinates, 'CREATURE', null,Tile.UNBLOCKED_TILE_SPRITE_NUMBER);
+       if(tile && tile.isCreatureOnly()){
+          board.addTile(tile.coordinates, 'CREATURE', null,Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
         }
     });
   });
+  var coords = board.tileActive.coordinates; 
+  board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
   board.tileActive.setActiveAsync().done();
 }
 
@@ -1870,7 +1880,7 @@ _.each(tileMatrix, function(columnArray){
            x=tile.coordinates[1];
            if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() || tile.hasSuperFriend() ){
 		      var originalBlogconfig = originalblogPositions[x][y];
-		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isNonBlockingWithCreature()){
+		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
 			  restoreLookup[y+'_'+x]='11'; 
 			  }else{
                restoreLookup[y+'_'+x]=originalBlogconfig; 
@@ -1899,7 +1909,7 @@ Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
-			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight', dialogGameMenuHandleNavButtonSelect);
+			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
 		case null:
@@ -2100,7 +2110,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	changedPoints = [];
 	board = this;
 	_.each( tiles, function(tile) {
-		if( tile && tile.isNonBlockingWithCreature()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+		if( tile && tile.isCreatureOnly()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
 			var fallingPoint = board.getFallingPoint(loweredPoint);
 			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
@@ -2170,7 +2180,7 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 
 Board.prototype.fillEmptyPoints = function(emptyPoints) {
 	var changedPoints= [];
-	var spriteNumber = Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+	var spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 	var board = this;
 	_.each( emptyPoints, function(point) {
 		//var col = point[0];
@@ -2362,7 +2372,7 @@ Tile.HEIGHT = 47;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 50;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
-Tile.UNBLOCKED_TILE_SPRITE_NUMBER = '1';
+Tile.CREATUREONLY_TILE_SPRITE_NUMBER = '1';
 Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
 Tile.COCOONED_TILE_SPRITE_NUMBER = '3';
 
@@ -2410,6 +2420,7 @@ Tile.prototype.setActiveAsync = function() {
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
+	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
 	});
@@ -2492,8 +2503,8 @@ Tile.prototype.isPlain = function()  {
 	return this.spriteNumber == Tile.PLAIN_TILE_SPRITE_NUMBER;
 };
 
-Tile.prototype.isNonBlockingWithCreature = function()  {
-	return this.spriteNumber == Tile.UNBLOCKED_TILE_SPRITE_NUMBER;
+Tile.prototype.isCreatureOnly = function()  {
+	return this.spriteNumber == Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 };
 
 Tile.prototype.hasLightningCreature = function()  {
@@ -3000,4 +3011,60 @@ if (typeof String.prototype.startsWith !== 'function') {
 	String.prototype.startsWith = function (str){
 		return this.slice(0, str.length) === str;
 	};
+}
+
+
+ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 5000;
+function ReshuffleService(board){
+	this.board = board;
+	this.reshuffleInterval = null;
+}
+
+ReshuffleService.prototype.start = function() {
+	var reshuffleService = this;
+	this.reshuffleInterval = setInterval(function(){
+		if(!reshuffleService.board.powerUp.isPowerAchieved() && !reshuffleService.validMoveFound()){
+			Galapago.audioPlayer.playReshuffle();
+			reshuffleService.board.shuffleBoard();
+			console.log("reshuffled");
+		}
+	}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
+}
+
+ReshuffleService.prototype.stop = function() {
+	if(this.reshuffleInterval){
+		clearInterval(this.reshuffleInterval);
+	} 
+}
+
+ReshuffleService.prototype.validMoveFound = function() {
+	var reshuffleService = this;
+	var board = this.board;
+	var tileMatrix = board.creatureTileMatrix;
+	var validMoveFound = false;
+	_.each(tileMatrix, function(columnArray){
+		if(!validMoveFound){
+		  	_.each(columnArray, function(tile){
+		    	if(!validMoveFound && tile && tile.isCreatureOnly()){
+		         	var neighborTile = board.getNeighbor(tile, [0, -1]);
+					validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+					neighborTile = board.getNeighbor(tile, [0, 1]);
+		         	validMoveFound = validMoveFound || reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+				 	neighborTile = board.getNeighbor(tile, [-1, 0]);
+		         	validMoveFound = validMoveFound || reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+		         	neighborTile = board.getNeighbor(tile, [1, 0]);
+		         	validMoveFound = validMoveFound || reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+		        }
+		    });
+		};
+	});
+  	return validMoveFound;
+}
+
+ReshuffleService.prototype.checkIfSwapMakesValidMove = function(tileToBeMoved, tileToBeReplaced){
+	if(tileToBeReplaced && tileToBeReplaced.isCreatureOnly()){
+ 		var tile = new Tile(this, tileToBeMoved.blob, tileToBeReplaced.coordinates, tileToBeMoved.spriteNumber);
+ 		return this.board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved).length > 0;
+ 	}
+ 	return false;
 }

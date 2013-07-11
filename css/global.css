@@ -28,6 +28,12 @@ html, body {
 	padding: 0;
 }
 
+/* disable visual effects on focused elements;
+see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsing/ */
+* {
+  outline: 0px solid rgba(0,0,0,0.0);
+}
+
 #nav {
 	display: none;
 }
@@ -73,23 +79,23 @@ canvas.game-layer {
 	text-align:center;
 }
 
+/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
 .overlay2 {
 	display: none;
 	position: absolute;
-	left: 220px;
-	top: 0px;
+	left: 0;
+	top: 0;
 	width:100%;
 	height:100%;
 	text-align:center;
 	z-index: 1000;
 	font-family: 'JungleFever';
-	font-size: 24px;
+	font-size: 26px;
 	color: white;
+	white-space: nowrap;
 }
 
 .transparent {
-	zoom: 1;
-	filter: alpha(opacity=50);
 	opacity: 0.5;
 }
 
@@ -146,22 +152,34 @@ img.nav-button {
 	left: 0px;
 }
 
+.vertical-align-helper {
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
 #dialog-quit {
 	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
 	width: 717px;
 	height: 590px;
+	/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
+	left: 282px; /*(1280-717/2)*/
+	top: 65px; /*(720-590/2)*/
+
 }
 
-#dialog-quit>div {
-	/*display: inline-block;*/
- 	width:388px;
-	height:360px;
-	position:absolute;
-	top:180px;
-	left:165px; /*717 - 388 / 2*/
+div.dialog-content {
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto;
+	white-space: normal;
 }
 
-span.dialog-title {
+#dialog-quit div.dialog-content {
+ 	width: 388px;
+}
+
+div.dialog-title {
 	position: relative;
 	color: brown;
 	top: 50px;
@@ -171,16 +189,52 @@ span.dialog-title {
 	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
 	width: 717px;
 	height: 690px;
+	left: 282px; /*(1280-717/2)*/
+	top: 15px; /*(720-690/2)*/
 }
 
-#dialog-game-menu>div {
-	/*display: inline-block;*/
- 	width:388px;
-	height:460px;
-	position:absolute;
-	top:100px;
-	left:165px; /*717 - 388 / 2*/
+#dialog-game-menu div.dialog-content {
+ 	width: 388px;
 }
+
+#dialog-game-menu ul.vertical-button-nav {
+	margin-top: -50px; /* jj: either we need this or buttons some of the transparent space around them removed; */
+}
+
+#dialog-level-won {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+}
+
+#dialog-level-won div.dialog-content {
+ 	width: 330px;
+	color: rgb(255,255,204);
+}
+
+#dialog-level-won>div ul {
+	display: inline-block;
+}
+
+#dialog-level-won table {
+	font-size: inherit;
+	color: inherit;
+	margin-top: 20px;
+}
+
+#dialog-level-won table th {
+	color: inherit;
+	text-align: left;
+	white-space: nowrap;
+}
+
+#dialog-level-won table td {
+	color: rgb(255,255,102);
+	padding-left: 10px;
+}
+
 
 li.button-huge {
 	background: url('../res/img/dialogs/button_huge_regular.png') no-repeat left top;
@@ -190,6 +244,34 @@ li.button-huge {
 	line-height: 114px;
 }
 
+li.button-huge-hilight {
+	background-image: url('../res/img/dialogs/button_huge_highlight.png');
+}
+
+li.button-medium {
+	background: url('../res/img/dialogs/button_medium_regular.png') no-repeat left top;
+	width: 190px;
+	height: 81px;
+	vertical-align: middle;
+	line-height: 81px;
+}
+
+li.button-medium-hilight {
+	background-image: url('../res/img/dialogs/button_medium_highlight.png');
+}
+
+li.button-small {
+	background: url('../res/img/dialogs/button_small_regular.png') no-repeat left top;
+	width: 140px;
+	height: 102px;
+	vertical-align: middle;
+	line-height: 102px;
+}
+
+li.button-small-hilight {
+	background-image: url('../res/img/dialogs/button_small_highlight.png');
+}
+
 ul.vertical-button-nav {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
@@ -197,8 +279,4 @@ ul.vertical-button-nav {
 
 ul.vertical-button-nav > li {
 	list-style-type: none;
-}
-
-li.button-huge-hilight {
-	background-image: url('../res/img/dialogs/button_huge_highlight.png');
 }

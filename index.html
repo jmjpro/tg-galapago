@@ -85,66 +85,50 @@
 		<li><img id="reset-map" class="nav-button" src="res/img/map-screen/button_reset_map.png" width="145" height"49"/></li>
 		<li><img id="start-next-map" class="nav-button" src="res/img/map-screen/button_start_map.png" width="145" height"49"/></li>
 		</ul>
-<!--
-		<div id="game-menu" class="overlay" tabindex="9">
-			<div id="gmenu">
-				<ul class="menu">
-					<li><a href="#" id='Option1' data-i18n="Game Menu Screen.Option1" onclick="gameMenu.hide(true); Galapago.level.board.displayMenuButton(false);"></a></li>
-					<li><a href="#" id='Option2' data-i18n="Game Menu Screen.Option2" onclick="gameMenu.quitGame();event.stopPropagation();"></a></li>
-					<li id='Option3' data-i18n="Game Menu Screen.Option3" ></li>
-					<li id='Option4' data-i18n="Game Menu Screen.Option4" ></li>
-					<li id='Option5' data-i18n="Game Menu Screen.Option5" >Option</li>
-				</ul>
-			</div>			
-		</div>
--->
 		
+		<div id="dialog-quit" class="overlay2">
+			<div class="dialog-content">
+				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
+				<ul class="vertical-button-nav">
+					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
+					<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge">No</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+
 		<div id="dialog-game-menu" class="overlay2">
-			<span class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</span>
-			<div>
+			<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</div>
+			<div class="dialog-content">
 				<ul class="vertical-button-nav">
-					<li id="option-continue-playing" data-i18n="Dialog Game Menu.OptionContinuePlaying" class="button-huge button-huge-hilight"></li>
-					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge"></li>
-					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge"></li>
-					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge"></li>
-					<li id="option-options" data-i18n="Dialog Game Menu.OptionOptions" class="button-huge"></li>
+					<li id="option-continue-playing" data-i18n="Dialog Game Menu.OptionContinuePlaying" class="button-huge button-huge-hilight">Continue Playing</li>
+					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
+					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
+					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
+					<li id="option-options" data-i18n="Dialog Game Menu.OptionOptions" class="button-huge">Options</li>
 				</ul>
 			</div>
-		</div>
-		
-		
-		
-
-		<div id="main-menu" class="overlay">
-			<div>
-				<!--img src="game-logo.png"/-->
-				<div id='timed'>Timed</div>
-				<div id='relaxed'>Relaxed</div>
-				<div id='player'>Hello Tim! Click here to change the player</div>       
-				<div>
-					<div>Options</div>
-					<div>How To Play</div>
-					<div>Top Scores</div>
-					<div><a href="#" onclick="mainMenu.hide();">Quit</a></div>
-				</div>
-			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<div id="dialog-quit" class="overlay">
-			<div id="dialog-quit-container">
-				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center"></span>
+		<div id="dialog-level-won" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
+			<div class="dialog-content">
+				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
+				<table>
+					<tr><th>Level</th><td>20800</td></tr>
+					<tr><th>Bonus Frenzy</th><td>27</td></tr>
+					<tr><th>Bonus Points</th><td>6750</td></tr>
+					<tr><th>Time Bonus</th><td>35771</td></tr>
+					<tr><th>Level Score</th><td>90442</td></tr>
+					<tr><th>Score</th><td>1344154</td></tr>
+				</table>
 				<ul class="vertical-button-nav">
-					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight"></li>
-					<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge"></li>
+					<li id="option-close" data-i18n="Dialog Level Won.OptionClose" class="button-medium button-medium-hilight">Close</li>
 				</ul>
 			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<script>
-			//var gameMenu, mainMenu;
-			//gameMenu = new DialogMenu('layer-grid', 'game-menu');
-			//mainMenu = new DialogMenu('layer-map', 'main-menu');
-			//mainMenu = new DialogMenu('layer-map', 'dialog-quit');
-		</script>
 	</body>
 </html>
