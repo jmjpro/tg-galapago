@@ -374,18 +374,22 @@ LevelMap.prototype.registerEventHandlers = function() {
 			case 37: // left arrow
 				levelMap.handleLeftArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 38: // up arrow
 				levelMap.handleUpArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 39: // right arrow
 				levelMap.handleRightArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 40: // down arrow
 				levelMap.handleDownArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 48: // numeric 0
 				//levelMap.reset();				
