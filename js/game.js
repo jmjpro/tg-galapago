@@ -628,6 +628,7 @@ Level.MENU_BUTTON_X = 20;
 Level.MENU_BUTTON_Y = 650;
 Level.MENU_BUTTON_WIDTH = 100;
 Level.MENU_BUTTON_HEIGHT = 35;
+Level.POWER_UP_SCORE =0;
 
 function Level(id) {
 	this.id = id;
@@ -1127,7 +1128,8 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
-	this.powerUp=new Powerup(this.level.gameImages , this);
+	this.powerUp=new Powerup(this.level.gameImages , this , Level.POWER_UP_SCORE);
+	Level.POWER_UP_SCORE=0;
 };
 
 /* req 4.4.2
@@ -1669,6 +1671,7 @@ Board.prototype.setComplete = function() {
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
+	    Level.POWER_UP_SCORE = (4 * this.bonusFrenzy.getScore());
 		this.score += (50 * this.bonusFrenzy.getScore()) ;
 		if( Galapago.gameMode === 'MODE_TIMED') {
 		 var timeleft = this.level.dangerBar.timeRemainingMs;

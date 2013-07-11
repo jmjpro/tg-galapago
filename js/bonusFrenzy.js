@@ -176,6 +176,6 @@ function fly(){
      }
 }
 
- this.intervalHandle = window.setInterval(fly ,500 );
+ this.intervalHandle = window.setInterval(fly ,800 );
 }
 
