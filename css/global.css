@@ -152,6 +152,12 @@ img.nav-button {
 	left: 0px;
 }
 
+.vertical-align-helper {
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
 #dialog-quit {
 	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
 	width: 717px;
@@ -191,6 +197,10 @@ div.dialog-title {
  	width: 388px;
 }
 
+#dialog-game-menu ul.vertical-button-nav {
+	margin-top: -50px; /* jj: either we need this or buttons some of the transparent space around them removed; */
+}
+
 #dialog-level-won {
 	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
 	width: 717px;
@@ -204,10 +214,8 @@ div.dialog-title {
 	color: rgb(255,255,204);
 }
 
-.vertical-align-helper {
-    display: inline-block;
-    vertical-align: middle;
-    height: 100%;
+#dialog-level-won>div ul {
+	display: inline-block;
 }
 
 #dialog-level-won table {
@@ -226,6 +234,7 @@ div.dialog-title {
 	color: rgb(255,255,102);
 	padding-left: 10px;
 }
+
 
 li.button-huge {
 	background: url('../res/img/dialogs/button_huge_regular.png') no-repeat left top;
@@ -270,8 +279,4 @@ ul.vertical-button-nav {
 
 ul.vertical-button-nav > li {
 	list-style-type: none;
-}
-
-#dialog-level-won>div ul {
-	display: inline-block;
 }
