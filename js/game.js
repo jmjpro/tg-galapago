@@ -1902,7 +1902,7 @@ Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
-			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight', dialogGameMenuHandleNavButtonSelect);
+			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
 		case null:
