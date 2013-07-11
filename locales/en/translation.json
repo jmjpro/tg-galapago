@@ -75,12 +75,13 @@
     "Instruction Text" : "Loading…",
 	"Hot Spots" : "Click Here to Play"
   },
-  "Game Menu Screen":{
-      "Option1" : "Continue playing",
-	  "Option2" : "To the main menu",
-	  "Option3" : "New Game",
-	  "Option4" : "How to play",
-	  "Option5" : "Options"
+  "Dialog Game Menu":{
+      "Title" : "Menu",
+      "OptionContinuePlaying" : "Continue playing",
+	  "OptionMainMenu" : "To the main menu",
+	  "OptionNewGame" : "New Game",
+	  "OptionHowToPlay" : "How to play",
+	  "OptionOptions" : "Options"
   },
   "Dialog Quit": {
    	  "Title" : "Your game will be saved, are you sure you want to quit the game?",

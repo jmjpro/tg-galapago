@@ -1,6 +1,7 @@
 function DialogMenu(callingScreenId, callingClass, menuId, hilightClass, selectHandler) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingClass = callingClass;
+	this.windowKeyHandler= window.onkeydown;
 	this.dialogMenuDOM = $('#' + menuId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = hilightClass;
@@ -18,7 +19,11 @@ DialogMenu.prototype.show = function() {
 DialogMenu.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.dialogMenuDOM.css('display', 'none');
-	this.callingClass.call('registerEventHandlers');
+	if(this.callingClass.registerEventHandlers){
+	  this.callingClass.registerEventHandlers();
+	}else{
+	  window.onkeydown = this.windowKeyHandler;
+	}
 	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.show()
 
@@ -34,7 +39,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	window.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
-			dialogMenu.selectHandler(dialogMenu.currentNavItem);
+			dialogMenu.selectHandler(dialogMenu);
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
@@ -65,3 +70,50 @@ DialogMenu.prototype.registerEventHandlers = function() {
 DialogMenu.prototype.unregisterEventHandlers = function() {
 	window.onkeydown = null;
 }; //MapScreen.prototype.unregisterEventHandlers()
+
+
+
+
+
+
+// select handlers
+
+
+var dialogGameMenuHandleNavButtonSelect = function(dialogMenu) {
+   var navItem = dialogMenu.currentNavItem ;
+
+	switch( navItem[0].id ) {
+		case 'option-continue-playing' :
+			this.hide();
+			dialogMenu.callingClass.displayMenuButton(false);
+			dialogMenu.callingClass.hotspot = null;
+			dialogMenu.callingClass.display();
+			break;
+		case 'option-main-menu' :
+			this.hide();
+			dialogMenu.callingClass.level.quit();
+			console.debug('option-main-menu');
+			break;
+		case 'option-new-game' :
+			this.hide();
+			dialogMenu.callingClass.displayMenuButton(false);
+			dialogMenu.callingClass.hotspot = null;
+			dialogMenu.callingClass.display();
+			console.debug('option-new-game');
+			break;
+		case 'option-how-to-play' :
+			this.hide();
+			dialogMenu.callingClass.displayMenuButton(false);
+			dialogMenu.callingClass.hotspot = null;
+			dialogMenu.callingClass.display();
+			console.debug('option-how-to-play');
+			break;
+		case 'option-options' :
+			this.hide();
+			dialogMenu.callingClass.displayMenuButton(false);
+			dialogMenu.callingClass.hotspot = null;
+			dialogMenu.callingClass.display();
+			console.debug('option-options');
+			break;
+	};
+}
