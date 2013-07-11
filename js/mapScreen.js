@@ -70,7 +70,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 		case 38: // up arrow
 			mapScreen.unsetNavItem();
 			mapScreen.unregisterEventHandlers();
-			Galapago.levelMap.display();
+			Galapago.levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;
 		case 39: // right arrow
