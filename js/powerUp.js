@@ -169,6 +169,7 @@ Powerup.prototype.handleSelect = function(){
 	}else if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
 	    this.powerSelected = Powerup.SHUFFLER_SELECTED;
 		this.drawShuffler(Powerup.POWER_PRESSED);
+		Galapago.audioPlayer.playShufflePowerUsed();
 		this.board.shuffleBoard();
 		this.powerUsed();
 	}

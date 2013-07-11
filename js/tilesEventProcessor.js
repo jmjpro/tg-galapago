@@ -91,12 +91,12 @@ TilesEventProcessor.tileMatchesNeighborTile = function(tile, neighborTile) {
 }
 
 
-TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
+TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal, excludeTile) {
 	var matchingTilesSet, matchingTiles, coordinates, neighborTile, col, row, tilesMatched, x, y, matchFound;
 	matchingTilesSet = [];
 	matchingTiles = [];
 	coordinates = tileFocal ? tileFocal.coordinates : null;
-	console.debug( 'called Board.getScoringEvents with focal tile ' + coordinates );
+	//console.debug( 'called Board.getScoringEvents with focal tile ' + coordinates );
 	if( !tileFocal ) { //YM: tileFocal could have been nulled by a previous matchingTilesSet formed from the same move
 		return matchingTiles;
 	}
@@ -107,7 +107,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y--;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
+		if(neighborTile != excludeTile && TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -119,7 +119,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		y++;
 		neighborTile = this.board.getNeighbor(tileFocal, [0, y]);
-		if(TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
+		if(neighborTile != excludeTile && TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -136,7 +136,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x--;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
+		if(neighborTile != excludeTile && TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -148,7 +148,7 @@ TilesEventProcessor.prototype.getMatchingTilesSets = function(tileFocal) {
 		matchFound = false;
 		x++;
 		neighborTile = this.board.getNeighbor(tileFocal, [x, 0]);
-		if(TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
+		if(neighborTile != excludeTile && TilesEventProcessor.tileMatchesNeighborTile(tileFocal, neighborTile)){
 			matchingTiles.push(neighborTile);
 			matchFound = true;
 		}
@@ -235,7 +235,7 @@ TilesEventProcessor.prototype.getTilesAffectedByLightning = function(matchingTil
 		}
 		while(col < tileMatrix.length && row < tileMatrix[col].length){
 			var tile = tileMatrix[col][row];
-			if(tile && !_.contains(matchingTilesSet, tile) && (tile.isBlocked() || tile.isNonBlockingWithCreature() || tile.hasSuperFriend())){
+			if(tile && !_.contains(matchingTilesSet, tile) && (tile.isBlocked() || tile.isCreatureOnly() || tile.hasSuperFriend())){
 				tilesAffectedByLightning.push(tile);
 			}
 			col += colIncrementer;
@@ -260,7 +260,7 @@ TilesEventProcessor.prototype.getTilesAffectedBySuperFriend = function(superFrie
 		var	tileMatrix = this.board.creatureTileMatrix;
 		_.each(tileMatrix, function(columnArray){
 			_.each(columnArray, function(tile){
-				if(tile && !_.contains(totalMatchedTiles, tile)  && tile.isNonBlockingWithCreature() 
+				if(tile && !_.contains(totalMatchedTiles, tile)  && tile.isCreatureOnly() 
 					&& TilesEventProcessor.matchesSuperFriends(superFriendTiles, tile)){
 					tilesAffectedBySuperFriend.push(tile);
 				}
