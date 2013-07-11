@@ -1677,11 +1677,11 @@ Board.prototype.setComplete = function() {
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
-	    Level.POWER_UP_SCORE = (4 * this.bonusFrenzy.getScore());
-		this.score += (50 * this.bonusFrenzy.getScore()) ;
+	    Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
+		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.gameMode === 'MODE_TIMED') {
 		 var timeleft = this.level.dangerBar.timeRemainingMs;
-		 this.score += (timeleft/10);
+		 this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 		}
 		this.drawScore();
 		this.level.isCompleted = true;
