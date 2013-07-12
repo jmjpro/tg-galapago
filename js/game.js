@@ -1551,58 +1551,58 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleTriplets = function(tile) {
+Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
 	changedPointsArray = [];
 	tileSetsToBeRemoved = [];
-	var tileMovedEventProcessorResult = this.tilesEventProcessor.tileMoved(tile);
-	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
+	var tilesMovedEventProcessorResult = this.tilesEventProcessor.tilesMoved(tileFocals);
+	tileTriplets = tilesMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		var validMatchWithCollection = false;
 	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
-		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
-		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
+		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
+		if(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
 			Galapago.audioPlayer.playSuperFriendMatch();
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
+			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
+		if(tilesMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			Galapago.audioPlayer.playCocoonMatch();
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
-			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.clearTiles(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
-			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
-			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
-			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
-			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
+			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
+			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
-			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
-			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
-			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+		if(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
+			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
+			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
 			board.collectionModified = true;
 		}
-		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
-			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
+		if(tilesMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
+			board.animateGoldRemovalAsync(tilesMovedEventProcessorResult.totalMatchedGoldTiles);
+			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedGoldTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
+		if(tilesMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			Galapago.audioPlayer.playGoldOrBlockingMatch();
-			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
+			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
@@ -1625,15 +1625,24 @@ Board.prototype.handleTriplets = function(tile) {
 			//board.completeAnimationAsync();
 			return tileTriplets;
 		}
-		_.each( changedPointsArray, function( point ) {
-			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
-			if(changedTile && !changedTile.isPlain()){
-				board.handleTriplets(changedTile);
-			}
-		});
+		this.handleChangedPointsArray(changedPointsArray);		
 	}
 	return this; //chainable
 }; //Board.prototype.handleTriplets()
+
+Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
+	var board = this;
+	if(changedPointsArray.length){
+		var changedTiles = [];
+		_.each( changedPointsArray, function( point ) {
+			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
+			if(changedTile && !changedTile.isPlain()){
+				changedTiles.push(changedTile);
+			}
+		});
+		this.handleTriplets(changedTiles);
+	}
+}
 
 Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 	var verticalPointsSets = [];
@@ -1731,18 +1740,7 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.chainReactionCounter = 0;
 					board.scoreEvents = [];
 
-					if(tilePrev.coordinates[1] > tile.coordinates[1]){
-						console.log( 'tile triplets' );
-						board.handleTriplets(tile);
-						console.log( 'tilePrev triplets' );
-						board.handleTriplets(tilePrev);					
-					}
-					else{
-						console.log( 'tilePrev triplets' );
-						board.handleTriplets(tilePrev);
-						console.log( 'tile triplets' );
-						board.handleTriplets(tile);
-					}
+					board.handleTriplets([tile, tilePrev]);
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 
 					if( board.scoreEvents.length > 0 ) {
@@ -1815,12 +1813,7 @@ Board.prototype.handleTileSelect = function(tile) {
 			}
 		}
 		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
-		_.each( changedPointsArray, function( point ) {
-			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
-			if(cahngedTile && !cahngedTile.isPlain()){
-				board.handleTriplets(cahngedTile);
-			}
-		});
+		board.handleChangedPointsArray(changedPointsArray);
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
 				if(board.collectionModified || board.powerAchieved){

@@ -1,21 +1,41 @@
-/* begin class TileMovedEventProcessorResult */
-function TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, totalMatchedSuperFriendTiles, totalTilesAffectedByLightning, totalTilesAffectedBySuperFriend){
-	this.matchingTilesSets = matchingTilesSets;
-	this.totalMatchedGoldTiles = totalMatchedGoldTiles;
-	this.totalMatchedBlockingTiles = totalMatchedBlockingTiles;
-	this.totalMatchedCocoonTiles = totalMatchedCocoonTiles;
-	this.totalMatchedSuperFriendTiles = totalMatchedSuperFriendTiles;
-	this.totalTilesAffectedByLightning = totalTilesAffectedByLightning;
-	this.totalTilesAffectedBySuperFriend = totalTilesAffectedBySuperFriend;
+/* begin class TilesMovedEventProcessorResult */
+function TilesMovedEventProcessorResult(){
+	this.matchingTilesSets = [];
+	this.totalMatchedTiles = [];
+	this.totalMatchedGoldTiles = [];
+	this.totalMatchedBlockingTiles = [];
+	this.totalMatchedCocoonTiles = [];
+	this.totalMatchedSuperFriendTiles = [];
+	this.totalTilesAffectedByLightning = [];
+	this.totalTilesAffectedBySuperFriend = [];
 }
-/* end class TileMovedEventProcessorResult */
+/* end class TilesMovedEventProcessorResult */
 
 /* begin class TilesEventProcessor */
 function TilesEventProcessor(board){
 	this.board = board;
 }
 
-TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
+TilesEventProcessor.prototype.tilesMoved  = function(tileFocals){
+	var tilesMovedEventProcessorResult = new TilesMovedEventProcessorResult();
+	var tilesEventProcessor = this;
+	_.each(tileFocals, function(tileFocal){
+		if(!_.contains(tilesMovedEventProcessorResult.totalMatchedTiles, tileFocal)){
+			tilesEventProcessor.tileMoved(tileFocal, tilesMovedEventProcessorResult);
+		}
+	});
+	tilesMovedEventProcessorResult.matchingTilesSets = ArrayUtil.unique(tilesMovedEventProcessorResult.matchingTilesSets);
+	tilesMovedEventProcessorResult.totalMatchedTiles = ArrayUtil.unique(tilesMovedEventProcessorResult.totalMatchedTiles);
+	tilesMovedEventProcessorResult.totalMatchedGoldTiles = ArrayUtil.unique(tilesMovedEventProcessorResult.totalMatchedGoldTiles);
+	tilesMovedEventProcessorResult.totalMatchedBlockingTiles = ArrayUtil.unique(tilesMovedEventProcessorResult.totalMatchedBlockingTiles);
+	tilesMovedEventProcessorResult.totalMatchedCocoonTiles = ArrayUtil.unique(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
+	tilesMovedEventProcessorResult.totalTilesAffectedByLightning = ArrayUtil.unique(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
+	tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles = ArrayUtil.unique(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles);
+	tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend = ArrayUtil.unique(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+	return tilesMovedEventProcessorResult;
+}
+
+TilesEventProcessor.prototype.tileMoved = function(tileFocal, tilesMovedEventProcessorResult){
 	var totalMatchedTiles = [];
 	var totalMatchedGoldTiles = [];
 	var totalMatchedBlockingTiles = [];
@@ -66,13 +86,15 @@ TilesEventProcessor.prototype.tileMoved  = function(tileFocal){
 			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
 				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, tilesEventProcessor.board.chainReactionCounter));
 		});
-		totalMatchedGoldTiles = ArrayUtil.unique(totalMatchedGoldTiles);
-		totalMatchedBlockingTiles = ArrayUtil.unique(totalMatchedBlockingTiles);
-		totalMatchedCocoonTiles = ArrayUtil.unique(totalMatchedCocoonTiles);
-		totalTilesAffectedByLightning = ArrayUtil.unique(totalTilesAffectedByLightning);
-		totalTilesAffectedBySuperFriend = ArrayUtil.unique(totalTilesAffectedBySuperFriend);
+		tilesMovedEventProcessorResult.matchingTilesSets = tilesMovedEventProcessorResult.matchingTilesSets.concat(matchingTilesSets);
+		tilesMovedEventProcessorResult.totalMatchedTiles = tilesMovedEventProcessorResult.totalMatchedTiles.concat(totalMatchedTiles);
+		tilesMovedEventProcessorResult.totalMatchedGoldTiles = tilesMovedEventProcessorResult.totalMatchedGoldTiles.concat(totalMatchedGoldTiles);
+		tilesMovedEventProcessorResult.totalMatchedBlockingTiles = tilesMovedEventProcessorResult.totalMatchedBlockingTiles.concat(totalMatchedBlockingTiles);
+		tilesMovedEventProcessorResult.totalMatchedCocoonTiles = tilesMovedEventProcessorResult.totalMatchedCocoonTiles.concat(totalMatchedCocoonTiles);
+		tilesMovedEventProcessorResult.totalTilesAffectedByLightning = tilesMovedEventProcessorResult.totalTilesAffectedByLightning.concat(totalTilesAffectedByLightning);
+		tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles = tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.concat(totalMatchedSuperFriendTiles);
+		tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend = tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend.concat(totalTilesAffectedBySuperFriend);
 	}
-	return new TileMovedEventProcessorResult(matchingTilesSets, totalMatchedGoldTiles, totalMatchedBlockingTiles, totalMatchedCocoonTiles, totalMatchedSuperFriendTiles, totalTilesAffectedByLightning, totalTilesAffectedBySuperFriend);
 }
 
 TilesEventProcessor.getTotalMatchedTiles = function(matchingTilesSets) {
