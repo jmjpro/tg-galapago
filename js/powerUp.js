@@ -80,7 +80,7 @@ Powerup.POWER_ROLLOVER= 2;
 Powerup.POWER_PRESSED= 3;
 
 
-function Powerup(images,board) {
+function Powerup(images,board ,powerupPoints) {
 	this.initImages(images);
 	this.board=board;
 	this.canvas = $('#' + Powerup.LAYER_POWER_UP)[0];
@@ -94,6 +94,10 @@ function Powerup(images,board) {
 	this.currentFocus=0;
 	this.nextFocus=0;
     this.powerSelected=0;
+	if(powerupPoints > 0){
+		this.score = powerupPoints;
+		this.updatePowerAchieved();
+	}	
 	//this.addListner();
 }
 
@@ -322,7 +326,8 @@ Powerup.prototype.decrementScore = function(sender){
 }
 
 Powerup.prototype.updatePowerAchieved = function(){
-	if(this.score >= Powerup.POWER_POINTS){
+    var flagPowerUpdated = false;
+	while(this.score >= Powerup.POWER_POINTS){
 		if(!this.flipflopPowerAchieved){
 		    this.flipflopPowerAchieved = true;
 		}else if(!this.firePowerAchieved){
@@ -332,10 +337,10 @@ Powerup.prototype.updatePowerAchieved = function(){
 		}
 		this.score -= Powerup.POWER_POINTS;
 		this.update();
-		return true;
+		flagPowerUpdated = true;
 		//this.board.saveBoard();
 	}
-	return false;
+	return flagPowerUpdated;
 
 }
 
