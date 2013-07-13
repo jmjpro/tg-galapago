@@ -253,9 +253,9 @@ LevelMap.prototype.display = function() {
 	otherAnimationCanvas.style.zIndex = 9;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
 	otherAnimationCanvas.height = LevelMap.HEIGHT;
-	var levelMap = this;
+	var levelAnimation = this;
 	otherAnimationCanvas.onclick = function(evt) {
-		levelMap.canvas.focus();
+		levelAnimation.canvas.focus();
 	};
 	var completedLevelIds = LevelMap.getLevelsCompleted();
 	if(completedLevelIds.length){
@@ -1588,58 +1588,58 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleTriplets = function(tileFocals) {
+Board.prototype.handleTriplets = function(tile) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;
 	dangerBar = board.level.dangerBar;
 	board.handleTripletsDebugCounter++;
 	changedPointsArray = [];
 	tileSetsToBeRemoved = [];
-	var tilesMovedEventProcessorResult = this.tilesEventProcessor.tilesMoved(tileFocals);
-	tileTriplets = tilesMovedEventProcessorResult.matchingTilesSets;
+	var tileMovedEventProcessorResult = this.tilesEventProcessor.tileMoved(tile);
+	tileTriplets = tileMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		var validMatchWithCollection = false;
 	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
-		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
-		if(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
+		//pointsArray = tileMovedEventProcessorResult.affectedPointsArray;
+		if(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
 			Galapago.audioPlayer.playSuperFriendMatch();
-			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles);
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedSuperFriendTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tilesMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
+		if(tileMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			Galapago.audioPlayer.playCocoonMatch();
-			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
-			board.clearTiles(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
+			board.clearTiles(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
-			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalMatchedCocoonTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
-			board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
-			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
-			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
+		if(tileMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			board.animateLightningStrikeAsync(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
-			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
-			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
-			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+		if(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend.length > 0 ) {
+			console.debug( 'points affected by Super friend ' + Tile.tileArrayToPointsString(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend));
+			board.clearTiles(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
+			tileSetsToBeRemoved.push(tileMovedEventProcessorResult.totalTilesAffectedBySuperFriend);
 			board.collectionModified = true;
 		}
-		if(tilesMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
-			board.animateGoldRemovalAsync(tilesMovedEventProcessorResult.totalMatchedGoldTiles);
-			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedGoldTiles);
+		if(tileMovedEventProcessorResult.totalMatchedGoldTiles.length > 0 ) {
+			board.animateGoldRemovalAsync(tileMovedEventProcessorResult.totalMatchedGoldTiles);
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedGoldTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
-		if(tilesMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
+		if(tileMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			Galapago.audioPlayer.playGoldOrBlockingMatch();
-			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedBlockingTiles);
+			board.blobCollection.removeBlobItems(tileMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
 		}
@@ -1662,24 +1662,15 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			//board.completeAnimationAsync();
 			return tileTriplets;
 		}
-		this.handleChangedPointsArray(changedPointsArray);		
-	}
-	return this; //chainable
-}; //Board.prototype.handleTriplets()
-
-Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
-	var board = this;
-	if(changedPointsArray.length){
-		var changedTiles = [];
 		_.each( changedPointsArray, function( point ) {
 			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
 			if(changedTile && !changedTile.isPlain()){
-				changedTiles.push(changedTile);
+				board.handleTriplets(changedTile);
 			}
 		});
-		this.handleTriplets(changedTiles);
 	}
-}
+	return this; //chainable
+}; //Board.prototype.handleTriplets()
 
 Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 	var verticalPointsSets = [];
@@ -1769,7 +1760,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		if(dangerBar && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
-
+		if(dangerBar){
+        dangerBar.pause();
+		}
 		tile.setSelectedAsync().then(function() {
 			board.animateJumpCreaturesAsync( tile, tilePrev, function() {
 				board.swapCreatures( tile, tilePrev );
@@ -1778,9 +1771,22 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.chainReactionCounter = 0;
 					board.scoreEvents = [];
 
-					board.handleTriplets([tile, tilePrev]);
+					if(tilePrev.coordinates[1] > tile.coordinates[1]){
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);					
+					}
+					else{
+						console.log( 'tilePrev triplets' );
+						board.handleTriplets(tilePrev);
+						console.log( 'tile triplets' );
+						board.handleTriplets(tile);
+					}
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-
+					if(dangerBar){
+						dangerBar.resume();
+					}
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if(board.collectionModified || board.powerAchieved){
@@ -1830,6 +1836,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
 		this.updateScore();			
 		tile.clear();
+		if(dangerBar){ 
+			dangerBar.pause();
+		}
 		var goldTile = this.getGoldTile(tile);
 		if(goldTile){
 			this.animateGoldRemovalAsync([goldTile]);
@@ -1851,7 +1860,15 @@ Board.prototype.handleTileSelect = function(tile) {
 			}
 		}
 		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
-		board.handleChangedPointsArray(changedPointsArray);
+		_.each( changedPointsArray, function( point ) {
+			var cahngedTile = board.creatureTileMatrix[point[0]][point[1]];
+			if(cahngedTile && !cahngedTile.isPlain()){
+				board.handleTriplets(cahngedTile);
+			}
+		});
+		if(dangerBar){
+			dangerBar.resume();
+		}
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
 				if(board.collectionModified || board.powerAchieved){
@@ -1894,6 +1911,22 @@ _.each(tileMatrix, function(columnArray){
   board.tileActive.setActiveAsync().done();
 }
 
+Board.prototype.dangerBarEmptied = function() {
+var tileMatrix =this.creatureTileMatrix;
+var gameboard = this;
+localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" );
+this.level.levelAnimation.stopAllAnimations();
+_.each(tileMatrix, function(columnArray){
+  _.each(columnArray, function(tile){
+          if(tile){
+           if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+              tile.clear();
+			  window.onkeydown=null;
+            }
+          }
+    })
+ });
+}
 
 Board.prototype.saveBoard = function() {
 var restoreLookup = {};
@@ -1937,6 +1970,9 @@ Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			if(this.level.dangerBar){
+				this.level.dangerBar.pause();
+			}
 			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
@@ -2815,7 +2851,7 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layer = $('#' + DangerBar.LAYER_DANGER_BAR)[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
-	this.intervalId = -1;
+	//this.intervalId = -1;
 	//this.imageArray = imageArray;	
 	this.magnifyImages(imageArray);
 	this.initImages(imageArray);
@@ -2830,6 +2866,7 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	of the first time the dangerBar goes below the ratio
 	*/
 	this.numTimesBelowDangerRatio = 0;
+	this.timer = null;
 	this.drawImages();
 }
 
@@ -2862,25 +2899,46 @@ DangerBar.prototype.drawImages = function() {
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
-	return this.intervalId >= 0;
+	if(!this.timer){
+	return false;
+	}
+	//return this.intervalId >= 0;
+	return this.timer.isRunning();
 }; //DangerBar.prototype.isRunning()
+
 
 DangerBar.prototype.start = function() {
 	var dangerBar;
 	dangerBar = this;
 	//dangerBar.layer.clearRect( DangerBar.LEFT, DangerBar.CAP_TOP_TOP, DangerBar.FILL_WIDTH, dangerBar.fillTop );
-	dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
+	this.timer = new PauseableInterval(dangerBar.update,DangerBar.REFRESH_INTERVAL_SEC * 1000,this);
+	//dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
 	console.debug('starting danger bar timing with ' + dangerBar.timeRemainingMs/1000 + ' sec remaining');
 	return dangerBar; //chainable
 }; //DangerBar.prototype.start()
 
 DangerBar.prototype.stop = function() {
 	console.debug('stopping danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
-	clearInterval(this.intervalId);
+	//clearInterval(this.intervalId);
+	this.timer.clearInterval();
 	return this; //chainable
 }; //DangerBar.prototype.stop()
 
-DangerBar.prototype.update = function() {
+DangerBar.prototype.pause = function() {
+	console.debug('pausing danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
+	console.debug('currentTime pause   : '+new Date().getTime());
+	this.timer.pause();
+	return this; //chainable
+}; 
+
+DangerBar.prototype.resume = function() {
+	console.debug('resume danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
+	console.debug('currentTime resume: '+new Date().getTime());
+	this.timer.resume();
+	return this; //chainable
+}; 
+
+DangerBar.prototype.update = function(sender) {
 	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
 	dangerBar = Galapago.level.dangerBar;
 	fillNormal = dangerBar.progress_bar_fill01;
@@ -2915,6 +2973,7 @@ DangerBar.prototype.update = function() {
 		//clear the space between the top cap and the bottom cap, including the bottom cap
 		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.stop();
+		Galapago.level.board.dangerBarEmptied();
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()

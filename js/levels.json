@@ -7,11 +7,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["2"],
-			"unlocksLevelsArrows" :[
-				{"2":
-					{"right_down":[235,335]}
-				}
-			],
 			"dangerBarSeconds" : "400",
 			"difficulty":"0.5",
 			"creatureColors":["R","G","B","V","P"],
@@ -36,14 +31,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["1","3"],
-			"unlocksLevelsArrows" :[
-				{"1":
-					{"left_up":[245,341]}
-				},
-				{"3":
-					{"right_down":[321,383]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"0.5",
 			"creatureColors":["R","G","B","V","P"],
@@ -68,14 +55,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["2","4"],
-			"unlocksLevelsArrows" :[
-				{"2":
-					{"left":[310,382]}
-				},
-				{"4":
-					{"right":[398,399]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P"],
@@ -99,14 +78,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["3","5"],
-			"unlocksLevelsArrows" :[
-				{"3":
-					{"left":[389,401]}
-				},
-				{"5":
-					{"right_down":[459,428]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P","Y"],
@@ -131,17 +102,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["4","6","14"],
-			"unlocksLevelsArrows" :[
-				{"4":
-					{"left_up":[466,425]}
-				},
-				{"6":
-					{"down":[453,492]}
-				},
-				{"14":
-					{"right":[499,471]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P"],
@@ -167,17 +127,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["5","7","14"],
-			"unlocksLevelsArrows" :[
-				{"5":
-					{"up":[456,486]}
-				},
-				{"7":
-					{"right_down":[508,536]}
-				},
-				{"14":
-					{"right_up":[515,502]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P"],	
@@ -203,17 +152,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["6","14","8"],
-			"unlocksLevelsArrows" :[
-				{"6":
-					{"left_up":[510,529]}
-				},
-				{"14":
-					{"up":[566,514]}
-				},
-				{"8":
-					{"right":[583,549]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1.5",
 			"creatureColors":["R","G","B","V","P"],
@@ -238,17 +176,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["7","15","9"],
-			"unlocksLevelsArrows" :[
-				{"7":
-					{"left":[580,546]}
-				},
-				{"15":
-					{"up":[653,533]}
-				},
-				{"9":
-					{"right":[689,573]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1.5",
 			"creatureColors":["R","G","B","V","P"],	
@@ -274,17 +201,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["8","16","10"],
-			"unlocksLevelsArrows" :[
-				{"8":
-					{"left":[684,571]}
-				},
-				{"16":
-					{"up":[750,537]}
-				},
-				{"10":
-					{"right":[785,574]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P"],
@@ -310,20 +226,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["9","16","17","11"],
-			"unlocksLevelsArrows" :[
-				{"9":
-					{"left":[781,575]}
-				},
-				{"16":
-					{"left_up":[784,538]}
-				},
-				{"17":
-					{"up":[834,520]}
-				},
-				{"11":
-					{"right_up":[902,514]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","V","P","T"],
@@ -348,17 +250,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["10","18","19"],
-			"unlocksLevelsArrows" :[
-				{"10":
-					{"left_down":[894,518]}
-				},
-				{"18":
-					{"left_up":[902,482]}
-				},
-				{"19":
-					{"right_up":[954,471]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1.5",
 			"creatureColors":["R","V","P","Y","T"],
@@ -384,11 +275,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["13"],
-			"unlocksLevelsArrows" :[
-				{"13":
-					{"right":[1077,444]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","T"],
@@ -414,14 +300,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["12","20"],
-			"unlocksLevelsArrows" :[
-				{"10":
-					{"left_down":[1068,445]}
-				},
-				{"18":
-					{"left_up":[1061,412]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"1.5",
 			"creatureColors":["R","G","B","V","T"],
@@ -447,20 +325,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["5","6","7","15"],
-			"unlocksLevelsArrows" :[
-				{"5":
-					{"left":[490,470]}
-				},
-				{"6":
-					{"left_down":[508,505]}
-				},
-				{"7":
-					{"down":[558,516]}
-				},
-				{"15":
-					{"right_down":[607,493]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","T"],
@@ -495,14 +359,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["8","16"],
-				"unlocksLevelsArrows" :[
-				{"8":
-					{"down":[646,533]}
-				},
-				{"16":
-					{"right":[696,511]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","T"],
@@ -536,17 +392,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["9","10","17"],
-				"unlocksLevelsArrows" :[
-				{"9":
-					{"down":[741,539]}
-				},
-				{"10":
-					{"right_down":[777,536]}
-				},
-				{"17":
-					{"right":[789,506]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","T"],
@@ -580,17 +425,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["10","16","18"],
-				"unlocksLevelsArrows" :[
-				{"10":
-					{"left":[785,501]}
-				},
-				{"16":
-					{"down":[840,517]}
-				},
-				{"18":
-					{"right":[859,478]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","V","P","T"],
@@ -623,17 +457,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["11","17","19"],
-			"unlocksLevelsArrows" :[
-				{"11":
-					{"left_down":[863,477]}
-				},
-				{"17":
-					{"right_down":[905,478]}
-				},
-				{"19":
-					{"right_up":[926,446]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","V","P","Y","T"],
@@ -666,17 +489,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["12","20","23"],
-				"unlocksLevelsArrows" :[
-				{"12":
-					{"right_down":[994,445]}
-				},
-				{"20":
-					{"right_up":[1022,415]}
-				},
-				{"23":
-					{"right_up":[986,405]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","V","P","T"],
@@ -709,14 +521,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["13","21"],
-			"unlocksLevelsArrows" :[
-				{"13":
-					{"right_down":[1062,409]}
-				},
-				{"21":
-					{"right_up":[1063,373]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","V","P","Y","T"],
@@ -741,11 +545,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["22"],
-				"unlocksLevelsArrows" :[
-				{"22":
-					{"right_up":[1102,328]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","P","T"],
@@ -770,11 +569,6 @@
 			"bgTheme" : "beach",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["24"],
-			"unlocksLevelsArrows" :[
-				{"24":
-					{"left":[1079,289]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"3",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -822,14 +616,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["25","26"],
-			"unlocksLevelsArrows" :[
-				{"25":
-					{"left":[1002,262]}
-				},
-				{"26":
-					{"left_down":[992,315]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","Y","T"],
@@ -854,11 +640,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["26"],
-			"unlocksLevelsArrows" :[
-				{"26":
-					{"left_down":[965,295]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -882,14 +663,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["27","29"],
-			"unlocksLevelsArrows" :[
-				{"27":
-					{"left_down":[902,331]}
-				},
-				{"29":
-					{"down":[953,352]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","B","V","Y","T"],
@@ -913,11 +686,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["30"],
-			"unlocksLevelsArrows" :[
-				{"30":
-					{"down":[875,349]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","B","V","Y","T"],
@@ -942,14 +710,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["33","34"],
-			"unlocksLevelsArrows" :[
-				{"33":
-					{"down":[624,367]}
-				},
-				{"34":
-					{"down":[690,377]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","B","V","Y","T"],
@@ -974,14 +734,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["30","35"],
-			"unlocksLevelsArrows" :[
-				{"30":
-					{"left":[908,368]}
-				},
-				{"35":
-					{"left_down":[929,400]}
-				}
-			],
 			"dangerBarSeconds" : "300",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1005,14 +757,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "e",
 			"unlocksLevels" :["31","35"],
-			"unlocksLevelsArrows" :[
-				{"31":
-					{"left":[834,370]}
-				},
-				{"35":
-					{"down":[880,393]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1037,14 +781,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["32","36"],
-			"unlocksLevelsArrows" :[
-				{"32":
-					{"left":[767,394]}
-				},
-				{"36":
-					{"down":[816,410]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1069,17 +805,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["31","33","37"],
-			"unlocksLevelsArrows" :[
-				{"31":
-					{"right":[774,394]}
-				},
-				{"33":
-					{"left":[711,405]}
-				},
-				{"37":
-					{"down":[745,430]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1104,20 +829,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["28","32","34","38"],
-			"unlocksLevelsArrows" :[
-				{"28":
-					{"up":[690,374]}
-				},
-				{"32":
-					{"right":[716,400]}
-				},
-				{"34":
-					{"left":[652,393]}
-				},
-				{"38":
-					{"down":[676,424]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"2",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1142,20 +853,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["28","33","39","40"],
-				"unlocksLevelsArrows" :[
-				{"39":
-					{"down":[590,410]}
-				},
-				{"40":
-					{"left":[550,375]}
-				},
-				{"33":
-					{"right":[656,393]}
-				},
-				{"28":
-					{"up":[618,366]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","B","P","Y","T"],
@@ -1181,11 +878,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["36"],
-			"unlocksLevelsArrows" :[
-				{"36":
-					{"left_down":[856,427]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"2.5",
 			"creatureColors":["R","G","B","Y","T"],
@@ -1210,14 +902,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "e",
 			"unlocksLevels" :["31","37"],
-			"unlocksLevelsArrows" :[
-				{"31":
-					{"up":[815,413]}
-				},
-				{"37":
-					{"left":[780,445]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","P","Y","T"],
@@ -1242,14 +926,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["32","38"],
-			"unlocksLevelsArrows" :[
-				{"32":
-					{"up":[744,428]}
-				},
-				{"38":
-					{"left":[697,455]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","P","Y","T"],
@@ -1274,14 +950,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["33","39"],
-				"unlocksLevelsArrows" :[
-				{"33":
-					{"up":[677,424]}
-				},
-				{"39":
-					{"left":[630,435]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","B","Y","T"],
@@ -1306,14 +974,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["34","40"],
-			"unlocksLevelsArrows" :[
-				{"34":
-					{"up":[588,410]}
-				},
-				{"40":
-					{"left_up":[522,425]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","P","Y","T"],
@@ -1338,11 +998,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["41"],
-				"unlocksLevelsArrows" :[
-				{"41":
-					{"left_up":[463,349]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1368,11 +1023,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["43"],
-			"unlocksLevelsArrows" :[
-				{"43":
-					{"left":[383,346]}
-				}
-			],
 			"dangerBarSeconds" : "240",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","B","V","P","T"],
@@ -1397,17 +1047,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "g",
 			"unlocksLevels" :["41","44","45"],
-			"unlocksLevelsArrows" :[
-				{"41":
-					{"down":[410,307]}
-				},
-				{"44":
-					{"left_down":[364,300]}
-				},
-				{"45":
-					{"right":[437,282]}
-				}
-			],
 			"dangerBarSeconds" : "400",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1432,11 +1071,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "b",
 			"unlocksLevels" :["44"],
-			"unlocksLevelsArrows" :[
-				{"44":
-					{"left_up":[325,320]}
-				}
-			],
 			"dangerBarSeconds" : "400",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1461,11 +1095,6 @@
 			"bgTheme" : "forest",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["42"],
-			"unlocksLevelsArrows" :[
-				{"42":
-					{"right":[365,297]}
-				}
-			],
 			"dangerBarSeconds" : "400",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1491,14 +1120,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["46","54"],
-				"unlocksLevelsArrows" :[
-				{"46":
-					{"down":[475,300]}
-				},
-				{"54":
-					{"right_up":[480,270]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
 			"creatureColors":["R","G","V","P","Y","T"],
@@ -1523,11 +1144,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["47"],
-			"unlocksLevelsArrows" :[
-				{"47":
-					{"up":[550,313]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1552,11 +1168,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["48"],
-			"unlocksLevelsArrows" :[
-				{"48":
-					{"right_down":[610,305]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1581,11 +1192,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["49"],
-			"unlocksLevelsArrows" :[
-				{"49":
-					{"right":[693,314]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1610,11 +1216,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["50"],
-			"unlocksLevelsArrows" :[
-				{"50":
-					{"right":[745,316]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1639,11 +1240,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["51"],
-			"unlocksLevelsArrows" :[
-				{"51":
-					{"right_up":[818,301]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1668,11 +1264,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["52"],
-			"unlocksLevelsArrows" :[
-				{"52":
-					{"right":[870,285]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"3.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1697,11 +1288,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["53"],
-			"unlocksLevelsArrows" :[
-				{"53":
-					{"right_up":[911,255]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1726,11 +1312,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["62"],
-			"unlocksLevelsArrows" :[
-				{"62":
-					{"left_up":[887,213]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1755,11 +1336,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["47"],
-			"unlocksLevelsArrows" :[
-				{"47":
-					{"right_down":[518,275]}
-				}
-			],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1784,11 +1360,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["64"],
-			"unlocksLevelsArrows" :[
-				{"64":
-					{"right_up":[530,236]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1813,11 +1384,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["55"],
-			"unlocksLevelsArrows" :[
-				{"55":
-					{"left_up":[575,233]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1842,14 +1408,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["56","63"],
-			"unlocksLevelsArrows" :[
-				{"56":
-					{"left":[647,264]}
-				},
-				{"63":
-					{"left_up":[672,226]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1874,11 +1432,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["57"],
-			"unlocksLevelsArrows" :[
-				{"57":
-					{"left":[702,254]}
-				}
-			],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1903,11 +1456,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["58"],
-			"unlocksLevelsArrows" :[
-				{"58":
-					{"left":[747,252]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1932,11 +1480,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["59"],
-			"unlocksLevelsArrows" :[
-				{"59":
-					{"left":[790,245]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1960,11 +1503,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["60"],
-			"unlocksLevelsArrows" :[
-				{"60":
-					{"right_up":[822,225]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -1989,11 +1527,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["61"],
-			"unlocksLevelsArrows" :[
-				{"61":
-					{"left_down":[855,204]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2018,11 +1551,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["64"],
-			"unlocksLevelsArrows" :[
-				{"64":
-					{"left_up":[620,208]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2046,14 +1574,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "d",
 			"unlocksLevels" :["55","65"],
-			"unlocksLevelsArrows" :[
-				{"55":
-					{"left_down":[585,205]}
-				},
-				{"65":
-					{"right":[636,170]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2079,11 +1599,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "e",
 			"unlocksLevels" :["66"],
-			"unlocksLevelsArrows" :[
-				{"66":
-					{"right":[700,179]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2108,11 +1623,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "a",
 			"unlocksLevels" :["67"],
-			"unlocksLevelsArrows" :[
-				{"67":
-					{"right":[740,181]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2138,11 +1648,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "e",
 			"unlocksLevels" :["68"],
-			"unlocksLevelsArrows" :[
-				{"68":
-					{"right_up":[777,170]}
-				}
-			],
 			"dangerBarSeconds" : "330",
 			"difficulty":"4.5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2167,11 +1672,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "c",
 			"unlocksLevels" :["69"],
-			"unlocksLevelsArrows" :[
-				{"69":
-					{"right_up":[810,150]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"5",
 			"creatureColors":["R","G","B","V","P","Y","T"],
@@ -2197,11 +1697,6 @@
 			"bgTheme" : "cave",
 			"bgSubTheme" : "e",
 			"unlocksLevels" :["70"],
-			"unlocksLevelsArrows" :[
-				{"70":
-					{"left":[775,108]}
-				}
-			],
 			"dangerBarSeconds" : "220",
 			"difficulty":"5",
 			"creatureColors":["R","G","B","V","P","Y","T"],

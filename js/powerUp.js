@@ -46,6 +46,12 @@ function PauseableInterval(func, delay , sender){
     this.clearInterval = function(){
            window.clearInterval(this.i);
       }
+	  
+	 this.isRunning = function(){
+	     if(this.i != null)
+		   return true;
+		return false;
+     }	 
 }
  
 /*function test(){
