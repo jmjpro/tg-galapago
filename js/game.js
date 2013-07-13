@@ -199,7 +199,9 @@ LevelMap.LAVA_SPRITE_MATRIX = [
 function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
+	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	this.layer = this.canvas.getContext('2d');
+	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
@@ -212,6 +214,7 @@ LevelMap.prototype.initImages = function( instance, images ) {
 	var levelMap = instance;
 	levelMap.images = images;
 	levelMap.display();
+	levelMap.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	levelMap.setHotspotLevel(levelMap.hotspotLevel);
 }; //LevelMap.prototype.initImages()
 
@@ -246,7 +249,7 @@ LevelMap.prototype.display = function() {
 	$('ul#map-nav').css('display', 'block');
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	Galapago.audioPlayer.playVolcanoLoop();
-	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
+	var otherAnimationCanvas = this.otherAnimationCanvas;
 	otherAnimationCanvas.style.zIndex = 9;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
 	otherAnimationCanvas.height = LevelMap.HEIGHT;
@@ -254,35 +257,42 @@ LevelMap.prototype.display = function() {
 	otherAnimationCanvas.onclick = function(evt) {
 		levelMap.canvas.focus();
 	};
-	var otherAnimationLayer = otherAnimationCanvas.getContext('2d'); 
 	var completedLevelIds = LevelMap.getLevelsCompleted();
 	if(completedLevelIds.length){
-		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, otherAnimationLayer);
+		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
 	}
-	this.levelAnimation.animateBombs(otherAnimationLayer);
+	this.levelAnimation.animateBombs(this.otherAnimationLayer);
 	var level1Completed =localStorage.getItem("level1.completed");
 	if(!level1Completed){
-	  this.levelAnimation.animateGameStartArrow(otherAnimationLayer);
+	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
 	this.registerEventHandlers();
 };
 
 LevelMap.prototype.drawBlinkingArrows = function(level){
 	var levelMap = this;
-	var levelId, levelInfo, arrow
-	var unlocksLevelsArrows = level.levelConfig.unlocksLevelsArrows;
-	_.each(unlocksLevelsArrows, function(unlockLevelArrow){
-		for(levelId in unlockLevelArrow){
-			levelInfo = unlockLevelArrow[levelId];
-			for(arrow in levelInfo){
-				var img = ScreenLoader.gal.get("map-screen/next_level_arrow_"+arrow+".png")
-				var coordinates = levelInfo[arrow];
-				var x = coordinates[0];
-				var y = coordinates[1];
-				levelMap.layer.drawImage(img,x,y,img.width,img.height);
+	var levelId, levelInfo, arrow;
+	var nextLevelArrowsInfo = [];
+	if(level){
+		var unlocksLevelsArrows = level.levelConfig.unlocksLevelsArrows;
+		_.each(unlocksLevelsArrows, function(unlockLevelArrow){
+			for(levelId in unlockLevelArrow){
+				if(!(Level.findById(levelId)).isComplete()){
+					levelInfo = unlockLevelArrow[levelId];
+					for(arrow in levelInfo){
+						var img = ScreenLoader.gal.get("map-screen/next_level_arrow_"+arrow+".png")
+						var coordinates = levelInfo[arrow];
+						var x = coordinates[0];
+						var y = coordinates[1];
+						nextLevelArrowsInfo.push({"image":img,"xCoord":x,"yCoord":y});
+					}
+				}
 			}
-		}
-	});
+		});
+	}
+	if(nextLevelArrowsInfo.length){
+		levelMap.levelAnimation.animateNextLevelArrows(levelMap.otherAnimationLayer, nextLevelArrowsInfo);
+	}
 }
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
@@ -464,8 +474,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 	this.animationCanvas.onclick=null;
 	
 	this.animationCanvas.style.zIndex = 0;
-	var otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
-	otherAnimationCanvas.style.zIndex = 0;
+	this.otherAnimationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
 	this.levelAnimation.stopAllAnimations();
@@ -602,6 +611,9 @@ LevelMap.getNextLevel = function() {
 	}
 	else {
 		unlockedLevels = highestLevelCompleted.unlocksLevels;
+		unlockedLevels = _.filter(unlockedLevels, function(levelId){
+			return !Level.findById(levelId).isComplete();
+		});
 		console.debug('unlocked levels for highest level completed = ' + unlockedLevels);
 		nextLevelId = _.min(unlockedLevels);
 	}
@@ -1047,8 +1059,13 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 
 Level.prototype.isNew = function() {
 	var levelSaved = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+ this.id +"restore");
-	var levelCompleted = localStorage.getItem("level"+ this.id + ".completed");	
+	var levelCompleted = this.isComplete();	
 	return !levelSaved && !levelCompleted;
+};
+
+Level.prototype.isComplete = function() {
+	var levelCompleted = localStorage.getItem("level"+ this.id + ".completed");	
+	return levelCompleted;
 };
 /* end class Level */
 

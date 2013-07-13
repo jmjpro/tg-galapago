@@ -9,7 +9,7 @@
 			"unlocksLevels" :["2"],
 			"unlocksLevelsArrows" :[
 				{"2":
-					{"right_down":[248,345]}
+					{"right_down":[235,335]}
 				}
 			],
 			"dangerBarSeconds" : "400",

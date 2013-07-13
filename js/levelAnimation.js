@@ -202,6 +202,7 @@ function LevelAnimation(layer){
 	this.bombAnimation = null;
 	this.bombParentAnimationInterval = null;
 	this.gameStartArrowAnimation = null;
+	this.nextLevelArrowAnimatios = null;
 }
 
 LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
@@ -250,10 +251,20 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 	}
 	var imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
 	var rolloverImageSpriteSheet = this[imageId];
+	function stopCallback(){
+		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+		if(board.tileSelected == tileActive){
+			tileActive.setSelectedAsync().then( function() {
+				return;
+			}).done();
+		}
+	}
 	if(rolloverImageSpriteSheet){
-		this.rolloverAnimation = new RolloverAnimation(layer, board, tileActive, rolloverImageSpriteSheet);
+		this.rolloverAnimation = new RolloverAnimation(layer, tileActive.getXCoord(),tileActive.getYCoord(), rolloverImageSpriteSheet, stopCallback);
 		this.rolloverAnimation.start();
 	}
+
 };
 
 LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev, callback){
@@ -429,21 +440,10 @@ LevelAnimation.prototype.animateBombs = function(layer){
 	animateBomb(animateBomb);
 }
 
-LevelAnimation.prototype.animateGameStartArrow = function(layer){
-	var levelAnimation = this;
-	function animateGameStartArrow(){
-		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = ScreenLoader.gal.get("map-screen/strip_game_start_arrow.png");
-		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
-		coordinates = [200 , 265 ];
-		if(levelAnimation.gameStartArrowAnimation){
-			levelAnimation.gameStartArrowAnimation.stop();
-		}
-		var gameStartArrowAnimation = new GameStartArrowAnimation(coordinates, gameStartArrowImageSpriteSheet,layer,animateGameStartArrow);		
-		gameStartArrowAnimation.start();
-		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
-	}
-	animateGameStartArrow();
+LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
+	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
+	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
+	nextLevelArrowAnimation.start();
 }
 
 LevelAnimation.prototype.stopAllAnimations = function(){
@@ -469,6 +469,10 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.gameStartArrowAnimation.stop();
 		this.gameStartArrowAnimation = null;
 	}
+	if(this.nextLevelArrowAnimation){
+		this.nextLevelArrowAnimation.stop();
+		this.nextLevelArrowAnimation = null;
+	}
 }
 
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
@@ -485,13 +489,14 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 }
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
-function RolloverAnimation(layer, board, tile, rolloverImageSpriteSheet){
+function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stopCallback){
+	this.layer = layer;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
 	this.interval = null;
 	this.rolloverSpriteId = 0;
-	this.layer = layer;
-	this.board = board;
-	this.tile = tile;
+	this.xCoord = xCoord;
+	this.yCoord = yCoord;
+	this.stopCallback = stopCallback;
 }
 
 RolloverAnimation.prototype.start = function(){
@@ -504,20 +509,14 @@ RolloverAnimation.prototype.start = function(){
 
 RolloverAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
-	this.layer.clearRect(this.tile.getXCoord(), this.tile.getYCoord(), Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.tile.blob.image, this.tile.getXCoord(), this.tile.getYCoord(), Tile.getWidth(), Tile.getHeight());
-	if(this.board.tileSelected == this.tile){
-		this.tile.setSelectedAsync().then( function() {
-			return;
-		}).done();
-	}
+	this.stopCallback();
 };
 
-RolloverAnimation.prototype.animate = function(rolloverAnimation){
+RolloverAnimation.prototype.animate = function(){
 	var image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
-	this.layer.putImageData(image, this.tile.getXCoord(), this.tile.getYCoord());
+	this.layer.putImageData(image, this.xCoord, this.yCoord);
 	this.rolloverSpriteId++;
-	this.rolloverSpriteId = this.rolloverSpriteId % LevelAnimation.ROLLOVER_SPRITE_MATRIX[0].length;
+	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 };
 
 BonFireAnimation.ROLLOVER_TIME_INTERVAL=330;
@@ -629,4 +628,43 @@ GameStartArrowAnimation.prototype.animate = function(){
 	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-2){
 		this.callback();
 	}
+};
+
+NextLevelArrowAnimation.ROLLOVER_TIME_INTERVAL=330;
+function NextLevelArrowAnimation(layer, arrowsInfo){
+	this.layer = layer;
+	this.arrowsInfo = arrowsInfo;
+	this.interval = null;
+	this.rolloverSpriteId = 0;
+}
+
+NextLevelArrowAnimation.prototype.start = function(){
+	this.rolloverSpriteId = 0;
+	var rolloverAnimation = this;
+	this.interval = setInterval(function(){
+		rolloverAnimation.animate(rolloverAnimation)}, 
+		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+NextLevelArrowAnimation.prototype.stop = function(){
+	clearInterval(this.interval);
+	var nextLevelArrowAnimation = this;
+	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
+	_.each(arrowsInfo, function(arrowInfo){
+		nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.width, arrowInfo.image.height);	
+	});
+};
+
+NextLevelArrowAnimation.prototype.animate = function(){
+	var nextLevelArrowAnimation = this;
+	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
+	_.each(arrowsInfo, function(arrowInfo){
+		if(nextLevelArrowAnimation.rolloverSpriteId == 1){
+			nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.width, arrowInfo.image.height);	
+		}else{
+			nextLevelArrowAnimation.layer.drawImage(arrowInfo.image, arrowInfo.xCoord, arrowInfo.yCoord);
+		}
+	});
+	this.rolloverSpriteId++;
+	this.rolloverSpriteId = this.rolloverSpriteId % 2;
 };
