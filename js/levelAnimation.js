@@ -440,6 +440,23 @@ LevelAnimation.prototype.animateBombs = function(layer){
 	animateBomb(animateBomb);
 }
 
+LevelAnimation.prototype.animateGameStartArrow = function(layer){
+	var levelAnimation = this;
+	function animateGameStartArrow(){
+		var coordinates, image, gameStartArrowImageSpriteSheet;
+		image = ScreenLoader.gal.get("map-screen/strip_game_start_arrow.png");
+		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
+		coordinates = [200 , 265 ];
+		if(levelAnimation.gameStartArrowAnimation){
+			levelAnimation.gameStartArrowAnimation.stop();
+		}
+		var gameStartArrowAnimation = new GameStartArrowAnimation(coordinates, gameStartArrowImageSpriteSheet,layer,animateGameStartArrow);		
+		gameStartArrowAnimation.start();
+		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
+	}
+	animateGameStartArrow();
+}
+
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
