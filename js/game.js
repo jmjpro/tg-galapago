@@ -92,6 +92,7 @@ Galapago.init = function(gameMode) {
 	var levelTemp, level, levelIt;
 	Galapago.localization();
 	Galapago.audioPlayer = new AudioPlayer();
+	Galapago.bubbleTip = new BubbleTip();
 	Galapago.gameMode = gameMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
@@ -1180,14 +1181,22 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
+	var levelPlayed = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".levelPlayed");
 	if(tile) {
 		tileActive = tile;
 	}
-	else if( _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.levelNum) && this.level.bubbleTips ) {
-		col = this.level.initialActiveTileCoordinates[0];
-		row = this.level.initialActiveTileCoordinates[0];
+	
+	else if(!tile &&  _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.id) && (this.level.bubbleTips || this.level.levelConfig.initialSwapForTripletInfo)
+    	       && levelPlayed ==  null) {
+	    var initialSwapForTripletInfo =  this.level.levelConfig.initialSwapForTripletInfo;
+		col = initialSwapForTripletInfo.tipInfo.initialTile[0];
+		row = initialSwapForTripletInfo.tipInfo.initialTile[1];
 		tileActive = this.creatureTileMatrix[col][row];
-		this.tileSelected = tileActive;
+		//Galapago.bubbleTip.showBubbleTip("SELECT THE HIGHLIGHTED CREATURE TO START A COCOON TILE MATCH. TO CLEAR IT, YOU MUST MAKE A MATCH OF THE COCOON'S COLOR NEXT TO IT!"); 
+		Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Cocoon tip1'));
+		this.isCocoonTipShown = 1;
+		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".levelPlayed" ,"1" );
+		//this.tileSelected = tileActive;
 	}	
 	else { //YJ: activate top left tile unless otherwise indicated
 		col = this.firstTileCoordinates[0];
@@ -1967,6 +1976,7 @@ _.each(tileMatrix, function(columnArray){
 
 
 Board.prototype.handleKeyboardSelect = function() {
+    var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
@@ -1979,6 +1989,22 @@ Board.prototype.handleKeyboardSelect = function() {
 		case null:
 		default:
 			this.handleTileSelect(this.tileActive);
+			if(this.isCocoonTipShown ==1){
+			    this.isCocoonTipShown =2;
+				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Cocoon tip2'));
+			    var initialSwapForTripletInfo =  this.level.levelConfig.initialSwapForTripletInfo;
+				var col = initialSwapForTripletInfo.tipInfo.swapTile[0];
+				var row = initialSwapForTripletInfo.tipInfo.swapTile[1];
+				var tileActive = this.creatureTileMatrix[col][row];
+				//this.setActiveTile(tileActive);
+				this.tileActive.setInactiveAsync().then(function() {
+					board.setActiveTile(tileActive);
+					return this; //chainable;
+				}).done();
+			}else if(this.isCocoonTipShown ==2){
+			    this.isCocoonTipShown=null ;
+				Galapago.bubbleTip.clearBubbleTip();
+			}
 			break;
 	}
 	return this; //chainable
@@ -1987,6 +2013,10 @@ Board.prototype.handleKeyboardSelect = function() {
 Board.prototype.handleRightArrow = function() {
 	var board, tileRight, col, row;
 	board = this;
+	if(this.isCocoonTipShown){
+	    this.isCocoonTipShown=null ;
+		Galapago.bubbleTip.clearBubbleTip();
+	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
 	do{
@@ -2008,6 +2038,10 @@ Board.prototype.handleRightArrow = function() {
 Board.prototype.handleLeftArrow = function() {
 	var board, tileLeft, col, row;
 	board = this;
+	if(this.isCocoonTipShown){
+	    this.isCocoonTipShown=null ;	
+		Galapago.bubbleTip.clearBubbleTip();
+	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
 	do{
@@ -2038,6 +2072,10 @@ Board.prototype.handleLeftArrow = function() {
 Board.prototype.handleDownArrow = function() {
 	var board, tileDown, col, row;
 	board = this;
+	if(this.isCocoonTipShown){
+	    this.isCocoonTipShown=null ;	
+		Galapago.bubbleTip.clearBubbleTip();
+	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
 	do{
@@ -2062,6 +2100,10 @@ Board.prototype.handleDownArrow = function() {
 Board.prototype.handleUpArrow = function() {
 	var board, tileUp, col, row;
 	board = this;
+	if(this.isCocoonTipShown){
+	    this.isCocoonTipShown=null ;
+		Galapago.bubbleTip.clearBubbleTip();
+	}	
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
 	do{

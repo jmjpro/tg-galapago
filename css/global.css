@@ -354,3 +354,18 @@ div.main-menu-button-hilight {
 #click-here {
 	display: inline;
 }
+.bubbleTip{
+	width:700px;
+	height:80px; 
+	font-family: 'JungleFever';
+	font-size: 18px; 
+	left: 280px; 
+	top:30px;
+	background-color: white;
+	position: absolute;
+	z-index: 1000;
+	border : 2px solid black; 
+	padding-left: 10px;
+	padding-top: 10px;
+	display:none;
+}

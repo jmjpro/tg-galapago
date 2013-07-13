@@ -87,5 +87,9 @@
    	  "Title" : "Your game will be saved, are you sure you want to quit the game?",
       "OptionYes" : "Yes",
 	  "OptionNo" : "No"
+  },
+  "Game Tips":{
+		"Cocoon tip1" : "SELECT THE HIGHLIGHTED CREATURE TO START A COCOON TILE MATCH. TO CLEAR IT, YOU MUST MAKE A MATCH OF THE COCOON'S COLOR NEXT TO IT!",
+		"Cocoon tip2" : "NOW SWAP WITH THE HIGHLIGHTED CREATURE NEXT TO IT TO COMPLETE THE COCOON TILE MATCH."
   }
 }
