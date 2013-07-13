@@ -1725,7 +1725,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		if(dangerBar && !dangerBar.isRunning() ) {
 			dangerBar.start(); //YJ: RQ 4.4.2
 		}
-
+		if(dangerBar){
+        dangerBar.pause();
+		}
 		tile.setSelectedAsync().then(function() {
 			board.animateJumpCreaturesAsync( tile, tilePrev, function() {
 				board.swapCreatures( tile, tilePrev );
@@ -1747,7 +1749,9 @@ Board.prototype.handleTileSelect = function(tile) {
 						board.handleTriplets(tile);
 					}
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-
+					if(dangerBar){
+						dangerBar.resume();
+					}
 					if( board.scoreEvents.length > 0 ) {
 						board.updateScore();
 						if(board.collectionModified || board.powerAchieved){
@@ -1797,6 +1801,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
 		this.updateScore();			
 		tile.clear();
+		if(dangerBar){ 
+			dangerBar.pause();
+		}
 		var goldTile = this.getGoldTile(tile);
 		if(goldTile){
 			this.animateGoldRemovalAsync([goldTile]);
@@ -1824,6 +1831,9 @@ Board.prototype.handleTileSelect = function(tile) {
 				board.handleTriplets(cahngedTile);
 			}
 		});
+		if(dangerBar){
+			dangerBar.resume();
+		}
 		if( board.scoreEvents.length > 0 ) {
 				board.updateScore();
 				if(board.collectionModified || board.powerAchieved){
@@ -1866,6 +1876,22 @@ _.each(tileMatrix, function(columnArray){
   board.tileActive.setActiveAsync().done();
 }
 
+Board.prototype.dangerBarEmptied = function() {
+var tileMatrix =this.creatureTileMatrix;
+var gameboard = this;
+localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" );
+this.level.levelAnimation.stopAllAnimations();
+_.each(tileMatrix, function(columnArray){
+  _.each(columnArray, function(tile){
+          if(tile){
+           if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+              tile.clear();
+			  window.onkeydown=null;
+            }
+          }
+    })
+ });
+}
 
 Board.prototype.saveBoard = function() {
 var restoreLookup = {};
@@ -1909,6 +1935,9 @@ Board.prototype.handleKeyboardSelect = function() {
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
 			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			if(this.level.dangerBar){
+				this.level.dangerBar.pause();
+			}
 			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
@@ -2787,7 +2816,7 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layer = $('#' + DangerBar.LAYER_DANGER_BAR)[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
-	this.intervalId = -1;
+	//this.intervalId = -1;
 	//this.imageArray = imageArray;	
 	this.magnifyImages(imageArray);
 	this.initImages(imageArray);
@@ -2802,6 +2831,7 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	of the first time the dangerBar goes below the ratio
 	*/
 	this.numTimesBelowDangerRatio = 0;
+	this.timer = null;
 	this.drawImages();
 }
 
@@ -2834,25 +2864,46 @@ DangerBar.prototype.drawImages = function() {
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
-	return this.intervalId >= 0;
+	if(!this.timer){
+	return false;
+	}
+	//return this.intervalId >= 0;
+	return this.timer.isRunning();
 }; //DangerBar.prototype.isRunning()
+
 
 DangerBar.prototype.start = function() {
 	var dangerBar;
 	dangerBar = this;
 	//dangerBar.layer.clearRect( DangerBar.LEFT, DangerBar.CAP_TOP_TOP, DangerBar.FILL_WIDTH, dangerBar.fillTop );
-	dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
+	this.timer = new PauseableInterval(dangerBar.update,DangerBar.REFRESH_INTERVAL_SEC * 1000,this);
+	//dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
 	console.debug('starting danger bar timing with ' + dangerBar.timeRemainingMs/1000 + ' sec remaining');
 	return dangerBar; //chainable
 }; //DangerBar.prototype.start()
 
 DangerBar.prototype.stop = function() {
 	console.debug('stopping danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
-	clearInterval(this.intervalId);
+	//clearInterval(this.intervalId);
+	this.timer.clearInterval();
 	return this; //chainable
 }; //DangerBar.prototype.stop()
 
-DangerBar.prototype.update = function() {
+DangerBar.prototype.pause = function() {
+	console.debug('pausing danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
+	console.debug('currentTime pause   : '+new Date().getTime());
+	this.timer.pause();
+	return this; //chainable
+}; 
+
+DangerBar.prototype.resume = function() {
+	console.debug('resume danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
+	console.debug('currentTime resume: '+new Date().getTime());
+	this.timer.resume();
+	return this; //chainable
+}; 
+
+DangerBar.prototype.update = function(sender) {
 	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
 	dangerBar = Galapago.level.dangerBar;
 	fillNormal = dangerBar.progress_bar_fill01;
@@ -2887,6 +2938,7 @@ DangerBar.prototype.update = function() {
 		//clear the space between the top cap and the bottom cap, including the bottom cap
 		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.stop();
+		Galapago.level.board.dangerBarEmptied();
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
