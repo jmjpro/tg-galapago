@@ -250,9 +250,9 @@ LevelMap.prototype.display = function() {
 	otherAnimationCanvas.style.zIndex = 9;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
 	otherAnimationCanvas.height = LevelMap.HEIGHT;
-	var levelAnimation = this;
+	var levelMap = this;
 	otherAnimationCanvas.onclick = function(evt) {
-		levelAnimation.canvas.focus();
+		levelMap.canvas.focus();
 	};
 	var otherAnimationLayer = otherAnimationCanvas.getContext('2d'); 
 	var completedLevelIds = LevelMap.getLevelsCompleted();
@@ -266,6 +266,24 @@ LevelMap.prototype.display = function() {
 	}
 	this.registerEventHandlers();
 };
+
+LevelMap.prototype.drawBlinkingArrows = function(level){
+	var levelMap = this;
+	var levelId, levelInfo, arrow
+	var unlocksLevelsArrows = level.levelConfig.unlocksLevelsArrows;
+	_.each(unlocksLevelsArrows, function(unlockLevelArrow){
+		for(levelId in unlockLevelArrow){
+			levelInfo = unlockLevelArrow[levelId];
+			for(arrow in levelInfo){
+				var img = ScreenLoader.gal.get("map-screen/next_level_arrow_"+arrow+".png")
+				var coordinates = levelInfo[arrow];
+				var x = coordinates[0];
+				var y = coordinates[1];
+				levelMap.layer.drawImage(img,x,y,img.width,img.height);
+			}
+		}
+	});
+}
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
     var st=new SpriteSheet(image,spriteMatrix);

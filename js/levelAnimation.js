@@ -504,6 +504,7 @@ RolloverAnimation.prototype.start = function(){
 
 RolloverAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
+	this.layer.clearRect(this.tile.getXCoord(), this.tile.getYCoord(), Tile.getWidth(), Tile.getHeight());
 	this.layer.drawImage(this.tile.blob.image, this.tile.getXCoord(), this.tile.getYCoord(), Tile.getWidth(), Tile.getHeight());
 	if(this.board.tileSelected == this.tile){
 		this.tile.setSelectedAsync().then( function() {
