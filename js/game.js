@@ -2994,21 +2994,27 @@ DangerBar.prototype.start = function() {
 DangerBar.prototype.stop = function() {
 	console.debug('stopping danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
 	//clearInterval(this.intervalId);
-	this.timer.clearInterval();
+	if(this.timer){
+		this.timer.clearInterval();
+	}
 	return this; //chainable
 }; //DangerBar.prototype.stop()
 
 DangerBar.prototype.pause = function() {
 	console.debug('pausing danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
 	console.debug('currentTime pause   : '+new Date().getTime());
-	this.timer.pause();
+	if(this.timer){
+		this.timer.pause();
+	}
 	return this; //chainable
 }; 
 
 DangerBar.prototype.resume = function() {
 	console.debug('resume danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
 	console.debug('currentTime resume: '+new Date().getTime());
-	this.timer.resume();
+	if(this.timer){
+		this.timer.resume();
+	}
 	return this; //chainable
 }; 
 
