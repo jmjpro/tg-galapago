@@ -2251,7 +2251,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	changedPoints = [];
 	board = this;
 	_.each( tiles, function(tile) {
-		if( tile && (tile.isCreatureOnly() || tile.hasSuperFriend)) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+		if( tile && (tile.isCreatureOnly() || tile.hasSuperFriend())) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
 			var fallingPoint = board.getFallingPoint(loweredPoint);
 			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
