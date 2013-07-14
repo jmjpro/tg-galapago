@@ -91,5 +91,76 @@
   "Game Tips":{
 		"Cocoon tip1" : "SELECT THE HIGHLIGHTED CREATURE TO START A COCOON TILE MATCH. TO CLEAR IT, YOU MUST MAKE A MATCH OF THE COCOON'S COLOR NEXT TO IT!",
 		"Cocoon tip2" : "NOW SWAP WITH THE HIGHLIGHTED CREATURE NEXT TO IT TO COMPLETE THE COCOON TILE MATCH."
+  },
+  "Game Over Demo Message":{
+		"TitleGameOver"  :  "GAME OVER",
+		"OptionClose"  :  "Close",
+		"LabelDemo"  :  "DEMO"
+  },
+  "Game Over Lose Message":{
+		"TitleOutOfTime"  :  "OUT OF TIME",
+		"MessageRelaxedMode"  :  "PLAY AT YOUR OWN PACE IN RELAXED MODE",
+		"ScoreFinal"  :  "FINAL SCORE: <total score gained in this game>",
+		"OptionClose"  :  "Close",
+		"TitleDontGiveUp"  :  "DON'T GIVE UP, GALAPAGO'S CREATURES ARE COUNTING ON YOU!",
+		"TitleTryAgain"  :  "PLEASE TRY AGAIN!",
+		"TitleDontWorry"  :  "DON'T WORRY, THE POWER OF GALAPAGO WILL BE WITH YOU!",
+		"TitleTryOneMoreTime"  :  "TRY THAT LEVEL ONE MORE TIME...",
+		"TitleDontDespair"  :  "DON'T DESPAIR, GALAPAGO'S CREATURES ARE ROOTING FOR YOU!",
+		"TitleAnotherTry"  :  "IT MAY TAKE ANOTHER TRY, BUT YOU CAN DO IT...",
+		"TitleDontLeave"  :  "DON'T LEAVE NOW, THINGS ARE JUST GETTING INTERESTING!",
+		"TitleNotForFaintOfHeart"  :  "GALAPAGO IS NOT FOR THE FAINT OF HEART...TRY AGAIN!",
+		"TitleYouCanDo"  :  "DON'T WORRY, YOU CAN DO IT!",
+		"TitleCreaturesAreYourSide"  :  "GALAPAGO'S CREATURES ARE ON YOUR SIDE, YOU CAN DO IT!",
+		"TitleShrunkenHeads"  :  "DON'T LEAVE NOW, THE SHRUNKEN HEADS ARE COUNTING ON YOU..."
+  },
+  "Game Over Win Message":{
+		"Title"  :  "YOU WON!",
+		"congratulation"  :  "CONGRATULATIONS!",
+		"WonMessage"  :  "YOU’VE COLLECTED ALL OF GALAPAGO’S MAGICAL CREATURES AND FREED THEM FOREVER! NOW, THE ISLAND AND ITS GOLDEN TREASURES BELONG TO YOU; EXPLORE GALAPAGO WHENEVER YOU LIKE.THE CREATURES OF GALAPAGO ARE FOREVER GRATEFUL TO YOU, AND WILL BRING PEACE AND PROSPERITY FOR THE REST OF YOUR DAYS.",
+		"FinalScore"  :  "FINAL SCORE: <total score gained in this game>",
+		"OptionClose"  :  "Close"
+  },
+  "Level Won Message":{
+		"Title"  :  "LEVEL WON!",
+		"ScoreLevel"  :  "LEVEL",
+		"ScoreBonusFrenzy"  :  "BONUS FRENZY",
+		"ScoreBonusPoints"  :  "BONUS POINTS",
+		"ScoreTimeBonus"  :  "TIME BONUS",
+		"ScoreLevelScore"  :  "LEVEL SCORE",
+		"ScoreScore"  :  "SCORE",
+		"OptionClose"  :  "Close",
+		"Level Won Continue"  :  "YOU WON! LET THE JOURNEY CONTINUE...",
+		"Level Won Thank You"  :  "GALAPAGO'S CREATURES THANK YOU!",
+		"Level Won Next Level"  :  "MORE CREATURES AWAIT IN THE NEXT LEVEL...",
+		"Level Won 21 Magical Creature"  :  "GALAPAGO HAS 21 MAGICAL CREATURES -COLLECT THEM ALL!",
+		"Level Won Well Done"  :  "WELL DONE, YOU ALREADY KNOW YOUR WAY AROUND GALAPAGO!",
+		"Level Won MoreLevels Await"  :  "MORE LEVELS AWAIT, DON'T STOP NOW!",
+		"Level Won Nicely Played"  :  "NICELY PLAYED, YOU ARE UNCOVERING GALAPAGO'S MYSTERIES.",
+		"Level Won Fitting Nicely"  :  "YOU'RE FITTING IN VERY NICELY ON GALAPAGO!",
+		"Level Won Keep Playing"  :  "KEEP PLAYING, THE ENTIRE ISLAND AWAITS YOU!",
+		"Level Won More Beautiful Creature"  :  "MORE BEAUTIFUL CREATURES ARE IN YOUR NEAR FUTURE...",
+		"Level Won Congrats"  :  "CONGRATULATIONS!",
+		"Level Won Keep Going"  :  "KEEP GOING, YOU HAVE A KNACK FOR THIS GAME.",
+		"Level Won Lucky To Have You"  :  "GALAPAGO'S CREATURES ARE LUCKY TO HAVE YOU!"
+  },
+  "Game Screen":{
+	"OptionMenu"  :  "Menu",
+	"OptionQuit"  :  "Quit"
+  },
+  "Reset Warning Dialog":{
+		"Title"  :  "WARNING!",
+		"WarningText"  :  "RESETTING THE MAP WILL ERASE YOUR PROGRESS AND WILL START A NEW GAME!DO YOU WISH TO RESET THE MAP?",
+		"OptionNo"  :  "No",
+		"OptionYes"  :  "Yes"
+  },
+  "Map Screen":{
+		"Current Player Name"  :  "Hello <Profile Name>!",
+		"Focused Level High Score Indicator"  :  "SCORE:",
+		"OptionPlay"  :  "PLAY",
+		"OptionStartNextLevel"  :  "START NEXT LEVEL",
+		"OptionResetMap"  :  "RESET MAP",
+		"OptionMenu"  :  "Menu",
+		"OptionQuit"  :  "Quit"
   }
 }

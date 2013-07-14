@@ -75,16 +75,94 @@
     "Instruction Text" : "Загрузка…",
 	"Hot Spots" : "Кликните, чтобы играть"
   },
-  "Game Menu Screen":{
-      "Option1" : "Вернуться в игру",
-	  "Option2" : "К основному меню",
-	  "Option3" : "Новая игра",
-	  "Option4" : "Правила игры",
-	  "Option5" : "Настройки"
+  "Dialog Game Menu":{
+	  "Title" : "Меню",
+      "OptionContinuePlaying" : "Вернуться в игру",
+	  "OptionMainMenu" : "К основному меню",
+	  "OptionNewGame" : "Новая игра",
+	  "OptionHowToPlay" : "Правила игры",
+	  "OptionOptions" : "Настройки"
   },
   "Dialog Quit": {
    	  "Title" : "Хотите начать новую игру?",
       "OptionYes" : "Да",
 	  "OptionNo" : "Нет"
+  },
+  "Game Tips":{
+		"Cocoon tip1" : "ВЫБЕРИТЕ ВЫДЕЛЕННОЕ СУЩЕСТВО, И НАЧНИТЕ ИГРУ С КОКОНАМИ. УБИРАЙТЕ КОКОН, ВЫСТРОИВ РЯДОМ С НИМ СОЧЕТАНИЕ ТОГО ЖЕ ЦВЕТА.",
+		"Cocoon tip2" : "ПЕРЕДВИНЬТЕ ОТМЕЧЕННОЕ СУЩЕСТВО К КОКОНУ, ЧТОБЫ ПОЛУЧИТЬ СОЧЕТАНИЕ."
+  },
+  "Game Over Demo Message":{
+		"TitleGameOver"  :  "КОНЕЦ ИГРЫ",
+		"OptionClose"  :  "Закрыть",
+		"LabelDemo"  :  "ДЕМО"
+  },
+  "Game Over Lose Message":{
+		"TitleOutOfTime"  :  "ВРЕМЯ ВЫШЛО",
+		"MessageRelaxedMode"  :  "ВЫБЕРИТЕ СВОБОДНЫЙ РЕЖИМ, И ИГРАЙТЕ В СВОЕ УДОВОЛЬСТВИЕ",
+		"ScoreFinal"  :  "ИТОГОВЫЙ СЧЕТ: <сумма очков, полученных в игре>",
+		"OptionClose"  :  "Закрыть",
+		"TitleDontGiveUp"  :  "НЕ СДАВАЙТЕСЬ, СУЩЕСТВА ГАЛАПАГОСА РАССЧИТЫВАЮТ НА ВАС!",
+		"TitleTryAgain"  :  "ПОПРОБУЙТЕ СНОВА!",
+		"TitleDontWorry"  :  "НЕ ВОЛНУЙТЕСЬ, СИЛА ГАЛАПАГОСА ПОМОЖЕТ ВАМ!",
+		"TitleTryOneMoreTime"  :  "ПОПРОБУЙТЕ СНОВА ПРОЙТИ ЭТОТ УРОВЕНЬ…",
+		"TitleDontDespair"  :  "НЕ ПЕРЕЖИВАЙТЕ, СУЩЕСТВА ГАЛАПАГОСА ВЕРЯТ В ВАС!",
+		"TitleAnotherTry"  :  "ПОТРЕБУЕТСЯ ЕЩЕ ПОПЫТКА, НО ВЫ СПРАВИТЕСЬ…",
+		"TitleDontLeave"  :  "НЕТ, НЕ УХОДИТЕ СЕЙЧАС, КОГДА НАЧАЛОСЬ САМОЕ ИНТЕРЕСНОЕ!",
+		"TitleNotForFaintOfHeart"  :  "ГАЛАПАГОС - НЕ ДЛЯ СЛАБЫХ ДУХОМ. ПОПРОБУЙТЕ СНОВА!",
+		"TitleYouCanDo"  :  "СОМНЕНЬЯ ПРОЧЬ - ВЫ СПРАВИТЕСЬ!",
+		"TitleCreaturesAreYourSide"  :  "СУЩЕСТВА ГАЛАПАГОССА НА ВАШЕЙ СТОРОНЕ - У ВАС ВСЕ ПОЛУЧИТСЯ!",
+		"TitleShrunkenHeads"  :  "НЕ УХОДИТЕ - СУШЕНЫЕ ГОЛОВЫ РАССЧИТЫВАЮТ НА ВАС…"
+  },
+  "Game Over Win Message":{
+		"Title"  :  "ПОБЕДА!",
+		"congratulation"  :  "ПОЗДРАВЛЯЕМ!",
+		"WonMessage"  :  "ВЫ СОБРАЛИ И ОСВОБОДИЛИ ВСЕХ МАГИЧЕСКИХ СУЩЕСТВ ГАЛАПАГОСА! ТЕПЕРЬ ОСТРОВ СО ВСЕМИ ЕГО СОКРОВИЩАМИ ПРИНАДЛЕЖИТ ВАМ. ИССЛЕДУЙТЕ ГАЛАПАГОС В СВОЕ УДОВОЛЬСТВИЕ.БЛАГОДАРНОСТЬ СУЩЕСТВ ОСТРОВА НЕ ИМЕЕТ ГРАНИЦ, И ОНИ РАДЫ ОБЕСПЕЧИТЬ ВАМ ВЕЧНЫЕ МИР И ПРОЦВЕТАНИЕ.",
+		"FinalScore"  :  "ИТОГОВЫЙ СЧЕТ: <сумма очков, полученных в игре>",
+		"OptionClose"  :  "Закрыть"
+
+  },
+  "Level Won Message":{
+		"Title"  :  "УРОВЕНЬ ПРОЙДЕН!",
+		"ScoreLevel"  :  "УРОВЕНЬ",
+		"ScoreBonusFrenzy"  :  "ДИКИЕ БОНУСЫ",
+		"ScoreBonusPoints"  :  "ПРИЗОВЫЕ ОЧКИ",
+		"ScoreTimeBonus"  :  "ПРИЗ ЗА ВРЕМЯ",
+		"ScoreLevelScore"  :  "СЧЕТ УРОВНЯ",
+		"ScoreScore"  :  "СЧЕТ",
+		"OptionClose"  :  "Закрыть",
+		"Level Won Continue"  :  "ПОБЕДА! И ПРИКЛЮЧЕНИЕ ПРОДОЛЖАЕТСЯ…",
+		"Level Won Thank You"  :  "СОЗДАНИЯ ГАЛАПАГОСА БЛАГОДАРЯТ ВАС!",
+		"Level Won Next Level"  :  "НА СЛЕДУЮЩЕМ УРОВНЕ - ЕЩЕ БОЛЬШЕ СУЩЕСТВ…",
+		"Level Won 21 Magical Creature"  :  "НА ГАЛАПАГОСЕ ПРОЖИВАЕТ 21 ВОЛШЕБНОЕ СУЩЕСТВО - СОБЕРИТЕ ИХ ВСЕХ!",
+		"Level Won Well Done"  :  "НЕПЛОХО, ВЫ УЗНАЛИ, КАК ПЕРЕДВИГАТЬСЯ ПО ГАЛАПОГОСУ!",
+		"Level Won MoreLevels Await"  :  "НАС ЖДУТ НОВЫЕ УРОВНИ, НЕ ОСТАНАВЛИВАЕМСЯ!",
+		"Level Won Nicely Played"  :  "ОТЛИЧНО, ГАЛАПАГОС ОТКРЫВАЕТ ВАМ СВОИ ТАЙНЫ.",
+		"Level Won Fitting Nicely"  :  "ВЫ ПРЕКРАСНО ВЛИЛИСЬ В МЕСТНУЮ ЖИЗНЬ!",
+		"Level Won Keep Playing"  :  "НЕ ОСТАНАВЛИВАЙТЕСЬ, НАС ЖДЕТ ЦЕЛЫЙ ОСТРОВ!",
+		"Level Won More Beautiful Creature"  :  "ВСКОРЕ ВЫ ВСТРЕТИТЕ ЕЩЕ БОЛЬШЕ УДИВИТЕЛЬНЫХ СОЗДАНИЙ…",
+		"Level Won Congrats"  :  "ПОЗДРАВЛЯЕМ!",
+		"Level Won Keep Going"  :  "ПРОДОЛЖАЙТЕ, У ВАС ОТЛИЧНО ПОЛУЧАЕТСЯ.",
+		"Level Won Lucky To Have You"  :  "СУЩЕСТВАМ ГАЛАПАГОСА НЕВЕРОЯТНО ПОВЕЗЛО С ВАМИ!"
+  },
+  "Game Screen":{
+	"OptionMenu"  :  "Меню",
+	"OptionQuit"  :  "Выход"
+  },
+  "Reset Warning Dialog":{
+		"Title"  :  "ВНИМАНИЕ!",
+		"WarningText"  :  "СБРОСИВ КАРТУ, ВЫ ЗАКРОЕТЕ ТЕКУЩУЮ СЕССИЮ, И НАЧНЕТЕ НОВУЮ ИГРУ!ВЫ ХОТИТЕ СБРОСИТЬ КАРТУ?",
+		"OptionNo"  :  "Нет",
+		"OptionYes"  :  "Да"
+  },
+  "Map Screen":{
+		"Current Player Name"  :  "Привет, <имя игрока>!",
+		"Focused Level High Score Indicator"  :  "СЧЕТ:",
+		"OptionPlay"  :  "ИГРАТЬ",
+		"OptionStartNextLevel"  :  "НАЧАТЬ СЛЕДУЮЩИЙ УРОВЕНЬ",
+		"OptionResetMap"  :  "СБРОСИТЬ КАРТУ",
+		"OptionMenu"  :  "Меню",
+		"OptionQuit"  :  "Выход"
+
   }
 }
