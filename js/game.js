@@ -1423,7 +1423,8 @@ Board.prototype.build = function(tilePositions) {
 					cellObject = this.parseCell('1');
 					//this.blobCollection.addBlobItem(tile);
 				}else if(restoreLookup[key]){
-					cellObject = this.parseCell(restoreLookup[key]);;
+					cellId = restoreLookup[key];
+					cellObject = this.parseCell(cellId); 
 				}
 			}
 			
