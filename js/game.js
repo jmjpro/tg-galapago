@@ -215,8 +215,6 @@ LevelMap.prototype.initImages = function( instance, images ) {
 	var levelMap = instance;
 	levelMap.images = images;
 	levelMap.display();
-	levelMap.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-	levelMap.setHotspotLevel(levelMap.hotspotLevel);
 }; //LevelMap.prototype.initImages()
 
 //TODO use q.js instead of callback
@@ -267,8 +265,21 @@ LevelMap.prototype.display = function() {
 	if(!level1Completed){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
+	this.drawHotspots();
+	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	this.registerEventHandlers();
 };
+
+LevelMap.prototype.drawHotspots = function(level){
+	var levelMap = this;
+	_.each(Galapago.levels, function(level){
+		if(level.isComplete()){
+			levelMap.drawHotspot(level.mapHotspotRegion);
+			levelMap.drawHotspot(level.mapHotspotRegion, true);
+		}
+	});
+	this.setHotspotLevel(this.hotspotLevel);
+}
 
 LevelMap.prototype.drawBlinkingArrows = function(level){
 	var levelMap = this;
@@ -513,29 +524,50 @@ LevelMap.prototype.handleLeftArrow = function() {
 
 LevelMap.prototype.setHotspotLevel = function(level) {
 	if( level && level.mapHotspotRegion.length > 2 ) {
+		if(this.hotspotLevel){
+			this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
+		}
 		this.hotspotLevel = level;
 		console.info("hotspot on level " + this.hotspotLevel.id);
-		this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+		//this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
 		this.updateLevelStatus();
 	}
 }; //LevelMap.prototype.setHotspotLevel()
 
-LevelMap.prototype.drawHotspot = function(hotspotPointsArray) {
-	var x, y;
-	this.layer.strokeStyle = 'yellow';
-	this.layer.lineWidth = 5;
-	this.layer.beginPath();
-	this.layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
-	for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
+LevelMap.prototype.drawHotspot = function(hotspotPointsArray, dim) {
+	var x, y, layer;
+	layer = this.layer;
+	if(dim){
+		layer.globalCompositeOperation = 'destination-out';
+		layer.lineWidth = 4;
+		layer.beginPath();
+		layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
+		for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
+			x = hotspotPointsArray[pointIt][0];
+			y = hotspotPointsArray[pointIt][1];
+			layer.lineTo( x, y );
+			//this.debugDisplayMapCoordinates(x, y);
+		}	
+		layer.closePath();
+		layer.stroke();
+		layer.fill();
+	}else{
+		layer.lineWidth = 5;
+		layer.globalCompositeOperation = 'source-over';
+		layer.strokeStyle = 'yellow';
+		layer.beginPath();
+		layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
+		for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
 		x = hotspotPointsArray[pointIt][0];
 		y = hotspotPointsArray[pointIt][1];
-		this.layer.lineTo( x, y );
+		layer.lineTo( x, y );
 		//this.debugDisplayMapCoordinates(x, y);
+		}
+		layer.closePath();
+		layer.stroke();
 	}
-	this.layer.closePath();
-	this.layer.stroke();
 }; //LevelMap.prototype.drawHotspot
 
 LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
