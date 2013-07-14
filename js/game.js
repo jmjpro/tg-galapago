@@ -541,7 +541,7 @@ LevelMap.prototype.drawHotspot = function(hotspotPointsArray, dim) {
 	layer = this.layer;
 	if(dim){
 		layer.globalCompositeOperation = 'destination-out';
-		layer.lineWidth = 4;
+		layer.lineWidth = 3;
 		layer.beginPath();
 		layer.moveTo(hotspotPointsArray[0][0], hotspotPointsArray[0][1]);
 		for( var pointIt = 1 ; pointIt < hotspotPointsArray.length ; pointIt++ ){
