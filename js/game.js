@@ -1415,15 +1415,17 @@ Board.prototype.build = function(tilePositions) {
 			//because tilePositions is loaded by external code
 			cellId = tilePositions[rowIt][colIt];
 			cellObject = this.parseCell(cellId);
-			if((typeof cellObject.gold != 'undefined') && restoreLookup && restoreLookup[colIt+'_'+rowIt] != undefined ){
-			    cellObject = this.parseCell(restoreLookup[colIt+'_'+rowIt]);
-			}else if( ((typeof cellObject.gold != 'undefined') || (typeof cellObject.blocking != 'undefined') ||
-                (typeof cellObject.cocoon != 'undefined') || (typeof cellObject.superFriend != 'undefined') || cellObject.hasTileOnly) 
-				&&	restoreLookup && restoreLookup[colIt+'_'+rowIt] == undefined	){
-				cellObject = this.parseCell('1');
-				//this.blobCollection.addBlobItem(tile);
+			if(restoreLookup ){
+				var key = colIt+'_'+rowIt;
+				if(cellObject.gold && restoreLookup[key]){
+				    cellObject = this.parseCell(restoreLookup[key]);
+				}else if((cellObject.gold || cellObject.blocking || cellObject.cocoon || cellObject.hasTileOnly || cellObject.superFriend) && !restoreLookup[key]){
+					cellObject = this.parseCell('1');
+					//this.blobCollection.addBlobItem(tile);
+				}else if(restoreLookup[key]){
+					cellObject = this.parseCell(restoreLookup[key]);;
+				}
 			}
-
 			
 			coordinates = [colIt, rowIt];
 			if( cellObject.hasCreature ) {
@@ -1450,7 +1452,9 @@ Board.prototype.build = function(tilePositions) {
 				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
 			}
 			if( typeof cellObject.superFriend != 'undefined' ) {
-				this.addTile(coordinates, 'SUPER_FRIEND', cellObject.superFriend);
+				var tile = this.addTile(coordinates, 'SUPER_FRIEND', cellObject.superFriend);
+				//need config to restore later
+				tile.blobConfig = cellId;
 			}
 		}
 	}
@@ -1554,6 +1558,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tile = new Tile(this, blob, coordinates, spriteNumber);
 			tileMatrix[col][row] = tile;
 			this.blobCollection.addBlobItem(tile);
+			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
 		layer.clearRect( x, y, width, height );
@@ -1779,7 +1784,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	tilePrev = this.tileSelected;
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
-	if((tile && !tile.isCreatureOnly()) && (!this.powerUp.isFireSelected()) ){
+	if(tile && !(tile.isCreatureOnly() || tile.hasSuperFriend()) && !this.powerUp.isFireSelected()){
 		//board.sounds['cannot-select'].play();
 		Galapago.audioPlayer.playInvalidTileSelect();
 		return;
@@ -1977,16 +1982,21 @@ var gameboard = this;
 var x,y;
 _.each(tileMatrix, function(columnArray){
   _.each(columnArray, function(tile){
-          if(tile){
+  		 if(tile){
            y =tile.coordinates[0];
            x=tile.coordinates[1];
-           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain() || tile.hasSuperFriend() ){
+           var key = y+'_'+x;
+  		   restoreLookup[key]= null;
+           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain()){
 		      var originalBlogconfig = originalblogPositions[x][y];
 		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
-			  restoreLookup[y+'_'+x]='11'; 
+			  restoreLookup[key]='11'; 
 			  }else{
-               restoreLookup[y+'_'+x]=originalBlogconfig; 
+               restoreLookup[key]=originalBlogconfig; 
 			  }
+            }
+            else if(tile.hasSuperFriend()){
+            	restoreLookup[key]= tile.blobConfig;
             }
           }
     })
@@ -2248,7 +2258,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 	changedPoints = [];
 	board = this;
 	_.each( tiles, function(tile) {
-		if( tile && tile.isCreatureOnly()) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
+		if( tile && (tile.isCreatureOnly() || tile.hasSuperFriend)) { //YM: tile could have already been nulled by a previous triplet formed by the same creature move
 			loweredPoint = MatrixUtil.lowerPointByNRows(tile.coordinates, numRows);
 			var fallingPoint = board.getFallingPoint(loweredPoint);
 			var spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
@@ -2646,7 +2656,7 @@ Tile.prototype.isCreatureOnly = function()  {
 };
 
 Tile.prototype.hasLightningCreature = function()  {
-	return this.blob.creatureType.startsWith('t');
+	return this.blob.creatureType && this.blob.creatureType.startsWith('t');
 };
 
 Tile.prototype.hasSuperFriend = function()  {
@@ -3212,7 +3222,7 @@ ReshuffleService.prototype.validMoveFound = function() {
 	_.each(tileMatrix, function(columnArray){
 		if(!validMoveFound){
 		  	_.each(columnArray, function(tile){
-		    	if(!validMoveFound && tile && tile.isCreatureOnly()){
+		    	if(!validMoveFound && tile && (tile.isCreatureOnly() || tile.hasSuperFriend())){
 		         	var neighborTile = board.getNeighbor(tile, [0, -1]);
 					validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
 					neighborTile = board.getNeighbor(tile, [0, 1]);
@@ -3229,7 +3239,7 @@ ReshuffleService.prototype.validMoveFound = function() {
 }
 
 ReshuffleService.prototype.checkIfSwapMakesValidMove = function(tileToBeMoved, tileToBeReplaced){
-	if(tileToBeReplaced && tileToBeReplaced.isCreatureOnly()){
+	if(tileToBeReplaced && (tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend())){
  		var tile = new Tile(this, tileToBeMoved.blob, tileToBeReplaced.coordinates, tileToBeMoved.spriteNumber);
  		return this.board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved).length > 0;
  	}
