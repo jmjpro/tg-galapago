@@ -75,16 +75,93 @@
     "Instruction Text" : "Cargando…",
 	"Hot Spots" : "Haz clic aquí para jugar"
   },
-  "Game Menu Screen":{
-      "Option1" : "Seguir jugando",
-	  "Option2" : "Volver al menú principal",
-	  "Option3" : "Partida nueva",
-	  "Option4" : "Cómo se juega",
-	  "Option5" : "Opciones"
+  "Dialog Game Menu":{
+      "Title" : "Menú",
+      "OptionContinuePlaying" : "Seguir jugando",
+	  "OptionMainMenu" : "Volver al menú principal",
+	  "OptionNewGame" : "Partida nueva",
+	  "OptionHowToPlay" : "Cómo se juega",
+	  "OptionOptions" : "Opciones"
   },
   "Dialog Quit": {
    	  "Title" : "La partida se guardará, ¿seguro que quieres salir del juego?",
       "OptionYes" : "Sí",
 	  "OptionNo" : "No"
+  },
+  "Game Tips":{
+		"Cocoon tip1" : "ELIGE LA CRIATURA RESALTADA PARA COMENZAR UNA PARTIDA DE FICHAS POR FLORECER. ¡PARA LIBERARLAS SOLO DEBES HACER QUE COINCIDAN LOS COLORES!",
+		"Cocoon tip2" : "AHORA CÁMBIALAS CON LA CRIATURA RESALTADA JUNTO A ELLA PARA COMPLETAR LA PARTIDA DE FICHAS POR FLORECER."
+  },
+  "Game Over Demo Message":{
+		"TitleGameOver"  :  "FIN DEL JUEGO",
+		"OptionClose"  :  "Cerrar",
+		"LabelDemo"  :  "DEMO"
+
+  },
+  "Game Over Lose Message":{
+		"TitleOutOfTime"  :  "FUERA DE TIEMPO",
+		"MessageRelaxedMode"  :  "JUEGA A TU RITMO EN EL MODO RELAJADO",
+		"ScoreFinal"  :  "PUNTUACIÓN FINAL: <total score gained in this game>",
+		"OptionClose"  :  "Cerrar",
+		"TitleDontGiveUp"  :  "¡NO TE RINDAS, LAS CRIATURAS DE GALAPAGO CUENTAN CONTIGO!",
+		"TitleTryAgain"  :  "¡INTÉNTALO DE NUEVO!",
+		"TitleDontWorry"  :  "¡NO TE PREOCUPES, EL PODER DE GALAPAGO SIEMPRE ESTARÁ CONTIGO!",
+		"TitleTryOneMoreTime"  :  "INTENTA ESE NIVEL UNA VEZ MÁS...",
+		"TitleDontDespair"  :  "¡NO TE DESESPERES, LAS CRIATURAS DE GALAPAGO CONFÍAN EN TI!",
+		"TitleAnotherTry"  :  "PUEDE QUE TENGAS QUE INTENTARLO DE NUEVO, TÚ PUEDES...",
+		"TitleDontLeave"  :  "¡NO TE VAYAS AHORA, LAS COSAS SE ESTÁN PONIENDO INTERESANTES!",
+		"TitleNotForFaintOfHeart"  :  "GALAPAGO NO ES PARA LOS DÉBILES DE CORAZÓN... ¡PRUEBA OTRA VEZ!",
+		"TitleYouCanDo"  :  "¡NO TE PREOCUPES, PUEDES HACERLO!",
+		"TitleCreaturesAreYourSide"  :  "LAS CRIATURAS DE GALAPAGO ESTÁN DE TU PARTE, ¡PUEDES HACERLO!",
+		"TitleShrunkenHeads"  :  "NO TE VAYAS AHORA, LAS CABEZAS REDUCIDAS CUENTAN CONTIGO..."
+  },
+  "Game Over Win Message":{
+		"Title"  :  "¡HAS GANADO!",
+		"congratulation"  :  "¡ENHORABUENA!",
+		"WonMessage"  :  "¡HAS CONSEGUIDO TODAS LAS CRIATURAS MÁGICAS DE GALAPAGO Y LAS HAS ALIMENTADO PARA SIEMPRE! AHORA LA ISLA Y SUS TESOROS TE PERTENECEN, EXPLORA GALAPAGO SIEMPRE QUE QUIERAS.LAS CRIATURAS DE GALAPAGO TE ESTÁN AGRADECIDAS PARA SIEMPRE, Y TE TRAERÁN PAZ Y PROSPERIDAD PARA EL RESTO DE TUS DÍAS.",
+		"FinalScore"  :  "PUNTUACIÓN FINAL: <total score gained in this game>",
+		"OptionClose"  :  "Cerrar"
+  },
+  "Level Won Message":{
+		"Title"  :  "¡NIVEL SUPERADO!",
+		"ScoreLevel"  :  "NIVEL",
+		"ScoreBonusFrenzy"  :  "BONIFICACIONES",
+		"ScoreBonusPoints"  :  "PUNTOS DE BONIFICACIÓN",
+		"ScoreTimeBonus"  :  "BONIFICACIÓN DE TIEMPO",
+		"ScoreLevelScore"  :  "PUNTUACIÓN DE NIVEL",
+		"ScoreScore"  :  "PUNTUACIÓN",
+		"OptionClose"  :  "Cerrar",
+		"Level Won Continue"  :  "¡HAS GANADO! QUE CONTINÚE EL VIAJE...",
+		"Level Won Thank You"  :  "¡LAS CRIATURAS DE GALAPAGO TE DAN LAS GRACIAS!",
+		"Level Won Next Level"  :  "EN EL SIGUIENTE NIVEL TE ESPERAN MÁS CRIATURAS...",
+		"Level Won 21 Magical Creature"  :  "GALAPAGO TIENE 21 CRIATURAS MÁGICAS. ¡CONSÍGUELAS TODAS!",
+		"Level Won Well Done"  :  "¡BIEN HECHO, YA SABES CÓMO MOVERTE POR GALAPAGO!",
+		"Level Won MoreLevels Await"  :  "¡TE ESPERAN MÁS NIVELES, NO TE PARES AHORA!",
+		"Level Won Nicely Played"  :  "¡BIEN JUGADO, ESTÁS DESCUBRIENDO LOS MISTERIOS DE GALAPAGO!",
+		"Level Won Fitting Nicely"  :  "¡PARECE QUE GALAPAGO SE TE DA MUY BIEN!",
+		"Level Won Keep Playing"  :  "¡SIGUE JUGANDO, TODA LA ISLA TE ESPERA!",
+		"Level Won More Beautiful Creature"  :  "TIENES MÁS HERMOSAS CRIATURAS EN EL FUTURO CERCANO...",
+		"Level Won Congrats"  :  "¡ENHORABUENA!",
+		"Level Won Keep Going"  :  "SIGUE ASÍ, PARECE QUE ESTE JUEGO SE TE DA BIEN.",
+		"Level Won Lucky To Have You"  :  "¡LAS CRIATURAS DE GALAPAGO TIENEN SUERTE!"
+  },
+  "Game Screen":{
+		"OptionMenu"  :  "Menú",
+		"OptionQuit"  :  "Salir"
+  },
+  "Reset Warning Dialog":{
+		"Title"  :  "¡ATENCIÓN!",
+		"WarningText"  :  "¡SI REINICIAS EL MAPA SE ELIMINARÁ EL PROGRESO Y COMENZARÁS UNA PARTIDA NUEVA!¿QUIERES REINICIAR EL MAPA?",
+		"OptionNo"  :  "No",
+		"OptionYes"  :  "Sí"
+  },
+  "Map Screen":{
+		"Current Player Name"  :  "¡Hola <Profile Name>!",
+		"Focused Level High Score Indicator"  :  "PUNTOS:",
+		"OptionPlay"  :  "JUGAR",
+		"OptionStartNextLevel"  :  "COMENZAR SIGUIENTE NIVEL",
+		"OptionResetMap"  :  "RESTAURAR MAPA",
+		"OptionMenu"  :  "Menú",
+		"OptionQuit"  :  "Salir"
   }
 }

@@ -76,6 +76,7 @@
 	"Hot Spots" : "Zum Spielen hier klicken"
   },
   "Dialog Game Menu":{
+	  "Title" : "Menü",
       "OptionContinuePlaying" : "Weiterspielen",
 	  "OptionMainMenu" : "Zum Hauptmenü",
 	  "OptionNewGame" : "Neues Spiel",
@@ -86,5 +87,80 @@
    	  "Title" : "Dein Spiel wird gespeichert, willst du das Spiel wirklich verlassen?",
       "OptionYes" : "Ja",
 	  "OptionNo" : "Nein"
+  },
+  "Game Tips":{
+		"Cocoon tip1" : "WÄHLE DAS MARKIERTE TIER, UM EINE KOKONSTEINGRUPPE ZU BEGINNEN. ZUM ENTFERNEN DES KOKONSTEINS MUSST DU NEBEN DEM KOKON EINE GRUPPE IN SEINER FARBE BILDEN!",
+		"Cocoon tip2" : "TAUSCHE IHN NUN MIT DEM MARKIERTEN TIER DANEBEN, UM DIE KOKONSTEINGRUPPE ABZUSCHLIESSEN."
+  },
+  "Game Over Demo Message":{
+		"TitleGameOver"  :  "GAME OVER",
+		"OptionClose"  :  "Schließen",
+		"LabelDemo"  :  "DEMO"
+  },
+  "Game Over Lose Message":{
+		"TitleOutOfTime"  :  "ZEIT ABGELAUFEN",
+		"MessageRelaxedMode"  :  "SPIELE IM ENTSPANNTEN MODUS IN DEINEM EIGENEN TEMPO",
+		"ScoreFinal"  :  "ENDPUNKTZAHL: <total score gained in this game>",
+		"OptionClose"  :  "Schließen",
+		"TitleDontGiveUp"  :  "GIB NICHT AUF, DIE TIERE VON GALAPAGO ZÄHLEN AUF DICH!",
+		"TitleTryAgain"  :  "VERSUCHE ES BITTE NOCH EINMAL!",
+		"TitleDontWorry"  :  "KEINE SORGE, DIE MACHT VON GALAPAGO WIRD MIT DIR SEIN!",
+		"TitleTryOneMoreTime"  :  "PROBIERE DAS LEVEL NOCH EINMAL ...",
+		"TitleDontDespair"  :  "NICHT VERZWEIFELN, DIE TIERE VON GALAPAGO FEUERN DICH AN!",
+		"TitleAnotherTry"  :  "VIELLEICHT BRAUCHST DU NOCH EINEN VERSUCH, ABER DU SCHAFFST ES ...",
+		"TitleDontLeave"  :  "BLEIB BEI UNS, JETZT WIRD ES DOCH GERADE ERST INTERESSANT!",
+		"TitleNotForFaintOfHeart"  :  "GALAPAGO IST NICHTS FÜR SCHWACHE NERVEN ... VERSUCHE ES NOCH EINMAL!",
+		"TitleYouCanDo"  :  "KEINE SORGE, DU SCHAFFST ES!",
+		"TitleCreaturesAreYourSide"  :  "DIE TIERE VON GALAPAGO SIND AUF DEINER SEITE, DU SCHAFFST ES!",
+		"TitleShrunkenHeads"  :  "BLEIB BEI UNS, DIE SCHRUMPFKÖPFE ZÄHLEN AUF DICH ..."
+  },
+  "Game Over Win Message":{
+		"Title"  :  "GEWONNEN!",
+		"congratulation"  :  "GRATULATION!",
+		"WonMessage"  :  "DU HAST ALLE MAGISCHEN TIERE VON GALAPAGO GESAMMELT UND FÜR IMMER BEFREIT! JETZT GEHÖREN DIR DIE INSEL UND IHRE GOLDSCHÄTZE; ERKUNDE GALAPAGO, WANN IMMER DU WILLST.DIE TIERE VON GALAPAGO SIND DIR FÜR IMMER DANKBAR UND WERDEN DIR FÜR IMMER FRIEDEN UND ERFOLG VERSCHAFFEN.",
+		"FinalScore"  :  "ENDPUNKTZAHL: <total score gained in this game>",
+		"OptionClose"  :  "Schließen"
+  },
+  "Level Won Message":{
+		"Title"  :  "LEVEL GEWONNEN!",
+		"ScoreLevel"  :  "LEVEL",
+		"ScoreBonusFrenzy"  :  "BONUSRAUSCH",
+		"ScoreBonusPoints"  :  "BONUSPUNKTE",
+		"ScoreTimeBonus"  :  "ZEITBONUS",
+		"ScoreLevelScore"  :  "LEVELPUNKTZAHL",
+		"ScoreScore"  :  "PUNKTE",
+		"OptionClose"  :  "Schließen",
+		"Level Won Continue"  :  "GEWONNEN! SETZE DEINE REISE FORT ...",
+		"Level Won Thank You"  :  "DIE TIERE VON GALAPAGO DANKEN DIR!",
+		"Level Won Next Level"  :  "MEHR TIERE ERWARTEN DICH IM NÄCHSTEN LEVEL ...",
+		"Level Won 21 Magical Creature"  :  "IN GALAPAGO GIBT ES 21 MAGISCHE TIERE – HOL SIE DIR ALLE!",
+		"Level Won Well Done"  :  "GUT GEMACHT, DU WEISST SCHON, WO ES IN GALAPAGO LANG GEHT!",
+		"Level Won MoreLevels Await"  :  "DICH ERWARTEN WEITERE LEVELS, GIB JETZT NICHT AUF!",
+		"Level Won Nicely Played"  :  "GUT GESPIELT, DU LÜFTEST DIE GEHEIMNISSE VON GALAPAGO.",
+		"Level Won Fitting Nicely"  :  "DU PASST SEHR GUT ZU GALAPAGO!",
+		"Level Won Keep Playing"  :  "SPIELE WEITER, DIE GANZE INSEL ERWARTET DICH!",
+		"Level Won More Beautiful Creature"  :  "IN KÜRZE FINDEST DU WEITERE WUNDERSCHÖNE TIERE ...",
+		"Level Won Congrats"  :  "GRATULATION!",
+		"Level Won Keep Going"  :  "MACH WEITER, DU HAST EIN HÄNDCHEN FÜR DIESES SPIEL.",
+		"Level Won Lucky To Have You"  :  "DIE TIERE VON GALAPAGO SIND FROH, DICH ZU HABEN!"
+  },
+  "Game Screen":{
+	"OptionMenu"  :  "Menü",
+	"OptionQuit"  :  "Beenden"
+  },
+  "Reset Warning Dialog":{
+		"Title"  :  "WARNUNG!",
+		"WarningText"  :  "EIN ZURÜCKSETZEN DER KARTE LÖSCHT DEINEN FORTSCHRITT UND STARTET EIN NEUES SPIEL!MÖCHTEST DU DIE KARTE ZURÜCKSETZEN?",
+		"OptionNo"  :  "Nein",
+		"OptionYes"  :  "Ja"
+  },
+  "Map Screen":{
+		"Current Player Name"  :  "Hallo <Profile Name>!",
+		"Focused Level High Score Indicator"  :  "PUNKTE:",
+		"OptionPlay"  :  "SPIELEN",
+		"OptionStartNextLevel"  :  "NÄCHSTES LEVEL STARTEN",
+		"OptionResetMap"  :  "KARTE ZURÜCKSETZEN",
+		"OptionMenu"  :  "Menü",
+		"OptionQuit"  :  "Beenden"
   }
 }
