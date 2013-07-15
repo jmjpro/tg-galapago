@@ -44,11 +44,11 @@
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight');">Leaderboards</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-medium-hilight');">Level Won</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a> |
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a>
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a>
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a>
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create-init', 'button-medium-hilight');">***Create Profile Initial***</a>
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-list', 'button-huge-hilight');">***Profile List***</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create-init', 'button-medium-hilight');">Create Profile Initial</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-list', 'button-huge-hilight');">Profile List</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-reset-game', 'button-medium-hilight');">Reset Game</a>
 
@@ -257,6 +257,29 @@
 		<ul class="vertical-button-nav">
 			<li id="option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
 			<li id="option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-profile-create-init" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Profile Create Initial.Title">Please enter your name</div>
+	<div class="dialog-content">
+		<img src="res/img/dialogs/Profile name entering from initial state.jpg" width="266" height="279"/>
+		<div id="keypad"></div>
+		<ul class="vertical-button-nav">
+			<li id="option-close" data-i18n="Dialog Profile Create Initial.Close" class="button-medium button-medium-hilight">Close</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-profile-list" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Profile List.Title">Players</div>
+	<div class="dialog-content">
+		<img src="res/img/dialogs/Profile_initialState.jpg" width="266" height="279"/>
+		<ul class="vertical-button-nav">
+			<li id="option-save" data-i18n="Dialog Profile List.Save" class="button-huge button-huge-hilight">Save changes and play<br/>with active player</li>
 		</ul>
 	</div>
 	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->

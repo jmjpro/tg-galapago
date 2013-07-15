@@ -118,6 +118,22 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 			break;
 	};
 };
+DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	switch( navItem[0].id ) {
+		case 'option-close' :
+			this.hide();
+			break;
+	};
+};
+DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	switch( navItem[0].id ) {
+		case 'option-save' :
+			this.hide();
+			break;
+	};
+};
 DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
