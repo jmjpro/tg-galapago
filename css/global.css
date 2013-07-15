@@ -91,7 +91,7 @@ canvas.game-layer {
 	z-index: 1000;
 	font-family: 'JungleFever';
 	font-size: 26px;
-	color: white;
+	color: rgb(255,255,181);
 	white-space: nowrap;
 }
 
@@ -236,7 +236,7 @@ div.dialog-title {
 }
 
 
-li.button-huge {
+.button-huge {
 	background: url('../res/img/dialogs/button_huge_regular.png') no-repeat left top;
 	width: 388px;
 	height: 94px;
@@ -244,11 +244,23 @@ li.button-huge {
 	line-height: 114px;
 }
 
-li.button-huge-hilight {
+.button-huge-hilight {
 	background-image: url('../res/img/dialogs/button_huge_highlight.png');
 }
 
-li.button-medium {
+.button-big {
+	background: url('../res/img/dialogs/button_big_regular.png') no-repeat left top;
+	width: 388px;
+	height: 90px;
+	vertical-align: middle;
+	line-height: 90px;
+}
+
+.button-big-hilight {
+	background-image: url('../res/img/dialogs/button_big_highlight.png');
+}
+
+.button-medium {
 	background: url('../res/img/dialogs/button_medium_regular.png') no-repeat left top;
 	width: 190px;
 	height: 81px;
@@ -256,11 +268,11 @@ li.button-medium {
 	line-height: 81px;
 }
 
-li.button-medium-hilight {
+.button-medium-hilight {
 	background-image: url('../res/img/dialogs/button_medium_highlight.png');
 }
 
-li.button-small {
+.button-small {
 	background: url('../res/img/dialogs/button_small_regular.png') no-repeat left top;
 	width: 140px;
 	height: 102px;
@@ -268,13 +280,14 @@ li.button-small {
 	line-height: 102px;
 }
 
-li.button-small-hilight {
+.button-small-hilight {
 	background-image: url('../res/img/dialogs/button_small_highlight.png');
 }
 
 ul.vertical-button-nav {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
+	text-align: center;
 }
 
 ul.vertical-button-nav > li {
@@ -353,6 +366,117 @@ div.main-menu-button-hilight {
 
 #click-here {
 	display: inline;
+}
+
+#dialog-game-over {
+	background: url('../res/img/dialogs/bg_small.png') no-repeat left top;
+	width: 717px;
+	height: 247px;
+	left: 282px; /*(1280-717/2)*/
+	top: 236px; /*(720-247/2)*/
+}
+
+#dialog-leaderboards {
+	background: url('../res/img/dialogs/bg_large.png') no-repeat left top;
+	width: 1081px;
+	height: 625px;
+	left: 100px; /*(1280-1081/2)*/
+	top: 48px; /*(720-625/2)*/
+}
+
+#dialog-leaderboards div.dialog-content {
+	width: 900px;
+}
+
+#dialog-leaderboards div.dialog-content table {
+	display: inline-block;
+	color: rgb(13,97,133);
+	text-align: center;
+	background: url('../res/img/dialogs/drop_down_menu.png') no-repeat left top;
+	background-size: cover;	
+}
+
+#dialog-leaderboards div.dialog-content table>caption {
+	color: rgb(255,255,181);
+	height: 75px;
+}
+
+#dialog-leaderboards div.dialog-content table th {
+	color: rgb(140,122,46);
+}
+
+#dialog-time-out {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+}
+
+#dialog-time-out div.dialog-content {
+ 	width: 500px;
+}
+
+#dialog-you-won {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+}
+
+#dialog-you-won div.dialog-content {
+ 	width: 500px;
+}
+
+#dialog-you-won div.dialog-content p {
+ 	font-size: 16pt;
+}
+
+span#final-score {
+	color: rgb(244,210,113);
+}
+
+#dialog-loading {
+	background: url('../res/img/dialogs/bg_small_noTitle.png') no-repeat left top;
+	width: 543px;
+	height: 268px;
+	left: 368px;
+	top: 220px;
+}
+
+#dialog-new-game {
+	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
+	width: 717px;
+	height: 590px;
+	left: 282px; /*(1280-717/2)*/
+	top: 65px; /*(720-590/2)*/
+}
+
+#dialog-enter-profile {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+}
+
+#dialog-enter-profile .dialog-title {
+	top: 35px;
+	left: 20px;
+}
+
+.profile-name {
+	background: url('../res/img/dialogs/profiles_name_area.png') no-repeat left top;
+	width: 280px;
+	height: 48px;
+	border: none;
+}
+
+#keypad {
+	background: url('../res/img/dialogs/keyboard/keypad_regular.png') no-repeat left top;
+	width: 376px;
+	height: 238px;
 }
 .bubbleTip{
 	width:700px;

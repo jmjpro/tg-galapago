@@ -1,4 +1,8 @@
 DialogMenu.SELECT_HANDLERS = [];
+DialogMenu.SELECT_HANDLERS['dialog-enter-profile'] = function(dialogMenu) {
+	Galapago.profile = $('#dialog-enter-profile').find('.profile-name')[0].value;
+	this.hide();
+};
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
@@ -55,6 +59,38 @@ DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
 	//show map screen;
+};
+DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	this.hide();
+	//show map screen;
+};
+DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	this.hide();
+	//show map screen;
+};
+DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	this.hide();
+	//show map screen;
+};
+DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	this.hide();
+	//show map screen;
+};
+DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	switch( navItem[0].id ) {
+		case 'option-yes' :
+			this.hide();
+			console.log("starting new game");
+			break;
+		case 'option-no' :
+			this.hide();
+			break;
+	};
 };
 
 function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, selectHandler) {

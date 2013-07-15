@@ -3,10 +3,12 @@
 	<link rel="stylesheet" type="text/css" href="css/global.css"/>
 	<script src="ext/zepto-1.0.min.js"></script>
 	<!--script src="js/mapScreen.js"></script-->
-	<!--script src="js/dialogQuit.js"></script-->
+	<!--script src="js/ alogQuit.js"></script-->
 	<script src="ext/i18next-1.6.3.min.js"></script>
 	<script src="js/dialogMenu2.js"></script>
 	<script>
+	var Galapago = "";
+
 	function loadGame() {
 		i18n.init({ lng: 'en' , fallbackLng: 'en'});
 		var testClass = new TestClass();
@@ -33,7 +35,16 @@
 <!--body onload="mapScreen = new MapScreen(); mapScreen.registerEventHandlers();"-->
 <!--body onload="dialogQuit = new DialogQuit();"-->
 <body onLoad="loadGame()" style="text-align: center; ">
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Show Quit Dialog</a> | <a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Show Game Menu Dialog </a> | <a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-hilight');">Show Level Won Dialog</a>
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-enter-profile', 'keypad_cursor_letter');">Enter Profile</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-medium-hilight');">Level Won</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight');">Leaderboards</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-you-won', 'button-medium-hilight');">You Won</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a> |
+<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a>
 <div id="test-layer" style="z-index: -1; width: 100%; height: 100%; background: url(res/img/map-screen/Map.jpg)"></div>
 
 <ul id="map-nav">
@@ -44,9 +55,18 @@
 <li><img id="start-map" class="nav-button" src="res/img/map-screen/button_start_map.png"/></li>
 </ul>
 
+<div id="dialog-enter-profile" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Please enter<br/>your name</div>
+	<div class="dialog-content">
+		<input class="profile-name" type="text"/>
+		<div id="keypad"></div>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
 <div id="dialog-quit" class="overlay2">
 	<div class="dialog-content">
-		<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
+		<span data-i18n="Dialog Quit.BodyText" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
 		<ul class="vertical-button-nav">
 			<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
 			<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge">No</li>
@@ -83,6 +103,120 @@
 		</table>
 		<ul class="vertical-button-nav">
 			<li id="option-close" data-i18n="Dialog Level Won.OptionClose" class="button-medium button-medium-hilight">Close</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-game-over" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Game Over.Title">Game Over</div>
+	<div class="dialog-content">
+		<ul class="vertical-button-nav">
+			<li id="option-close" data-i18n="Dialog Game Over.OptionClose" class="button-medium button-medium-hilight">Close</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-leaderboards" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Leaderboards.Title">Top Scores</div>
+	<div class="dialog-content">
+		<!--div class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</div-->
+		<table>
+			<caption class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</caption>
+			<thead>
+				<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>1</td><td>Yaely</td><td>45367</td></tr>
+				<tr><td>2</td><td>Anat</td><td>34897</td></tr>
+				<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+			</tbody>
+		</table>
+		<table>
+			<caption class="button-big" data-i18n="Dialog Leaderboards.Relaxed">Relaxed</caption>
+			<thead>
+				<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>1</td><td>Yaely</td><td>95367</td></tr>
+				<tr><td>2</td><td>Anat</td><td>64897</td></tr>
+				<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+			</tbody>
+		</table>
+		<ul class="vertical-button-nav">
+			<li id="option-close" data-i18n="Dialog Leaderboards.OptionClose" class="button-big button-big-hilight">Back to main menu</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-time-out" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
+	<div class="dialog-content">
+		<span data-i18n="Dialog Time Out.BodyText">
+			<p>Don't despair, Galapago's creatures are rooting for you!<p/>
+			<p>Play at your own pace in relaxed mode<p/>
+			<p>Final Score: <span id="final-score">43200</span><p/>
+		</span>
+		<ul class="vertical-button-nav">
+			<li id="option-close" data-i18n="Dialog Time Out.OptionClose" class="button-medium button-medium-hilight">Close</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-you-won" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog You Won.Title">You Won!</div>
+	<div class="dialog-content">
+		<span data-i18n="Dialog You Won.BodyText">
+			Congratulations!<br/>
+			You've collected all of Galapago's
+			magical creatures and freed them forever! Now the island and its
+			golden treasures belong to you;
+			explore Galapago whenever you like.<br/>
+			The creatures of Galapago are forever grateful to you, and will bring
+			peace and prosperity for the rest of your days.<br/>
+			Final Score: <span id="final-score">43200</span>
+		</span>
+		<ul class="vertical-button-nav">
+			<li id="option-close" data-i18n="Dialog Time Out.OptionClose" class="button-medium button-medium-hilight">Close</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-loading" class="overlay2">
+	<div class="dialog-content">
+		<span data-i18n="Dialog You Won.BodyText">
+			Loading...
+		</span>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-new-game" class="overlay2">
+	<div class="dialog-content">
+		<span data-i18n="Dialog New Game.BodyText">
+			Do you want to start a new game?
+		</span>
+		<ul class="vertical-button-nav">
+			<li id="option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
+			<li id="option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
 		</ul>
 	</div>
 	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
