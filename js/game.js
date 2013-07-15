@@ -1962,6 +1962,8 @@ _.each(tileMatrix, function(columnArray){
            if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
               tile.clear();
 			  window.onkeydown=null;
+			  $('#final-score').html(gameboard.score);
+			  new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
             }
           }
     })

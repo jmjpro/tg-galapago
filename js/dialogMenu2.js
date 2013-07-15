@@ -73,6 +73,8 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+	dialogMenu.callingClass.level.cleanUp();
+    dialogMenu.callingClass.level.showLevelMap();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
