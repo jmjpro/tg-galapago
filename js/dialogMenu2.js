@@ -1,6 +1,6 @@
 DialogMenu.SELECT_HANDLERS = [];
-DialogMenu.SELECT_HANDLERS['dialog-enter-profile'] = function(dialogMenu) {
-	Galapago.profile = $('#dialog-enter-profile').find('.profile-name')[0].value;
+DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
+	Galapago.profile = $('#dialog-profile-create').find('.profile-name')[0].value;
 	this.hide();
 };
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
@@ -92,6 +92,44 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			break;
 	};
 };
+DialogMenu.SELECT_HANDLERS['dialog-game-options'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	switch( navItem[0].id ) {
+		case 'option-confirm' :
+			this.hide();
+			console.log("changed game options to ...");
+			break;
+		case 'option-cancel' :
+			this.hide();
+			break;
+	};
+};
+DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	var profile = '';
+	switch( navItem[0].id ) {
+		case 'option-yes' :
+			console.log( 'deleting profile ' + profile );
+			this.hide();
+			//delete profile from local storage			
+			break;
+		case 'option-no' :
+			this.hide();
+			break;
+	};
+};
+DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
+	var navItem = dialogMenu.currentNavItem;
+	switch( navItem[0].id ) {
+		case 'option-no' :
+			this.hide();
+			break;
+		case 'option-yes' :
+			console.log("reset game");
+			this.hide();
+			break;
+	};
+};
 
 function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, selectHandler) {
 	this.callingScreen = $('#' + callingScreenId);
@@ -140,14 +178,16 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			break;
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
-				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev());
+				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
+				console.debug(dialogMenu.currentNavItem[0]);
 			}
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < dialogMenu.dialogNav.children().length - 1 ) {
-				dialogMenu.setNavItem(dialogMenu.currentNavItem.next());
+				dialogMenu.setNavItem(dialogMenu.currentNavItem.next('li'));
+				console.debug(dialogMenu.currentNavItem[0]);
 			}
 			evt.stopPropagation();
 			evt.preventDefault();

@@ -8,6 +8,7 @@
 	<script src="js/dialogMenu2.js"></script>
 	<script>
 	var Galapago = "";
+	var dialogMenu;
 
 	function loadGame() {
 		i18n.init({ lng: 'en' , fallbackLng: 'en'});
@@ -35,16 +36,22 @@
 <!--body onload="mapScreen = new MapScreen(); mapScreen.registerEventHandlers();"-->
 <!--body onload="dialogQuit = new DialogQuit();"-->
 <body onLoad="loadGame()" style="text-align: center; ">
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-enter-profile', 'keypad_cursor_letter');">Enter Profile</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-medium-hilight');">Level Won</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight');">Leaderboards</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-you-won', 'button-medium-hilight');">You Won</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a> |
-<a href="#" onclick="new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create', 'keypad_cursor_letter');">Create Profile</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-you-won', 'button-medium-hilight');">You Won</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight');">Leaderboards</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-medium-hilight');">Level Won</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create-init', 'button-medium-hilight');">***Create Profile Initial***</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-list', 'button-huge-hilight');">***Profile List***</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-reset-game', 'button-medium-hilight');">Reset Game</a>
+
 <div id="test-layer" style="z-index: -1; width: 100%; height: 100%; background: url(res/img/map-screen/Map.jpg)"></div>
 
 <ul id="map-nav">
@@ -55,7 +62,7 @@
 <li><img id="start-map" class="nav-button" src="res/img/map-screen/button_start_map.png"/></li>
 </ul>
 
-<div id="dialog-enter-profile" class="overlay2">
+<div id="dialog-profile-create" class="overlay2">
 	<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Please enter<br/>your name</div>
 	<div class="dialog-content">
 		<input class="profile-name" type="text"/>
@@ -217,6 +224,54 @@
 		<ul class="vertical-button-nav">
 			<li id="option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
 			<li id="option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-game-options" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Game Options.Title">Options</div>
+	<div class="dialog-content">
+		<ul class="vertical-button-nav">
+			<li id="button-game-tips" class="button-big" data-i18n="Dialog Game Options.GameTips">Game tips</li><div id="button-off" class="button-medium" data-i18n="Dialog Game Options.Off">Off</div>
+			<li class="button-big" data-i18n="Dialog Game Options.Language">Language - English</li>
+			<ul class="galapago-drop-down">
+				<li>English</li>
+				<li>French</li>
+				<li>German</li>
+				<li>Russian</li>
+				<li>Spanish</li>
+			</ul>
+			<li id="option-confirm" data-i18n="Dialog Game Options.Confirm" class="button-medium button-medium-hilight">Confirm</li>
+			<li id="option-cancel" data-i18n="Dialog Game Options.Cancel" class="button-medium">Cancel</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-profile-delete" class="overlay2">
+	<div class="dialog-content">
+		<span data-i18n="Dialog New Game.BodyText">
+			Are you sure you want to delete this player?
+		</span>
+		<ul class="vertical-button-nav">
+			<li id="option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
+			<li id="option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-reset-game" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
+	<div class="dialog-content">
+		<span data-i18n="Dialog Reset Game.Body Text">
+			<p>Resetting the map will erase your progress and and will start a new game!</p>
+			<p>Do you wish to reset the map?</p>
+		</span>
+		<ul class="vertical-button-nav">
+			<li id="option-no" data-i18n="Dialog Reset Game.No" class="button-medium button-medium-hilight">No</li>
+			<li id="option-yes" data-i18n="Dialog Reset Game.Yes" class="button-medium">Yes</li>
 		</ul>
 	</div>
 	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
