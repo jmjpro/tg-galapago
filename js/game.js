@@ -1768,23 +1768,38 @@ Board.prototype.setComplete = function() {
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
+		$('#level').html(this.score);
 	    Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.gameMode === 'MODE_TIMED') {
-		 var timeleft = this.level.dangerBar.timeRemainingMs;
-		 this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
+			var timeleft = this.level.dangerBar.timeRemainingMs;
+			$('#timeBonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
+			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 		}
 		this.drawScore();
 		this.level.isCompleted = true;
-		localStorage.setItem("level"+this.level.id + ".completed" , true);
-		levelHighestScore = localStorage.getItem("level"+this.level.id);
+		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id + ".completed" , true);
+		levelHighestScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore");
+		var totalScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+".totalScore");
+		if(totalScore){
+			totalScore=Number(totalScore)+this.score;
+			localStorage.setItem(Galapago.gameMode+Galapago.profile+".totalScore" , totalScore);
+		}else{
+			totalScore=this.score;
+			localStorage.setItem(Galapago.gameMode+Galapago.profile+".totalScore" , totalScore);
+		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			localStorage.setItem("level"+this.level.id , this.score);
+			localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore" , this.score);
 		}
 		else if(!levelHighestScore){
-			localStorage.setItem("level"+this.level.id , this.score);
+			localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore" , this.score);
 		}
-		this.level.won();
+		$('#bonusFrenzy').html(this.bonusFrenzy.getScore());
+		$('#bonusPoints').html(Score.BONUS_FRENZY_CREATURE_POINTS  * this.bonusFrenzy.getScore());
+		$('#levelScore').html(this.score);
+		$('#score').html(totalScore);
+		new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');
+		
 	}
 }
 

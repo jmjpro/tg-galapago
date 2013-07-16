@@ -111,25 +111,6 @@
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
-
-		<div id="dialog-level-won" class="overlay2">
-			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
-			<div class="dialog-content">
-				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
-				<table>
-					<tr><th>Level</th><td>20800</td></tr>
-					<tr><th>Bonus Frenzy</th><td>27</td></tr>
-					<tr><th>Bonus Points</th><td>6750</td></tr>
-					<tr><th>Time Bonus</th><td>35771</td></tr>
-					<tr><th>Level Score</th><td>90442</td></tr>
-					<tr><th>Score</th><td>1344154</td></tr>
-				</table>
-				<ul class="vertical-button-nav">
-					<li id="option-close" data-i18n="Dialog Level Won.OptionClose" class="button-medium button-medium-hilight">Close</li>
-				</ul>
-			</div>
-			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-		</div>
 		
 		<div id="dialog-time-out" class="overlay2">
 			<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
@@ -146,8 +127,26 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
+		<div id="dialog-level-won" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
+			<div class="dialog-content">
+				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
+				<table>
+					<tr><th>Level</th><td id="level"></td></tr>
+					<tr><th>Bonus Frenzy</th><td id="bonusFrenzy"></td></tr>
+					<tr><th>Bonus Points</th><td id="bonusPoints"></td></tr>
+					<tr><th>Time Bonus</th><td id="timeBonus"></td></tr>
+					<tr><th>Level Score</th><td id="levelScore"></td></tr>
+					<tr><th>Score</th><td id="score"></td></tr>
+				</table>
+				<ul class="vertical-button-nav">
+					<li id="option-close" data-i18n="Dialog Level Won.OptionClose" class="button-medium button-medium-hilight">Close</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
 		<div id="bubbleTip" class="bubbleTip">
-		 
 		</div>
 
 	</body>
