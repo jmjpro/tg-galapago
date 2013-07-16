@@ -2236,7 +2236,7 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 		if(verticalPointsSet.length > 0){
 			emptyPoints = [];
 			pointsAbove = MatrixUtil.getNeighborsAbovePoints(verticalPointsSet);
-			board.removeTiles(board.getCreatureTilesFromPoints(verticalPointsSet));
+			//board.removeTiles(board.getCreatureTilesFromPoints(verticalPointsSet));
 			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
 			changedPoints = board.lowerTiles(tilesAbove, verticalPointsSet.length);
 			changedPointsArray = changedPointsArray.concat(changedPoints);
@@ -2276,6 +2276,7 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 			//Falling tile..Add plain tile so that it keeps falling
 			if(loweredPoint != fallingPoint){
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
+				board.addTile(loweredPoint, 'CREATURE', null, spriteNumber);
 			}
 			tile.clear();
 			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
@@ -2304,12 +2305,12 @@ Board.prototype.getFallingPoint = function(loweredPoint) {
 	}
 	else{
 		//If current point is plain check down and left
-		if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
+		//if((this.creatureTileMatrix[loweredPoint[0]][loweredPoint[1]]).isPlain()){
 			return this.getLeftRightFallingPoint(loweredPoint, col, row);				
-		}
-		else{
-			return loweredPoint;
-		}
+		//}
+		//else{
+		//	return loweredPoint;
+		//}
 	} 
 }; //Board.prototype.getFallingPoint()
 
