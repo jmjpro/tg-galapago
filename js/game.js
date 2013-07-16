@@ -1782,7 +1782,11 @@ Board.prototype.setComplete = function() {
 		levelHighestScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore");
 		var totalScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+".totalScore");
 		if(totalScore){
-			totalScore=Number(totalScore)+this.score;
+			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
+				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
+			}else{
+				totalScore=Number(totalScore)+this.score
+			}
 			localStorage.setItem(Galapago.gameMode+Galapago.profile+".totalScore" , totalScore);
 		}else{
 			totalScore=this.score;
