@@ -178,7 +178,6 @@ DialogMenu.prototype.close = function() {
 	  window.onkeydown = this.windowKeyHandler;
 	}
 	this.callingScreen.removeClass('transparent');
-	this = null;
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.setNavItem = function(item) {
