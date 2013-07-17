@@ -165,6 +165,17 @@ Galapago.printLevelConfigs = function (levelConfigs) {
 		console.debug( levelConfig.toString() );
 	});
 };
+
+Galapago.delay = function(delayMs) {
+	var deferred;
+	deferred = Q.defer();
+	
+	//this.creatureLayer.draw();
+	Q.delay(delayMs).done(function() {
+		deferred.resolve();
+	});
+	return deferred.promise;
+};
 /* end class Galapago */
 
 LevelMap.WIDTH = 1280;
@@ -3272,7 +3283,7 @@ if (typeof String.prototype.startsWith !== 'function') {
 }
 
 
-ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 5000;
+ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
 function ReshuffleService(board){
 	this.board = board;
 	this.reshuffleInterval = null;
@@ -3281,10 +3292,17 @@ function ReshuffleService(board){
 ReshuffleService.prototype.start = function() {
 	var reshuffleService = this;
 	this.reshuffleInterval = setInterval(function(){
-		if(!reshuffleService.board.powerUp.isPowerAchieved() && !reshuffleService.validMoveFound()){
+		var validMoveFound = reshuffleService.validMoveFound();
+		var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
+		if(powerActive && !validMoveFound){
+			Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
+		}
+		if(!powerActive && !validMoveFound){
+			Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
 			Galapago.audioPlayer.playReshuffle();
 			reshuffleService.board.shuffleBoard();
 			console.log("reshuffled");
+			Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip()});;
 		}
 	}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
 }
