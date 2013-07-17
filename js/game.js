@@ -1804,7 +1804,12 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html(Score.BONUS_FRENZY_CREATURE_POINTS  * this.bonusFrenzy.getScore());
 		$('#levelScore').html(this.score);
 		$('#score').html(totalScore);
-		new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');
+		if(levelHighestScore){
+			new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');
+		}else{
+		   $('#finalScore').html(totalScore);
+		   new DialogMenu('layer-power-up', this, 'dialog-you-won', 'button-medium-hilight');
+		}
 		
 	}
 }
@@ -2038,7 +2043,11 @@ _.each(tileMatrix, function(columnArray){
               tile.clear();
 			  window.onkeydown=null;
 			  $('#final-score').html(gameboard.score);
-			  new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			  if(sdkApi.inDemoMode()){
+					new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			  }else{
+					new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			  }
             }
           }
     })
