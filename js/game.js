@@ -1445,12 +1445,14 @@ Board.prototype.build = function(tilePositions) {
 			}
 			if( typeof cellObject.blocking != 'undefined' ) {
 				spriteNumber = Tile.BLOCKED_TILE_SPRITE_NUMBER;
-				this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
+				var tile = this.addTile(coordinates, 'CREATURE', cellObject.blocking, spriteNumber);
+				tile.blobConfig = cellId;
 				//console.debug('TODO implement add blocking tile at ' + MatrixUtil.coordinatesToString(coordinates) );
 			}
 			if( typeof cellObject.cocoon != 'undefined' ) {
 				spriteNumber = Tile.COCOONED_TILE_SPRITE_NUMBER;
-				this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
+				var tile = this.addTile(coordinates, 'CREATURE', cellObject.cocoon, spriteNumber);
+				tile.blobConfig = cellId;
 			}
 			if( typeof cellObject.superFriend != 'undefined' ) {
 				var tile = this.addTile(coordinates, 'SUPER_FRIEND', cellObject.superFriend);
@@ -1833,19 +1835,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						dangerBar.resume();
 					}
 					if( board.scoreEvents.length > 0 ) {
-						board.updateScore();
-						if(board.collectionModified || board.powerAchieved){
-						   board.saveBoard();
-						   board.collectionModified = false;
-						}
-						if( board.blobCollection.isEmpty()){
-							board.setComplete();
-						}else{
-							//reset grid lines and active tile
-							board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-							board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-							board.tileActive.setActiveAsync().done();
-						}
+						board.updateScoreAndCollections(tileCoordinates);
 					}
 					else if(!board.powerUp.isFlipFlopSelected()) {
 						Galapago.audioPlayer.playInvalidSwap();
@@ -1910,19 +1900,7 @@ Board.prototype.handleTileSelect = function(tile) {
 			dangerBar.resume();
 		}
 		if( board.scoreEvents.length > 0 ) {
-				board.updateScore();
-				if(board.collectionModified || board.powerAchieved){
-					board.saveBoard();
-					board.collectionModified = false;
-				}
-				if( board.blobCollection.isEmpty()){
-					board.setComplete();
-				}else{
-					//reset grid lines and active tile
-					board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-					board.tileActive = board.getCreatureTilesFromPoints( [tileCoordinates] )[0];
-					board.tileActive.setActiveAsync().done();
-				}
+			board.updateScoreAndCollections(tileCoordinates);
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
@@ -1935,20 +1913,98 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 }; //Board.prototype.handleTileSelect
 
+Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
+	var board = this;
+	board.updateScore();
+	if(board.collectionModified || board.powerAchieved){
+	   board.saveBoard();
+	   board.collectionModified = false;
+	}
+	if( board.blobCollection.isEmpty()){
+		board.setComplete();
+	}else{
+		//reset grid lines and active tile
+		board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+		board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
+		board.tileActive.setActiveAsync().done();
+	}
+}
+
 Board.prototype.shuffleBoard = function() {
-var tileMatrix = this.creatureTileMatrix;
-var board= this;
-board.level.levelAnimation.stopAllAnimations();
-_.each(tileMatrix, function(columnArray){
-  _.each(columnArray, function(tile){
-       if(tile && tile.isCreatureOnly()){
-          board.addTile(tile.coordinates, 'CREATURE', null,Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
-        }
-    });
-  });
-  var coords = board.tileActive.coordinates; 
-  board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
-  board.tileActive.setActiveAsync().done();
+	var tileMatrix = this.creatureTileMatrix;
+	var board= this;
+	var coordinatesToActivate = board.tileActive.coordinates;
+	board.level.levelAnimation.stopAllAnimations();
+	var dangerBar= board.level.dangerBar;
+	if(dangerBar){
+		dangerBar.pause();
+	}
+	var originalLockedTiles = []
+	var changedPointsArray =[];
+	for (var col = tileMatrix.length - 1; col > 0; col--) {
+		for (var row = tileMatrix[col].length - 1; row > 0; row--) {
+	        var tile = tileMatrix[col][row];
+	        if(tile && !tile.isPlain()){
+	        	var coordinates, temp, fallingPoint, fallingPointOther;
+	        	changedPointsArray.push(tile.coordinates);
+	        	fallingPoint = null;
+	        	do{
+			        var randomIt = Math.floor(Math.random() * ((col * tileMatrix[col].length) + row + 1));
+			        var newCol = Math.floor(randomIt/tileMatrix[col].length);
+			        var newRow = randomIt%tileMatrix[col].length;
+			        temp = tileMatrix[newCol][newRow];
+			    }while(!temp || temp.isPlain())
+			    var handled = board.handleLockedTilesForShuffle(tile, temp, changedPointsArray, originalLockedTiles);
+			    handled = board.handleLockedTilesForShuffle(temp, tile, changedPointsArray, originalLockedTiles) || handled;
+			    if(!handled){
+			    	coordinates = temp.coordinates;
+			    	board.addTile(tile.coordinates, null, null, null, temp);
+			    	board.addTile(coordinates, null, null, null, tile);
+			    }	    
+		    }
+    	}
+    }
+    if(originalLockedTiles.length){
+    	originalLockedTiles = _.filter(originalLockedTiles, function(tile){
+    		var tileAbove = tileMatrix[tile.coordinates[0]][tile.coordinates[1] - 1];
+    		if(tileAbove && !tileAbove.isPlain()){
+    			return true;
+    		}
+    		return false;
+    	});
+    	var otherChangedPointsArray = board.lowerTilesAbove(Board.getVerticalPointsSets([originalLockedTiles]));
+    	changedPointsArray = changedPointsArray.concat(otherChangedPointsArray);
+    }
+
+	board.handleChangedPointsArray(changedPointsArray);
+	if(dangerBar){
+		dangerBar.resume();
+	}
+	if( board.scoreEvents.length > 0 ) {
+		board.updateScoreAndCollections(coordinatesToActivate);
+	} 
+  	var coords = board.tileActive.coordinates; 
+  	board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
+  	board.tileActive.setActiveAsync().done();
+}
+
+Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPointsArray, originalLockedTiles) {
+	var board = this;
+	var fallingPoint = null;
+	var coordinates = temp.coordinates;
+	if((tile.isBlocked() || tile.isCocooned()) && (!temp.isBlocked() && !temp.isCocooned())){
+    	fallingPoint = board.getFallingPoint(tile.coordinates);
+    }
+    if(fallingPoint && tile.coordinates != fallingPoint){
+    	changedPointsArray.push(fallingPoint);
+    	board.addTile(fallingPoint, null, null, null, temp);
+    	var originalLockedTile = board.addTile(tile.coordinates, 'CREATURE', null, Tile.PLAIN_TILE_SPRITE_NUMBER);
+    	originalLockedTile.clear;
+    	originalLockedTiles.push(originalLockedTile);
+    	board.addTile(coordinates, null, null, null, tile);
+    	return true;
+   }
+   return false;
 }
 
 Board.prototype.dangerBarEmptied = function() {
@@ -1981,7 +2037,7 @@ _.each(tileMatrix, function(columnArray){
            x=tile.coordinates[1];
            var key = y+'_'+x;
   		   restoreLookup[key]= null;
-           if(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned() || tile.isPlain()){
+           if(gameboard.getGoldTile(tile) || tile.isPlain()){
 		      var originalBlogconfig = originalblogPositions[x][y];
 		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
 			  restoreLookup[key]='11'; 
@@ -1989,7 +2045,7 @@ _.each(tileMatrix, function(columnArray){
                restoreLookup[key]=originalBlogconfig; 
 			  }
             }
-            else if(tile.hasSuperFriend()){
+            else if(tile.hasSuperFriend() || tile.isBlocked() || tile.isCocooned()){
             	restoreLookup[key]= tile.blobConfig;
             }
           }
