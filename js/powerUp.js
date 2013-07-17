@@ -170,6 +170,7 @@ Powerup.prototype.powerUsed = function(){
 }
 
 Powerup.prototype.handleSelect = function(){
+	Galapago.bubbleTip.clearBubbleTip();
 	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){
 		this.powerSelected = Powerup.FLIPFLOP_SELECTED;
 		this.drawFlipFlop(Powerup.POWER_PRESSED);
