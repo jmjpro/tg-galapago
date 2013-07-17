@@ -1,17 +1,17 @@
 DialogMenu.SELECT_HANDLERS = [];
 DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
 	Galapago.profile = $('#dialog-profile-create').find('.profile-name')[0].value;
-	this.close();
+	this.hide();
 };
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-yes' :
-			this.close();
+			this.hide();
 			Galapago.levelMap.quit();
 			break;
 		case 'option-no' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -19,7 +19,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-continue-playing' :
-			this.close();
+			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
 			dialogMenu.callingClass.display();
@@ -28,26 +28,26 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			}
 			break;
 		case 'option-main-menu' :
-			this.close();
+			this.hide();
 			dialogMenu.callingClass.level.quit();
 			console.debug('option-main-menu');
 			break;
 		case 'option-new-game' :
-			this.close();
+			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
 			dialogMenu.callingClass.display();
 			console.debug('option-new-game');
 			break;
 		case 'option-how-to-play' :
-			this.close();
+			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
 			dialogMenu.callingClass.display();
 			console.debug('option-how-to-play');
 			break;
 		case 'option-options' :
-			this.close();
+			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
 			dialogMenu.callingClass.display();
@@ -57,30 +57,30 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
-	this.close();
+	this.hide();
 	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
-	this.close();
+	this.hide();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
-	this.close();
+	this.hide();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
-	this.close();
+	this.hide();
 	dialogMenu.callingClass.level.cleanUp();
     dialogMenu.callingClass.level.showLevelMap();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
-	this.close();
+	this.hide();
 
 	//show map screen;
 };
@@ -88,11 +88,11 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-yes' :
-			this.close();
+			this.hide();
 			console.log("starting new game");
 			break;
 		case 'option-no' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -100,11 +100,11 @@ DialogMenu.SELECT_HANDLERS['dialog-game-options'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-confirm' :
-			this.close();
+			this.hide();
 			console.log("changed game options to ...");
 			break;
 		case 'option-cancel' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -114,11 +114,11 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 	switch( navItem[0].id ) {
 		case 'option-yes' :
 			console.log( 'deleting profile ' + profile );
-			this.close();
+			this.hide();
 			//delete profile from local storage			
 			break;
 		case 'option-no' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -126,7 +126,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) 
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-close' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -134,7 +134,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-save' :
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -142,11 +142,11 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-no' :
-			this.close();
+			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
-			this.close();
+			this.hide();
 			break;
 	};
 };
@@ -169,7 +169,7 @@ DialogMenu.prototype.show = function() {
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
-DialogMenu.prototype.close = function() {
+DialogMenu.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.dialogMenuDOM.css('display', 'none');
 	if(this.callingClass.registerEventHandlers){
