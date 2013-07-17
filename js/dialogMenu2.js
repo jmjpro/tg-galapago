@@ -58,6 +58,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
@@ -73,11 +74,14 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+	dialogMenu.callingClass.level.cleanUp();
+    dialogMenu.callingClass.level.showLevelMap();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
