@@ -531,6 +531,31 @@ ul.galapago-drop-down {
 	display: inline-block;
 }
 
+#dialog-profile-create-init
+ {
+	background: url('../res/img/dialogs/bg_large.png') no-repeat left top;
+	width: 1081px;
+	height: 625px;
+	left: 100px; /*(1280-1081/2)*/
+	top: 48px; /*(720-625/2)*/
+}
+
+#dialog-profile-list {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+	font-size: 18px;
+}
+
+#dialog-profile-list #option-save {
+	height: 150px;
+	background-size: 388px 150px;
+	line-height: 27px;
+	padding-top: 45px;
+}
+
 #dialog-reset-game {
 	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
 	width: 717px;
