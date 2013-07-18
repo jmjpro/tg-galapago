@@ -9,9 +9,11 @@ BubbleTip.prototype.showBubbleTip = function (text) {
 	} 
 }
 
-BubbleTip.prototype.clearBubbleTip = function () {
-this.content="";
-this.hideBubbleTip();
+BubbleTip.prototype.clearBubbleTip = function (text) {
+	if(!text || this.content == text){
+		this.content="";
+		this.hideBubbleTip();
+	}
 }
 
 BubbleTip.prototype.hideBubbleTip = function () {
