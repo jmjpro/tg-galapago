@@ -203,6 +203,7 @@ function LevelAnimation(layer){
 	this.bombParentAnimationInterval = null;
 	this.gameStartArrowAnimation = null;
 	this.nextLevelArrowAnimatios = null;
+	this.makeMatchAnimation = null;
 }
 
 LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
@@ -463,6 +464,19 @@ LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arr
 	nextLevelArrowAnimation.start();
 }
 
+LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
+	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile);
+	this.makeMatchAnimation = makeMatchAnimation;
+	makeMatchAnimation.start();
+}
+
+LevelAnimation.prototype.stopMakeMatchAnimation = function(layer, initialTile, swapTile){
+	if(this.makeMatchAnimation){
+		this.makeMatchAnimation.stop();
+		this.makeMatchAnimation = null;
+	}
+}
+
 LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
@@ -489,6 +503,10 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.nextLevelArrowAnimation){
 		this.nextLevelArrowAnimation.stop();
 		this.nextLevelArrowAnimation = null;
+	}
+	if(this.makeMatchAnimation){
+		this.makeMatchAnimation.stop();
+		this.makeMatchAnimation = null;
 	}
 }
 
@@ -685,3 +703,39 @@ NextLevelArrowAnimation.prototype.animate = function(){
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % 2;
 };
+
+MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=700;
+MakeMatchAnimation.BORDER_COLOR = 'blue';
+function MakeMatchAnimation(layer, initialTile, swapTile){
+	this.layer = layer;
+	this.initialTile = initialTile;
+	this.swapTile = swapTile;
+	this.rolloverSpriteId = 0;
+}
+
+MakeMatchAnimation.prototype.start = function(){
+	this.rolloverSpriteId = 0;
+	var rolloverAnimation = this;
+	this.interval = setInterval(function(){
+		rolloverAnimation.animate(rolloverAnimation)}, 
+		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+MakeMatchAnimation.prototype.stop = function(){
+	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	clearInterval(this.interval);
+};
+
+MakeMatchAnimation.prototype.animate = function(){
+	if(this.rolloverSpriteId == 1){
+		this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+		this.initialTile.drawBorder(MakeMatchAnimation.BORDER_COLOR, Tile.BORDER_WIDTH);	
+	}else{
+		this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+		this.swapTile.drawBorder(MakeMatchAnimation.BORDER_COLOR, Tile.BORDER_WIDTH);
+	}
+	this.rolloverSpriteId++;
+	this.rolloverSpriteId = this.rolloverSpriteId % 2;
+};
+
