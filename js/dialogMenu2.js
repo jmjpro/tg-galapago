@@ -59,6 +59,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+	dialogMenu.callingClass.level.cleanUp();
 	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
@@ -90,6 +91,7 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
+	dialogMenu.callingClass.level.cleanUp();
 	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
@@ -157,10 +159,15 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-no' :
+			Galapago.levelMap.cleanUp();
+			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
+			LevelMap.reset();
+			Galapago.levelMap.cleanUp();
+			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
 	};
