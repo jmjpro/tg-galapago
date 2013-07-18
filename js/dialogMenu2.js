@@ -34,9 +34,10 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			dialogMenu.callingClass.displayMenuButton(false);
-			dialogMenu.callingClass.hotspot = null;
-			dialogMenu.callingClass.display();
+			//dialogMenu.callingClass.displayMenuButton(false);
+			//dialogMenu.callingClass.hotspot = null;
+			//dialogMenu.callingClass.display();
+			new DialogMenu('layer-power-up', dialogMenu.callingClass, 'dialog-new-game', 'button-huge-hilight');
 			console.debug('option-new-game');
 			break;
 		case 'option-how-to-play' :
@@ -97,10 +98,16 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	switch( navItem[0].id ) {
 		case 'option-yes' :
 			this.hide();
+			dialogMenu.callingClass.level.cleanUp();
+			localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
+			Galapago.setLevel(dialogMenu.callingClass.level.id);
 			console.log("starting new game");
 			break;
 		case 'option-no' :
 			this.hide();
+			dialogMenu.callingClass.displayMenuButton(false);
+			dialogMenu.callingClass.hotspot = null;
+			dialogMenu.callingClass.display();
 			break;
 	};
 };
