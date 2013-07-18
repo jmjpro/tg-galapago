@@ -19,8 +19,10 @@
 	}
 
 	function TestClass() {
-
+		this.level = null;
 	}
+	TestClass.prototype.displayMenuButton = function(isDisplay) {};
+	TestClass.prototype.display = function() {};
 
 	TestClass.prototype.registerEventHandlers = function() {
 		window.onkeydown = function(evt) {

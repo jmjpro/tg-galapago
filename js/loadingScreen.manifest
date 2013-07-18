@@ -11,6 +11,16 @@
 			"loading-screen/loading-progress-bar-left-cap.png"
     	]
     },
+    {
+		"name": "mainMenuScreen",
+		"contents": [
+			"main-menu/main_menu_background.jpg",
+			"main-menu/main_menu_button_change_player_regular.png",
+			"main-menu/main_menu_button_change_player_selected.png",
+			"main-menu/main_menu_button_relaxed_regular.png",
+			"main-menu/main_menu_button_timed_regular.png"
+    	]
+    },
 	{
 	    "name": "Map Screen and Level 1",
 	    "contents": [

@@ -1,26 +1,28 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
 	<script src="ext/zepto-1.0.min.js"></script>
-	<script src="js/mainMenu.js"></script>
+	<script src="ext/gal.js"></script>
+	<script src="js/canvasUtil.js"></script>
+	<script src="js/mainMenuScreen.js"></script>
 </head>
-<body onLoad="">
+<body onLoad="MainMenuScreen.init(null, null);">
 
 <div id="main-menu-screen">
-	<div class="main-menu-button-change-player">
+	<div id="button-change-player">
 		<span id="hello-player">Hello Tim!</span>
 		<span id="click-here">Click here to change player</span>
 	</div>
-	<img id="main-menu-timed" class="main-menu-mode" src="res/img/main-menu/main_menu_button_timed_regular.png">
-	<img id="main-menu-relaxed" class="main-menu-mode" src="res/img/main-menu/main_menu_button_relaxed_regular.png">
+	<div id="button-timed" class="main-menu-mode"></div>
+	<div id="button-relaxed" class="main-menu-mode"></div>
 	<table id="main-menu-button-group">
 		<tr>
-			<td class="main-menu-button">How To Play</td>
-			<td class="main-menu-button">Top Scores</td>
+			<td id="button-how-to-play" class="main-menu-button">How To Play</td>
+			<td id="button-top-scores" class="main-menu-button">Top Scores</td>
 		</tr>
 		<tr>
-			<td class="main-menu-button">Set Language</td>
-			<td class="main-menu-button">Quit</td>
+			<td id="button-set-language" class="main-menu-button">Set Language</td>
+			<td id="button-quit" class="main-menu-button">Quit</td>
 		</tr>
 	</table>
 </div>
