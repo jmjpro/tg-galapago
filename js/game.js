@@ -493,17 +493,20 @@ LevelMap.prototype.handleSelect = function(evt) {
 }; //LevelMap.prototype.handleSelect()
 
 LevelMap.prototype.handleKeyboardSelect = function() {   
+    this.cleanUp();
+	$('ul#map-nav').css('display', 'none');
+	Galapago.setLevel(this.hotspotLevel.id);
+}; //LevelMap.prototype.handleKeyboardSelect()
+
+LevelMap.prototype.cleanUp = function() {
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
-	
 	this.animationCanvas.style.zIndex = 0;
 	this.otherAnimationCanvas.style.zIndex = 0;
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
 	this.levelAnimation.stopAllAnimations();
-	$('ul#map-nav').css('display', 'none');
-	Galapago.setLevel(this.hotspotLevel.id);
-}; //LevelMap.prototype.handleKeyboardSelect()
+}
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
@@ -666,9 +669,16 @@ LevelMap.getNextLevel = function() {
 
 LevelMap.reset = function() {
 	var keyIt;
+	var keyList = new  Array();
 	for (var i = 0; i < localStorage.length; i++) {
 		keyIt = localStorage.key(i);
-		localStorage.removeItem(keyIt);
+		if(keyIt.indexOf(Galapago.profile)>0){ // reset all the local storage of current Profile only.
+			//localStorage.removeItem(keyIt);
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		localStorage.removeItem(keyList[i])
 	}
 }
 

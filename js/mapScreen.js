@@ -40,7 +40,8 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'reset-map' :
 			//console.log( 'selected reset map button');
-			levelMap.reset();
+			new DialogMenu('layer-map-other-animation', LevelMap, 'dialog-reset-game', 'button-medium-hilight');
+
 			break;
 		case 'start-next-map' :
 			levelMap.setHotspotLevel(LevelMap.getNextLevel());
