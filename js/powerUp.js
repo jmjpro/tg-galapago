@@ -170,7 +170,6 @@ Powerup.prototype.powerUsed = function(){
 }
 
 Powerup.prototype.handleSelect = function(){
-	Galapago.bubbleTip.clearBubbleTip();
 	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){
 		this.powerSelected = Powerup.FLIPFLOP_SELECTED;
 		this.drawFlipFlop(Powerup.POWER_PRESSED);
@@ -181,8 +180,8 @@ Powerup.prototype.handleSelect = function(){
 	    this.powerSelected = Powerup.SHUFFLER_SELECTED;
 		this.drawShuffler(Powerup.POWER_PRESSED);
 		Galapago.audioPlayer.playShufflePowerUsed();
-		this.board.shuffleBoard();
 		this.powerUsed();
+		this.board.shuffleBoard();
 	}
 }
 
