@@ -25,7 +25,7 @@ ScreenLoader.MAP_SCREEN_IMAGE_DIRECTORY='res/img/map-screen/';
 function ScreenLoader() {
 }
 
-ScreenLoader.init = function(gameMode) {
+ScreenLoader.init = function() {
 	sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
 	this.canvas = $('#' + ScreenLoader.LAYER_MAP)[0];
 	this.layer = this.canvas.getContext('2d');
@@ -35,22 +35,17 @@ ScreenLoader.init = function(gameMode) {
 	//this.canvas.style.zIndex = 0;
 	this.canvas.width = ScreenLoader.STAGE_WIDTH;
 	this.canvas.height = ScreenLoader.STAGE_HEIGHT;	
-	this.gameMode=gameMode;
 	this.registerEvent();
 	this.gal.init(function() {
 		ScreenLoader.gal.download('loadingScreen');
 	});
-	
-	
-	
-	//console.log( 'gameMode: ' + Galapago.gameMode );	
 };
 
 ScreenLoader.registerEvent = function(){
 	var screenLoader = this;
 	this.gal.onLoaded('loadingScreen', function(result) {
 		if (result.success) {
-		    screenLoader.progressBar = new ProgressBar(screenLoader.layer,screenLoader.gameMode);
+		    screenLoader.progressBar = new ProgressBar(screenLoader.layer);
 			screenLoader.gal.download('Map Screen and Level 1');	           			
 		}
 	});
@@ -81,7 +76,7 @@ ProgressBar.LOADING_MESSAGE_TOP = 565;
 ProgressBar.LOADING_MESSAGE_LEFT =555;
 ProgressBar.CLICK_MESSAGE_LEFT =415;
 
-function ProgressBar(layerBackground,gameMode){
+function ProgressBar(layerBackground){
 	this.layerBackground = layerBackground;	
 	this.canvas = $('#' + ProgressBar.LAYER_DANGER_BAR)[0];
 	this.canvas.style.zIndex = 10;
@@ -91,29 +86,9 @@ function ProgressBar(layerBackground,gameMode){
 	//this.loadImages(imageSource,this.drawImages);
 	this.drawImages();
 	this.isLoadingComplete = false;
-	this.registerEventHandlers(gameMode);
+	this.registerEventHandlers();
 	this.canvas.focus();
 }
-
-/*ProgressBar.prototype.loadImages = function (sources, callback) {
-	var progressBar= this;
-	var images = {};
-	var loadedImages = 0;
-	var numImages = 0;
-	// get num of sources
-	for(var src in sources) {
-		numImages++;
-	}
-	for(var src in sources) {
-		images[src] = new Image();
-		images[src].onload = function() {
-			if(++loadedImages >= numImages) {
-				callback(progressBar,images);
-			}
-		};
-		images[src].src = ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY+sources[src];
-	}
-}*/
 
 ProgressBar.prototype.drawImages = function(progressBar,images) {
 		//progressBar.images=images;
@@ -145,7 +120,6 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	//alert((percentdownload*100)+"% ldccccdvvm..");
 };
 
-
 ProgressBar.prototype.loaded = function(result) {	
 	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
 	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png"); 
@@ -164,10 +138,10 @@ ProgressBar.prototype.showCopywrite =function(){
 	this.layer.font='13pt HelveticaBold'
 	this.layer.fillStyle = 'white';
 	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
-	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED. ', 340, 665);
+	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED.', 340, 665);
 }
 
-ProgressBar.prototype.registerEventHandlers = function(gameMode) {
+ProgressBar.prototype.registerEventHandlers = function() {
 var progressBar = this;
 this.canvas.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
@@ -176,10 +150,14 @@ this.canvas.onkeydown = function(evt) {
 					progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
 					progressBar.canvas.onkeydown=null;
 					progressBar.canvas.style.zIndex = 5;
-				   //alert();
-				    Galapago.init(gameMode);
+					//TODO if api.inDemoMode() skip the main menu screen?
+				    MainMenuScreen.init('canvas-main', progressBar);
 				 }
 				break;
 		}
 	};
+}
+
+ProgressBar.prototype.unregisterEventHandlers = function() {
+	this.canvas.onkeydown = null;
 }

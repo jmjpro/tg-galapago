@@ -22,7 +22,7 @@ MapScreen.prototype.unsetNavItem = function() {
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
-	var itemId, levelMap;
+	var mapScreen, itemId, levelMap;
 	itemId = navItem.children('img:nth-child(1)')[0].id;
 	levelMap = Galapago.levelMap;
 	//console.log(itemId);
@@ -30,6 +30,8 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	switch( itemId ) {
 		case 'menu-map' :
 			console.log( 'selected menu map button');
+			levelMap.cleanupAnimationAndSound();
+			MainMenuScreen.init('canvas-main', this);
 			break;
 		case 'play-map' :
 			levelMap.handleKeyboardSelect();
