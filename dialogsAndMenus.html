@@ -36,27 +36,55 @@
 		}
 	}
 	</script>
+
+	<style>
+	#demo-nav {
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		/*display: inline-block;*/
+		z-index: 0;
+		color: white;
+		text-align: left;
+	}
+
+	#demo-nav a:link {color: blue;}
+	#demo-nav a:visited {color: yellow;}
+	#demo-nav a:hover {color: blue;}
+	#demo-nav a:active {color: red;}
+
+	#test-layer {
+		display: inline-block;
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		background: url('res/img/map-screen/Map.jpg') no-repeat top left;
+	}
+	</style>
 </head>
 <!--body onload="mapScreen = new MapScreen(); mapScreen.registerEventHandlers();"-->
 <!--body onload="dialogQuit = new DialogQuit();"-->
 <body onLoad="loadGame()" style="text-align: center; ">
+<div id="demo-nav">
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create', 'keypad_cursor_letter');">Create Profile</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-you-won', 'button-medium-hilight');">You Won</a> |
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight');">Leaderboards</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-leaderboards', 'button-big-hilight', TGH5.Reporting.Page.Leaderboards);">Leaderboards</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-level-won', 'button-medium-hilight');">Level Won</a> |
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a><br/>
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create-init', 'button-medium-hilight');">Create Profile Initial</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-list', 'button-huge-hilight');">Profile List</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-reset-game', 'button-medium-hilight');">Reset Game</a>
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-reset-game', 'button-medium-hilight');">Reset Game</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);">Help</a>
+</div>
 
-<div id="test-layer" style="z-index: -1; width: 100%; height: 100%; background: url(res/img/map-screen/Map.jpg)"></div>
+<div id="test-layer"></div>
 
 <ul id="map-nav">
 <li><img id="menu-map" class="nav-button" src="res/img/map-screen/button_menu_map.png"/></li>
@@ -299,6 +327,72 @@
 		<ul class="vertical-button-nav">
 			<li id="option-no" data-i18n="Dialog Reset Game.No" class="button-medium button-medium-hilight">No</li>
 			<li id="option-yes" data-i18n="Dialog Reset Game.Yes" class="button-medium">Yes</li>
+		</ul>
+	</div>
+	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+</div>
+
+<div id="dialog-help" class="overlay2">
+	<div class="dialog-title" data-i18n="Dialog Help.Title">How to Play</div>
+	<div class="dialog-content">
+		<div id="help-text-scroll">
+			<span data-i18n="Dialog Help.Body Text">
+				<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
+				<h3>OBJECT</h3>
+				<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano… reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
+				<h3>NAVIGATING GALAPAGO</h3>
+				<p>To play a level just select any tile on the map.</p>
+				<p>New levels will unlock once you win a level.</p>
+				<p>Remember that camp fires appear on levels already completed.</p>
+				<h3>HOW TO PLAY</h3>
+				<p>Swap adjacent creatures vertically or horizontally to match them.</p>
+				<h3>GOLD TILES</h3>
+				<p>You must make matches over the gold tiles in order to complete the board.</p>
+				<h3>LOCKED TILE</h3>
+				<p>These tricky tiles have a creature locked inside. They can't be moved, but you can use them in a match to clear them off the board.</p>
+				<h3>COCOON TILE</h3>
+				<p>Cocoon Tiles can't be moved, and can't be matched – but matching three or more tiles adjacent to a Cocoon Tile will wake it up and clear it off your board.</p>
+				<h3>WINNING THE LEVEL</h3>
+				<p>Clear the board of all the items in the collection key at the bottom of the board.</p>
+				<p>A checkmark indicates that the goal is completed.</p>
+				<p>The numbers show how many of each is left.</p>
+				<h3>BONUS FRENZY</h3>
+				<p>When you win a level, some creatures will flee the board - catch them using the arrow keys to charge up your powerups on the next level!</p>
+				<h3>FLIP-FLOP POWERUP</h3>
+				<p>Make multiple match combos to turn on this powerup!</p>
+				<p>The Flip-Flop lets you swap two creatures anywhere on the board - they don't need to be adjacent!</p>
+				<h3>FIREPOWER POWERUP</h3>
+				<p>Make multiple match combos to turn on Firepower!</p>
+				<p>Use Firepower to select a creature anywhere on the board and make it disappear.</p>
+				<h3>SHUFFLER POWERUP</h3>
+				<p>Make multiple match combos to turn on the Shuffler!</p>
+				<p>Use Shuffler to reshuffle all the creatures on the board.</p>
+				<h3>LIGHTNING CRITTERS</h3>
+				<p>Be on the lookout for the powerful Lightning Critters!</p>
+				<p>Match three or more Lightning Critters and clear an entire row!</p>
+				<h3>SUPER MATCH FRIEND</h3>
+				<p>Use your Super Match Friend to clear all of one creature off the board!</p>
+
+				<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
+				<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
+			</span>
+		</div>
+
+		<script>
+		function updateScrollDivPages() {
+			var scrollDiv, currentPage, pageCount;
+			scrollDiv = $('#help-text-scroll')[0];
+			pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
+			currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight) / scrollDiv.scrollHeight * pageCount );
+			$('#current-page').html(currentPage);
+			$('#page-count').html(pageCount);
+		}
+		</script>
+
+		<p>Page <span id="current-page"></span> of <span id="page-count"></span> </p>
+		<ul class="vertical-button-nav">
+			<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
+			<li id="option-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
 		</ul>
 	</div>
 	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->

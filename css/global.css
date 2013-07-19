@@ -316,10 +316,13 @@ ul.vertical-button-nav > li {
 
 #dialog-leaderboards div.dialog-content table {
 	display: inline-block;
+	font-size: 16px;
 	color: rgb(13,97,133);
 	text-align: center;
 	background: url('../res/img/dialogs/drop_down_menu.png') no-repeat left top;
-	background-size: cover;	
+	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
+	margin-top: 50px;
+	padding-bottom: 15px;
 }
 
 #dialog-leaderboards div.dialog-content table>caption {
@@ -492,4 +495,38 @@ ul.galapago-drop-down {
 
 #dialog-reset-game div.dialog-content {
 	width: 500px;
+}
+
+#dialog-help {
+	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	width: 717px;
+	height: 626px;
+	left: 281px;
+	top: 15px;
+}
+
+#dialog-help div.dialog-content {
+	width: 500px;
+	text-align: left;
+}
+
+#dialog-help div.dialog-content h3 {
+	font-size: 14px;
+}
+
+#dialog-help div.dialog-content p {
+	font-family: 'Helvitica';
+	font-size: 14px;
+}
+
+#help-text-scroll {
+	overflow-y: scroll;
+	height: 300px;
+	margin-top: 50px;
+	padding: 0px 20px 0px 50px;
+}
+
+#dialog-help .button-medium {
+	height: 81px;
+	line-height: 81px;
 }

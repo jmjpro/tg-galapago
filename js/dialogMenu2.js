@@ -91,7 +91,6 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanUp();
 	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
@@ -172,8 +171,25 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 			break;
 	};
 };
-
-function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, selectHandler) {
+DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
+	var navItem, scrollDiv;
+	navItem = dialogMenu.currentNavItem;
+	scrollDiv = $('#help-text-scroll')[0];
+	switch( navItem[0].id ) {
+		case 'option-scroll' :
+			scrollDiv.scrollTop += scrollDiv.clientHeight;
+			dialogMenu.callback.call();
+			if( scrollDiv.scrollTop + scrollDiv.clientHeight >= scrollDiv.scrollHeight ) { //on last page
+				//dialogMenu.setNavItem( $('#option-close') );
+				dialogMenu.currentNavItem.next();
+			}
+			break;
+		case 'option-close' :
+			this.hide();
+			break;
+	};
+};
+function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingClass = callingClass;
 	this.windowKeyHandler= window.onkeydown;
@@ -184,6 +200,12 @@ function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, selec
 	this.registerEventHandlers();
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
+	this.callback = null;
+	if( callback ) {
+		this.callback = callback;
+		this.callback.call();
+	}
+	sdkApi.reportPageView(sdkReportingPage);
 } //function DialogMenu()
 
 DialogMenu.prototype.show = function() {
