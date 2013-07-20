@@ -940,7 +940,7 @@ Level.prototype.display = function() {
 		level.board.displayLevelName();
 		level.board.displayMenuButton(false);
 		level.board.display();
-
+		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
 		return level; //chainable
 		}).done();
 	}
@@ -1112,9 +1112,8 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 };
 
 Level.prototype.isNew = function() {
-	var levelSaved = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+ this.id +"restore");
-	var levelCompleted = this.isComplete();	
-	return !levelSaved && !levelCompleted;
+	var levelPlayed = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.id+".levelPlayed");	
+	return !levelPlayed;
 };
 
 Level.prototype.isComplete = function() {
@@ -1234,22 +1233,17 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var tileActive, col, row;
-	var levelPlayed = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".levelPlayed");
 	if(tile) {
 		tileActive = tile;
 	}
 	
-	else if(!tile &&  _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.id) && (this.level.bubbleTips || this.level.levelConfig.initialSwapForTripletInfo)
-    	       && levelPlayed ==  null) {
-	    var initialSwapForTripletInfo =  this.level.levelConfig.initialSwapForTripletInfo;
-		col = initialSwapForTripletInfo.tipInfo.initialTile[0];
-		row = initialSwapForTripletInfo.tipInfo.initialTile[1];
+	else if(!tile &&  _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.id) && this.initialSwapForTripletInfo) {
+	    col = this.initialSwapForTripletInfo.tipInfo.initialTile[0];
+		row = this.initialSwapForTripletInfo.tipInfo.initialTile[1];
 		tileActive = this.creatureTileMatrix[col][row];
-		//Galapago.bubbleTip.showBubbleTip("SELECT THE HIGHLIGHTED CREATURE TO START A COCOON TILE MATCH. TO CLEAR IT, YOU MUST MAKE A MATCH OF THE COCOON'S COLOR NEXT TO IT!"); 
-		Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Cocoon tip1'));
-		this.isCocoonTipShown = 1;
-		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".levelPlayed" ,"1" );
-		//this.tileSelected = tileActive;
+		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
+		Galapago.bubbleTip.showBubbleTip(i18n.t(key));
+		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
 	}	
 	else { //YJ: activate top left tile unless otherwise indicated
 		col = this.firstTileCoordinates[0];
@@ -1489,6 +1483,13 @@ Board.prototype.build = function(tilePositions) {
 
 Board.prototype.buildInitialSwapForTriplet = function(initialSwapForTripletInfo) {
 	var board = this;
+	if(board.level.id == 1 && board.level.isNew()){
+		initialSwapForTripletInfo = MatchFinder.findMatch(board, true);
+		if(initialSwapForTripletInfo.tipInfo.initialTile){
+			initialSwapForTripletInfo.tipInfo.key = 'Gold';
+			board.initialSwapForTripletInfo = initialSwapForTripletInfo;
+		}
+	}
 	if(board.level.isNew() && initialSwapForTripletInfo){
 		var coordinates = initialSwapForTripletInfo.coordinates; 
 		var colorId = initialSwapForTripletInfo.color;
@@ -1497,6 +1498,7 @@ Board.prototype.buildInitialSwapForTriplet = function(initialSwapForTripletInfo)
 			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
 			board.regenerateMatchingCreatureIfAny(tile, coordinates);
 		});
+		board.initialSwapForTripletInfo = initialSwapForTripletInfo;
 	}
 };
 
@@ -2139,21 +2141,24 @@ Board.prototype.handleKeyboardSelect = function() {
 		case null:
 		default:
 			this.handleTileSelect(this.tileActive);
-			if(this.isCocoonTipShown ==1){
-			    this.isCocoonTipShown =2;
-				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Cocoon tip2'));
-			    var initialSwapForTripletInfo =  this.level.levelConfig.initialSwapForTripletInfo;
-				var col = initialSwapForTripletInfo.tipInfo.swapTile[0];
-				var row = initialSwapForTripletInfo.tipInfo.swapTile[1];
-				var tileActive = this.creatureTileMatrix[col][row];
-				//this.setActiveTile(tileActive);
-				this.tileActive.setInactiveAsync().then(function() {
-					board.setActiveTile(tileActive);
-					return this; //chainable;
-				}).done();
-			}else if(this.isCocoonTipShown ==2){
-			    this.isCocoonTipShown=null ;
-				Galapago.bubbleTip.clearBubbleTip();
+			if(this.initialSwapForTripletInfo){
+				if(this.initialSwapForTripletInfo.tipInfo.initialTile == 'shown'){
+					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip2';
+					Galapago.bubbleTip.showBubbleTip(i18n.t(key));
+					var col = this.initialSwapForTripletInfo.tipInfo.swapTile[0];
+					var row = this.initialSwapForTripletInfo.tipInfo.swapTile[1];
+					this.initialSwapForTripletInfo.tipInfo.initialTile = 'done';
+					this.initialSwapForTripletInfo.tipInfo.swapTile = 'shown';
+					var tileActive = this.creatureTileMatrix[col][row];
+					this.tileActive.setInactiveAsync().then(function() {
+						board.setActiveTile(tileActive);
+						return this; //chainable;
+					}).done();
+				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
+					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
+					Galapago.bubbleTip.showBubbleTip(i18n.t(key));
+					Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t(key))});
+				}
 			}
 			break;
 	}
@@ -2163,8 +2168,8 @@ Board.prototype.handleKeyboardSelect = function() {
 Board.prototype.handleRightArrow = function() {
 	var board, tileRight, col, row;
 	board = this;
-	if(this.isCocoonTipShown){
-	    this.isCocoonTipShown=null ;
+	if(this.initialSwapForTripletInfo){
+	    this.initialSwapForTripletInfo=null ;
 		Galapago.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
@@ -2188,8 +2193,8 @@ Board.prototype.handleRightArrow = function() {
 Board.prototype.handleLeftArrow = function() {
 	var board, tileLeft, col, row;
 	board = this;
-	if(this.isCocoonTipShown){
-	    this.isCocoonTipShown=null ;	
+	if(this.initialSwapForTripletInfo){
+	    this.initialSwapForTripletInfo=null ;
 		Galapago.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
@@ -2222,8 +2227,8 @@ Board.prototype.handleLeftArrow = function() {
 Board.prototype.handleDownArrow = function() {
 	var board, tileDown, col, row;
 	board = this;
-	if(this.isCocoonTipShown){
-	    this.isCocoonTipShown=null ;	
+	if(this.initialSwapForTripletInfo){
+	    this.initialSwapForTripletInfo=null ;
 		Galapago.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
@@ -2250,8 +2255,8 @@ Board.prototype.handleDownArrow = function() {
 Board.prototype.handleUpArrow = function() {
 	var board, tileUp, col, row;
 	board = this;
-	if(this.isCocoonTipShown){
-	    this.isCocoonTipShown=null ;
+	if(this.initialSwapForTripletInfo){
+	    this.initialSwapForTripletInfo=null ;
 		Galapago.bubbleTip.clearBubbleTip();
 	}	
 	col = board.tileActive.coordinates[0];
@@ -3313,7 +3318,7 @@ function ReshuffleService(board){
 ReshuffleService.prototype.start = function() {
 	var reshuffleService = this;
 	this.reshuffleInterval = setInterval(function(){
-		var swapForTripletInfo = reshuffleService.validMoveFound();
+		var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
 		var validMoveFound = swapForTripletInfo.tipInfo.initialTile != null;
 		var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 		if(validMoveFound){
@@ -3351,9 +3356,10 @@ ReshuffleService.prototype.stop = function() {
 	} 
 }
 
-ReshuffleService.prototype.validMoveFound = function() {
-	var reshuffleService = this;
-	var board = this.board;
+function MatchFinder(){
+}
+
+MatchFinder.findMatch = function(board, withGoldTile) {
 	var tileMatrix = board.creatureTileMatrix;
 	var validMoveFound = false;
 	var swapForTripletInfo = {tipInfo:{}};
@@ -3362,18 +3368,18 @@ ReshuffleService.prototype.validMoveFound = function() {
 		  	_.each(columnArray, function(tile){
 		    	if(!validMoveFound && tile && (tile.isCreatureOnly() || tile.hasSuperFriend())){
 		         	var neighborTile = board.getNeighbor(tile, [0, -1]);
-					validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+					validMoveFound = MatchFinder.checkIfSwapMakesMatch(board, tile, neighborTile, withGoldTile);
 					if(!validMoveFound){
 			        	neighborTile = board.getNeighbor(tile, [0, 1]);
-		         		validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+		         		validMoveFound = MatchFinder.checkIfSwapMakesMatch(board, tile, neighborTile, withGoldTile);
 		         	}
 		         	if(!validMoveFound){
 				 		neighborTile = board.getNeighbor(tile, [-1, 0]);
-		         		validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+		         		validMoveFound = MatchFinder.checkIfSwapMakesMatch(board, tile, neighborTile, withGoldTile);
 		         	}
 		         	if(!validMoveFound){
 		         		neighborTile = board.getNeighbor(tile, [1, 0]);
-		         		validMoveFound = reshuffleService.checkIfSwapMakesValidMove(tile, neighborTile);
+		         		validMoveFound = MatchFinder.checkIfSwapMakesMatch(board, tile, neighborTile, withGoldTile);
 		         	}
 		         	if(validMoveFound){
 			         	swapForTripletInfo.tipInfo["initialTile"] = tile.coordinates;
@@ -3386,10 +3392,22 @@ ReshuffleService.prototype.validMoveFound = function() {
   	return swapForTripletInfo;
 }
 
-ReshuffleService.prototype.checkIfSwapMakesValidMove = function(tileToBeMoved, tileToBeReplaced){
+MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeReplaced, withGoldTile){
 	if(tileToBeReplaced && (tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend())){
  		var tile = new Tile(this, tileToBeMoved.blob, tileToBeReplaced.coordinates, tileToBeMoved.spriteNumber);
- 		return this.board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved).length > 0;
+ 		var matchingTilesSets = board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved);
+ 		if(withGoldTile && matchingTilesSets.length){
+			var goldFound =  false;
+			_.each(matchingTilesSets, function(matchingTilesSet){
+				var goldTiles = board.tilesEventProcessor.getGoldTiles(matchingTilesSet);
+				if(goldTiles.length){
+					goldFound = true;
+				}
+			})
+ 			return goldFound;
+ 		}else{
+ 			return matchingTilesSets.length > 0;
+ 		}
  	}
  	return false;
 }

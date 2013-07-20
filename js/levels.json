@@ -60,7 +60,16 @@
 				["1","1","1","1","1","1","1","1","1","1"]
 			],
 			"mapHotspotRegion" : [[230,365],[288,344],[344,367],[350,370],[358,372],[331,399],[314,427],[270,386]],
-			"neighbors"	: {"north":"43","east":"3","west":"1"}
+			"neighbors"	: {"north":"43","east":"3","west":"1"},
+			"initialSwapForTripletInfo":{
+				"coordinates":[[1,3],[2,4]],
+				"color":"b",
+				"tipInfo":{
+					"key": "Locked",
+					"initialTile":[1,3],
+					"swapTile":[2,3]
+				}
+			}
 		},
 		{
 			"id" : "3",
@@ -483,6 +492,7 @@
 				"coordinates":[[4,3],[5,3],[3,4]],
 				"color":"b",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[3,4],
 					"swapTile":[3,3]
 				}
@@ -525,6 +535,7 @@
 				"coordinates":[[0,7],[0,6],[1,5]],
 				"color":"b",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[1,5],
 					"swapTile":[0,5]
 				}
@@ -569,6 +580,7 @@
 				"coordinates":[[1,9],[2,9],[3,8]],
 				"color":"g",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[3,8],
 					"swapTile":[3,9]
 				}
@@ -612,6 +624,7 @@
 				"coordinates":[[1,4],[2,4],[3,3]],
 				"color":"r",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[3,3],
 					"swapTile":[3,4]
 				}
@@ -655,6 +668,7 @@
 				"coordinates":[[2,2],[3,3],[3,4]],
 				"color":"p",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[2,2],
 					"swapTile":[3,2]
 				}
@@ -698,6 +712,7 @@
 				"coordinates":[[5,8],[6,7],[7,7]],
 				"color":"v",
 				"tipInfo":{
+					"key": "Cocoon",
 					"initialTile":[5,8],
 					"swapTile":[5,7]
 				}
