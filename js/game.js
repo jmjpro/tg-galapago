@@ -2104,28 +2104,30 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
 }
 
 Board.prototype.dangerBarEmptied = function() {
-var timedMode, tileMatrix, gameboard;
-tileMatrix =this.creatureTileMatrix;
-gameboard = this;
-timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
-this.level.levelAnimation.stopAllAnimations();
-_.each(tileMatrix, function(columnArray){ //loop over rows
-  _.each(columnArray, function(tile){ //loop over columns
-          if(tile){
-           if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
-              tile.clear();
-			  window.onkeydown=null;
-			  $('#final-score').html(gameboard.score);
-			  if(sdkApi.inDemoMode()){
-					new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
-			  }else{
-					new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+	var timedMode, tileMatrix, gameboard;
+	tileMatrix =this.creatureTileMatrix;
+	gameboard = this;
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	this.level.levelAnimation.stopAllAnimations();
+	_.each(tileMatrix, function(columnArray){ //loop over rows
+	  _.each(columnArray, function(tile){ //loop over columns
+			  if(tile){
+			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+				  tile.clear();
+				  
+				}
 			  }
-            }
-          }
-    })
- });
+		})
+	 });
+	window.onkeydown=null;	
+	$('#final-score').html(gameboard.score);
+	if(sdkApi.inDemoMode()){
+			new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
+	}else{
+			new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+	}
+ 
 }
 
 Board.prototype.saveBoard = function() {

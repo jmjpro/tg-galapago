@@ -67,14 +67,14 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanUp();
+	dialogMenu.callingClass.level.cleanup();
 	dialogMenu.callingClass.level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanUp();
+	dialogMenu.callingClass.level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
 		dialogMenu.callingClass.level.showLevelMap();
 	});
@@ -90,7 +90,7 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanUp();
+	dialogMenu.callingClass.level.cleanup();
     sdkApi.requestModalAd("inGame").done(function(){
 		dialogMenu.callingClass.level.showLevelMap();
 	});
@@ -107,7 +107,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	switch( navItem[0].id ) {
 		case 'option-yes' :
 			this.hide();
-			dialogMenu.callingClass.level.cleanUp();
+			dialogMenu.callingClass.level.cleanup();
 			localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
 			Galapago.setLevel(dialogMenu.callingClass.level.id);
 			console.log("starting new game");
