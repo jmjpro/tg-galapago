@@ -1,6 +1,8 @@
 ﻿"use strict";
 
 /* begin class Galapago */
+Galapago.MODE_TIMED = "MODE_TIMED";
+Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
 Galapago.CONFIG_FILE_PATH = 'js/levels.json';
 Galapago.GAME_IMAGE_DIRECTORY = 'res/img/game-screen/';
@@ -88,15 +90,15 @@ Galapago.localization = function(){
     $("#dialog-title").i18n();
 }
 
-Galapago.init = function(gameMode) {
+Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
 	Galapago.localization();
 	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.bubbleTip = new BubbleTip();
-	Galapago.gameMode = gameMode;
+	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
-	console.log( 'gameMode: ' + Galapago.gameMode );
+	console.log( 'isTimedMode: ' + Galapago.isTimedMode );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
 		Galapago.levels.push(levelTemp);
@@ -251,10 +253,10 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 }; //LevelMap.prototype.loadImages()
 
 LevelMap.prototype.display = function() {	
-	sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
 	this.canvas.style.background = 'url(' + 'res/img/map-screen/Map' + Galapago.BACKGROUND_PATH_SUFFIX;
 	this.canvas.width = Galapago.STAGE_WIDTH;
 	this.canvas.height = Galapago.STAGE_HEIGHT;
+	$( '#canvas-main' ).css( 'display', 'block');
 	this.canvas.focus();
 	$('ul#map-nav').css('display', 'block');
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
@@ -493,20 +495,24 @@ LevelMap.prototype.handleSelect = function(evt) {
 }; //LevelMap.prototype.handleSelect()
 
 LevelMap.prototype.handleKeyboardSelect = function() {   
-    this.cleanUp();
+    this.cleanup();
 	$('ul#map-nav').css('display', 'none');
 	Galapago.setLevel(this.hotspotLevel.id);
 }; //LevelMap.prototype.handleKeyboardSelect()
 
-LevelMap.prototype.cleanUp = function() {
+LevelMap.prototype.cleanup = function() {
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
 	this.animationCanvas.style.zIndex = 0;
 	this.otherAnimationCanvas.style.zIndex = 0;
+	this.cleanupAnimationAndSound();
+} //LevelMap.prototype.cleanup()
+
+LevelMap.prototype.cleanupAnimationAndSound = function() {
 	clearInterval(this.handle) ;
 	Galapago.audioPlayer.stopLoop();
 	this.levelAnimation.stopAllAnimations();
-}
+} //LevelMap.prototype.cleanupAnimationAndSound()
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
@@ -907,7 +913,8 @@ Level.prototype.loadImagesAsync = function() {
 }; //Level.prototype.loadImagesAsync()
 
 Level.prototype.display = function() {
-	var level = this;
+	var level, timedMode;
+	level = this;
 	level.styleCanvas();
 	level.setBoard(new Board());
 	if( level.levelConfig.blobPositions ) {
@@ -921,15 +928,16 @@ Level.prototype.display = function() {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
 		level.board.setActiveTile();
-		if( Galapago.gameMode === 'MODE_TIMED') {
-			var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+level.id+"restore");
-			var restoreLookup ,dengerBarTimeRemaining = null;
+		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+		if( Galapago.isTimedMode ) {
+			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
+			var restoreLookup ,dangerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 			if(restoreLookupString != undefined){
 			   restoreLookup = JSON.parse(restoreLookupString);
-			   dengerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-			   if(dengerBarTimeRemaining != undefined){
-				  level.dangerBar.timeRemainingMs  = dengerBarTimeRemaining;
+			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+			   if(dangerBarTimeRemaining != undefined){
+				  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
 				  level.dangerBar.start();
 			   }
 			}
@@ -940,7 +948,8 @@ Level.prototype.display = function() {
 		level.board.displayLevelName();
 		level.board.displayMenuButton(false);
 		level.board.display();
-		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
+		var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
 		return level; //chainable
 		}).done();
 	}
@@ -967,9 +976,11 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 }; //Level.prototype.getCreatureTypesByTheme()
 
 Level.prototype.won = function(){
-	localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.id+"restore" );
+	var timedMode, level;
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
-    var level = this;
+    level = this;
 	sdkApi.requestModalAd("inGame").done(function(){
 		level.showLevelMap();
 	});
@@ -977,12 +988,14 @@ Level.prototype.won = function(){
 
 Level.prototype.quit = function(){
 	this.board.saveBoard();
-	this.cleanUp();
+	this.cleanup();
     this.showLevelMap();
 }
 
-Level.prototype.cleanUp = function(){
-	this.dangerBar.stop();
+Level.prototype.cleanup = function(){
+	if(this.dangerBar){
+		this.dangerBar.stop();
+	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
  	this.board.reshuffleService.stop();
@@ -1112,7 +1125,8 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 };
 
 Level.prototype.isNew = function() {
-	var levelPlayed = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.id+".levelPlayed");	
+	var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	var levelPlayed = localStorage.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
 	return !levelPlayed;
 };
 
@@ -1232,7 +1246,9 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
-	var tileActive, col, row;
+	var timedMode, levelPlayed, tileActive, col, row;
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	levelPlayed = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".levelPlayed" );
 	if(tile) {
 		tileActive = tile;
 	}
@@ -1393,9 +1409,10 @@ Board.prototype.init = function(tilePositions) {
 }; //Board.prototype.init
 
 Board.prototype.build = function(tilePositions) {
-	var colIt, rowIt, coordinates, cellId, cellObject, spriteNumber;
-    var restoreLookupString = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore");
-	var restoreLookup;
+	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup;
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+    restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	restoreLookup;
 	if(restoreLookupString != undefined){
 	 restoreLookup = JSON.parse(restoreLookupString);
 	 this.score = restoreLookup['score'];
@@ -1788,45 +1805,48 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 
 Board.prototype.setComplete = function() {
-	var levelHighestScore;
-	this.level.cleanUp();
+	var levelHighestScore, timedMode;
+	this.level.cleanup();
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
 	    Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
-		if( Galapago.gameMode === 'MODE_TIMED') {
+		if( Galapago.isTimedMode ) {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
 			$('#timeBonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
 			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 		}
 		this.drawScore();
 		this.level.isCompleted = true;
-		localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id + ".completed" , true);
-		levelHighestScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore");
-		var totalScore = localStorage.getItem(Galapago.gameMode+Galapago.profile+".totalScore");
+		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+		localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
+		levelHighestScore = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
+		var totalScore = localStorage.getItem( timedMode + Galapago.profile + ".totalScore" );
 		if(totalScore){
-			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
+			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
 				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
-			}else{
+			}
+			else {
 				totalScore=Number(totalScore)+this.score
 			}
-			localStorage.setItem(Galapago.gameMode+Galapago.profile+".totalScore" , totalScore);
-		}else{
+			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+		}
+		else {
 			totalScore=this.score;
-			localStorage.setItem(Galapago.gameMode+Galapago.profile+".totalScore" , totalScore);
+			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore" , this.score);
+			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
 		}
 		else if(!levelHighestScore){
-			localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+".highScore" , this.score);
+			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
-		$('#bonusFrenzy').html(this.bonusFrenzy.getScore());
-		$('#bonusPoints').html(Score.BONUS_FRENZY_CREATURE_POINTS  * this.bonusFrenzy.getScore());
-		$('#levelScore').html(this.score);
-		$('#score').html(totalScore);
+		$('#bonusFrenzy').html( this.bonusFrenzy.getScore() );
+		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
+		$('#levelScore').html( this.score );
+		$('#score').html( totalScore );
 		if(levelHighestScore){
 			new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');
 		}else{
@@ -2062,12 +2082,14 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
 }
 
 Board.prototype.dangerBarEmptied = function() {
-var tileMatrix =this.creatureTileMatrix;
-var gameboard = this;
-localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" );
+var timedMode, tileMatrix, gameboard;
+tileMatrix =this.creatureTileMatrix;
+gameboard = this;
+timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 this.level.levelAnimation.stopAllAnimations();
-_.each(tileMatrix, function(columnArray){
-  _.each(columnArray, function(tile){
+_.each(tileMatrix, function(columnArray){ //loop over rows
+  _.each(columnArray, function(tile){ //loop over columns
           if(tile){
            if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
               tile.clear();
@@ -2085,20 +2107,21 @@ _.each(tileMatrix, function(columnArray){
 }
 
 Board.prototype.saveBoard = function() {
-var restoreLookup = {};
-var originalblogPositions = this.level.levelConfig.blobPositions;
-var tileMatrix =this.creatureTileMatrix;
-var gameboard = this;
-var x,y;
-_.each(tileMatrix, function(columnArray){
+	var restoreLookup, originalblogPositions, tileMatrix, gameboard, x, y, key, originalBlogconfig, timedMode;
+	var blogColl, nilcollections;
+	restoreLookup = {};
+	originalblogPositions = this.level.levelConfig.blobPositions;
+	tileMatrix =this.creatureTileMatrix;
+	gameboard = this;
+	_.each(tileMatrix, function(columnArray){
   _.each(columnArray, function(tile){
   		 if(tile){
-           y =tile.coordinates[0];
-           x=tile.coordinates[1];
-           var key = y+'_'+x;
+	           y = tile.coordinates[0];
+	           x = tile.coordinates[1];
+	           key = y + '_' + x;
   		   restoreLookup[key]= null;
            if(gameboard.getGoldTile(tile) || tile.isPlain()){
-		      var originalBlogconfig = originalblogPositions[x][y];
+			      originalBlogconfig = originalblogPositions[x][y];
 		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
 			  restoreLookup[key]='11'; 
 			  }else{
@@ -2112,8 +2135,8 @@ _.each(tileMatrix, function(columnArray){
     })
  });
  restoreLookup['score'] = gameboard.score;
- var blogColl = gameboard.blobCollection.blobCollection;
- var nilcollections = [];
+	blogColl = gameboard.blobCollection.blobCollection;
+	nilcollections = [];
     for(var key in blogColl){
 		if(blogColl[key].count == 0 )
 		  nilcollections.push(key);
@@ -2122,10 +2145,9 @@ _.each(tileMatrix, function(columnArray){
  if(gameboard.level.dangerBar && gameboard.level.dangerBar.isRunning()){
 	restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
   }
- localStorage.setItem(Galapago.gameMode+Galapago.profile+"level"+this.level.id+"restore" , JSON.stringify(restoreLookup));
-}
-
-
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
+} //Board.prototype.saveBoard()
 
 Board.prototype.handleKeyboardSelect = function() {
     var board = this;

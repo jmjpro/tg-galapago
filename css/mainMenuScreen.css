@@ -1,0 +1,83 @@
+#main-menu-screen {
+	display: none;
+	background-repeat: no-repeat;
+	background-position: left top;
+	width: 1280px;
+	height: 720px;
+	left: 0px;
+	top: 0px;
+	font-family: 'JungleFever';
+	font-size: 18pt;
+	text-align: center;
+}
+
+#button-change-player {
+	background-repeat: no-repeat;
+	background-position: left top;
+	width: 611px;
+	height: 121px;
+	vertical-align: middle;
+	line-height: 121px;
+	display: inline-block;
+	position: absolute;
+	top: 175px;
+	left: 325px;
+	color: rgb(71,221,212);
+}
+
+.main-menu-mode {
+	position: absolute;
+	top: 305px;
+	width: 298px;
+	height: 210px;
+	background-size: 100%;
+}
+
+#button-timed {
+	left: 335px;
+}
+
+#button-relaxed {
+	left: 640px;
+}
+
+#main-menu-button-group {
+	display: table;
+	position: absolute;
+	top: 500px;
+	left: 300px;
+}
+
+.button-group-row {
+	display: table-row;
+}
+
+.main-menu-button {
+	background-repeat: no-repeat;
+	background-position: left top;
+	/*background: url('../res/img/main-menu/main_menu_button_options_regular.png') no-repeat left top;*/
+	width: 331px;
+	height: 116px;
+	vertical-align: middle;
+	line-height: 116px;
+	text-align: center;
+	color: rgb(71,221,212);
+}
+
+#hello-player {
+	color: rgb(226,199,92);
+	font-size: 24pt;
+	display: inline;
+}
+
+#click-here {
+	display: inline;
+}
+
+#main-menu-screen .galapago-drop-down {
+	display: none;
+	position: absolute;
+	left: 300px;
+	top: 500px;
+	z-index: 9999;
+}
