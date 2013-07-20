@@ -719,7 +719,7 @@ Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "re
 Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 20;
-Level.MENU_BUTTON_Y = 650;
+Level.MENU_BUTTON_Y = 600;
 Level.MENU_BUTTON_WIDTH = 100;
 Level.MENU_BUTTON_HEIGHT = 35;
 Level.POWER_UP_SCORE =0;
@@ -947,6 +947,7 @@ Level.prototype.display = function() {
 		level.board.addPowerups();
 		level.board.displayLevelName();
 		level.board.displayMenuButton(false);
+		level.board.displayQuitButton(false);
 		level.board.display();
 		var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
@@ -1151,6 +1152,7 @@ Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
 */
 Board.ANGULAR_SPEED = Math.PI * 2;
 Board.HOTSPOT_MENU = 'hotspot-menu';
+Board.HOTSPOT_QUIT = 'hotspot-quit';
 Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
@@ -1232,6 +1234,26 @@ Board.prototype.displayMenuButton = function(isActive) {
 		this.buttonActive = null;
 		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+	}
+}; //Board.protoype.displayMenuButton()
+
+Board.prototype.displayQuitButton = function(isActive) {
+	var textColor, layer, quitButtonImage;
+	layer = this.creatureLayer;
+	quitButtonImage = this.blobCollection.button_quit;
+	var quitImageX = Level.MENU_BUTTON_X;
+	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10)
+	
+	if( isActive ) {
+		this.buttonActive = 'menuButton';
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
+		layer.strokeRect(quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+	}
+	else {
+		this.buttonActive = null;
+		layer.clearRect(quitImageX - 1, quitImageY - 1, quitButtonImage.width + 2, quitButtonImage.height + 2);
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
 	}
 }; //Board.protoype.displayMenuButton()
 
@@ -2082,28 +2104,30 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
 }
 
 Board.prototype.dangerBarEmptied = function() {
-var timedMode, tileMatrix, gameboard;
-tileMatrix =this.creatureTileMatrix;
-gameboard = this;
-timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
-this.level.levelAnimation.stopAllAnimations();
-_.each(tileMatrix, function(columnArray){ //loop over rows
-  _.each(columnArray, function(tile){ //loop over columns
-          if(tile){
-           if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
-              tile.clear();
-			  window.onkeydown=null;
-			  $('#final-score').html(gameboard.score);
-			  if(sdkApi.inDemoMode()){
-					new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
-			  }else{
-					new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+	var timedMode, tileMatrix, gameboard;
+	tileMatrix =this.creatureTileMatrix;
+	gameboard = this;
+	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	this.level.levelAnimation.stopAllAnimations();
+	_.each(tileMatrix, function(columnArray){ //loop over rows
+	  _.each(columnArray, function(tile){ //loop over columns
+			  if(tile){
+			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+				  tile.clear();
+				  
+				}
 			  }
-            }
-          }
-    })
- });
+		})
+	 });
+	window.onkeydown=null;	
+	$('#final-score').html(gameboard.score);
+	if(sdkApi.inDemoMode()){
+			new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
+	}else{
+			new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+	}
+ 
 }
 
 Board.prototype.saveBoard = function() {
@@ -2114,37 +2138,37 @@ Board.prototype.saveBoard = function() {
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	_.each(tileMatrix, function(columnArray){
-  _.each(columnArray, function(tile){
-  		 if(tile){
-	           y = tile.coordinates[0];
-	           x = tile.coordinates[1];
-	           key = y + '_' + x;
-  		   restoreLookup[key]= null;
-           if(gameboard.getGoldTile(tile) || tile.isPlain()){
-			      originalBlogconfig = originalblogPositions[x][y];
-		      if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
-			  restoreLookup[key]='11'; 
-			  }else{
-               restoreLookup[key]=originalBlogconfig; 
+	  _.each(columnArray, function(tile){
+			 if(tile){
+				   y = tile.coordinates[0];
+				   x = tile.coordinates[1];
+				   key = y + '_' + x;
+			   restoreLookup[key]= null;
+			   if(gameboard.getGoldTile(tile) || tile.isPlain()){
+					  originalBlogconfig = originalblogPositions[x][y];
+				  if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
+				  restoreLookup[key]='11'; 
+				  }else{
+				   restoreLookup[key]=originalBlogconfig; 
+				  }
+				}
+				else if(tile.hasSuperFriend() || tile.isBlocked() || tile.isCocooned()){
+					restoreLookup[key]= tile.blobConfig;
+				}
 			  }
-            }
-            else if(tile.hasSuperFriend() || tile.isBlocked() || tile.isCocooned()){
-            	restoreLookup[key]= tile.blobConfig;
-            }
-          }
-    })
+		})
  });
- restoreLookup['score'] = gameboard.score;
+	restoreLookup['score'] = gameboard.score;
 	blogColl = gameboard.blobCollection.blobCollection;
 	nilcollections = [];
     for(var key in blogColl){
 		if(blogColl[key].count == 0 )
 		  nilcollections.push(key);
 	}
- restoreLookup['nilCollection'] =  nilcollections; 	
- if(gameboard.level.dangerBar && gameboard.level.dangerBar.isRunning()){
-	restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
-  }
+	restoreLookup['nilCollection'] =  nilcollections; 	
+	if(gameboard.level.dangerBar ){
+		restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
+	}
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
 } //Board.prototype.saveBoard()
@@ -2160,6 +2184,12 @@ Board.prototype.handleKeyboardSelect = function() {
 			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
+		case Board.HOTSPOT_QUIT:	
+			if(this.level.dangerBar){
+				this.level.dangerBar.pause();
+			}
+			new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
+		    break;
 		case null:
 		default:
 			this.handleTileSelect(this.tileActive);
@@ -2267,9 +2297,14 @@ Board.prototype.handleDownArrow = function() {
 		board.setActiveTile(tileDown);
 		return this; //chainable
 		}).done();
-	}else {
+	}else if(this.hotspot != Board.HOTSPOT_MENU){
 		board.displayMenuButton(true);
+		board.displayQuitButton(false);
 		this.hotspot = Board.HOTSPOT_MENU;
+	}else{
+		board.displayMenuButton(false);
+		board.displayQuitButton(true);
+		this.hotspot = Board.HOTSPOT_QUIT;
 	}
 	return this; //chainable
 }; //Board.prototype.handleDownArrow
@@ -2280,21 +2315,31 @@ Board.prototype.handleUpArrow = function() {
 	if(this.initialSwapForTripletInfo){
 	    this.initialSwapForTripletInfo=null ;
 		Galapago.bubbleTip.clearBubbleTip();
-	}	
-	col = board.tileActive.coordinates[0];
-	row = board.tileActive.coordinates[1];
-	do{
-		row--;
-		if(row<0){
-			break;
+	}
+	if(this.hotspot == Board.HOTSPOT_QUIT){
+		board.displayMenuButton(true);
+		board.displayQuitButton(false);
+		this.hotspot = Board.HOTSPOT_MENU;	
+	}else{
+	    if(this.hotspot == Board.HOTSPOT_MENU) {
+		  board.displayMenuButton(false);
+		  this.hotspot=null;
 		}
-		tileUp = board.creatureTileMatrix[col][row];
-	}while(tileUp == null)
-	if( tileUp ) {
-		board.tileActive.setInactiveAsync().then(function() {
-		board.setActiveTile(tileUp);
-		return this; //chainable
-		}).done();
+		col = board.tileActive.coordinates[0];
+		row = board.tileActive.coordinates[1];
+		do{
+			row--;
+			if(row<0){
+				break;
+			}
+			tileUp = board.creatureTileMatrix[col][row];
+		}while(tileUp == null)
+		if( tileUp ) {
+			board.tileActive.setInactiveAsync().then(function() {
+			board.setActiveTile(tileUp);
+			return this; //chainable
+			}).done();
+		}
 	}
 	return this; //chainable
 }; //Board.prototype.handleUpArrow
