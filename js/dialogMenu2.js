@@ -8,9 +8,17 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 	switch( navItem[0].id ) {
 		case 'option-yes' :
 			this.hide();
-			Galapago.levelMap.quit();
+			if(dialogMenu.callingClass instanceof Board){
+				dialogMenu.callingClass.level.quit();
+			}else{
+				Galapago.levelMap.quit();
+			}
 			break;
 		case 'option-no' :
+			if(dialogMenu.callingClass instanceof Board &&
+			   dialogMenu.callingClass.level.dangerBar){
+				dialogMenu.callingClass.level.dangerBar.resume();
+			}
 			this.hide();
 			break;
 	};

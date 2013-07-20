@@ -38,7 +38,8 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			//console.log( 'selected play map button');
 			break;
 		case 'quit-map' :
-			var dialogQuit = new DialogQuit();
+			//var dialogQuit = new DialogQuit();
+			new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
 			break;
 		case 'reset-map' :
 			//console.log( 'selected reset map button');
