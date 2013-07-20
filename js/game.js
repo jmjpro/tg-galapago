@@ -274,8 +274,7 @@ LevelMap.prototype.display = function() {
 		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
 	}
 	this.levelAnimation.animateBombs(this.otherAnimationLayer);
-	var level1Completed =localStorage.getItem("level1.completed");
-	if(!level1Completed){
+	if(!Level.isComplete("1")){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
 	this.drawHotspots();
@@ -286,7 +285,7 @@ LevelMap.prototype.display = function() {
 LevelMap.prototype.drawHotspots = function(level){
 	var levelMap = this;
 	_.each(Galapago.levels, function(level){
-		if(level.isComplete()){
+		if(Level.isComplete(level.id)){
 			levelMap.drawHotspot(level.mapHotspotRegion);
 			levelMap.drawHotspot(level.mapHotspotRegion, true);
 		}
@@ -302,7 +301,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 		var unlocksLevelsArrows = level.levelConfig.unlocksLevelsArrows;
 		_.each(unlocksLevelsArrows, function(unlockLevelArrow){
 			for(levelId in unlockLevelArrow){
-				if(!(Level.findById(levelId)).isComplete()){
+				if(!Level.isComplete(levelId)){
 					levelInfo = unlockLevelArrow[levelId];
 					for(arrow in levelInfo){
 						var img = ScreenLoader.gal.get("map-screen/next_level_arrow_"+arrow+".png")
@@ -363,7 +362,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
 		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
 	}
-	this.hotspotLevel.isCompleted = localStorage.getItem("level" + this.hotspotLevel.id + ".completed");
+	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
 	}
@@ -623,11 +622,11 @@ LevelMap.mapCellsFromJson = function (mapCellsJson) {
 
 LevelMap.getHighestLevelCompleted = function() {
 	var highestLevelCompletedId, keyIt, levelId, matchResult;
+	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	highestLevelCompletedId = 0;
-	
 	for (var i = 0; i < localStorage.length; i++){
 		keyIt = localStorage.key(i);
-		if( matchResult = keyIt.match(/^level(\d+)\.completed$/) ) {
+		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			_.each(Level.findById(levelId).unlocksLevels, function( unlockedLevelId ) {
 				Level.findById(unlockedLevelId).isUnlocked = true;
@@ -644,9 +643,10 @@ LevelMap.getHighestLevelCompleted = function() {
 
 LevelMap.getLevelsCompleted = function() {
 	var levelsCompleted = [], keyIt, levelId, matchResult;
+	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	for (var i = 0; i < localStorage.length; i++){
 		keyIt = localStorage.key(i);
-		if( matchResult = keyIt.match(/^level(\d+)\.completed$/) ) {
+		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			levelsCompleted.push(parseInt(levelId));
 		};
@@ -665,7 +665,7 @@ LevelMap.getNextLevel = function() {
 	else {
 		unlockedLevels = highestLevelCompleted.unlocksLevels;
 		unlockedLevels = _.filter(unlockedLevels, function(levelId){
-			return !Level.findById(levelId).isComplete();
+			return !Level.isComplete(levelId);
 		});
 		console.debug('unlocked levels for highest level completed = ' + unlockedLevels);
 		nextLevelId = _.min(unlockedLevels);
@@ -1130,9 +1130,9 @@ Level.prototype.isNew = function() {
 	return !levelPlayed;
 };
 
-Level.prototype.isComplete = function() {
-	var levelCompleted = localStorage.getItem("level"+ this.id + ".completed");	
-	return levelCompleted;
+Level.isComplete = function(id) {
+	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	return localStorage.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
 };
 /* end class Level */
 
