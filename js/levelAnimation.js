@@ -1,3 +1,4 @@
+LevelAnimation.CREATURE_DROPPING_INTERVAL=5;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
@@ -261,7 +262,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 		if(!cnt){
 			cnt = 0;
 		} 
-		Galapago.delay(100).done(function(){
+		Galapago.delay(LevelAnimation.CREATURE_DROPPING_INTERVAL).done(function(){
 			animationQ[cnt]();
 			levelAnimation.animateDropping(animationQ, deferred, ++cnt);
 		});
