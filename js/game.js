@@ -1,5 +1,4 @@
-﻿"use strict";
-
+﻿
 /* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
@@ -1046,6 +1045,9 @@ Level.registerEventHandlers = function() {
 	});
 
 	window.onkeydown = function(evt) {
+		if(board.animationQ.length){
+			return;
+		}
 	//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
@@ -1197,6 +1199,8 @@ function Board() {
 	this.powerAchieved = false;
 	this.tilesEventProcessor = new TilesEventProcessor(this);
 	this.reshuffleService = new ReshuffleService(this);
+	this.putInAnimationQ = false;
+	this.animationQ = [];
 } //Board constructor
 
 Board.prototype.display = function() {
@@ -1580,7 +1584,7 @@ Board.prototype.parseCell = function(cellId) {
 //add a new tile or update the position of an existing tile
 //synchronizes coordinate and position information with the tile object
 Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, tile) {
-	var layer, tileMatrix, col, row, x, y, width, height, imageName;
+	var layer, tileMatrix, col, row, x, y, width, height, imageName, previousX, previousY;
 
 	tileMatrix = this.getTileMatrix(blobType);
 	layer = this.getLayer(blobType);
@@ -1594,11 +1598,23 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	if( tile ) {
 		imageName = tile.blob.creatureType;
 		console.debug( 'moving existing tile ' + imageName + ' to ' + MatrixUtil.coordinatesToString(coordinates));
+		previousX = Tile.getXCoord(tile.coordinates[0]);
+		previousY = Tile.getYCoord(tile.coordinates[1]);
 		tile.coordinates = coordinates;
-		tileMatrix[col][row] = tile;
-		layer.clearRect( x, y, width, height );
-		layer.drawImage(tile.blob.image, x, y, width, height);
-		tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+		tileMatrix[col][row] = tile;	
+		function drawReplace(){
+			layer.clearRect( x, y, width, height );
+			layer.drawImage(tile.blob.image, x, y, width, height);
+			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+		}
+		if(this.putInAnimationQ){
+			this.animationQ.push(function(){
+				layer.clearRect( previousX, previousY, width, height );
+				drawReplace();
+			});
+		}else{
+			drawReplace();
+		}
 	}
 	else {
 		if( 'CREATURE' === blobType ) {
@@ -1626,9 +1642,16 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
-		layer.clearRect( x, y, width, height );
 		if( blob && blob.image ) {
-			layer.drawImage(blob.image, x, y, width, height);
+			function draw(){
+				layer.clearRect( x, y, width, height );
+				layer.drawImage(blob.image, x, y, width, height);
+			}
+			if(this.putInAnimationQ){
+				this.animationQ.push(draw);
+			}else{
+				draw();
+			}
 		}
 		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
 			this.regenerateMatchingCreatureIfAny(tile);
@@ -1917,34 +1940,41 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.handleTripletsDebugCounter = 0;
 					board.chainReactionCounter = 0;
 					board.scoreEvents = [];
-
+					board.putInAnimationQ = true;
+					board.animationQ = [];
 					board.handleTriplets([tile, tilePrev]);
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
-					if(dangerBar){
-						dangerBar.resume();
-					}
-					if( board.scoreEvents.length > 0 ) {
-						board.level.levelAnimation.stopMakeMatchAnimation();
-						board.reshuffleService.reStart();
-						board.updateScoreAndCollections(tileCoordinates);
-					}
-					else if(!board.powerUp.isFlipFlopSelected()) {
-						Galapago.audioPlayer.playInvalidSwap();
-						// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
-						console.debug( 'no triplet found: undoing last move');
-						board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
-							board.swapCreatures( tile, tilePrev );
-							board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
-								board.setActiveTile(tile);
-							}).done();
-						}, function(error) {
-							console.error(error);
-						});
-					}
-					if(board.powerUp.isFlipFlopSelected()){
-					  board.powerUp.powerUsed();
-					}
-					
+					board.level.levelAnimation.animateDroppingCreatures(board.animationQ).then(function(){
+						board.animationQ = [];
+						board.putInAnimationQ = false;
+						
+						if(dangerBar){
+							dangerBar.resume();
+						}
+						if( board.scoreEvents.length > 0 ) {
+							board.level.levelAnimation.stopMakeMatchAnimation();
+							board.reshuffleService.reStart();
+							board.updateScoreAndCollections(tileCoordinates);
+						}
+						else if(!board.powerUp.isFlipFlopSelected()) {
+							Galapago.audioPlayer.playInvalidSwap();
+							// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
+							console.debug( 'no triplet found: undoing last move');
+							board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
+								board.swapCreatures( tile, tilePrev );
+								board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
+									board.setActiveTile(tile);
+								}).done();
+							}, function(error) {
+								console.error(error);
+							});
+						}
+						if(board.powerUp.isFlipFlopSelected()){
+						  board.powerUp.powerUsed();
+						}
+					}, function(error) {
+						console.error(error);
+					}).done();					
 				}, function(error) {
 					console.error(error);
 				}).done();
@@ -2451,7 +2481,6 @@ Board.prototype.lowerTiles = function(tiles, numRows) {
 				board.addTile(tile.coordinates, 'CREATURE', null, spriteNumber);
 				board.addTile(loweredPoint, 'CREATURE', null, spriteNumber);
 			}
-			tile.clear();
 			board.addTile(fallingPoint, tile.blob.blobType, null, null, tile);
 			changedPoints.push(fallingPoint);
 		}
@@ -2555,9 +2584,17 @@ Board.prototype.removeTiles = function(tiles) {
 Board.prototype.clearTiles = function(tiles) {
 	var board;
 	board = this;
-	_.each( tiles, function(tile) {
-		tile.clear();
-	});
+	var pointsArray = Tile.tileArrayToPointsArray(tiles);
+	function draw(){
+		_.each( pointsArray, function(point) {
+			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Tile.getWidth(), Tile.getHeight() );
+		});
+	}
+	if(this.putInAnimationQ){
+		this.animationQ.push(draw);
+	}else{
+		draw();
+	}
 }
 
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {

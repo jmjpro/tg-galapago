@@ -241,6 +241,33 @@ LevelAnimation.prototype.initImages = function(imageArray) {
 	});
 };
 
+
+LevelAnimation.prototype.animateDroppingCreatures = function(animationQ){
+	var deferred;
+	deferred = Q.defer();
+	if(animationQ.length){
+		this.animateDropping(animationQ, deferred);
+	}else{
+		deferred.resolve();
+	}
+	return 	deferred.promise;
+}	
+
+LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
+	var levelAnimation = this;
+	if(cnt == animationQ.length){
+		deferred.resolve();
+	}else{
+		if(!cnt){
+			cnt = 0;
+		} 
+		Galapago.delay(100).done(function(){
+			animationQ[cnt]();
+			levelAnimation.animateDropping(animationQ, deferred, ++cnt);
+		});
+	}	
+}
+
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
