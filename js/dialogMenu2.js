@@ -106,11 +106,11 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-yes' :
+			console.log("starting new game");
 			this.hide();
 			dialogMenu.callingClass.level.cleanup();
 			localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
 			Galapago.setLevel(dialogMenu.callingClass.level.id);
-			console.log("starting new game");
 			break;
 		case 'option-no' :
 			this.hide();
@@ -209,11 +209,13 @@ function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkRe
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
+	if( sdkReportingPage ) { 
+		sdkApi.reportPageView(sdkReportingPage);
+	}
 	if( callback ) {
 		this.callback = callback;
 		this.callback.call();
 	}
-	sdkApi.reportPageView(sdkReportingPage);
 } //function DialogMenu()
 
 DialogMenu.prototype.show = function() {
