@@ -1892,13 +1892,7 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		if(levelHighestScore){
-			new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');
-		}else{
-		   $('#finalScore').html(totalScore);
-		   new DialogMenu('layer-power-up', this, 'dialog-you-won', 'button-medium-hilight');
-		}
-		
+		new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');		
 	}
 }
 
@@ -3212,7 +3206,6 @@ DangerBar.prototype.isRunning = function() {
 	return this.timer.isRunning();
 }; //DangerBar.prototype.isRunning()
 
-
 DangerBar.prototype.start = function() {
 	var dangerBar;
 	dangerBar = this;
@@ -3273,15 +3266,17 @@ DangerBar.prototype.update = function(sender) {
 	if( ratio > DangerBar.RATIO_DANGER ) {
 		dangerBar.layer.drawImage( fillNormal, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
 	}
-	else if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
+	else if( ratio > 0 ) { //0 < ratio <= DangerBar.RATIO_DANGER
+		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
+
+		if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
 		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
 		(dangerBar.timeRemainingMs/1000 <= 5 && dangerBar.timeRemainingMs/1000 > 0) ) {
-		dangerBar.numTimesBelowDangerRatio++;
-		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
-		//dangerBar.layer.drawImage( bottomCapDanger, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, bottomCapDanger.width, bottomCapDanger.height );
-		dangerBar.playWarningSoundRepeated();
+			dangerBar.numTimesBelowDangerRatio++;
+			dangerBar.playWarningSoundRepeated();
+		}
 	}
-	else { //timeout
+	else { //ratio = 0; timeout!
 		//clear the space between the top cap and the bottom cap, including the bottom cap
 		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.stop();
