@@ -167,14 +167,14 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-no' :
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
