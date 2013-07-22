@@ -1733,6 +1733,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 	var tilesMovedEventProcessorResult = this.tilesEventProcessor.tilesMoved(tileFocals);
 	tileTriplets = tilesMovedEventProcessorResult.matchingTilesSets;
 	if( tileTriplets && tileTriplets.length > 0 ) {
+		board.reshuffleService.stop();
 		var validMatchWithCollection = false;
 	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
@@ -1954,8 +1955,10 @@ Board.prototype.handleTileSelect = function(tile) {
 						}
 						if( board.scoreEvents.length > 0 ) {
 							board.level.levelAnimation.stopMakeMatchAnimation();
-							board.reshuffleService.reStart();
 							board.updateScoreAndCollections(tileCoordinates);
+							if(board.reshuffleService.stopped){
+								board.reshuffleService.start();
+							}
 						}
 						else if(!board.powerUp.isFlipFlopSelected()) {
 							Galapago.audioPlayer.playInvalidSwap();
@@ -1989,7 +1992,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		return;
 	}else if(this.powerUp.isFireSelected()){
 		this.level.levelAnimation.stopAllAnimations();
-		this.reshuffleService.reStart();
+		this.reshuffleService.stop();
 		Galapago.audioPlayer.playFirePowerUsed();
 		this.scoreEvents = [];
 		this.score += Score.FIREPOWER_POERUP_USED_POINTS;
@@ -2028,6 +2031,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
+		this.reshuffleService.start();
 	}
 	// same tile selected; unselect it and move on
 	else {
@@ -2059,7 +2063,7 @@ Board.prototype.shuffleBoard = function() {
 	var board= this;
 	var coordinatesToActivate = board.tileActive.coordinates;
 	board.level.levelAnimation.stopAllAnimations();
-	board.reshuffleService.reStart();	
+	board.reshuffleService.stop();	
 	var dangerBar= board.level.dangerBar;
 	if(dangerBar){
 		dangerBar.pause();
@@ -2113,6 +2117,8 @@ Board.prototype.shuffleBoard = function() {
   	var coords = board.tileActive.coordinates; 
   	board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
   	board.tileActive.setActiveAsync().done();
+  	board.reshuffleService.start();	
+	
 }
 
 Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPointsArray, originalLockedTiles) {
@@ -2553,6 +2559,7 @@ Board.prototype.fillEmptyPoints = function(emptyPoints) {
 	var changedPoints= [];
 	var spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 	var board = this;
+	emptyPoints = ArrayUtil.unique(emptyPoints);
 	_.each( emptyPoints, function(point) {
 		//var col = point[0];
 		//var row = point[1] + 1;
@@ -3426,6 +3433,7 @@ ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
 function ReshuffleService(board){
 	this.board = board;
 	this.reshuffleInterval = null;
+	this.stopped = null;
 }
 
 ReshuffleService.prototype.start = function() {
@@ -3456,16 +3464,13 @@ ReshuffleService.prototype.start = function() {
 			Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
 		}
 	}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
-}
-
-ReshuffleService.prototype.reStart = function() {
-	this.stop();
-	this.start();
+	this.stopped = false;
 }
 
 ReshuffleService.prototype.stop = function() {
 	if(this.reshuffleInterval){
 		clearInterval(this.reshuffleInterval);
+		this.stopped = true;
 	} 
 }
 
