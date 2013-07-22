@@ -2447,6 +2447,8 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			var startIndex = tilesAbove.length - changedPoints.length;
 			emptyPoints = MatrixUtil.getFirstNRowPoints(verticalPointsSet, startIndex);
 			if(startIndex > 0){
+				//nullify non first row empty points so that they dont take further part in lower tiles
+				board.nullifyEmptPoints(emptyPoints);
 				nonFirstRowPoints = nonFirstRowPoints.concat(emptyPoints);
 			}
 			else{
@@ -2467,6 +2469,12 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 	return changedPointsArray; //chainable
 }; //Board.prototype.lowerTilesAbove()
 
+Board.prototype.nullifyEmptPoints = function(emptyPoints) {
+	var tileMatrix = this.creatureTileMatrix;
+	_.each(emptyPoints, function(emptyPoint){
+		tileMatrix[emptyPoint[0]][emptyPoint[1]] = null;
+	});
+}
 
 Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board, changedPoints;
