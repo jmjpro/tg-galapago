@@ -356,7 +356,8 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.drawImage(this.images.level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
-	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
+	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
 		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
 		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
