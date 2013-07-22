@@ -109,7 +109,8 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			console.log("starting new game");
 			this.hide();
 			dialogMenu.callingClass.level.cleanup();
-			localStorage.removeItem(Galapago.gameMode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
+			var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			localStorage.removeItem(mode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
 			Galapago.setLevel(dialogMenu.callingClass.level.id);
 			break;
 		case 'option-no' :
@@ -166,14 +167,14 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-no' :
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;

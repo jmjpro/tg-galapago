@@ -356,7 +356,8 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.drawImage(this.images.level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
 	spriteSheet = new SpriteSheet(this.images.level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
-	levelScore = localStorage.getItem('level'+this.hotspotLevel.id);
+	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
 		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
 		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
@@ -2440,6 +2441,8 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			var startIndex = tilesAbove.length - changedPoints.length;
 			emptyPoints = MatrixUtil.getFirstNRowPoints(verticalPointsSet, startIndex);
 			if(startIndex > 0){
+				//nullify non first row empty points so that they dont take further part in lower tiles
+				board.nullifyEmptPoints(emptyPoints);
 				nonFirstRowPoints = nonFirstRowPoints.concat(emptyPoints);
 			}
 			else{
@@ -2460,6 +2463,12 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 	return changedPointsArray; //chainable
 }; //Board.prototype.lowerTilesAbove()
 
+Board.prototype.nullifyEmptPoints = function(emptyPoints) {
+	var tileMatrix = this.creatureTileMatrix;
+	_.each(emptyPoints, function(emptyPoint){
+		tileMatrix[emptyPoint[0]][emptyPoint[1]] = null;
+	});
+}
 
 Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board, changedPoints;
