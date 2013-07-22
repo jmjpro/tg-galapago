@@ -106,12 +106,12 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-yes' :
+			console.log("starting new game");
 			this.hide();
 			dialogMenu.callingClass.level.cleanup();
 			var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			localStorage.removeItem(mode+Galapago.profile+"level"+dialogMenu.callingClass.level.id+"restore" );
 			Galapago.setLevel(dialogMenu.callingClass.level.id);
-			console.log("starting new game");
 			break;
 		case 'option-no' :
 			this.hide();
@@ -167,14 +167,14 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	switch( navItem[0].id ) {
 		case 'option-no' :
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			Galapago.levelMap.cleanUp();
+			Galapago.levelMap.cleanup();
 			Galapago.init(Galapago.gameMode);
 			this.hide();
 			break;
@@ -210,11 +210,13 @@ function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkRe
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
+	if( sdkReportingPage ) { 
+		sdkApi.reportPageView(sdkReportingPage);
+	}
 	if( callback ) {
 		this.callback = callback;
 		this.callback.call();
 	}
-	sdkApi.reportPageView(sdkReportingPage);
 } //function DialogMenu()
 
 DialogMenu.prototype.show = function() {
