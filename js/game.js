@@ -81,14 +81,15 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 
 Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
-	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking || false;
-	Galapago.audioPlayer = new AudioPlayer();
+	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking === 'true' ? true : false;
+	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
 	Galapago.bubbleTip = new BubbleTip();
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
-	console.log( 'isTimedMode: ' + Galapago.isTimedMode );
-	console.log( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
+	console.log( 'Galapago.isTimedMode: ' + Galapago.isTimedMode );
+	console.log( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
+	console.log( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
 		Galapago.levels.push(levelTemp);
@@ -252,7 +253,6 @@ LevelMap.prototype.display = function() {
 	this.canvas.focus();
 	$('ul#map-nav').css('display', 'block');
 	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
-	Galapago.audioPlayer.playVolcanoLoop();
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	otherAnimationCanvas.style.zIndex = 9;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
@@ -272,6 +272,7 @@ LevelMap.prototype.display = function() {
 	this.drawHotspots();
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	this.registerEventHandlers();
+	Galapago.audioPlayer.playVolcanoLoop();
 }; //LevelMap.prototype.display()
 
 LevelMap.prototype.drawHotspots = function(level){
@@ -438,11 +439,19 @@ LevelMap.prototype.registerEventHandlers = function() {
 				break;
 			case 48: // numeric 0
 				Galapago.isBypassLevelLocking = true;
-				console.debug( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
+				console.debug( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
 				break;
 			case 49: // numeric 1
 				Galapago.isBypassLevelLocking = false;
-				console.debug( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
+				console.debug( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
+				break;
+			case 50: // numeric 2
+				Galapago.audioPlayer.disable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				break;
+			case 51: // numeric 3
+				Galapago.audioPlayer.enable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 				break;
 			default:
 		}
@@ -655,20 +664,27 @@ LevelMap.getLevelsCompleted = function() {
 // we want to know the level unlocked by the highest level completed;
 // when the highest level completed unlocks multiple levels return the minimum of those levels
 LevelMap.getNextLevel = function() {
-	var highestLevelCompleted, unlockedLevels, nextLevelId;
+	var highestLevelCompleted, unlockedLevelIds, unlockedLevels, nextLevelId;
+	unlockedLevels = [];
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
 	if( typeof highestLevelCompleted === 'undefined' ) {
-		nextLevelId = 1;
+		nextLevel = Level.findById(1);
 	}
 	else {
-		unlockedLevels = highestLevelCompleted.unlocksLevels;
-		unlockedLevels = _.filter(unlockedLevels, function(levelId){
+		unlockedLevelIds = highestLevelCompleted.unlocksLevels;
+		unlockedLevelIds = _.filter(unlockedLevelIds, function(levelId){
 			return !Level.isComplete(levelId);
 		});
-		console.debug('unlocked levels for highest level completed = ' + unlockedLevels);
-		nextLevelId = _.min(unlockedLevels);
+		console.debug('unlocked level ids for highest level completed = ' + unlockedLevelIds);
+		_.each( unlockedLevelIds, function( id ) {
+			unlockedLevels.push( Level.findById(id) );
+		});
+		nextLevel = _.min(unlockedLevels, function(level) {
+			return level.difficulty;
+		});
+		console.debug('nextLevelId = ' + nextLevel.id);
 	}
-	return Level.findById(nextLevelId);
+	return nextLevel;
 } //LevelMap.getNextLevel()
 
 LevelMap.reset = function() {
@@ -1946,7 +1962,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						if( board.scoreEvents.length > 0 ) {
 							board.level.levelAnimation.stopMakeMatchAnimation();
 							board.updateScoreAndCollections(tileCoordinates);
-							if(board.reshuffleService.stopped){
+							if( ! board.reshuffleService.isStarted ){
 								board.reshuffleService.start();
 							}
 						}
@@ -3428,7 +3444,7 @@ ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
 function ReshuffleService(board){
 	this.board = board;
 	this.reshuffleInterval = null;
-	this.stopped = null;
+	this.isStarted = false;
 }
 
 ReshuffleService.prototype.start = function() {
@@ -3459,15 +3475,15 @@ ReshuffleService.prototype.start = function() {
 			Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
 		}
 	}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
-	this.stopped = false;
-}
+	this.isStarted = true;
+};
 
 ReshuffleService.prototype.stop = function() {
 	if(this.reshuffleInterval){
 		clearInterval(this.reshuffleInterval);
-		this.stopped = true;
+		this.isStarted = false;
 	} 
-}
+};
 
 function MatchFinder(){
 }

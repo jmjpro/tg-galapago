@@ -10,14 +10,17 @@ function AudioPlayer(isEnabled){
 	this.currentAudioInLoop = null;
 	this.loop = false;
 	this.isEnabled = isEnabled;
+	if( !isEnabled ) {
+		this.disable(true);
+	}
 }
 
 /* if audio is globally disabled we switch the definitions of AudioPlayer.play() and AudioPlayer.playInLoop() with these */
 //AudioPlayer.prototype.tempPlay = function(){};
 //AudioPlayer.prototype.tempPlayInLoop = function(){};
 
-AudioPlayer.prototype.disable = function() {
-	if( this.isEnabled ) {
+AudioPlayer.prototype.disable = function(isInit) {
+	if( isInit || this.isEnabled ) {
 		this.isEnabled = false;
 		this.stop();
 		this.stopLoop();
