@@ -1,5 +1,4 @@
-﻿
-/* begin class Galapago */
+﻿/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
@@ -80,24 +79,16 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 	});
 }; //Galapago.setLevelsFromJson()
 
-Galapago.localization = function(){
-    $("#option-continue-playing").i18n();
-    $("#option-main-menu").i18n();
-    $("#option-new-game").i18n();
-    $("#option-how-to-play").i18n();
-    $("#option-options").i18n();
-    $("#dialog-title").i18n();
-}
-
 Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
-	Galapago.localization();
+	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking || false;
 	Galapago.audioPlayer = new AudioPlayer();
 	Galapago.bubbleTip = new BubbleTip();
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
 	console.log( 'isTimedMode: ' + Galapago.isTimedMode );
+	console.log( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
 		Galapago.levels.push(levelTemp);
@@ -111,6 +102,8 @@ Galapago.init = function(isTimedMode) {
 	})/*.then(function() {
 		//Galapago.setLevel(levelName);
 	})*/.done();
+	//level 1 is always unlocked
+	Level.findById(1).isUnlocked = true;
 }; //Galapago.init()
 
 Galapago.buildGameImagePaths = function() {
@@ -279,7 +272,7 @@ LevelMap.prototype.display = function() {
 	this.drawHotspots();
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	this.registerEventHandlers();
-};
+}; //LevelMap.prototype.display()
 
 LevelMap.prototype.drawHotspots = function(level){
 	var levelMap = this;
@@ -366,7 +359,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	if( this.hotspotLevel.isCompleted ) {
 		this.layer.drawImage(this.images.green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, this.images.green_v.width, this.images.green_v.height);
 	}
-	else if( this.hotspotLevel.id === 1 || this.hotspotLevel.isUnlocked ) {
+	else if( this.hotspotLevel.isUnlocked ) {
 		//don't draw anything
 	}
 	else {
@@ -444,16 +437,12 @@ LevelMap.prototype.registerEventHandlers = function() {
 				evt.stopPropagation();
 				break;
 			case 48: // numeric 0
-				//levelMap.reset();				
+				Galapago.isBypassLevelLocking = true;
+				console.debug( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
 				break;
-			//TODO remove 49.. its for testing purpose	
 			case 49: // numeric 1
-				levelMap.quit();
-				evt.stopPropagation();
-				break;
-			case 50: // numeric 2
-				//TODO
-				//console.debug('start next level');
+				Galapago.isBypassLevelLocking = false;
+				console.debug( 'isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
 				break;
 			default:
 		}
@@ -467,7 +456,7 @@ LevelMap.prototype.quit = function() {
 
 // erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.reset = function() {
-	//TODO
+	localStorage.clear();
 	console.debug('reset map');
 	return this; //chainable
 }; //LevelMap.prototype.reset
@@ -485,6 +474,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
 			Galapago.setLevel(level.id);
+			this.handleKeyboardSelect();
 			break;
 		}
 		else {
@@ -493,10 +483,15 @@ LevelMap.prototype.handleSelect = function(evt) {
 	}
 }; //LevelMap.prototype.handleSelect()
 
-LevelMap.prototype.handleKeyboardSelect = function() {   
-    this.cleanup();
-	$('ul#map-nav').css('display', 'none');
-	Galapago.setLevel(this.hotspotLevel.id);
+LevelMap.prototype.handleKeyboardSelect = function() {
+	if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
+	    this.cleanup();
+		$('ul#map-nav').css('display', 'none');
+		Galapago.setLevel(this.hotspotLevel.id);
+	}
+	else {
+		console.debug( 'level ' + this.hotspotLevel.id + ' is locked');
+	}
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
@@ -515,6 +510,7 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
+	this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
@@ -529,6 +525,8 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
+		this.levelAnimation.stopGameStartArrow();
+		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = new MapScreen();
 		mapScreen.registerEventHandlers();
@@ -1894,7 +1892,7 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		new DialogMenu('layer-power-up', this, 'dialog-level-won', 'button-medium-hilight');		
+		new DialogMenu('canvas-main', this, 'dialog-level-won', 'button-medium-hilight');		
 	}
 }
 
@@ -2154,9 +2152,9 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
-			new DialogMenu('layer-power-up', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			new DialogMenu('canvas-main', gameboard, 'dialog-game-over', 'button-medium-hilight');
 	}else{
-			new DialogMenu('layer-power-up', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			new DialogMenu('canvas-main', gameboard, 'dialog-time-out', 'button-medium-hilight');
 	}
  
 }
@@ -2212,14 +2210,14 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('layer-power-up', this, 'dialog-game-menu', 'button-huge-hilight');
+			new DialogMenu('canvas-main', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
+			new DialogMenu('canvas-main', this, 'dialog-quit', 'button-huge-hilight');
 		    break;
 		case null:
 		default:

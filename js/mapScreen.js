@@ -55,8 +55,9 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 }; //MapScreen.prototype.handleNavButtonSelect()
 
 MapScreen.prototype.registerEventHandlers = function() {
-	var mapScreen, mapNav;
+	var mapScreen, mapNav, levelMap;
 	mapScreen = this;
+	levelMap = Galapago.levelMap;
 	mapNav = $('#map-nav');
 	//mapNav.onkeydown = function(evt) {
 	window.onkeydown = function(evt) {
@@ -74,7 +75,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 		case 38: // up arrow
 			mapScreen.unsetNavItem();
 			mapScreen.unregisterEventHandlers();
-			Galapago.levelMap.registerEventHandlers();
+			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
+			levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
+			levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;
 		case 39: // right arrow

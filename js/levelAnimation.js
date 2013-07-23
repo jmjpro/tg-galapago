@@ -1,4 +1,4 @@
-LevelAnimation.CREATURE_DROPPING_INTERVAL=5;
+LevelAnimation.CREATURE_DROPPING_INTERVAL=50;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
@@ -486,10 +486,24 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	animateGameStartArrow();
 }
 
+LevelAnimation.prototype.stopGameStartArrow = function(){
+	if(this.gameStartArrowAnimation){
+		this.gameStartArrowAnimation.stop();
+		this.gameStartArrowAnimation = null;
+	}
+}
+
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
 	nextLevelArrowAnimation.start();
+}
+
+LevelAnimation.prototype.stopNextLevelArrows = function(){
+	if(this.nextLevelArrowAnimation){
+		this.nextLevelArrowAnimation.stop();
+		this.nextLevelArrowAnimation = null;
+	}
 }
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
