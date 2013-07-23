@@ -1271,9 +1271,9 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
-	var timedMode, levelPlayed, tileActive, col, row;
-	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	levelPlayed = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".levelPlayed" );
+	var timedMode, tileActive, col, row;
+	//timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	//levelPlayed = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".levelPlayed" );
 	if(tile) {
 		tileActive = tile;
 	}
@@ -2748,7 +2748,7 @@ Tile.BORDER_RADIUS = 3;
 Tile.WIDTH = 47;
 Tile.HEIGHT = 47;
 Tile.DELAY_AFTER_FLIP_MS = 250;
-Tile.DELAY_AFTER_ACTIVATE_MS = 50;
+Tile.DELAY_AFTER_ACTIVATE_MS = 10;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
 Tile.CREATUREONLY_TILE_SPRITE_NUMBER = '1';
 Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
