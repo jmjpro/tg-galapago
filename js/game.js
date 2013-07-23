@@ -1272,8 +1272,6 @@ animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
 	var timedMode, tileActive, col, row;
-	//timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	//levelPlayed = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".levelPlayed" );
 	if(tile) {
 		tileActive = tile;
 	}
