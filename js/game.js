@@ -2245,6 +2245,7 @@ Board.prototype.handleKeyboardSelect = function() {
 }; //Board.prototype.handleKeyboardSelect
 
 Board.prototype.handleRightArrow = function() {
+	this.level.levelAnimation.stopMakeMatchAnimation();
 	var board, tileRight, col, row;
 	board = this;
 	if(this.initialSwapForTripletInfo){
@@ -2270,6 +2271,7 @@ Board.prototype.handleRightArrow = function() {
 }; //Board.prototype.handleRightArrow
 
 Board.prototype.handleLeftArrow = function() {
+	this.level.levelAnimation.stopMakeMatchAnimation();
 	var board, tileLeft, col, row;
 	board = this;
 	if(this.initialSwapForTripletInfo){
@@ -2304,6 +2306,7 @@ Board.prototype.handleLeftArrow = function() {
 }; //Board.prototype.handleLeftArrow
 
 Board.prototype.handleDownArrow = function() {
+	this.level.levelAnimation.stopMakeMatchAnimation();
 	var board, tileDown, col, row;
 	board = this;
 	if(this.initialSwapForTripletInfo){
@@ -2337,6 +2340,7 @@ Board.prototype.handleDownArrow = function() {
 }; //Board.prototype.handleDownArrow
 
 Board.prototype.handleUpArrow = function() {
+	this.level.levelAnimation.stopMakeMatchAnimation();
 	var board, tileUp, col, row;
 	board = this;
 	if(this.initialSwapForTripletInfo){
