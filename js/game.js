@@ -3449,33 +3449,35 @@ function ReshuffleService(board){
 
 ReshuffleService.prototype.start = function() {
 	var reshuffleService = this;
-	this.reshuffleInterval = setInterval(function(){
-		var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
-		var validMoveFound = swapForTripletInfo.tipInfo.initialTile != null;
-		var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
-		if(validMoveFound){
-			var initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
-			var swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
-			reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
-			reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
-			if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
-				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
-				Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
+	if( !this.reshuffleInterval) {
+		this.reshuffleInterval = setInterval(function(){
+			var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			var validMoveFound = swapForTripletInfo.tipInfo.initialTile != null;
+			var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
+			if(validMoveFound){
+				var initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
+				var swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
+				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
+				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
+				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
+					Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
+					Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
+				}
 			}
-		}
-		if(powerActive && !validMoveFound){
-			Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
-			Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
-		}
-		if(!powerActive && !validMoveFound){
-			Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
-			Galapago.audioPlayer.playReshuffle();
-			reshuffleService.board.shuffleBoard();
-			console.log("reshuffled");
-			Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
-		}
-	}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
-	this.isStarted = true;
+			if(powerActive && !validMoveFound){
+				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
+				Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
+			}
+			if(!powerActive && !validMoveFound){
+				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
+				Galapago.audioPlayer.playReshuffle();
+				reshuffleService.board.shuffleBoard();
+				console.log("reshuffled");
+				Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
+			}
+		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
+		this.isStarted = true;
+	}
 };
 
 ReshuffleService.prototype.stop = function() {
