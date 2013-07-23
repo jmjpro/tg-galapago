@@ -983,14 +983,14 @@ Level.prototype.won = function(){
 	Galapago.audioPlayer.playLevelWon();
     level = this;
 	sdkApi.requestModalAd("inGame").done(function(){
-		level.showLevelMap();
+		level.showLevelMap(LevelMap.getNextLevel());
 	});
 }
 
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
-    this.showLevelMap();
+    this.showLevelMap(this);
 }
 
 Level.prototype.cleanup = function(){
@@ -1003,8 +1003,8 @@ Level.prototype.cleanup = function(){
  	Galapago.audioPlayer.stop();
 }
 
-Level.prototype.showLevelMap = function(){
-	Galapago.levelMap = new LevelMap(this);
+Level.prototype.showLevelMap = function(level){
+	Galapago.levelMap = new LevelMap(level);
  	Galapago.levelMap.canvas.style.zIndex = 7;
 	Galapago.levelMap.canvas.focus();	
 }
@@ -2126,7 +2126,7 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
     	changedPointsArray.push(fallingPoint);
     	board.addTile(fallingPoint, null, null, null, temp);
     	var originalLockedTile = board.addTile(tile.coordinates, 'CREATURE', null, Tile.PLAIN_TILE_SPRITE_NUMBER);
-    	originalLockedTile.clear;
+    	originalLockedTile.clear();
     	originalLockedTiles.push(originalLockedTile);
     	board.addTile(coordinates, null, null, null, tile);
     	return true;
