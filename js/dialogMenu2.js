@@ -30,10 +30,10 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
-			dialogMenu.callingClass.display();
 			if(dialogMenu.callingClass.level.dangerBar){
 				dialogMenu.callingClass.level.dangerBar.resume();
 			}
+			this.hide();
 			break;
 		case 'option-main-menu' :
 			this.hide();
