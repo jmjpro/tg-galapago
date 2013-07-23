@@ -45,15 +45,16 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			//dialogMenu.callingClass.displayMenuButton(false);
 			//dialogMenu.callingClass.hotspot = null;
 			//dialogMenu.callingClass.display();
-			new DialogMenu('layer-power-up', dialogMenu.callingClass, 'dialog-new-game', 'button-huge-hilight');
+			new DialogMenu(dialogMenu.callingScreen[0].id, dialogMenu.callingClass, 'dialog-new-game', 'button-huge-hilight');
 			console.debug('option-new-game');
 			break;
 		case 'option-how-to-play' :
+			console.debug('option-how-to-play');
 			this.hide();
 			dialogMenu.callingClass.displayMenuButton(false);
 			dialogMenu.callingClass.hotspot = null;
-			dialogMenu.callingClass.display();
-			console.debug('option-how-to-play');
+			//dialogMenu.callingClass.display();
+			new DialogMenu(dialogMenu.callingScreen[0].id, dialogMenu.callingClass, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
 			break;
 		case 'option-options' :
 			this.hide();
@@ -206,6 +207,7 @@ function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkRe
 	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = hilightClass;
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
+	this.initialNavItem = this.currentNavItem;
 	this.registerEventHandlers();
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
@@ -227,6 +229,7 @@ DialogMenu.prototype.show = function() {
 DialogMenu.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.dialogMenuDOM.css('display', 'none');
+	this.setNavItem(this.initialNavItem);
 	if(this.callingClass.registerEventHandlers){
 	  this.callingClass.registerEventHandlers();
 	}else{
@@ -242,8 +245,11 @@ DialogMenu.prototype.setNavItem = function(item) {
 }; //DialogMenu.prototype.setNavItem()
 
 DialogMenu.prototype.registerEventHandlers = function() {
-	var dialogMenu;
+	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector;
 	dialogMenu = this;
+	lastIndex = dialogMenu.dialogNav.children().length;
+	lastItemSelector = '*:nth-child(' + lastIndex + ')';
+	firstItemSelector = '*:nth-child(1)';
 	window.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
@@ -256,13 +262,19 @@ DialogMenu.prototype.registerEventHandlers = function() {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
 				console.debug(dialogMenu.currentNavItem[0]);
 			}
+			else { //loop back to last item
+				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
+			}
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
 		case 40: // down arrow
-			if( dialogMenu.currentNavItem.index() < dialogMenu.dialogNav.children().length - 1 ) {
+			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.next('li'));
 				console.debug(dialogMenu.currentNavItem[0]);
+			}
+			else { //loop back to first item
+				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
 			}
 			evt.stopPropagation();
 			evt.preventDefault();

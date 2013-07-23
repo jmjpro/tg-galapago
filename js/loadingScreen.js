@@ -27,6 +27,7 @@ function ScreenLoader() {
 
 ScreenLoader.init = function() {
 	sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
+	ScreenLoader.localization();
 	this.canvas = $('#' + ScreenLoader.LAYER_MAP)[0];
 	this.layer = this.canvas.getContext('2d');
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
@@ -65,6 +66,16 @@ ScreenLoader.registerEvent = function(){
 			console.debug('allLevels content loaded');	  
 		}
 	});
+}
+
+ScreenLoader.localization = function(){
+    $("#option-continue-playing").i18n();
+    $("#option-main-menu").i18n();
+    $("#option-new-game").i18n();
+    $("#option-how-to-play").i18n();
+    $("#option-options").i18n();
+    $("#dialog-title").i18n();
+    $("#dialog-leaderboards").i18n();
 }
 
 /// progress bar
@@ -135,10 +146,11 @@ ProgressBar.prototype.loaded = function(result) {
 };
 
 ProgressBar.prototype.showCopywrite =function(){
+	var copyrightChar = 169;
 	this.layer.font='13pt HelveticaBold'
 	this.layer.fillStyle = 'white';
-	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. 2008 Oberon Media.All Rights Reserved.', 320, 650);
-	this.layer.fillText('2013 TransGaming Interactive Corp. All RIGHTS RESERVED.', 340, 665);
+	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. ' + String.fromCharCode(copyrightChar) + ' 2008 Oberon Media.All Rights Reserved.', 180, 650);
+	this.layer.fillText(String.fromCharCode(copyrightChar) + ' 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.', 420, 665);
 }
 
 ProgressBar.prototype.registerEventHandlers = function() {

@@ -162,5 +162,11 @@
 		"OptionResetMap"  :  "RÉINITIALISER LA CARTE",
 		"OptionMenu"  :  "Menu",
 		"OptionQuit"  :  "Quitter"
+  },
+  "Dialog Leaderboards": {
+   	  "Title" : "Leaderboards French",
+      "OptionTimed" : "Timed French",
+	  "OptionRelaxed" : "Relaxed French",
+	  "OptionClose" : "Fermer"
   }
 }
