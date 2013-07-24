@@ -366,7 +366,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				if(rolloverImageSpriteSheet1){
 					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
-				}	
+				}
 			}
 			imgCnt = 0;
 			var interval = setInterval(function(){
@@ -604,7 +604,7 @@ RolloverAnimation.prototype.stop = function(){
 RolloverAnimation.prototype.animate = function(){
 	var image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
 	this.layer.putImageData(image, this.xCoord, this.yCoord);
-	this.rolloverSpriteId++;
+	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 };
 
@@ -804,4 +804,3 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 };
-
