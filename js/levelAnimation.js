@@ -196,6 +196,16 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [
 {cell: [243, 0], id: '10'}],
 ];
 
+LevelAnimation.GAME_IDLE_HINT_SPRITE_MATRIX = [
+[{cell: [0, 3], id: '1'},
+{cell: [60, 3], id: '2'},  
+{cell: [120, 3], id: '3'}, 
+{cell: [180, 3], id: '4'},  
+{cell: [240, 3], id: '5'},
+{cell: [300, 3], id: '6'},   
+{cell: [360, 3], id: '7'}],
+];
+
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
@@ -507,7 +517,9 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 }
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile);
+	var image = ScreenLoader.gal.get("game-screen/tile_mark_strip.png");
+	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_IDLE_HINT_SPRITE_MATRIX); 
+	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
 }
@@ -746,38 +758,51 @@ NextLevelArrowAnimation.prototype.animate = function(){
 	this.rolloverSpriteId = this.rolloverSpriteId % 2;
 };
 
-MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=700;
+MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=300;
 MakeMatchAnimation.BORDER_COLOR = 'blue';
-function MakeMatchAnimation(layer, initialTile, swapTile){
+function MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet){
 	this.layer = layer;
 	this.initialTile = initialTile;
 	this.swapTile = swapTile;
 	this.rolloverSpriteId = 0;
+	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
+	this.tileActive = null;
 }
 
 MakeMatchAnimation.prototype.start = function(){
 	this.rolloverSpriteId = 0;
-	var rolloverAnimation = this;
+	var makeMatchAnimation = this;
 	this.interval = setInterval(function(){
-		rolloverAnimation.animate(rolloverAnimation)}, 
-		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
+		makeMatchAnimation.animate()}, 
+		MakeMatchAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
 MakeMatchAnimation.prototype.stop = function(){
-	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
+	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
 	clearInterval(this.interval);
 };
 
 MakeMatchAnimation.prototype.animate = function(){
-	if(this.rolloverSpriteId == 1){
-		this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-		this.initialTile.drawBorder(MakeMatchAnimation.BORDER_COLOR, Tile.BORDER_WIDTH);	
-	}else{
-		this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-		this.swapTile.drawBorder(MakeMatchAnimation.BORDER_COLOR, Tile.BORDER_WIDTH);
+	if(this.rolloverSpriteId == 0){
+		if(this.tileActive){
+			this.layer.clearRect(this.tileActive.getXCoord(), this.tileActive.getYCoord(),Tile.getWidth(), Tile.getHeight());
+			this.layer.drawImage(this.tileActive.blob.image, this.tileActive.getXCoord(),this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+		}
+		if(this.tileActive == this.initialTile){
+			this.tileActive = this.swapTile;
+		}else{
+			this.tileActive = this.initialTile;
+		}
+		
 	}
+	var image = this.rolloverImageSpriteSheet.getSpriteNew([this.rolloverSpriteId, 0]);
+	this.layer.clearRect(this.tileActive.getXCoord(), this.tileActive.getYCoord(),Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(this.tileActive.blob.image, this.tileActive.getXCoord(),this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
 	this.rolloverSpriteId++;
-	this.rolloverSpriteId = this.rolloverSpriteId % 2;
+	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 };
 
