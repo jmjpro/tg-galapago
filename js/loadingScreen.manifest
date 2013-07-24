@@ -36,6 +36,7 @@
 			"game-screen/button_quit.png",
 			"game-screen/button_menu.png",
 			"game-screen/button_hilight.png",
+			"game-screen/hint_strip.png",
 			"game-screen/PowerUps_Flame_Activated.png",
 			"game-screen/PowerUps_Flame_Disabled.png",
 			"game-screen/PowerUps_Flame_Pressed.png",

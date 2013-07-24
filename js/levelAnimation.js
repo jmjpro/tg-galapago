@@ -183,8 +183,8 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [315, 0], id: '16'}
  ]];
 
-LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}, 
+LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'}, 
 {cell: [27, 0], id: '2'}, 
 {cell: [54, 0], id: '3'}, 
 {cell: [81, 0], id: '4'}, 
@@ -193,18 +193,39 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [
 {cell: [162, 0], id: '7'}, 
 {cell: [189, 0], id: '8'}, 
 {cell: [216, 0], id: '9'}, 
-{cell: [243, 0], id: '10'}],
-];
+{cell: [243, 0], id: '10'}
+]];
 
-LevelAnimation.GAME_IDLE_HINT_SPRITE_MATRIX = [
-[{cell: [0, 3], id: '1'},
+LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [0, 46], id: '2'},  
+{cell: [0, 92], id: '3'}, 
+{cell: [0, 138], id: '4'},  
+{cell: [0, 184], id: '5'},
+{cell: [0, 230], id: '6'},   
+{cell: [0, 276], id: '7'},
+{cell: [0, 322], id: '8'},
+{cell: [0, 368], id: '9'},
+{cell: [0, 414], id: '10'},
+{cell: [0, 460], id: '11'},
+{cell: [0, 504], id: '12'},
+{cell: [0, 550], id: '13'},
+{cell: [0, 596], id: '14'},
+{cell: [0, 642], id: '15'},
+{cell: [0, 688], id: '16'},
+{cell: [0, 734], id: '17'},
+{cell: [0, 780], id: '18'}
+]];
+
+LevelAnimation.BUBBLE_TIP_IDLE_HINT_SPRITE_MATRIX = [[
+{cell: [0, 3], id: '1'},
 {cell: [60, 3], id: '2'},  
 {cell: [120, 3], id: '3'}, 
 {cell: [180, 3], id: '4'},  
 {cell: [240, 3], id: '5'},
 {cell: [300, 3], id: '6'},   
-{cell: [360, 3], id: '7'}],
-];
+{cell: [360, 3], id: '7'}
+]];
 
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
@@ -518,7 +539,8 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var image = ScreenLoader.gal.get("game-screen/tile_mark_strip.png");
-	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_IDLE_HINT_SPRITE_MATRIX); 
+	//var image = ScreenLoader.gal.get("game-screen/hint_strip.png");
+	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BUBBLE_TIP_IDLE_HINT_SPRITE_MATRIX); 
 	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
