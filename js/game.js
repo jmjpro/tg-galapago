@@ -1410,7 +1410,6 @@ Board.prototype.drawFlyingCreatures = function () {
 	var board, ctx, rowIt, colIt, tile;
 	//ctx = this.creatureLayer;	
 	board = Galapago.level.board;
-	ctx = board.creatureLayer;
 	board.creatureYOffset -= Board.CREATURE_FLYOVER_STEP;
 	// save the current co-ordinate system before we screw with it
 	//ctx.save();
@@ -2839,8 +2838,8 @@ Tile.prototype.setActiveAsync = function() {
 	var deferred;
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	//this.drawHilight();
-	this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
+	this.drawHilight();
+	//this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
 	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
@@ -2890,30 +2889,34 @@ Tile.prototype.clear = function() {
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
-	var layer, x, y, imgTile, width, height, borderMultiplier;
+	var layer, x, y, imgTile, width, height, offset;
 	layer = this.board.gridLayer;
 	x = Tile.getXCoord(this.coordinates[0]);
 	y = Tile.getYCoord(this.coordinates[1]);
 	layer.strokeStyle = color;
 	layer.lineWidth = lineWidth;
-	borderMultiplier = 1;
-	width = Tile.getWidth() * borderMultiplier;
-	height = Tile.getHeight() * borderMultiplier;
+	offset = 1;
+	width = Tile.getWidth() * offset;
+	height = Tile.getHeight() * offset;
 	imgTile = Galapago.level.tile_1;
+	layer.clearRect( x - offset, y - offset, width + 2 * offset, height + 2 * offset );
 	layer.drawImage( imgTile, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	
-	var layer, x, y, imgHilight, width, height;
+	var layer, x, y, imgHilight, width, height, offset;
 	layer = this.board.gridLayer;
-	x = Tile.getXCoord(this.coordinates[0]);
-	y = Tile.getYCoord(this.coordinates[1]);
-	width = Tile.getWidth();
-	height = Tile.getHeight();
+	offset = 1;
+	x = Tile.getXCoord(this.coordinates[0]) - offset;
+	y = Tile.getYCoord(this.coordinates[1]) - offset;
+	width = Tile.getWidth() + 2 * offset;
+	height = Tile.getHeight() + 2 * offset;
 	imgHilight = Galapago.level.tile_hilight;
+	//layer.clearRect( x, y, width, height );
+	//layer.drawImage( this.blob.image, x, y, width, height );
 	layer.drawImage( imgHilight, x, y, width, height );
-}; //Tile.prototype.drawBorder()
+}; //Tile.prototype.drawHilight()
 
 Tile.prototype.getXCoord = function() {	
 	return Tile.getXCoord(this.coordinates[0]);
