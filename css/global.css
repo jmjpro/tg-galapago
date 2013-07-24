@@ -71,7 +71,7 @@ canvas.game-layer {
 	z-index: 9999;
 	font-family: 'JungleFever';
 	font-size: 26px;
-	color: rgb(255,255,181);
+	color: rgb(255,255,179);
 	white-space: nowrap;
 }
 
@@ -161,6 +161,7 @@ div.dialog-content {
 
 div.dialog-title {
 	position: relative;
+	font-size: 28px;
 	color: rgb(141,122,46);
 	top: 50px;
 }
@@ -190,8 +191,8 @@ div.dialog-title {
 }
 
 #dialog-level-won div.dialog-content {
- 	width: 330px;
-	color: rgb(255,255,204);
+ 	width: 350px;
+ 	font-size: 27px;
 }
 
 #dialog-level-won>div ul {
@@ -211,7 +212,7 @@ div.dialog-title {
 }
 
 #dialog-level-won table td {
-	color: rgb(255,255,102);
+	color: rgb(243,209,111);
 	padding-left: 10px;
 }
 
@@ -222,6 +223,7 @@ div.dialog-title {
 	height: 94px;
 	vertical-align: middle;
 	line-height: 114px;
+	font-size: 27px;
 }
 
 .button-huge-hilight {
@@ -246,6 +248,7 @@ div.dialog-title {
 	height: 81px;
 	vertical-align: middle;
 	line-height: 81px;
+	font-size: 22px;
 }
 
 .button-medium-hilight {
@@ -290,14 +293,14 @@ ul.vertical-button-nav > li {
 	top: 48px; /*(720-625/2)*/
 }
 
-#dialog-leaderboards div.dialog-content {
+#dialog-leaderboards div.dialog-content {	
 	width: 900px;
 }
 
 #dialog-leaderboards div.dialog-content table {
 	display: inline-block;
-	font-size: 16px;
-	color: rgb(13,97,133);
+	font-size: 24px;
+	color: rgb(13,97,132);
 	text-align: center;
 	background: url('../res/img/dialogs/drop_down_menu.png') no-repeat left top;
 	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
@@ -305,13 +308,17 @@ ul.vertical-button-nav > li {
 	padding-bottom: 15px;
 }
 
+#dialog-leaderboards div.dialog-content table {
+	line-height: 22px;
+}
+
 #dialog-leaderboards div.dialog-content table>caption {
-	color: rgb(255,255,181);
+	color: rgb(255,255,179);
 	height: 75px;
 }
 
 #dialog-leaderboards div.dialog-content table th {
-	color: rgb(140,122,46);
+	color: rgb(141,122,46);
 }
 
 #dialog-time-out {
@@ -339,11 +346,11 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-you-won div.dialog-content p {
- 	font-size: 16pt;
+ 	font-size: 23pt;
 }
 
 span#final-score {
-	color: rgb(244,210,113);
+	color: rgb(243,209,111);
 }
 
 #dialog-loading {
@@ -352,6 +359,7 @@ span#final-score {
 	height: 268px;
 	left: 368px;
 	top: 220px;
+	font-size: 28px;
 }
 
 #dialog-new-game {
@@ -360,6 +368,7 @@ span#final-score {
 	height: 590px;
 	left: 282px; /*(1280-717/2)*/
 	top: 65px; /*(720-590/2)*/
+	font-size: 27px;
 }
 
 #dialog-game-options {
@@ -389,6 +398,12 @@ span#final-score {
 	height: 626px;
 	left: 281px;
 	top: 15px;
+	font-size: 27px;
+}
+
+#dialog-profile-create #keypad {
+	font-family: 'Helvetica';
+	font-size: 17px;
 }
 
 #dialog-profile-create .dialog-title {
@@ -462,6 +477,7 @@ ul.galapago-drop-down {
 	background-size: 388px 150px;
 	line-height: 27px;
 	padding-top: 45px;
+	font-size: 21px;
 }
 
 #dialog-reset-game {
@@ -482,6 +498,10 @@ ul.galapago-drop-down {
 	height: 626px;
 	left: 281px;
 	top: 15px;
+}
+
+#dialog-help .dialog-title {
+	left: 20px;
 }
 
 #dialog-help div.dialog-content {

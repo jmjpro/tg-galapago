@@ -1,6 +1,6 @@
 BlobCollection.FONT_SIZE = '20px';
 BlobCollection.FONT_NAME = 'JungleFever';
-BlobCollection.FONT_COLOR = 'white';
+BlobCollection.FONT_COLOR = 'rgb(255,255,255)';
 BlobCollection.ITEM_Y = 662;
 BlobCollection.ITEM_WIDTH = 47;
 BlobCollection.ITEM_HEIGHT = 47;
