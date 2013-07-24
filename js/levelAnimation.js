@@ -358,13 +358,13 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray = [];
 			var imageArray1 = [];
 			var imgCnt = 0;
-			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
+			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					var image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
+					var image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
 				}
 				if(rolloverImageSpriteSheet1){
-					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
+					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
 				}	
 			}
@@ -395,7 +395,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt == LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 2){
+				if(imgCnt >= LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 4){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
