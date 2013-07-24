@@ -16,6 +16,7 @@ Galapago.NUM_LEVELS = 70;
 Galapago.gameImageNames = [
 	'button_quit',
 	'button_menu',
+	'button_hilight',
 	'Bracket_Left',
 	'Bracket_Right',
 	'item_collected_mark',
@@ -33,7 +34,8 @@ Galapago.gameImageNames = [
 	'PowerUps_Swap_Pressed',
 	'PowerUps_Swap_Rollover',
 	'tile_1',
-	'tile_2'
+	'tile_2',
+	'tile_hilight'
 ];
 Galapago.dangerBarImageNames = [
 	'danger_bar',
@@ -190,7 +192,9 @@ LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 LevelMap.MAX_DIFFICULTY = 5;
-LevelMap.LEVEL_STATUS_FONT_SIZE = '17px';
+LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE = '15px';
+LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE = '17px';
+LevelMap.LEVEL_STATUS_SCORE_SIZE = '22px';
 LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
 LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 //TODO: define this in a JSON config file
@@ -341,7 +345,7 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore;
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
-	this.layer.font = LevelMap.LEVEL_STATUS_FONT_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
+	this.layer.font = LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	//text = this.hotspotLevel.name.toUpperCase() + ' ' + this.hotspotLevel.id ;
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id
@@ -353,7 +357,9 @@ LevelMap.prototype.updateLevelStatus = function() {
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
+		this.layer.font = LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
+		this.layer.font = LevelMap.LEVEL_STATUS_SCORE_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
 	}
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
@@ -1248,14 +1254,18 @@ Board.prototype.displayLevelName = function() {
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage;
+	var textColor, layer, menuButtonImage, buttonHilight;
 	layer = this.creatureLayer;
 	menuButtonImage = this.blobCollection.button_menu;
+	buttonHilight = this.blobCollection.button_hilight;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+		layer.drawImage(buttonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, buttonHilight.width, buttonHilight.height);
+		/*
 		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
 		layer.strokeRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+		*/
 	}
 	else {
 		this.buttonActive = null;
@@ -1265,17 +1275,21 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage;
+	var textColor, layer, quitButtonImage, buttonHilight;
 	layer = this.creatureLayer;
 	quitButtonImage = this.blobCollection.button_quit;
+	buttonHilight = this.blobCollection.button_hilight;
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10)
 	
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+		layer.drawImage(buttonHilight, quitImageX - 1, quitImageY - 1, buttonHilight.width, buttonHilight.height);
+		/*
 		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
 		layer.strokeRect(quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+		*/
 	}
 	else {
 		this.buttonActive = null;
@@ -2823,6 +2837,7 @@ Tile.prototype.setActiveAsync = function() {
 	var deferred;
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
+	//this.drawHilight();
 	this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
 	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
@@ -2873,18 +2888,29 @@ Tile.prototype.clear = function() {
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
-	var layer, x, y, width, height, borderMultiplier;
+	var layer, x, y, imgTile, width, height, borderMultiplier;
 	layer = this.board.gridLayer;
-	layer.strokeStyle = color;
-	layer.lineWidth = lineWidth;
 	x = Tile.getXCoord(this.coordinates[0]);
 	y = Tile.getYCoord(this.coordinates[1]);
+	layer.strokeStyle = color;
+	layer.lineWidth = lineWidth;
 	borderMultiplier = 1;
 	width = Tile.getWidth() * borderMultiplier;
 	height = Tile.getHeight() * borderMultiplier;
-	layer.strokeRect(x, y, width, height);
-	var imgTile = Galapago.level.tile_1;
+	imgTile = Galapago.level.tile_1;
 	layer.drawImage( imgTile, x, y, width, height );
+	layer.strokeRect(x, y, width, height);
+}; //Tile.prototype.drawBorder()
+
+Tile.prototype.drawHilight = function() {	
+	var layer, x, y, imgHilight, width, height;
+	layer = this.board.gridLayer;
+	x = Tile.getXCoord(this.coordinates[0]);
+	y = Tile.getYCoord(this.coordinates[1]);
+	width = Tile.getWidth();
+	height = Tile.getHeight();
+	imgHilight = Galapago.level.tile_hilight;
+	layer.drawImage( imgHilight, x, y, width, height );
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.getXCoord = function() {	
