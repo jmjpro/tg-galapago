@@ -85,6 +85,8 @@ Powerup.POWER_ACTIVATED = 1;
 Powerup.POWER_ROLLOVER= 2;
 Powerup.POWER_PRESSED= 3;
 
+Powerup.POWER_ICON_HEIGHT= 40;
+
 
 function Powerup(images,board ,powerupPoints) {
 	this.initImages(images);
@@ -102,6 +104,9 @@ function Powerup(images,board ,powerupPoints) {
     this.powerSelected=0;
 	if(powerupPoints > 0){
 		this.score = powerupPoints;
+		if(Powerup.POWER_POINTS > this.score){
+			this.update();
+		}
 		this.updatePowerAchieved();
 	}	
 	//this.addListner();
@@ -312,12 +317,15 @@ Powerup.prototype.focus = function(){
         this.currentFocus=Powerup.SHUFFLER_SELECTED;		
   
   }
+  this.animatePowerStatus();
 }
 
 Powerup.prototype.updatePowerup = function(tripletCount){
   this.timer.reset(this);
   this.score += tripletCount;
   console.log('incrementScore' +this.score );
+  console.log('incrementScore' +this.score/Powerup.POWER_POINTS );
+  this.update();
   return this.updatePowerAchieved();
 }
 
@@ -327,9 +335,39 @@ Powerup.prototype.decrementScore = function(sender){
   if(sender.score>0){
     sender.timer.reset(sender);
     sender.score -= 1;
+	sender.update();
   }
+  
  // console.log('decrementScore' +sender.score );
 }
+
+Powerup.prototype.animatePowerStatus = function(){
+	var percentScoreGain =this.score/Powerup.POWER_POINTS
+    //if(percentScoreGain > .70){
+	//	return;
+	//}
+    var clipHeight = (Powerup.POWER_ICON_HEIGHT*percentScoreGain);
+	console.log("clipHeight : "+clipHeight);
+    var newHeigth=  (Powerup.POWER_ICON_HEIGHT - clipHeight);
+	console.log('newHeigth : ' +newHeigth);
+
+	if(!this.flipflopPowerAchieved){
+	    //this.layer.clearRect( Powerup.FLIPFLOP_LEFT-2, Powerup.FLIPFLOP_TOP-2, this.PowerUps_Swap_Disabled.width+4, this.PowerUps_Swap_Disabled.height+4 );
+		//this.layer.drawImage( this.PowerUps_Swap_Disabled, Powerup.FLIPFLOP_LEFT, Powerup.FLIPFLOP_TOP );
+		this.layer.drawImage( this.PowerUps_Swap_Activated ,0, 10+newHeigth, this.PowerUps_Swap_Activated.width , clipHeight, Powerup.FLIPFLOP_LEFT, (Powerup.FLIPFLOP_TOP +Powerup.POWER_ICON_HEIGHT+10 - clipHeight) ,this.PowerUps_Swap_Activated.width,clipHeight );
+	}else if(!this.firePowerAchieved){
+		//this.layer.drawImage( this.PowerUps_Flame_Disabled, Powerup.FIRE_LEFT, Powerup.FIRE_TOP );
+		//this.layer.drawImage( this.PowerUps_Flame_Activated, Powerup.FIRE_LEFT, Powerup.FIRE_TOP+newHeigth );
+		this.layer.drawImage( this.PowerUps_Flame_Activated ,0, 10+newHeigth, this.PowerUps_Flame_Activated.width , clipHeight, Powerup.FIRE_LEFT, (Powerup.FIRE_TOP +Powerup.POWER_ICON_HEIGHT +10 - clipHeight) ,this.PowerUps_Flame_Activated.width,clipHeight );
+	}else if(!this.shufflerPowerAchieved){
+		//this.layer.drawImage( this.PowerUps_Shuffle_Disabled, Powerup.SHUFFLER_LEFT, Powerup.SHUFFLER_TOP );
+		//this.layer.drawImage( this.PowerUps_Shuffle_Activated, Powerup.SHUFFLER_LEFT, Powerup.SHUFFLER_TOP +newHeigth);
+		this.layer.drawImage( this.PowerUps_Shuffle_Activated ,0, 10+newHeigth, this.PowerUps_Shuffle_Activated.width , clipHeight, Powerup.SHUFFLER_LEFT, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - clipHeight) ,this.PowerUps_Shuffle_Activated.width,clipHeight );
+	}
+	
+	
+}
+
 
 Powerup.prototype.updatePowerAchieved = function(){
     var flagPowerUpdated = false;
@@ -437,4 +475,5 @@ Powerup.prototype.update = function() {
 		this.drawShuffler();
 		
 	}
+	this.animatePowerStatus();
 }; //BobCervantes.prototype.update()
