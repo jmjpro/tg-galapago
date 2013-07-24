@@ -759,7 +759,6 @@ NextLevelArrowAnimation.prototype.animate = function(){
 };
 
 MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=300;
-MakeMatchAnimation.BORDER_COLOR = 'blue';
 function MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet){
 	this.layer = layer;
 	this.initialTile = initialTile;
