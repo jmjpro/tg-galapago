@@ -1706,7 +1706,7 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 	var matchingTilesSets = this.tilesEventProcessor.getMatchingTilesSets(fixedTile);
 	_.each(matchingTilesSets, function(matchingTilesSet){
 		_.each(matchingTilesSet, function(matchingTile){
-			if(fixedTile != matchingTile && !(excludeTileCoords && _.contains(excludeTileCoords, matchingTile.coordinates))){
+			if(fixedTile != matchingTile &&!matchingTile.isBlocked() && !(excludeTileCoords && _.contains(excludeTileCoords, matchingTile.coordinates))){
 				var tile = board.getNonMatchingCreatureTile(matchingTile);
 				col = tile.coordinates[0];
 				row = tile.coordinates[1];
