@@ -1004,7 +1004,6 @@ Level.prototype.won = function(){
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
-    this.showLevelMap(this);
 }
 
 Level.prototype.cleanup = function(){
@@ -1105,6 +1104,15 @@ Level.registerEventHandlers = function() {
 		}
 	};
 }; //Level.registerEventHandlers()
+
+Level.prototype.unregisterEventHandlers = function() {
+	document.onclick = null;
+	$('#layer-grid').click();
+
+	$('#layer-grid').tap();
+
+	window.onkeydown = null;
+}; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
 	var canvas, layers;

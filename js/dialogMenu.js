@@ -5,20 +5,23 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
 	this.hide();
 };
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
-	var optionId = dialogMenu.currentNavItem[0].id;
+	var optionId, level;
+	optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
 		case 'option-yes' :
 			this.hide();
-			if(dialogMenu.callingClass instanceof Board){
-				dialogMenu.callingClass.level.quit();
+			if(dialogMenu.callingObject instanceof Board){
+				level = dialogMenu.callingObject.level;
+				level.quit();
+				level.showLevelMap(level);
 			}else{
 				Galapago.levelMap.quit();
 			}
 			break;
 		case 'option-no' :
-			if(dialogMenu.callingClass instanceof Board &&
-			   dialogMenu.callingClass.level.dangerBar){
-				dialogMenu.callingClass.level.dangerBar.resume();
+			if(dialogMenu.callingObject instanceof Board &&
+			   dialogMenu.callingObject.level.dangerBar){
+				dialogMenu.callingObject.level.dangerBar.resume();
 			}
 			this.hide();
 			break;
@@ -27,7 +30,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	var optionId, board, mainCanvasId;
 	optionId = dialogMenu.currentNavItem[0].id;
-	board = dialogMenu.callingClass;
+	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
 	console.debug(optionId);
 	switch( optionId ) {
@@ -43,6 +46,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 		case 'option-main-menu' :
 			this.hide();
 			board.level.quit();
+			MainMenuScreen.init('canvas-main', board.level);
 			break;
 		case 'option-new-game' :
 			this.hide();
@@ -52,7 +56,6 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			//dialogMenu.callingClass.display();
 			new DialogMenu(mainCanvasId, board, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
 			break;
 		case 'option-options' :
@@ -66,16 +69,16 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanup();
-	dialogMenu.callingClass.level.won();
+	dialogMenu.callingObject.level.cleanup();
+	dialogMenu.callingObject.level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanup();
+	dialogMenu.callingObject.level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
-		dialogMenu.callingClass.level.showLevelMap();
+		dialogMenu.callingObject.level.showLevelMap();
 	});
     
 	
@@ -89,22 +92,22 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.cleanup();
+	dialogMenu.callingObject.level.cleanup();
     sdkApi.requestModalAd("inGame").done(function(){
-		dialogMenu.callingClass.level.showLevelMap();
+		dialogMenu.callingObject.level.showLevelMap();
 	});
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 	var navItem = dialogMenu.currentNavItem;
 	this.hide();
-	dialogMenu.callingClass.level.won();
+	dialogMenu.callingObject.level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	var optionId, board, mode;
 	optionId = dialogMenu.currentNavItem[0].id;
-	board = dialogMenu.callingClass;
+	board = dialogMenu.callingObject;
 	switch( optionId ) {
 		case 'option-yes' :
 			console.log("starting new game");
@@ -166,18 +169,23 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	};
 };
 DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
-	var optionId = dialogMenu.currentNavItem[0].id;
+	var optionId, level;
+	optionId = dialogMenu.currentNavItem[0].id;
+	level = dialogMenu.callingObject.hotspotLevel;
+	 
 	switch( optionId ) {
 		case 'option-no' :
 			Galapago.levelMap.cleanup();
-			Galapago.init(Galapago.gameMode);
+			//Galapago.init(Galapago.gameMode);
+			level.showLevelMap(level);
 			this.hide();
 			break;
 		case 'option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
 			Galapago.levelMap.cleanup();
-			Galapago.init(Galapago.gameMode);
+			//Galapago.init(Galapago.gameMode);
+			level.showLevelMap(Level.findById(1));
 			this.hide();
 			break;
 	};
@@ -202,9 +210,9 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 };
 /* end DialogMenu.SELECT_HANDLERS[] */
 
-function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkReportingPage, callback) {
+function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
-	this.callingClass = callingClass;
+	this.callingObject = callingObject;
 	this.windowKeyHandler= window.onkeydown;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
@@ -225,16 +233,16 @@ function DialogMenu(callingScreenId, callingClass, dialogId, hilightClass, sdkRe
 } //function DialogMenu()
 
 DialogMenu.prototype.show = function() {
-	this.dialogMenuDOM.css('display', 'block');
+	this.dialogMenuDOM.show();
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.hide = function() {
 	this.unregisterEventHandlers();
-	this.dialogMenuDOM.css('display', 'none');
+	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
-	if(this.callingClass.registerEventHandlers){
-	  this.callingClass.registerEventHandlers();
+	if(this.callingObject.registerEventHandlers){
+	  this.callingObject.registerEventHandlers();
 	}else{
 	  window.onkeydown = this.windowKeyHandler;
 	}

@@ -43,7 +43,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'reset-map' :
 			//console.log( 'selected reset map button');
-			new DialogMenu('layer-map-other-animation', LevelMap, 'dialog-reset-game', 'button-medium-hilight');
+			new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
 
 			break;
 		case 'start-next-map' :

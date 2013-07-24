@@ -30,11 +30,11 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 
 function MainMenuScreen() {}
 
-MainMenuScreen.init = function(callingScreenId, callingClass) {
+MainMenuScreen.init = function(callingScreenId, callingObject) {
 	var mainMenuScreen = new MainMenuScreen();
 	mainMenuScreen.mainMenuDOM = $('#main-menu-screen');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
-	mainMenuScreen.callingClass = callingClass ? callingClass : null;
+	mainMenuScreen.callingObject = callingObject ? callingObject : null;
 	mainMenuScreen.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	mainMenuScreen.registerImageLoadEvents();
 	mainMenuScreen.gal.init(function() {
@@ -68,7 +68,7 @@ MainMenuScreen.prototype.setImages = function() {
 }; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode;
+	var navItem, isTimedMode, level;
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
@@ -77,12 +77,26 @@ MainMenuScreen.prototype.selectHandler = function() {
 		case 'button-timed' :
 			this.hide();
 			isTimedMode = true;
-			Galapago.init(isTimedMode);
+			if( this.callingObject instanceof Level ) {
+				Galapago.isTimedMode = isTimedMode;
+				level = this.callingObject;
+				level.showLevelMap(level);
+			}
+			else {
+				Galapago.init(isTimedMode);
+			}
 			break;
 		case 'button-relaxed' :
 			this.hide();
 			isTimedMode = false;
-			Galapago.init(isTimedMode);
+			if( this.callingObject instanceof Level ) {
+				Galapago.isTimedMode = isTimedMode;
+				level = this.callingObject;
+				level.showLevelMap(level);
+			}
+			else {
+				Galapago.init(isTimedMode);
+			}
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
@@ -111,19 +125,19 @@ MainMenuScreen.prototype.registerEventHandlersLanguage = function() {
 } //MainMenuScreen.prototype.registerEventHandlersLanguage()
 
 MainMenuScreen.prototype.show = function() {
-	this.callingClass && this.callingClass.unregisterEventHandlers();	
+	this.callingObject && this.callingObject.unregisterEventHandlers();	
 	this.registerEventHandlers();
-	this.mainMenuDOM.css('display', 'block');
+	this.mainMenuDOM.show();
 	this.callingScreen && this.callingScreen.hide();
 	sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
 	this.unregisterEventHandlers();
-	this.mainMenuDOM.css('display', 'none');
+	this.mainMenuDOM.hide();
 	/*
-	if( this.callingClass.registerEventHandlers ){
-		this.callingClass.registerEventHandlers();
+	if( this.callingObject.registerEventHandlers ){
+		this.callingObject.registerEventHandlers();
 	}
 	else {
 		window.onkeydown = this.windowKeyHandler;
