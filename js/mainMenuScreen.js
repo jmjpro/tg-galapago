@@ -80,7 +80,8 @@ MainMenuScreen.prototype.selectHandler = function() {
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				level.showLevelMap(level);
+				Galapago.levelMap.show(level);
+				//level.showLevelMap(level);
 			}
 			else {
 				Galapago.init(isTimedMode);
@@ -92,7 +93,8 @@ MainMenuScreen.prototype.selectHandler = function() {
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				level.showLevelMap(level);
+				Galapago.levelMap.show(level);
+				//level.showLevelMap(level);
 			}
 			else {
 				Galapago.init(isTimedMode);

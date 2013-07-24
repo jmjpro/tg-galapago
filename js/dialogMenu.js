@@ -13,7 +13,8 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 			if(dialogMenu.callingObject instanceof Board){
 				level = dialogMenu.callingObject.level;
 				level.quit();
-				level.showLevelMap(level);
+				LevelMap.show(level);
+				//level.showLevelMap(level);
 			}else{
 				Galapago.levelMap.quit();
 			}
@@ -74,11 +75,12 @@ DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
-	var navItem = dialogMenu.currentNavItem;
+	var level;
+	level = dialogMenu.callingObject.level;
 	this.hide();
-	dialogMenu.callingObject.level.cleanup();
+	level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
-		dialogMenu.callingObject.level.showLevelMap();
+		LevelMap.show(level);
 	});
     
 	
@@ -90,11 +92,13 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
-	var navItem = dialogMenu.currentNavItem;
+	var level;
+	level = dialogMenu.callingObject.level;
 	this.hide();
-	dialogMenu.callingObject.level.cleanup();
+	level.cleanup();
     sdkApi.requestModalAd("inGame").done(function(){
-		dialogMenu.callingObject.level.showLevelMap();
+    	LevelMap.show(level);
+		//level.showLevelMap();
 	});
 	//show map screen;
 };
@@ -177,7 +181,8 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 		case 'option-no' :
 			Galapago.levelMap.cleanup();
 			//Galapago.init(Galapago.gameMode);
-			level.showLevelMap(level);
+			LevelMap.show(level);
+			//level.showLevelMap(level);
 			this.hide();
 			break;
 		case 'option-yes' :
@@ -185,7 +190,8 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 			LevelMap.reset();
 			Galapago.levelMap.cleanup();
 			//Galapago.init(Galapago.gameMode);
-			level.showLevelMap(Level.findById(1));
+			LevelMap.show(Level.findById(1));
+			//level.showLevelMap(Level.findById(1));
 			this.hide();
 			break;
 	};

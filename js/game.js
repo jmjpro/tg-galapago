@@ -608,6 +608,13 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 	this.layer.fillText( x + ',' + y, x, y );
 }; //LevelMap.prototype.debugDisplayMapCoordinates
 
+LevelMap.show = function(level){
+	Galapago.levelMap = new LevelMap(level);
+ 	Galapago.levelMap.canvas.style.zIndex = 7;
+	Galapago.levelMap.canvas.focus();
+	Galapago.levelMap.registerEventHandlers();
+}; //LevelMap.show()
+
 //+ adapted from Jonas Raoni Soares Silva
 //@ http://jsfromhell.com/math/is-point-in-poly [rev. #0]
 LevelMap.isPointInPoly = function (pt, poly) {
@@ -1003,7 +1010,8 @@ Level.prototype.won = function(){
 	Galapago.audioPlayer.playLevelWon();
     level = this;
 	sdkApi.requestModalAd("inGame").done(function(){
-		level.showLevelMap(LevelMap.getNextLevel());
+		LevelMap.show(LevelMap.getNextLevel());
+		//level.showLevelMap(LevelMap.getNextLevel());
 	});
 }
 
@@ -1020,12 +1028,6 @@ Level.prototype.cleanup = function(){
  	this.levelAnimation.stopAllAnimations();
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
-}
-
-Level.prototype.showLevelMap = function(level){
-	Galapago.levelMap = new LevelMap(level);
- 	Galapago.levelMap.canvas.style.zIndex = 7;
-	Galapago.levelMap.canvas.focus();	
 }
 
 Level.prototype.getCreatureSubset = function(creatureTypes) {
