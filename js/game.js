@@ -1313,6 +1313,7 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
+	var markTile;
 	var timedMode, tileActive, col, row;
 	if(tile) {
 		tileActive = tile;
@@ -1325,6 +1326,7 @@ Board.prototype.setActiveTile = function(tile) {
 		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
 		Galapago.bubbleTip.showBubbleTip(i18n.t(key));
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
+		markTile = true;
 	}	
 	else { //YJ: activate top left tile unless otherwise indicated
 		col = this.firstTileCoordinates[0];
@@ -1332,9 +1334,7 @@ Board.prototype.setActiveTile = function(tile) {
 		tileActive = this.creatureTileMatrix[col][row];
 	}
 	this.tileActive = tileActive;
-	tileActive.setActiveAsync(function() {
-			return this; //chainable
-	}).done();
+	tileActive.setActiveAsync(markTile).done();
 }; //Board.prototype.setActiveTile()
 
 Board.prototype.getTileMatrix = function(blobType) {
@@ -2845,13 +2845,13 @@ Tile.prototype.matchesSuperFriend = function(that) {
 	return isMatch;
 };
 
-Tile.prototype.setActiveAsync = function() {
+Tile.prototype.setActiveAsync = function(markTile) {
 	var deferred;
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawHilight();
 	//this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
-	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board);
+	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board, markTile);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
 	});

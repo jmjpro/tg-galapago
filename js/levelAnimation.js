@@ -300,7 +300,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 	}	
 }
 
-LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
+LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -321,7 +321,11 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board){
 		}
 	}
 	if(rolloverImageSpriteSheet){
-		this.rolloverAnimation = new RolloverAnimation(layer, tileActive.getXCoord(),tileActive.getYCoord(), rolloverImageSpriteSheet, stopCallback);
+		var tileMarkImageSpriteSheet;
+		if(markTile){ 
+			tileMarkImageSpriteSheet = new SpriteSheet(ScreenLoader.gal.get("game-screen/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
+		}
+		this.rolloverAnimation = new RolloverAnimation(layer, tileActive.getXCoord(),tileActive.getYCoord(), rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();
 	}
 
@@ -614,7 +618,7 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 }
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
-function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stopCallback){
+function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet){
 	this.layer = layer;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
 	this.interval = null;
@@ -622,6 +626,8 @@ function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stop
 	this.xCoord = xCoord;
 	this.yCoord = yCoord;
 	this.stopCallback = stopCallback;
+	this.tileMarkImageSpriteSheet = tileMarkImageSpriteSheet;
+	this.tileMarkSpriteId = 0;
 }
 
 RolloverAnimation.prototype.start = function(){
@@ -642,6 +648,12 @@ RolloverAnimation.prototype.animate = function(){
 	this.layer.putImageData(image, this.xCoord, this.yCoord);
 	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
+	if(this.tileMarkImageSpriteSheet){
+		image = this.tileMarkImageSpriteSheet.getSpriteNew([this.tileMarkSpriteId, 0]);
+		this.layer.drawImage(image, this.xCoord, this.yCoord, Tile.getWidth(), Tile.getHeight());
+		this.tileMarkSpriteId++;
+		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix[0].length;
+	}
 };
 
 BonFireAnimation.ROLLOVER_TIME_INTERVAL=330;
