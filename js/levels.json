@@ -294,7 +294,7 @@
 					{"right":[785,574]}
 				}
 			],
-			"dangerBarSeconds" : "30",
+			"dangerBarSeconds" : "300",
 			"difficulty":"1",
 			"creatureColors":["R","G","B","V","P"],
 			"blobPositions" : [
@@ -558,7 +558,7 @@
 					{"right":[789,506]}
 				}
 			],
-			"dangerBarSeconds" : "30",
+			"dangerBarSeconds" : "300",
 			"difficulty":"2",
 			"creatureColors":["R","G","B","V","T"],
 			"blobPositions" : [
