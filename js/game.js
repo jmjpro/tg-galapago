@@ -2061,6 +2061,8 @@ Board.prototype.handleTileSelect = function(tile) {
 		}
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
+		}else if(board.blobCollection.isEmpty()){
+			board.setComplete();
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
