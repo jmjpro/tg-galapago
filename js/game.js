@@ -85,7 +85,7 @@ Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
 	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking === 'true' ? true : false;
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
-	Galapago.bubbleTip = new BubbleTip();
+	Galapago.bubbleTip = new BubbleTip(); //jj: why is bubbleTip a Galapago property instead of a Board or Level property?
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
@@ -1009,6 +1009,7 @@ Level.prototype.won = function(){
 	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
+    level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
 		LevelMap.show(LevelMap.getNextLevel());
 		//level.showLevelMap(LevelMap.getNextLevel());
@@ -1021,6 +1022,7 @@ Level.prototype.quit = function(){
 }
 
 Level.prototype.cleanup = function(){
+	Galapago.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
 	}

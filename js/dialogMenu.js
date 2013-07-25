@@ -68,10 +68,10 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	};
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
-	var navItem = dialogMenu.currentNavItem;
+	var level;
+	level = dialogMenu.callingObject.level;
 	this.hide();
-	dialogMenu.callingObject.level.cleanup();
-	dialogMenu.callingObject.level.won();
+	level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
@@ -87,7 +87,6 @@ DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
-	var navItem = dialogMenu.currentNavItem;
 	this.hide();
 	//show map screen;
 };
@@ -103,9 +102,10 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
-	var navItem = dialogMenu.currentNavItem;
-	this.hide();
-	dialogMenu.callingObject.level.won();
+	var level;
+	level = dialogMenu.callingObject.level;
+	this.hide();	
+	level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
