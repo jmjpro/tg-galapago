@@ -3,7 +3,7 @@ LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
-LevelAnimation.JUMP_TIME_INTERVAL=10;
+LevelAnimation.JUMP_TIME_INTERVAL=100;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [46, 0], id: '2'}, 

@@ -1969,7 +1969,7 @@ Board.prototype.handleTileSelect = function(tile) {
         dangerBar.pause();
 		}
 		tile.setSelectedAsync().then(function() {
-			board.animateJumpCreaturesAsync( tile, tilePrev, function() {
+			board.animateJumpCreaturesAsync(!board.powerUp.isFlipFlopSelected(), tile, tilePrev, function() {
 				board.swapCreatures( tile, tilePrev );
 				board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 					board.handleTripletsDebugCounter = 0;
@@ -1997,7 +1997,7 @@ Board.prototype.handleTileSelect = function(tile) {
 							Galapago.audioPlayer.playInvalidSwap();
 							// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 							console.debug( 'no triplet found: undoing last move');
-							board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
+							board.animateJumpCreaturesAsync(true, tilePrev, tile ,function() {
 								board.swapCreatures( tile, tilePrev );
 								board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 									board.setActiveTile(tile);
@@ -2007,7 +2007,8 @@ Board.prototype.handleTileSelect = function(tile) {
 							});
 						}
 						if(board.powerUp.isFlipFlopSelected()){
-						  board.powerUp.powerUsed();
+							board.setActiveTile(tilePrev);
+							board.powerUp.powerUsed();
 						}
 					}, function(error) {
 						console.error(error);
@@ -2677,14 +2678,18 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 // switch the positions of two creature tiles on the board
 // we pause after a flip to give the player time to view the animation
 // since the flip can be reversed if no triplet is formed after the flip
-Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest, callback) {
+Board.prototype.animateJumpCreaturesAsync = function(eligibleForAnimation, tileSrc, tileDest, callback) {
 	var deferred;
 	//deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
-	this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+	if(eligibleForAnimation){
+		this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+			callback();
+		} );
+	}else{
 		callback();
-	} );
+	}
 };
 
 //get the gold tile backing an individual creature tiles
