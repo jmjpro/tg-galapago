@@ -3533,6 +3533,7 @@ ReshuffleService.prototype.start = function() {
 ReshuffleService.prototype.stop = function() {
 	if(this.reshuffleInterval){
 		clearInterval(this.reshuffleInterval);
+		this.reshuffleInterval = null;
 		this.isStarted = false;
 	} 
 };
