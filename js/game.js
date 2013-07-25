@@ -1899,6 +1899,8 @@ Board.prototype.setComplete = function() {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
 			$('#timeBonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
 			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
+		} else {
+			$('#row-timeBonus').hide();
 		}
 		this.drawScore();
 		this.level.isCompleted = true;
@@ -1911,7 +1913,7 @@ Board.prototype.setComplete = function() {
 				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
 			}
 			else {
-				totalScore=Number(totalScore)+this.score
+				totalScore=Number(totalScore)+this.score;
 			}
 			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
@@ -1929,7 +1931,7 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		new DialogMenu('canvas-main', this, 'dialog-level-won', 'button-medium-hilight');		
+		new DialogMenu('canvas-main', this, 'dialog-level-won', 'button-medium-hilight');
 	}
 }
 
