@@ -196,35 +196,35 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 {cell: [243, 0], id: '10'}
 ]];
 
-LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [0, 46], id: '2'},  
-{cell: [0, 92], id: '3'}, 
-{cell: [0, 138], id: '4'},  
-{cell: [0, 184], id: '5'},
-{cell: [0, 230], id: '6'},   
-{cell: [0, 276], id: '7'},
-{cell: [0, 322], id: '8'},
-{cell: [0, 368], id: '9'},
-{cell: [0, 414], id: '10'},
-{cell: [0, 460], id: '11'},
-{cell: [0, 504], id: '12'},
-{cell: [0, 550], id: '13'},
-{cell: [0, 596], id: '14'},
-{cell: [0, 642], id: '15'},
-{cell: [0, 688], id: '16'},
-{cell: [0, 734], id: '17'},
-{cell: [0, 780], id: '18'}
-]];
+LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 36], id: '2'}],  
+[{cell: [0, 72], id: '3'}], 
+[{cell: [0, 108], id: '4'}],  
+[{cell: [0, 144], id: '5'}],
+[{cell: [0, 180], id: '6'}],   
+[{cell: [0, 216], id: '7'}],
+[{cell: [0, 252], id: '8'}],
+[{cell: [0, 288], id: '9'}],
+[{cell: [0, 324], id: '10'}],
+[{cell: [0, 360], id: '11'}],
+[{cell: [0, 396], id: '12'}],
+[{cell: [0, 432], id: '13'}],
+[{cell: [0, 468], id: '14'}],
+[{cell: [0, 504], id: '15'}],
+[{cell: [0, 540], id: '16'}],
+[{cell: [0, 576], id: '17'}],
+[{cell: [0, 612], id: '18'}]
+];
 
-LevelAnimation.BUBBLE_TIP_IDLE_HINT_SPRITE_MATRIX = [[
-{cell: [0, 3], id: '1'},
-{cell: [60, 3], id: '2'},  
-{cell: [120, 3], id: '3'}, 
-{cell: [180, 3], id: '4'},  
-{cell: [240, 3], id: '5'},
-{cell: [300, 3], id: '6'},   
-{cell: [360, 3], id: '7'}
+LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [60, 0], id: '2'},  
+{cell: [120, 0], id: '3'}, 
+{cell: [180, 0], id: '4'},  
+{cell: [240, 0], id: '5'},
+{cell: [300, 0], id: '6'},   
+{cell: [360, 0], id: '7'}
 ]];
 
 function LevelAnimation(layer){
@@ -538,10 +538,24 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 }
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var image = ScreenLoader.gal.get("game-screen/tile_mark_strip.png");
-	//var image = ScreenLoader.gal.get("game-screen/hint_strip.png");
-	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BUBBLE_TIP_IDLE_HINT_SPRITE_MATRIX); 
-	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet);
+	var image = ScreenLoader.gal.get("game-screen/hint_strip.png");
+	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
+	var tile,degreesToRotate;			
+	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
+		tile = swapTile;
+		degreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
+	}
+	if(initialTile.coordinates[1] < swapTile.coordinates[1]){
+		tile = initialTile;
+		degreesToRotate = CanvasUtil.LEFT_DIRECTION_DEGREE;
+	}
+	if(initialTile.coordinates[0] > swapTile.coordinates[0]){
+		tile = swapTile;
+	}
+	if(initialTile.coordinates[0] < swapTile.coordinates[0]){
+		tile = initialTile;
+	}
+	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
 }
@@ -780,14 +794,16 @@ NextLevelArrowAnimation.prototype.animate = function(){
 	this.rolloverSpriteId = this.rolloverSpriteId % 2;
 };
 
-MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=300;
-function MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet){
+MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=100;
+function MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet, x, y, degreesToRotate){
 	this.layer = layer;
 	this.initialTile = initialTile;
 	this.swapTile = swapTile;
 	this.rolloverSpriteId = 0;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
-	this.tileActive = null;
+	this.x = x;
+	this.y = y;
+	this.degreesToRotate = degreesToRotate;
 }
 
 MakeMatchAnimation.prototype.start = function(){
@@ -807,22 +823,12 @@ MakeMatchAnimation.prototype.stop = function(){
 };
 
 MakeMatchAnimation.prototype.animate = function(){
-	if(this.rolloverSpriteId == 0){
-		if(this.tileActive){
-			this.layer.clearRect(this.tileActive.getXCoord(), this.tileActive.getYCoord(),Tile.getWidth(), Tile.getHeight());
-			this.layer.drawImage(this.tileActive.blob.image, this.tileActive.getXCoord(),this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
-		}
-		if(this.tileActive == this.initialTile){
-			this.tileActive = this.swapTile;
-		}else{
-			this.tileActive = this.initialTile;
-		}
-		
-	}
-	var image = this.rolloverImageSpriteSheet.getSpriteNew([this.rolloverSpriteId, 0]);
-	this.layer.clearRect(this.tileActive.getXCoord(), this.tileActive.getYCoord(),Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.tileActive.blob.image, this.tileActive.getXCoord(),this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
+	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
+	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Tile.getWidth(), Tile.getHeight());	
+	var image = this.rolloverImageSpriteSheet.getSpriteNew([0,this.rolloverSpriteId], this.degreesToRotate);
+	this.layer.drawImage(image, this.x, this.y);
 	this.rolloverSpriteId++;
-	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
+	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix.length;
 };
