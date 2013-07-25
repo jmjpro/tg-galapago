@@ -271,6 +271,7 @@ ul.vertical-button-nav {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
 	text-align: center;
+	display: inline-block;
 }
 
 ul.vertical-button-nav > li {
@@ -506,16 +507,6 @@ ul.galapago-drop-down {
 
 #dialog-help div.dialog-content {
 	width: 500px;
-	text-align: left;
-}
-
-#dialog-help div.dialog-content h3 {
-	font-size: 14px;
-}
-
-#dialog-help div.dialog-content p {
-	font-family: 'Helvitica';
-	font-size: 14px;
 }
 
 #help-text-scroll {
@@ -523,9 +514,24 @@ ul.galapago-drop-down {
 	height: 300px;
 	margin-top: 50px;
 	padding: 0px 20px 0px 50px;
+	font-family: 'Helvitica';
+	text-align: left;
+}
+
+#dialog-help div.dialog-content h4 {
+	margin: 0px;
+}
+
+#dialog-help div.dialog-content p {
+	font-size: 14px;
+}
+
+#dialog-help #paging {
+	font-family: 'Helvitica';
+	font-size: 14px;
 }
 
 #dialog-help .button-medium {
-	height: 81px;
-	line-height: 81px;
+	height: 61px;
+	margin-top: -10px;
 }
