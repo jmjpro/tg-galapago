@@ -1318,6 +1318,7 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
+	var markTile;
 	var timedMode, tileActive, col, row;
 	if(tile) {
 		tileActive = tile;
@@ -1330,6 +1331,7 @@ Board.prototype.setActiveTile = function(tile) {
 		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
 		Galapago.bubbleTip.showBubbleTip(i18n.t(key));
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
+		markTile = true;
 	}	
 	else { //YJ: activate top left tile unless otherwise indicated
 		col = this.firstTileCoordinates[0];
@@ -1337,9 +1339,7 @@ Board.prototype.setActiveTile = function(tile) {
 		tileActive = this.creatureTileMatrix[col][row];
 	}
 	this.tileActive = tileActive;
-	tileActive.setActiveAsync(function() {
-			return this; //chainable
-	}).done();
+	tileActive.setActiveAsync(markTile).done();
 }; //Board.prototype.setActiveTile()
 
 Board.prototype.getTileMatrix = function(blobType) {
@@ -1974,7 +1974,7 @@ Board.prototype.handleTileSelect = function(tile) {
         dangerBar.pause();
 		}
 		tile.setSelectedAsync().then(function() {
-			board.animateJumpCreaturesAsync( tile, tilePrev, function() {
+			board.animateJumpCreaturesAsync(!board.powerUp.isFlipFlopSelected(), tile, tilePrev, function() {
 				board.swapCreatures( tile, tilePrev );
 				board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 					board.handleTripletsDebugCounter = 0;
@@ -2002,7 +2002,7 @@ Board.prototype.handleTileSelect = function(tile) {
 							Galapago.audioPlayer.playInvalidSwap();
 							// YJ: if no triplet is formed by this move, flip the creatures back to their previous positions
 							console.debug( 'no triplet found: undoing last move');
-							board.animateJumpCreaturesAsync( tilePrev, tile ,function() {
+							board.animateJumpCreaturesAsync(true, tilePrev, tile ,function() {
 								board.swapCreatures( tile, tilePrev );
 								board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 									board.setActiveTile(tile);
@@ -2012,7 +2012,8 @@ Board.prototype.handleTileSelect = function(tile) {
 							});
 						}
 						if(board.powerUp.isFlipFlopSelected()){
-						  board.powerUp.powerUsed();
+							board.setActiveTile(tilePrev);
+							board.powerUp.powerUsed();
 						}
 					}, function(error) {
 						console.error(error);
@@ -2684,14 +2685,18 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 // switch the positions of two creature tiles on the board
 // we pause after a flip to give the player time to view the animation
 // since the flip can be reversed if no triplet is formed after the flip
-Board.prototype.animateJumpCreaturesAsync = function(tileSrc, tileDest, callback) {
+Board.prototype.animateJumpCreaturesAsync = function(eligibleForAnimation, tileSrc, tileDest, callback) {
 	var deferred;
 	//deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
-	this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+	if(eligibleForAnimation){
+		this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+			callback();
+		} );
+	}else{
 		callback();
-	} );
+	}
 };
 
 //get the gold tile backing an individual creature tiles
@@ -2845,13 +2850,13 @@ Tile.prototype.matchesSuperFriend = function(that) {
 	return isMatch;
 };
 
-Tile.prototype.setActiveAsync = function() {
+Tile.prototype.setActiveAsync = function(markTile) {
 	var deferred;
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawHilight();
 	//this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
-	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board);
+	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board, markTile);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
 	});
@@ -3533,6 +3538,7 @@ ReshuffleService.prototype.start = function() {
 ReshuffleService.prototype.stop = function() {
 	if(this.reshuffleInterval){
 		clearInterval(this.reshuffleInterval);
+		this.reshuffleInterval = null;
 		this.isStarted = false;
 	} 
 };
