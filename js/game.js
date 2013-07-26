@@ -526,7 +526,7 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
-	this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
+	//this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {

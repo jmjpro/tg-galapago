@@ -76,7 +76,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.unsetNavItem();
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
+			if(!Level.isComplete("1")){
+				levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
+			}
 			levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;
