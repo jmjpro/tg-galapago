@@ -1030,8 +1030,8 @@ Level.prototype.cleanup = function(){
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
 	if(this.levelAnimation.powerAchievedAnimation){
-		this.stopAllPowerAchieved();
-		this.powerAchievedAnimation = null;
+		this.levelAnimation.stopAllPowerAchieved();
+		this.levelAnimation.powerAchievedAnimation = null;
 	}
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
