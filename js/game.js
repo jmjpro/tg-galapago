@@ -2493,6 +2493,8 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			pointsAbove = MatrixUtil.getNeighborsAbovePoints(verticalPointsSet);
 			//board.removeTiles(board.getCreatureTilesFromPoints(verticalPointsSet));
 			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
+			var boardAnimation = board.animationQ;
+			board.animationQ = [];
 			changedPoints = board.lowerTiles(tilesAbove, verticalPointsSet.length);
 			changedPointsArray = changedPointsArray.concat(changedPoints);
 			var startIndex = tilesAbove.length - changedPoints.length;
@@ -2506,6 +2508,8 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 				changedPoints = board.fillEmptyPoints(emptyPoints);
 				changedPointsArray = changedPointsArray.concat(changedPoints);
 			}
+			boardAnimation.push(board.animationQ);
+			board.animationQ = boardAnimation;
 			console.debug( 'changed points Array ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
 		}
 	});
