@@ -119,6 +119,7 @@ Powerup.prototype.addListner = function(){
 	   powerup.boardKeyHandler = window.onkeydown;
 	   window.onkeydown=null;
 	   powerup.focus();
+	   powerup.focusOn= 1;
 	   powerup.registerEvents();
    //}
   // console.log('listener Added');
@@ -137,6 +138,7 @@ Powerup.prototype.registerEvents=function(){
 				  powerup.currentFocus=0;
 				  powerup.nextFocus=0;
 				  window.onkeydown=null;
+				  powerup.focusOn= 0;
 				  powerup.canvas.onfocus=null;
 			      window.onkeydown = powerup.boardKeyHandler;
 				break;				
@@ -161,16 +163,21 @@ Powerup.prototype.registerEvents=function(){
 Powerup.prototype.powerUsed = function(){
  if(this.isFlipFlopSelected()){
     this.flipflopPowerAchieved = false;
+	this.board.level.levelAnimation.stopPowerAchieved(this.flipflopAnimator);
 	//this.drawFlipFlop();
  }else if(this.isFireSelected()){
  	this.firePowerAchieved = false;
+	this.board.level.levelAnimation.stopPowerAchieved(this.fireAnimator);	
 	//this.drawFire();
  }else if(this.isShufflerSelected()){
 	this.shufflerPowerAchieved = false;
+	this.board.level.levelAnimation.stopPowerAchieved(this.shufflerAnimator);		
 	//this.drawShuffler();
  }
  this.update();
  this.powerSelected=0;
+ this.focusOn= 0;
+ this.currentFocus=0;
  //this.board.saveBoard(); // auto save state when power is used.
 }
 
@@ -238,6 +245,10 @@ Powerup.prototype.handleDown=function(){
 
 Powerup.prototype.isPowerAchieved = function(){
 	return this.flipflopPowerAchieved || this.firePowerAchieved || this.shufflerPowerAchieved;
+}
+
+Powerup.prototype.isPowerSelected = function(){
+	return this.isFlipFlopSelected() || this.isFireSelected() || this.isShufflerSelected();
 }
 
 Powerup.prototype.isFlipFlopSelected = function(){
@@ -325,7 +336,13 @@ Powerup.prototype.updatePowerup = function(tripletCount){
   this.score += tripletCount;
   console.log('incrementScore' +this.score );
   console.log('incrementScore' +this.score/Powerup.POWER_POINTS );
-  this.update();
+  if(this.score < Powerup.POWER_POINTS){
+	if(this.focusOn ==1){
+		this.focus();
+	}else{
+		this.update();
+	}
+  }
   return this.updatePowerAchieved();
 }
 
@@ -335,7 +352,11 @@ Powerup.prototype.decrementScore = function(sender){
   if(sender.score>0){
     sender.timer.reset(sender);
     sender.score -= 1;
-	sender.update();
+	if(sender.focusOn ==1){
+		sender.focus();
+	}else{
+		sender.update();
+	}
   }
   
  // console.log('decrementScore' +sender.score );
@@ -371,16 +392,25 @@ Powerup.prototype.animatePowerStatus = function(){
 
 Powerup.prototype.updatePowerAchieved = function(){
     var flagPowerUpdated = false;
+	var powerUpAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
+	var powerUpAnimationLayer = powerUpAnimationCanvas.getContext('2d');
 	while(this.score >= Powerup.POWER_POINTS){
 		if(!this.flipflopPowerAchieved){
 		    this.flipflopPowerAchieved = true;
+			this.flipflopAnimator = this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,222]); //[115,222]//[124,262]
 		}else if(!this.firePowerAchieved){
 			this.firePowerAchieved = true;
+			this.fireAnimator = this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,303]); //343
 		}else if(!this.shufflerPowerAchieved){
 			this.shufflerPowerAchieved = true;
+			this.shufflerAnimator =this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,384]);//424
 		}
 		this.score -= Powerup.POWER_POINTS;
-		this.update();
+		if(this.focusOn ==1){
+			this.focus();
+		}else{
+			this.update();
+		}
 		flagPowerUpdated = true;
 		//this.board.saveBoard();
 	}

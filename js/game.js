@@ -512,8 +512,9 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 LevelMap.prototype.cleanup = function() {
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
+	this.otherAnimationCanvas.onclick = null;
 	this.animationCanvas.style.zIndex = 0;
-	this.otherAnimationCanvas.style.zIndex = 0;
+	//this.otherAnimationCanvas.style.zIndex = 0;
 	this.cleanupAnimationAndSound();
 } //LevelMap.prototype.cleanup()
 
@@ -1028,6 +1029,10 @@ Level.prototype.cleanup = function(){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
+	if(this.levelAnimation.powerAchievedAnimation){
+		this.stopAllPowerAchieved();
+		this.powerAchievedAnimation = null;
+	}
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
 }
@@ -2339,7 +2344,7 @@ Board.prototype.handleLeftArrow = function() {
 		}).done();
 	} else {
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
-	    if(this.powerUp.isPowerAchieved()){
+	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
 			this.powerUp.addListner();
 			//this.powerUp.canvas.focus();

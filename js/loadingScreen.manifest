@@ -108,7 +108,8 @@
 			"map-screen/strip_bomb_right.png",
 			"map-screen/strip_bonfire.png",
 			"map-screen/strip_game_start_arrow.png",
-			"map-screen/strip_lava_idle.png"
+			"map-screen/strip_lava_idle.png",
+			"game-screen/Powerup_ready_strip.png"
     	]
     },
   	{

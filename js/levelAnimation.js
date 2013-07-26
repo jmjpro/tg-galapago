@@ -192,8 +192,17 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 {cell: [135, 0], id: '6'}, 
 {cell: [162, 0], id: '7'}, 
 {cell: [189, 0], id: '8'}, 
-{cell: [216, 0], id: '9'}, 
-{cell: [243, 0], id: '10'}
+{cell: [216, 0], id: '9'}
+]];
+
+LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'}, 
+{cell: [97, 0], id: '2'}, 
+{cell: [194, 0], id: '3'}, 
+{cell: [291, 0], id: '4'}, 
+{cell: [388, 0], id: '5'}, 
+{cell: [485, 0], id: '6'}, 
+{cell: [582, 0], id: '7'}
 ]];
 
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [[
@@ -524,6 +533,44 @@ LevelAnimation.prototype.stopGameStartArrow = function(){
 	}
 }
 
+/////
+LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
+	var levelAnimation = this;
+	var powerAchievedAnimation;
+	var  image, powerAchievedImageSpriteSheet;
+	image = ScreenLoader.gal.get("game-screen/Powerup_ready_strip.png");
+	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
+	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
+	function animatePowerAchieved(){
+		powerAchievedAnimation.start();
+		if(!levelAnimation.powerAchievedAnimation){
+			levelAnimation.powerAchievedAnimation = new Array();
+		}
+		levelAnimation.powerAchievedAnimation.push(powerAchievedAnimation);
+	}
+	animatePowerAchieved();
+	return  powerAchievedAnimation;
+	
+}
+
+LevelAnimation.prototype.stopPowerAchieved = function(powerAchievedAnimation){
+	if(this.powerAchievedAnimation){
+			var index = this.powerAchievedAnimation.indexOf(powerAchievedAnimation)
+			this.powerAchievedAnimation[index].stop();
+			//this.powerAchievedAnimation[index] = null;
+			this.powerAchievedAnimation.splice( index, 1 );
+	}
+}
+
+LevelAnimation.prototype.stopAllPowerAchieved = function(){
+	if(this.powerAchievedAnimation){
+			for (var i=0; i < this.powerAchievedAnimation.length; i++){
+				this.powerAchievedAnimation[i].stop();
+			}
+	}
+}
+////
+
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
@@ -576,6 +623,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.gameStartArrowAnimation.stop();
 		this.gameStartArrowAnimation = null;
 	}
+
 	if(this.nextLevelArrowAnimation){
 		this.nextLevelArrowAnimation.stop();
 		this.nextLevelArrowAnimation = null;
@@ -736,8 +784,9 @@ GameStartArrowAnimation.prototype.animate = function(){
 	this.imageWidth = image.width;
 	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
 	this.spriteId++;
-	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-2){
-		this.callback();
+	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-1){
+		//this.callback();
+		this.spriteId=0;
 	}
 };
 
