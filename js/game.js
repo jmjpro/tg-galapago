@@ -1699,7 +1699,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 				layer.clearRect( x, y, width, height );
 				layer.drawImage(blob.image, x, y, width, height);
 			}
-			if(this.putInAnimationQ){
+			if(this.putInAnimationQ && blob.blobType != 'GOLD'){
 				this.animationQ.push(draw);
 			}else{
 				draw();
