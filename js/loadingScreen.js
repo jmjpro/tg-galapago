@@ -146,6 +146,20 @@ ProgressBar.prototype.showCopywrite =function(){
 
 ProgressBar.prototype.registerEventHandlers = function() {
 var progressBar = this;
+this.canvas.onclick = function(evt) {
+	   var x = evt.pageX;
+	   var y = evt.pageY ;
+	  if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT +ProgressBar.PROGRESS_BAR_Width)
+		 && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ 41 )){
+				 if(progressBar.isLoadingComplete){
+						progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
+						progressBar.canvas.onkeydown=null;
+						progressBar.canvas.style.zIndex = 5;
+						//Galapago.init(gameMode);
+						MainMenuScreen.init('canvas-main', progressBar);
+					 }
+			}
+	};
 this.canvas.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 			case 13: // enter

@@ -39,11 +39,11 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'quit-map' :
 			//var dialogQuit = new DialogQuit();
-			new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
+			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
 			break;
 		case 'reset-map' :
 			//console.log( 'selected reset map button');
-			new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
+			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
 
 			break;
 		case 'start-next-map' :
