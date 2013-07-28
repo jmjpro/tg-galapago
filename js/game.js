@@ -387,10 +387,10 @@ LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
 	levelMap = this;
 
-	/*
-	levelMap.canvas.onmousemove = function(e) {
-		x = e.pageX - this.offsetLeft;
-		y = e.pageY - this.offsetTop;
+	
+	/*window.onmousemove = function(e) {
+		x = e.pageX ;//- this.offsetLeft;
+		y = e.pageY ;//- this.offsetTop;
 		point = new Array(2);
 		point[0] = x;
 		point[1] = y;
@@ -399,19 +399,21 @@ LevelMap.prototype.registerEventHandlers = function() {
 			level = Galapago.levels[levelIt];
 			mapHotspotRegion = level.mapHotspotRegion;
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
-				console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
-				levelMap.drawHotspot(mapHotspotRegion);
+				//console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
+				//levelMap.drawHotspot(mapHotspotRegion);
+				levelMap.setHotspotLevel(level);
 				break;
 			}
 			else {
 				console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.name);
-				levelMap.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+				//levelMap.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
-	} //onmousemove
-	*/
+	} //onmousemove*/
+	
 
-	levelMap.canvas.onclick = function(evt) {
+	//levelMap.canvas.onclick = function(evt) {
+	window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
 	}; //onclick
 
@@ -478,8 +480,8 @@ LevelMap.prototype.reset = function() {
 
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
-	x = evt.pageX - this.offsetLeft;
-	y = evt.pageY - this.offsetTop;
+	x = evt.pageX ;//- this.offsetLeft;
+	y = evt.pageY ;//- this.offsetTop;
 	point = new Array(2);
 	point[0] = x;
 	point[1] = y;
@@ -488,12 +490,16 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			Galapago.setLevel(level.id);
-			this.handleKeyboardSelect();
+			this.setHotspotLevel(level);
+			if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
+				window.onclick = null;
+				window.onmousemove = null;
+				this.handleKeyboardSelect();
+			}
 			break;
 		}
 		else {
-			console.debug(MatrixUtil.coordinatesToString(point) + " didn't click anywhere special ");
+			//console.debug(MatrixUtil.coordinatesToString(point) + " didn't click anywhere special ");
 		}
 	}
 }; //LevelMap.prototype.handleSelect()
@@ -526,7 +532,7 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
-	this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
+	//this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {

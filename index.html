@@ -70,11 +70,11 @@
 			<canvas id="layer-power-up" class="game-layer" style="z-index: 6;" tabindex="6"></canvas>
 			<canvas id="layer-map" class="game-layer" style="z-index: 7;" tabindex="7" width="1280" height="670"></canvas>
 			<ul id="map-nav">
-			<li><img id="menu-map" class="nav-button" src="res/img/map-screen/button_menu_map.png" width="145" height"49"/></li>
-			<li><img id="play-map" class="nav-button" src="res/img/map-screen/button_play_map.png" width="145" height"49"/></li>
-			<li><img id="quit-map" class="nav-button" src="res/img/map-screen/button_quit_map.png" width="145" height"49"/></li>
-			<li><img id="reset-map" class="nav-button" src="res/img/map-screen/button_reset_map.png" width="145" height"49"/></li>
-			<li><img id="start-next-map" class="nav-button" src="res/img/map-screen/button_start_map.png" width="145" height"49"/></li>
+			<li><img id="menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('canvas-main', Galapago.levelMap);" src="res/img/map-screen/button_menu_map.png" width="145" height"49"/></li>
+			<li><img id="play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();" src="res/img/map-screen/button_play_map.png" width="145" height"49"/></li>
+			<li><img id="quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');" src="res/img/map-screen/button_quit_map.png" width="145" height"49"/></li>
+			<li><img id="reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')" src="res/img/map-screen/button_reset_map.png" width="145" height"49"/></li>
+			<li><img id="start-next-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();" src="res/img/map-screen/button_start_map.png" width="145" height"49"/></li>
 			</ul>
 			<canvas id="layer-map-other-animation" class="game-layer" style="z-index: 8;" tabindex="8"></canvas>
 			<canvas id="layer-map-animation" class="game-layer" style="z-index: 9;" tabindex="9"></canvas>
@@ -150,7 +150,7 @@
 					</tbody>
 				</table>
 				<ul class="vertical-button-nav">
-					<li id="option-close" data-i18n="Dialog Leaderboards.OptionClose" class="button-big button-big-hilight">Back to main menu</li>
+					<li id="option-close" data-i18n="Dialog Leaderboards.OptionClose" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-big button-big-hilight">Back to main menu</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -160,8 +160,8 @@
 			<div class="dialog-content">
 				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
 				<ul class="vertical-button-nav">
-					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
-					<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge">No</li>
+					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-huge button-huge-hilight">Yes</li>
+					<li id="option-no" data-i18n="Dialog Quit.OptionNo" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-huge">No</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -265,8 +265,8 @@
 					<p>Do you wish to reset the map?</p>
 				</span>
 				<ul class="vertical-button-nav">
-					<li id="option-no" data-i18n="Dialog Reset Game.No" class="button-medium button-medium-hilight">No</li>
-					<li id="option-yes" data-i18n="Dialog Reset Game.Yes" class="button-medium">Yes</li>
+					<li id="option-no" data-i18n="Dialog Reset Game.No" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-medium button-medium-hilight">No</li>
+					<li id="option-yes" data-i18n="Dialog Reset Game.Yes" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-medium">Yes</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -334,8 +334,8 @@
 
 			<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>
 			<ul class="vertical-button-nav">
-				<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
-				<li id="option-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
+				<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-medium button-medium-hilight">Scroll</li>
+				<li id="option-close" data-i18n="Dialog Help.Close" onclick="window.dialog.currentNavItem[0]=this;window.dialog.selectHandler(window.dialog);" class="button-medium">Close</li>
 			</ul>
 		</div>
 		<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
