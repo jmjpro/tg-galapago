@@ -9,7 +9,7 @@ function MapScreen() {
 
 MapScreen.prototype.setNavItem = function(item) {
 	var cursor;
-	cursor = '<img class="cursor" src="res/img/map-screen/button_cursor_map.png"/>';
+	cursor = '<img class="cursor" src="res/img/screen-map/button_cursor_map.png"/>';
 	// remove cursor from old item
 	this.unsetNavItem();
 	this.currentNavItem = item;
@@ -30,8 +30,9 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	switch( itemId ) {
 		case 'menu-map' :
 			console.log( 'selected menu map button');
-			levelMap.cleanupAnimationAndSound();
-			MainMenuScreen.init('canvas-main', this);
+			levelMap.cleanup();
+			MainMenuScreen.init('screen-map', this);
+			//MainMenuScreen.show();
 			break;
 		case 'play-map' :
 			levelMap.handleKeyboardSelect();

@@ -1,4 +1,4 @@
-#main-menu-screen {
+#screen-main-menu {
 	display: none;
 	background-repeat: no-repeat;
 	background-position: left top;
@@ -9,6 +9,14 @@
 	font-family: 'JungleFever';
 	font-size: 18pt;
 	text-align: center;
+}
+
+#screen-main-menu .galapago-drop-down {
+	display: none;
+	position: absolute;
+	left: 300px;
+	top: 500px;
+	z-index: 2;
 }
 
 #button-change-player {
@@ -72,12 +80,4 @@
 
 #click-here {
 	display: inline;
-}
-
-#main-menu-screen .galapago-drop-down {
-	display: none;
-	position: absolute;
-	left: 300px;
-	top: 500px;
-	z-index: 9999;
 }

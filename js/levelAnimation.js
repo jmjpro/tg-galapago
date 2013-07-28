@@ -323,7 +323,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	if(rolloverImageSpriteSheet){
 		var tileMarkImageSpriteSheet;
 		if(markTile){ 
-			tileMarkImageSpriteSheet = new SpriteSheet(ScreenLoader.gal.get("game-screen/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
+			tileMarkImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive.getXCoord(),tileActive.getYCoord(), rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();
@@ -437,7 +437,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(ScreenLoader.gal.get("map-screen/strip_bonfire.png"), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-map/strip_bonfire.png"), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -474,22 +474,22 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				image = ScreenLoader.gal.get("map-screen/strip_bomb_left_one.png");
+				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_one.png");
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
 				coordinates = [556, 305 - image.height];
 				break;
 			case 2:
-				image = ScreenLoader.gal.get("map-screen/strip_bomb_left_two.png");
+				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_two.png");
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
 				coordinates = [546, 295 - image.height];
 				break;
 			case 3:
-				image = ScreenLoader.gal.get("map-screen/strip_bomb_mid.png");
+				image = LoadingScreen.gal.get("screen-map/strip_bomb_mid.png");
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
 				coordinates = [715, 386 - image.height];
 				break;
 			case 4:
-				image = ScreenLoader.gal.get("map-screen/strip_bomb_right.png");
+				image = LoadingScreen.gal.get("screen-map/strip_bomb_right.png");
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
 				coordinates = [744 , 295 - image.height];
 				break;
@@ -508,7 +508,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
 		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = ScreenLoader.gal.get("map-screen/strip_game_start_arrow.png");
+		image = LoadingScreen.gal.get("screen-map/strip_game_start_arrow.png");
 		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
 		coordinates = [200 , 265 ];
 		if(levelAnimation.gameStartArrowAnimation){
@@ -542,7 +542,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 }
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var image = ScreenLoader.gal.get("game-screen/hint_strip.png");
+	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){

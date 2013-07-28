@@ -50,7 +50,7 @@
 				        /* Update the UI to use the selected language */
 				        i18n.init({ lng: 'en' , fallbackLng: 'en'});
 				    });
-			    	ScreenLoader.init();
+			    	LoadingScreen.init();
 			    }).fail(function (error) {
 			        console.log(error);
 			    });
@@ -58,29 +58,44 @@
 		</script>
 	</head>
 	
-	<body onload = "loadGame()">
+	<body onload="loadGame()">
 		<div id="debug-console"></div>
 
-		<div id="canvas-main" style="">
-			<canvas id="layer-background" class="game-layer" style="z-index: 1;" tabindex="1"></canvas>
-			<canvas id="layer-grid" class="game-layer" style="z-index: 2;" tabindex="2"></canvas>
-			<canvas id="layer-gold" class="game-layer" style="z-index: 3;" tabindex="3"></canvas>
-			<canvas id="layer-creature" class="game-layer" style="z-index: 4;" tabindex="4"></canvas>
-			<canvas id="layer-danger-bar" class="game-layer" style="z-index: 5;" tabindex="5"></canvas>
-			<canvas id="layer-power-up" class="game-layer" style="z-index: 6;" tabindex="6"></canvas>
-			<canvas id="layer-map" class="game-layer" style="z-index: 7;" tabindex="7" width="1280" height="670"></canvas>
-			<ul id="map-nav">
-			<li><img id="menu-map" class="nav-button" src="res/img/map-screen/button_menu_map.png" width="145" height"49"/></li>
-			<li><img id="play-map" class="nav-button" src="res/img/map-screen/button_play_map.png" width="145" height"49"/></li>
-			<li><img id="quit-map" class="nav-button" src="res/img/map-screen/button_quit_map.png" width="145" height"49"/></li>
-			<li><img id="reset-map" class="nav-button" src="res/img/map-screen/button_reset_map.png" width="145" height"49"/></li>
-			<li><img id="start-next-map" class="nav-button" src="res/img/map-screen/button_start_map.png" width="145" height"49"/></li>
-			</ul>
-			<canvas id="layer-map-other-animation" class="game-layer" style="z-index: 8;" tabindex="8"></canvas>
-			<canvas id="layer-map-animation" class="game-layer" style="z-index: 9;" tabindex="9"></canvas>
+		<div id="screen-loading" class="canvas-fullscreen">
+			<!--canvas id="layer-background" style="z-index: 1;" tabindex="1"></canvas-->
+			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="2"></canvas>
+			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
+			&copy; 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.</span>
 		</div>
 
-		<div id="main-menu-screen">
+		<div id="screen-map" class="canvas-fullscreen">
+			<canvas id="layer-background" style="z-index: 1;" tabindex="1"></canvas>
+			<canvas id="layer-map" style="z-index: 2;" tabindex="2" width="1280" height="670"></canvas>
+			<canvas id="layer-map-other-animation" style="z-index: 3;" tabindex="3"></canvas>
+			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4"></canvas>
+			
+			<ul id="map-nav">
+			<li><img id="menu-map" class="nav-button" src="res/img/screen-map/button_menu_map.png" width="145" height"49"/></li>
+			<li><img id="play-map" class="nav-button" src="res/img/screen-map/button_play_map.png" width="145" height"49"/></li>
+			<li><img id="quit-map" class="nav-button" src="res/img/screen-map/button_quit_map.png" width="145" height"49"/></li>
+			<li><img id="reset-map" class="nav-button" src="res/img/screen-map/button_reset_map.png" width="145" height"49"/></li>
+			<li><img id="start-next-map" class="nav-button" src="res/img/screen-map/button_start_map.png" width="145" height"49"/></li>
+			</ul>
+		</div>
+
+		<div id="screen-game" class="canvas-fullscreen">
+			<canvas id="layer-background" style="z-index: 1;"></canvas>
+			<canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
+			<canvas id="layer-gold" class="game-layer" style="z-index: 3;"></canvas>
+			<canvas id="layer-creature" class="game-layer" style="z-index: 4;" tabindex="1"></canvas>
+			<canvas id="layer-score" class="game-layer" style="z-index: 2;" tabindex="2"></canvas>
+			<canvas id="layer-power-up" style="z-index: 2;" tabindex="3"></canvas>
+			<canvas id="layer-bonus-frenzy" style="z-index: 3;" tabindex="4"></canvas>
+			<canvas id="layer-danger-bar" style="z-index: 2;"></canvas>
+			<canvas id="layer-collection-key" style="z-index: 2;"></canvas>
+x		</div>
+
+		<div id="screen-main-menu" class="canvas-fullscreen">
 			<div id="button-change-player">
 				<span id="hello-player">Hello Tim!</span>
 				<span id="click-here">Click here to change player</span>

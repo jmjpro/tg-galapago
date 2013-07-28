@@ -3,15 +3,10 @@ Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
 Galapago.CONFIG_FILE_PATH = 'js/levels.json';
-Galapago.GAME_IMAGE_DIRECTORY = 'res/img/game-screen/';
+Galapago.GAME_IMAGE_DIRECTORY = 'res/img/screen-game/';
 Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
-Galapago.STAGE_WIDTH = 1280;
-Galapago.STAGE_HEIGHT = 720;
-Galapago.BACKGROUND_PATH_PREFIX = 'res/img/background/background_';
-Galapago.BACKGROUND_PATH_SUFFIX = '.jpg)';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
-Galapago.LAYER_BACKGROUND = 'layer-background';
-Galapago.LAYER_MAP = 'layer-map';
+Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.NUM_LEVELS = 70;
 Galapago.gameImageNames = [
 	'button_quit',
@@ -209,14 +204,15 @@ LevelMap.LAVA_SPRITE_MATRIX = [
 /* begin class LevelMap */
 function LevelMap(level) {
 	this.hotspotLevel = level;
-	this.canvas = $('#' + Galapago.LAYER_MAP)[0];
+	this.screenDiv = $('#screen-map');
+	this.canvas = $(Galapago.LAYER_MAP)[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	this.layer = this.canvas.getContext('2d');
 	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
 	this.hotspotPointsArray = [];
 	this.images = null;
 	this.levelCounter = 0;
-	this.loadImages(ScreenLoader.mapScreenImageNames, this.initImages);
+	this.loadImages(LoadingScreen.mapScreenImageNames, this.initImages);
 	this.profile = 'Default';
 	this.levelAnimation = new LevelAnimation();
 } //LevelMap constructor
@@ -245,20 +241,16 @@ LevelMap.prototype.loadImages = function (sources, callback) {
 				callback(levelMap, images);
 			}
 		};
-		images[src].src = ScreenLoader.MAP_SCREEN_IMAGE_DIRECTORY + sources[src];
+		images[src].src = LoadingScreen.MAP_SCREEN_IMAGE_DIRECTORY + sources[src];
 	}
 }; //LevelMap.prototype.loadImages()
 
 LevelMap.prototype.display = function() {	
-	this.canvas.style.background = 'url(' + 'res/img/map-screen/Map' + Galapago.BACKGROUND_PATH_SUFFIX;
-	this.canvas.width = Galapago.STAGE_WIDTH;
-	this.canvas.height = Galapago.STAGE_HEIGHT;
-	$( '#canvas-main' ).css( 'display', 'block');
+	this.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-map/Map.jpg').src + ')' );
+	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
-	$('ul#map-nav').css('display', 'block');
-	this.animate(ScreenLoader.gal.get("map-screen/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
+	this.animate(LoadingScreen.gal.get("screen-map/strip_lava_idle.png"),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
-	otherAnimationCanvas.style.zIndex = 9;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
 	otherAnimationCanvas.height = LevelMap.HEIGHT;
 	var levelAnimation = this;
@@ -301,7 +293,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 				if(!Level.isComplete(levelId)){
 					levelInfo = unlockLevelArrow[levelId];
 					for(arrow in levelInfo){
-						var img = ScreenLoader.gal.get("map-screen/next_level_arrow_"+arrow+".png")
+						var img = LoadingScreen.gal.get("screen-map/next_level_arrow_"+arrow+".png")
 						var coordinates = levelInfo[arrow];
 						var x = coordinates[0];
 						var y = coordinates[1];
@@ -405,7 +397,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 			}
 			else {
 				console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.name);
-				levelMap.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+				levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
 	} //onmousemove
@@ -501,7 +493,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
 	    this.cleanup();
-		$('ul#map-nav').css('display', 'none');
+		//$( 'ul#map-nav' ).css( 'display', 'none' );
 		Galapago.setLevel(this.hotspotLevel.id);
 	}
 	else {
@@ -512,8 +504,8 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 LevelMap.prototype.cleanup = function() {
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
-	this.animationCanvas.style.zIndex = 0;
-	this.otherAnimationCanvas.style.zIndex = 0;
+	this.unregisterEventHandlers();
+	this.screenDiv.css('display', 'none');
 	this.cleanupAnimationAndSound();
 } //LevelMap.prototype.cleanup()
 
@@ -561,7 +553,7 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 		}
 		this.hotspotLevel = level;
 		console.info("hotspot on level " + this.hotspotLevel.id);
-		//this.layer.clearRect( 0, 0, Galapago.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+		//this.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
 		this.updateLevelStatus();
@@ -942,8 +934,9 @@ Level.prototype.loadImagesAsync = function() {
 Level.prototype.display = function() {
 	var level, timedMode;
 	level = this;
-	level.styleCanvas();
 	level.setBoard(new Board());
+	level.styleCanvas();
+	$('#screen-game').show();
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
@@ -1125,20 +1118,22 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvas, layers;
-
-	canvas = $('#' + Galapago.LAYER_BACKGROUND)[0];
-	canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
-	$('#' + Galapago.LAYER_MAP)[0].style.zIndex = 0;
-
-	layers = $('.game-layer');
-	_.each( layers, function(layer) {
-	    if(layer.id !='layer-map-animation'){
-			layer.width = Galapago.STAGE_WIDTH;
-			layer.height = Galapago.STAGE_HEIGHT;
-		}
+	var canvas, themeComplete, resourcePath;
+	canvas = $('#screen-game #layer-background');
+	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
+	resourcePath = 'background/background_' + themeComplete + '.jpg';
+	console.debug('setting background to ' + resourcePath);
+	canvas.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
+	canvas.width(LoadingScreen.STAGE_WIDTH);
+	canvas.height(LoadingScreen.STAGE_HEIGHT);
+	this.layerBackground = canvas[0].getContext('2d');
+	_.each( $('.game-layer'), function(layer) {
+		layer.width = Board.GRID_WIDTH;
+		layer.height = Board.GRID_HEIGHT;
+		layer.style.left = Board.GRID_LEFT + 'px';
+		layer.style.top = Board.GRID_TOP + 'px';
 	});
-	this.layerBackground = canvas.getContext('2d');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1177,14 +1172,15 @@ begin class Board
 Board has layer with matrix of Tiles with Creatures
 Board has layer with matrix of Tiles with Gold
 */
-Board.STAGE_WIDTH_OFFSET = 325;
-Board.STAGE_HEIGHT_OFFSET = 100;
+Board.TILE_WIDTH = 47;
+Board.TILE_HEIGHT = 47;
+Board.MAX_COLUMNS = 13;
+Board.MAX_ROWS = 11;
+Board.GRID_LEFT = 325;
+Board.GRID_TOP = 100;
+Board.GRID_WIDTH = Board.MAX_COLUMNS * Board.TILE_WIDTH;
+Board.GRID_HEIGHT = Board.MAX_ROWS * Board.TILE_HEIGHT;
 Board.CREATURE_FLYOVER_STEP = 20;
-Board.WIDTH_TO_HEIGHT_RATIO = 1;
-Board.IMAGE_MAGNIFICATION = 1;
-/*
-Board.WIDTH_TO_HEIGHT_RATIO = 1.25;
-*/
 Board.ANGULAR_SPEED = Math.PI * 2;
 Board.HOTSPOT_MENU = 'hotspot-menu';
 Board.HOTSPOT_QUIT = 'hotspot-quit';
@@ -1933,7 +1929,7 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		new DialogMenu('canvas-main', this, 'dialog-level-won', 'button-medium-hilight');
+		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
 	}
 }
 
@@ -2174,7 +2170,7 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
     	return true;
    }
    return false;
-}
+} //Board.prototype.handleLockedTilesForShuffle
 
 Board.prototype.dangerBarEmptied = function() {
 	var timedMode, tileMatrix, gameboard;
@@ -2196,12 +2192,11 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
-			new DialogMenu('canvas-main', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight');
 	}else{
-			new DialogMenu('canvas-main', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight');
 	}
- 
-}
+} //Board.prototype.dangerBarEmptied
 
 Board.prototype.saveBoard = function() {
 	var restoreLookup, originalblogPositions, tileMatrix, gameboard, x, y, key, originalBlogconfig, timedMode;
@@ -2254,14 +2249,14 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('canvas-main', this, 'dialog-game-menu', 'button-huge-hilight');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('canvas-main', this, 'dialog-quit', 'button-huge-hilight');
+			new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
 		    break;
 		case null:
 		default:
@@ -2797,8 +2792,6 @@ Tile.BORDER_COLOR = '#d3d3d3';
 Tile.BORDER_COLOR_ACTIVE = 'red';
 Tile.BORDER_WIDTH = 2;
 Tile.BORDER_RADIUS = 3;
-Tile.WIDTH = 47;
-Tile.HEIGHT = 47;
 Tile.DELAY_AFTER_FLIP_MS = 250;
 Tile.DELAY_AFTER_ACTIVATE_MS = 10;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
@@ -2962,43 +2955,43 @@ Tile.prototype.hasSuperFriend = function()  {
 };
 
 //static
-Tile.posToPixels = function(pos, basePixels, widthToHeightRatio, offset ) {
+Tile.posToPixels = function(pos, basePixels) {
 	var unitPixels;
-	unitPixels = Math.floor(basePixels * widthToHeightRatio * Board.IMAGE_MAGNIFICATION);
-	return pos * unitPixels + offset;
+	unitPixels = Math.floor(basePixels);
+	return pos * unitPixels;
 }; //Tile.prototype.posToPixels()
 
-Tile.pixelsToPos = function(pixels, basePixels, widthToHeightRatio, offset ) {
+Tile.pixelsToPos = function(pixels, basePixels) {
 	var unitPixels;
 	pixels = pixels - offset;
-	unitPixels = basePixels * widthToHeightRatio * Board.IMAGE_MAGNIFICATION;
+	unitPixels = basePixels;
 	return Math.floor(pixels / unitPixels);
 }; //Tile.prototype.posToPixels()
 
 Tile.getXCoord = function(col) {
-	return Tile.posToPixels(col, Tile.WIDTH, Board.WIDTH_TO_HEIGHT_RATIO, Board.STAGE_WIDTH_OFFSET);
+	return Tile.posToPixels(col, Board.TILE_WIDTH);
 }; //Tile.prototype.getXCoord()
 
 Tile.getYCoord = function(row) {
-	return Tile.posToPixels(row, Tile.HEIGHT, 1, Board.STAGE_HEIGHT_OFFSET);
+	return Tile.posToPixels(row, Board.TILE_HEIGHT);
 }; //Tile.prototype.getYCoord()
 
 Tile.getCol = function(xCoord) {
-	return Tile.pixelsToPos(xCoord, Tile.WIDTH, Board.WIDTH_TO_HEIGHT_RATIO, Board.STAGE_WIDTH_OFFSET);
+	return Tile.pixelsToPos(xCoord, Board.TILE_WIDTH);
 }; //Tile.prototype.getXCoord()
 
 Tile.getRow = function(yCoord) {
 	var offsetY;
-	offsetY = Board.STAGE_HEIGHT_OFFSET + $('#canvas-main')[0].offsetTop - window.scrollY;
-	return Tile.pixelsToPos(yCoord, Tile.HEIGHT, 1, offsetY);
+	offsetY = $('#screen-game')[0].offsetTop - window.scrollY;
+	return Tile.pixelsToPos(yCoord, Board.TILE_HEIGHT, 1, offsetY);
 }; //Tile.prototype.getYCoord()
 
 Tile.getWidth = function() {
-	return Tile.WIDTH * Board.IMAGE_MAGNIFICATION * Board.WIDTH_TO_HEIGHT_RATIO;
+	return Board.TILE_WIDTH;
 }; //Tile.getWidth()
 
 Tile.getHeight = function() {
-	return Tile.HEIGHT * Board.IMAGE_MAGNIFICATION;
+	return Board.TILE_HEIGHT;
 }; //Tile.getHeight()
 
 Tile.tileArrayToPointsArray = function (tiles) {
@@ -3212,34 +3205,33 @@ MatrixUtil.getChangingPoints = function(pointsArray) {
 /* end class MatrixUtil */
 
 /* begin class DangerBar */
-DangerBar.LAYER_DANGER_BAR = 'layer-danger-bar';
 DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 383;
 DangerBar.PROGRESS_BAR_TOP = 110;
-DangerBar.CAP_TOP_TOP = 173;
+DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_TOP_ADJUSTMENT = 48;
-DangerBar.CAP_BOTTOM_TOP = 605;
-DangerBar.LEFT = 1076;
-DangerBar.PROGRESS_BAR_LEFT_ADJUSTMENT = 12;
+DangerBar.CAP_BOTTOM_TOP = 495;
+DangerBar.LEFT = 1064;
+DangerBar.PROGRESS_BAR_FILL_ADJUSTMENT = 12;
 DangerBar.FILL_WIDTH = 15;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
 function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
-	this.layer = $('#' + DangerBar.LAYER_DANGER_BAR)[0].getContext('2d');
+	this.initImages(imageArray);
+	this.canvas = $('#layer-danger-bar'); 
+	this.canvas.width = this.progress_bar.width;
+	this.canvas.height = this.progress_bar.height;
+	this.canvas.css( 'left', DangerBar.LEFT + DangerBar.PROGRESS_BAR_FILL_ADJUSTMENT + 'px' );
+	this.canvas.css( 'top', DangerBar.PROGRESS_BAR_TOP + 'px' );
+	this.layer = this.canvas[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
-	//this.intervalId = -1;
-	//this.imageArray = imageArray;	
-	this.magnifyImages(imageArray);
-	this.initImages(imageArray);
-	//this.positionImages(imageArray);
-	//this.fillTop = DangerBar.CAP_TOP_TOP + this.progress_bar_cap_top01.height;
-	this.fillTop = DangerBar.PROGRESS_BAR_TOP + DangerBar.FILL_TOP_ADJUSTMENT;
+	this.fillTop = DangerBar.FILL_TOP_ADJUSTMENT;
 	this.fillTopInitial = this.fillTop;
 	this.fillHeight = DangerBar.CAP_BOTTOM_TOP - DangerBar.CAP_TOP_TOP;
 	this.fillHeightInitial = this.fillHeight;
@@ -3265,19 +3257,11 @@ DangerBar.prototype.initImages = function(imageArray) {
 	});
 }; //DangerBar.prototype.initImages
 
-DangerBar.prototype.magnifyImages = function(imageArray) {
-	_.each(imageArray, function(image) {
-			image.width *= Board.IMAGE_MAGNIFICATION;
-			image.height *= Board.IMAGE_MAGNIFICATION;
-	});
-	DangerBar.PROGRESS_LEFT_ADJUSTMENT *= Board.IMAGE_MAGNIFICATION;
-}; //DangerBar.prototype.magnifyImages()
-
 DangerBar.prototype.drawImages = function() {
-	this.layerBackground.drawImage( this.progress_bar, DangerBar.LEFT - DangerBar.PROGRESS_BAR_LEFT_ADJUSTMENT, DangerBar.PROGRESS_BAR_TOP, this.progress_bar.width, this.progress_bar.height );
+	this.layerBackground.drawImage( this.progress_bar, DangerBar.LEFT, DangerBar.PROGRESS_BAR_TOP, this.progress_bar.width, this.progress_bar.height );
 	//this.layer.drawImage( this.progress_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.progress_bar_cap_top01.width, this.progress_bar_cap_top01.height );
 	//this.layer.drawImage( this.progress_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.progress_bar_cap_bottom01.width, this.progress_bar_cap_bottom01.height );
-	this.layer.drawImage( this.progress_bar_fill01, DangerBar.LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	this.layer.drawImage( this.progress_bar_fill01, 0, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3343,13 +3327,13 @@ DangerBar.prototype.update = function(sender) {
 	fillNormal.height = fillHeight;
 	fillDanger.height = fillHeight;
 	//clear the space between the top cap and the bottom cap
-	dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+	dangerBar.layer.clearRect( 0, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 	
 	if( ratio > DangerBar.RATIO_DANGER ) {
-		dangerBar.layer.drawImage( fillNormal, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
+		dangerBar.layer.drawImage( fillNormal, 0, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
 	}
 	else if( ratio > 0 ) { //0 < ratio <= DangerBar.RATIO_DANGER
-		dangerBar.layer.drawImage( fillDanger, DangerBar.LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
+		dangerBar.layer.drawImage( fillDanger, 0, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
 
 		if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
 		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
@@ -3360,7 +3344,7 @@ DangerBar.prototype.update = function(sender) {
 	}
 	else { //ratio = 0; timeout!
 		//clear the space between the top cap and the bottom cap, including the bottom cap
-		dangerBar.layer.clearRect( DangerBar.LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		dangerBar.layer.clearRect( 0, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.stop();
 		Galapago.level.board.dangerBarEmptied();
 	}

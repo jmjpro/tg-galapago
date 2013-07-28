@@ -44,7 +44,7 @@ AudioPlayer.prototype.play = function(){
 	if(!audioPlayer.currentAudio){
 		var key = audioPlayer.queue.pop();
 		if(key){
-			var audio = ScreenLoader.gal.get(key);
+			var audio = LoadingScreen.gal.get(key);
 			if(audio){
 				audio.audioPlayer = this;
 				audio.addEventListener('ended', this.playEnded);
@@ -74,7 +74,7 @@ AudioPlayer.prototype.playInLoop = function(key){
 	audioPlayer = this;
 	this.loop = true;
 	audioPlayer.stopLoop();
-	this.currentAudioInLoop = ScreenLoader.gal.get(key);
+	this.currentAudioInLoop = LoadingScreen.gal.get(key);
 	//keep retrying, assets might be loading;
 	if(!this.currentAudioInLoop){
 		setTimeout(function() {

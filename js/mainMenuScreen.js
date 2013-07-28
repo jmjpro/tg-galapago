@@ -1,7 +1,7 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#main-menu-screen" : "main_menu_background.jpg",
+	"#screen-main-menu" : "main_menu_background.jpg",
 	"#button-change-player" : "main_menu_button_change_player_regular.png",
 	"#button-timed" : "main_menu_button_timed_regular.png",
 	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
@@ -32,38 +32,49 @@ function MainMenuScreen() {}
 
 MainMenuScreen.init = function(callingScreenId, callingObject) {
 	var mainMenuScreen = new MainMenuScreen();
-	mainMenuScreen.mainMenuDOM = $('#main-menu-screen');
+	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	mainMenuScreen.gal = new GameAssetLoader('js/loadingScreen.manifest');
-	mainMenuScreen.registerImageLoadEvents();
-	mainMenuScreen.gal.init(function() {
-		mainMenuScreen.gal.download('mainMenuScreen');
-		mainMenuScreen.show();
-	});
+	/*
+	if( callingScreenId == 'screen-loading') {
+		mainMenuScreen.registerImageLoadEvents();
+	}
+	else {
+		mainMenuScreen.setInitialNavItem();
+	}
+	*/
+	mainMenuScreen.setImages();
+	mainMenuScreen.setInitialNavItem();
+	mainMenuScreen.show();
 
 	mainMenuScreen.windowKeyHandler= window.onkeydown;
 }; //MainMenuScreen.init()
 
+/*
 MainMenuScreen.prototype.registerImageLoadEvents = function(){
 	var mainMenuScreen = this;
-	mainMenuScreen.gal.onLoaded('mainMenuScreen', function(result) {
+	LoadingScreen.gal.onLoaded('mainMenuScreen', function(result) {
 		if (result.success) {
 			mainMenuScreen.setImages();
-			mainMenuScreen.currentNavItem = null;
-			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem(null, mainMenuScreen.callingScreen));
+			mainMenuScreen.setInitialNavItem();
 		}
 	});
 }; //MainMenuScreen.prototype.registerImageLoadEvents()
+*/
+MainMenuScreen.prototype.setInitialNavItem = function(){
+	this.currentNavItem = null;
+	this.setNavItem(this.getNavItem(null, this.callingScreen));
+	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
+}; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
 	var mainMenuScreen, galFilePath;
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
 		galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[selector];
-		//$(selector).css('background-image','url(' + mainMenuScreen.gal.getAsDataUrl(galFilePath) + ')');
-		$(selector).css('background-image','url(' + mainMenuScreen.gal.get(galFilePath).src + ')');
-		//$(selector)[0].style.backgroundImage = 'url(' + mainMenuScreen.gal.get(galFilePath).src + ')';
+		$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
+		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';
 	});
 }; //MainMenuScreen.prototype.setImages()
 
@@ -82,8 +93,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 				level = this.callingObject;
 				LevelMap.show(level);
 				//level.showLevelMap(level);
-			}
-			else {
+			}			else {
 				Galapago.init(isTimedMode);
 			}
 			break;
@@ -110,7 +120,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
-			dropDownElement = $('#main-menu-screen .galapago-drop-down');
+			dropDownElement = $('#screen-main-menu .galapago-drop-down');
 			display = dropDownElement.css('display') === 'none' ? 'block' : 'none';
 			dropDownElement.css('display', display);
 			//TODO add event handlers here to change the language with left and right arrows, and enter to select the language
@@ -121,10 +131,6 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 	}
 }; //MainMenuScreen.prototype.selectHandler()
-
-MainMenuScreen.prototype.registerEventHandlersLanguage = function() {
-	;
-} //MainMenuScreen.prototype.registerEventHandlersLanguage()
 
 MainMenuScreen.prototype.show = function() {
 	this.callingObject && this.callingObject.unregisterEventHandlers();	
@@ -165,10 +171,13 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	}
 	else if( callingScreen ) {
 		switch( callingScreen[0].id ) {
-			case 'canvas-main' :
+			case 'screen-loading' :
 				navItem = $('#button-timed');
 				break;
-			case 'game-screen' :
+			case 'screen-map' :
+				navItem = $('#button-timed');
+				break;
+			case 'screen-game' :
 				navItem = $(this.getLastSelectedMode());
 				break;
 			default :
@@ -203,17 +212,17 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 MainMenuScreen.prototype.removeHilight = function(navItem) {
 	var galFilePath;
 	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
-	//navItem.css( 'background-image', 'url(' + this.gal.getAsDataUrl(galFilePath) + ')' );
-	navItem.css( 'background-image', 'url(' + this.gal.get(galFilePath).src + ')' );
+	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')' );
+	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
 	var galFilePath, galHilightFilePath;
 	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
 	galHilightFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
-	//navItem.css( 'background-image', 'url(' + this.gal.getAsDataUrl(galHilightFilePath) + ')' );
-	navItem.css( 'background-image', 'url(' + this.gal.get(galHilightFilePath).src + ')' );
-	//navItem[0].style.backgroundImage = 'url(' + this.gal.get(galHilightFilePath).src + ')';
+	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galHilightFilePath) + ')' );
+	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
+	//navItem[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')';
 };
 
 MainMenuScreen.prototype.registerEventHandlers = function() {

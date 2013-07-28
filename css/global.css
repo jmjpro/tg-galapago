@@ -38,13 +38,27 @@ see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsi
 	display: none;
 }
 
-#canvas-main {
+canvas {
+	position: absolute;
+}
+
+.canvas-fullscreen {
 	border: 0px solid #d3d3d3;
-	position: relative;
 	width: 1280px;
 	height: 720px;
 	background-repeat: no-repeat;
 	background-position: top left;
+	display: none;
+}
+
+#copyright {
+	font-family: 'HelveticaBold';
+	font-size: 13pt;
+	color: rgb(255,255,255);
+	position: absolute;
+	left: 180px;
+	top: 635px;
+	text-align: center;
 }
 
 canvas.game-layer {
@@ -96,7 +110,6 @@ ul.menu li {
 */
 
 ul#map-nav {
-	display: none;
 	list-style-type:none;
 	margin:0;
 	padding:0;
@@ -115,7 +128,7 @@ ul#map-nav>li {
 }
 
 .map-nav-border {
-	background: url('res/img/map-screen/button_cursor_map.png') no-repeat left top;
+	background: url('res/img/screen-map/button_cursor_map.png') no-repeat left top;
 }
 
 img.cursor {

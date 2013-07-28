@@ -1,12 +1,11 @@
 "use strict";
 
-ScreenLoader.STAGE_WIDTH = 1280;
-ScreenLoader.STAGE_HEIGHT = 720;
-ScreenLoader.LAYER_MAP = 'layer-map';
-ScreenLoader.BACKGROUND_PATH_PREFIX = 'res/img/loading-screen/';
-ScreenLoader.BACKGROUND_PATH_SUFFIX = '.jpg)';
+LoadingScreen.STAGE_WIDTH = 1280;
+LoadingScreen.STAGE_HEIGHT = 720;
+LoadingScreen.BACKGROUND_PATH_PREFIX = 'res/img/screen-loading/';
+LoadingScreen.BACKGROUND_PATH_SUFFIX = '.jpg)';
 
-ScreenLoader.mapScreenImageNames = {
+LoadingScreen.mapScreenImageNames = {
 	button_cursor_map: "button_cursor_map.png",
 	button_menu_map: "button_menu_map.png",
 	button_play_map: "button_play_map.png",
@@ -19,55 +18,61 @@ ScreenLoader.mapScreenImageNames = {
 	level_lock:"level_lock.png",
 };
 
-ScreenLoader.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/loading-screen/';
-ScreenLoader.MAP_SCREEN_IMAGE_DIRECTORY='res/img/map-screen/';
+LoadingScreen.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/screen-loading/';
+LoadingScreen.MAP_SCREEN_IMAGE_DIRECTORY='res/img/screen-map/';
 
-function ScreenLoader() {
+function LoadingScreen() {
 }
 
-ScreenLoader.init = function() {
+LoadingScreen.init = function() {
 	sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
-	ScreenLoader.localization();
-	this.canvas = $('#' + ScreenLoader.LAYER_MAP)[0];
-	this.layer = this.canvas.getContext('2d');
+	LoadingScreen.localization();
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
-	this.layer.clearRect( 0, 0, ScreenLoader.STAGE_WIDTH, ScreenLoader.STAGE_HEIGHT);
-		this.canvas.style.background = 'url(' + ScreenLoader.BACKGROUND_PATH_PREFIX + 'background-loading' + ScreenLoader.BACKGROUND_PATH_SUFFIX;
-	this.canvas.width = ScreenLoader.STAGE_WIDTH;
-	this.canvas.height = ScreenLoader.STAGE_HEIGHT;	
+	this.screenDiv = $('#screen-loading');
+	this.screenDiv.width = LoadingScreen.STAGE_WIDTH;
+	this.screenDiv.height = LoadingScreen.STAGE_HEIGHT;	
+	this.screenDiv.show();
 	this.registerEvent();
 	this.gal.init(function() {
-		ScreenLoader.gal.download('loadingScreen');
+		LoadingScreen.gal.download('screen-loading');
 	});
 };
 
-ScreenLoader.registerEvent = function(){
-	var screenLoader = this;
-	this.gal.onLoaded('loadingScreen', function(result) {
+LoadingScreen.registerEvent = function(){
+	var LoadingScreen = this;
+	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
-		    screenLoader.progressBar = new ProgressBar(screenLoader.layer);
-			screenLoader.gal.download('Map Screen and Level 1');	           			
+			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-loading/background-loading.jpg').src + ')' );
+		    LoadingScreen.progressBar = new ProgressBar(LoadingScreen.screenDiv);
+			LoadingScreen.gal.download('screen-main-menu and screen-map');
 		}
 	});
-	this.gal.onProgress("Map Screen and Level 1", function(progress) { 
+	this.gal.onProgress("screen-main-menu and screen-map", function(progress) { 
 		 var percentage = progress.current/progress.total ;
-		 screenLoader.progressBar.progress(percentage);
+		 LoadingScreen.progressBar.progress(percentage);
 	});
-	this.gal.onLoaded('Map Screen and Level 1', function(result) {
+	this.gal.onLoaded('screen-main-menu and screen-map', function(result) {
 		if (result.success) {
-			 screenLoader.progressBar.loaded(result);
-			 ScreenLoader.gal.download('allLevels');	  
+			 LoadingScreen.progressBar.loaded(result);
+			 console.debug('screen-main-menu and screen-map resources loaded');
+			 LoadingScreen.gal.download('dialogs');
 		}
 	});
-	this.gal.onLoaded('allLevels', function(result) {
+	this.gal.onLoaded('dialogs', function(result) {
+		if (result.success) {
+			 console.debug('dialogs resources loaded');
+			 LoadingScreen.gal.download('screen-game');
+		}
+	});
+	this.gal.onLoaded('screen-game', function(result) {
 		if (result.success) {
 			//alert("loaded");
-			console.debug('allLevels content loaded');	  
+			console.debug('screen-game resources loaded');
 		}
 	});
 }
 
-ScreenLoader.localization = function(){
+LoadingScreen.localization = function(){
     $("#option-continue-playing").i18n();
     $("#option-main-menu").i18n();
     $("#option-new-game").i18n();
@@ -78,83 +83,79 @@ ScreenLoader.localization = function(){
 }
 
 /// progress bar
-ProgressBar.LAYER_DANGER_BAR = 'layer-danger-bar';
-ProgressBar.PROGRESS_BAR_Width = 475;
+ProgressBar.WIDTH = 475;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
 ProgressBar.MESSAGE_TOP = 560;
 ProgressBar.LOADING_MESSAGE_LEFT =575;
 ProgressBar.CLICK_MESSAGE_LEFT = 515;
 
-function ProgressBar(layerBackground){
-	this.layerBackground = layerBackground;	
-	this.canvas = $('#' + ProgressBar.LAYER_DANGER_BAR)[0];
-	this.canvas.style.zIndex = 10;
-	this.canvas.width=ScreenLoader.STAGE_WIDTH;
-	this.canvas.height=ScreenLoader.STAGE_HEIGHT;
+function ProgressBar(backgroundLayer){
+	this.backgroundLayer = backgroundLayer;
+	this.backgroundLayer.focus();
+	this.loadingProgressBar = LoadingScreen.gal.get("screen-loading/loading-progress-bar.png");
+	this.loadingProgressBarLeftCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-left-cap.png");
+	this.loadingProgressBarFill =LoadingScreen.gal.get("screen-loading/loading-progress-bar-fill.png");
+	this.canvas = $('#layer-progress-bar')[0];
+	this.canvas.width = ProgressBar.WIDTH;
+	this.canvas.height = this.loadingProgressBar.height;
+	this.canvas.style.left = ProgressBar.LEFT + 'px';
+	this.canvas.style.top = ProgressBar.TOP + 'px';
+	console.debug( document.activeElement + ' has focus');
 	this.layer = this.canvas.getContext('2d');
+	this.layer.textBaseline = 'top';
+	this.layer.fillStyle = 'rgb(255,255,255)';
 	this.drawImages();
 	this.isLoadingComplete = false;
 	this.registerEventHandlers();
-	this.canvas.focus();
+	/*this.canvas.focus();*/
 }
 
 ProgressBar.prototype.drawImages = function(progressBar,images) {
-	var loadingprogressbar = ScreenLoader.gal.get("loading-screen/loading-progress-bar.png");
-	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
-	this.layerBackground.drawImage( loadingprogressbar, ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height );
-	
-	this.layer.font = '27pt JungleFever';
-	this.layer.fillStyle = 'rgb(255,255,255)';
+	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );	
+	this.layer.font = '27pt HelveticaBold';
 	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'),ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.MESSAGE_TOP );
-	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);
+	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width, this.loadingProgressBarLeftCap.height);
 	this.showCopywrite();
 }; //DangerBar.prototype.drawImages()
 
 ProgressBar.prototype.progress = function(percentdownload) {
-	var loadingprogressbar = ScreenLoader.gal.get("loading-screen/loading-progress-bar.png");	 
-	var newWidth=  ProgressBar.PROGRESS_BAR_Width*percentdownload;
-	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
-	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png");
-	this.layer.clearRect(ProgressBar.LEFT, ProgressBar.TOP, loadingprogressbar.width, loadingprogressbar.height);
-	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
-	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,newWidth,loadingprogressbarfill.height);
+	var newWidth=  ProgressBar.WIDTH * percentdownload;
+	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
+	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
+	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, newWidth,this.loadingProgressBarFill.height);
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillStyle = 'rgb(255,255,255)';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.MESSAGE_TOP);
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), 0, 0);
 };
 
 ProgressBar.prototype.loaded = function(result) {	
-	var loadingprogressbarleftcap = ScreenLoader.gal.get("loading-screen/loading-progress-bar-left-cap.png");
-	var loadingprogressbarfill =ScreenLoader.gal.get("loading-screen/loading-progress-bar-fill.png"); 
-	//this.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);	
-	this.layer.drawImage(loadingprogressbarleftcap,ProgressBar.LEFT, ProgressBar.TOP,loadingprogressbarleftcap.width,loadingprogressbarleftcap.height);	
-	this.layer.drawImage(loadingprogressbarfill,415, ProgressBar.TOP,ProgressBar.PROGRESS_BAR_Width,loadingprogressbarfill.height);
+	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
+	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
+	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap, 0, ProgressBar.WIDTH, this.loadingProgressBarFill.height);
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillStyle = 'rgb(255,255,255)';
-	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.CLICK_MESSAGE_LEFT, ProgressBar.MESSAGE_TOP);
+	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), 0, 0);
 	this.isLoadingComplete=true;
 };
 
 ProgressBar.prototype.showCopywrite =function(){
 	var copyrightChar = 169;
 	this.layer.font='13pt HelveticaBold'
-	this.layer.fillStyle = 'rgb(255,255,255)';
 	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. ' + String.fromCharCode(copyrightChar) + ' 2008 Oberon Media.All Rights Reserved.', 180, 650);
 	this.layer.fillText(String.fromCharCode(copyrightChar) + ' 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.', 420, 665);
 }
 
 ProgressBar.prototype.registerEventHandlers = function() {
 var progressBar = this;
-this.canvas.onkeydown = function(evt) {
+progressBar.canvas.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 			case 13: // enter
 				 if(progressBar.isLoadingComplete){
-					progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
+					progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
 					progressBar.canvas.onkeydown=null;
-					progressBar.canvas.style.zIndex = 5;
 					//TODO if api.inDemoMode() skip the main menu screen?
-				    MainMenuScreen.init('canvas-main', progressBar);
+				    MainMenuScreen.init('screen-loading', progressBar);
+				    evt.stopPropagation();
+					evt.preventDefault();
 				 }
 				break;
 		}

@@ -11,14 +11,15 @@ BlobCollection.ITEM_COUNT_X_OFFSET= 25;
 BlobCollection.LEFT_OFFSET= -50;
 
 
-function BlobCollection(gridLayer){
+function BlobCollection(){
 	BlobCollection.ITEM_WIDTH = Tile.getWidth();
 	BlobCollection.ITEM_HEIGHT = Tile.getHeight();
 	BlobCollection.ITEM_COUNT_X_OFFSET = BlobCollection.ITEM_WIDTH/2 - 5;
 	var imageId;
 	this.blobCollection = {};
 	this.blobItemsCount=0;
-	this.gridLayer= gridLayer;
+	this.canvas = $('#layer-collection-key');
+	this.layer= this.canvas[0].getContext('2d');
 }
 
 BlobCollection.prototype.initImages= function(imageArray) {
@@ -55,11 +56,16 @@ BlobCollection.prototype.removeBlobItem= function(tile) {
 BlobCollection.prototype.display= function(skipDrawingImage) {
 	var numberOfImages = Math.min(_.size(this.blobCollection), BlobCollection.MAX_ITEMS) + 2;
 	var count = 0;
-	var layer = this.gridLayer;
-	var x = (layer.canvas.width / 2) - ((BlobCollection.ITEM_WIDTH * numberOfImages) + (BlobCollection.ITEM_SPACE * (numberOfImages -1))) / 2 ;
+	var layer = this.layer;
+	this.canvas.width = (BlobCollection.ITEM_WIDTH * numberOfImages) + (BlobCollection.ITEM_SPACE * (numberOfImages-1));
+	this.canvas.height = BlobCollection.ITEM_HEIGHT;
+	var x = (LoadingScreen.STAGE_WIDTH / 2) - (this.canvas.width / 2);
+	this.canvas.css('left', x + 'px');
+	this.canvas.css('top', BlobCollection.ITEM_Y + 'px');
+
 	x += BlobCollection.LEFT_OFFSET;
 	if(!skipDrawingImage){
-		layer.drawImage(this.Bracket_Left, x, BlobCollection.ITEM_Y, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_HEIGHT);
+		layer.drawImage(this.Bracket_Left, 0, 0, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_HEIGHT);
 	}
 	for(var key in this.blobCollection){
 		var image = this.blobCollection[key].image;
