@@ -626,6 +626,12 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(layer, initialTile, s
 	}
 }
 
+LevelAnimation.prototype.animateBoardBuild = function(layer, tileMatrix, callback){
+	var boardBuildAnimation = new BoardBuildAnimation(layer, tileMatrix, callback);
+	boardBuildAnimation.start();
+}
+
+
 LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
@@ -900,4 +906,52 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.layer.drawImage(image, this.x, this.y);
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix.length;
+};
+
+BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
+BoardBuildAnimation.HEIGHT_OFFSET = 9;
+function BoardBuildAnimation(layer, tileMatrix, callback){
+	this.layer = layer;
+	this.tileMatrix = tileMatrix;
+	this.noOfRows = 1;
+	this.width = Tile.getWidth();
+	this.height = Tile.getHeight();
+	this.callback = callback;
+}
+
+BoardBuildAnimation.prototype.start = function(){
+	var boardBuildAnimation = this;
+	this.interval = setInterval(function(){
+		boardBuildAnimation.animate()}, 
+		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+BoardBuildAnimation.prototype.animate = function(){
+	var col, row, tile, rowsToDisplay, complete;
+	for(col = 0; col < this.tileMatrix.length; col++){
+		if(this.noOfRows > this.tileMatrix[col].length){
+			rowsToDisplay = this.tileMatrix[col].length;
+		}else{
+			rowsToDisplay = this.noOfRows;
+		}
+		for(row = 0; row < rowsToDisplay;row++){
+			tile = this.tileMatrix[col][row];
+			if(tile && tile.blob){
+				y = Galapago.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
+				if(y < tile.getYCoord()){
+					complete = true;
+					break;
+				}
+				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
+				this.layer.drawImage(tile.blob.image, tile.getXCoord(), y, this.width, this.height);
+			}
+		}
+		if(complete){
+			clearInterval(this.interval);
+			this.callback();
+			break;
+		}
+	}
+	this.noOfRows++;
+	
 };

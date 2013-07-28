@@ -948,39 +948,43 @@ Level.prototype.display = function() {
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
+		level.board.putInAnimationQ = true;
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
-		level.board.displayBlobCollections();
-
-		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
-			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
-		}
-		level.board.setActiveTile();
-		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		if( Galapago.isTimedMode ) {
-			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
-			var restoreLookup ,dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-			if(restoreLookupString != undefined){
-			   restoreLookup = JSON.parse(restoreLookupString);
-			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-			   if(dangerBarTimeRemaining != undefined){
-				  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
-				  level.dangerBar.start();
-			   }
+		level.board.putInAnimationQ = false;
+		level.board.animationQ = [];
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function(){
+			level.board.displayBlobCollections();
+			if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
+				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 			}
-		}
-		console.debug(level.toString());
+			level.board.setActiveTile();
+			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			if( Galapago.isTimedMode ) {
+				var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
+				var restoreLookup ,dangerBarTimeRemaining = null;
+				level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+				if(restoreLookupString != undefined){
+				   restoreLookup = JSON.parse(restoreLookupString);
+				   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+				   if(dangerBarTimeRemaining != undefined){
+					  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
+					  level.dangerBar.start();
+				   }
+				}
+			}
+			console.debug(level.toString());
 
-		level.board.addPowerups();
-		level.board.displayLevelName();
-		level.board.displayMenuButton(false);
-		level.board.displayQuitButton(false);
-		level.board.display();
-		var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
-		return level; //chainable
-		}).done();
+			level.board.addPowerups();
+			level.board.displayLevelName();
+			level.board.displayMenuButton(false);
+			level.board.displayQuitButton(false);
+			level.board.display();
+			var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
+			return level; //chainable
+			}).done();
+		});
 	}
 	else {
 		return level; //chainable
@@ -1562,7 +1566,6 @@ Board.prototype.build = function(tilePositions) {
 			}
 		}
 	}
-	
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
 	return;
 }; //Board.prototype.build
@@ -1720,9 +1723,16 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 				row = tile.coordinates[1];
 				x = Tile.getXCoord(col);
 				y = Tile.getYCoord(row);
-				tileMatrix[col][row] = tile; 
-				layer.clearRect( x, y, width, height );
-				layer.drawImage(tile.blob.image, x, y, width, height);
+				tileMatrix[col][row] = tile;
+				function draw(){ 
+					layer.clearRect( x, y, width, height );
+					layer.drawImage(tile.blob.image, x, y, width, height);
+				}
+				if(board.putInAnimationQ){
+					board.animationQ.push(draw);
+				}else{
+					draw();
+				}
 				return;
 			}
 		});
