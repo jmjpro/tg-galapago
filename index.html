@@ -85,15 +85,16 @@
 
 		<div id="screen-game" class="canvas-fullscreen">
 			<canvas id="layer-background" style="z-index: 1;"></canvas>
-			<canvas id="layer-grid" class="game-layer" style="z-index: 2;"></canvas>
-			<canvas id="layer-gold" class="game-layer" style="z-index: 3;"></canvas>
-			<canvas id="layer-creature" class="game-layer" style="z-index: 4;" tabindex="1"></canvas>
-			<canvas id="layer-score" class="game-layer" style="z-index: 2;" tabindex="2"></canvas>
+			<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>
+			<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>
+			<canvas id="layer-creature" class="layer-board" style="z-index: 4;"></canvas>
+			<canvas id="layer-hilight" class="layer-board" style="z-index: 5;" tabindex="1"></canvas>
+			<canvas id="layer-score" style="z-index: 2;" tabindex="2"></canvas>
 			<canvas id="layer-power-up" style="z-index: 2;" tabindex="3"></canvas>
-			<canvas id="layer-bonus-frenzy" style="z-index: 3;" tabindex="4"></canvas>
 			<canvas id="layer-danger-bar" style="z-index: 2;"></canvas>
 			<canvas id="layer-collection-key" style="z-index: 2;"></canvas>
-x		</div>
+			<canvas id="layer-bonus-frenzy" style="z-index: 3;" tabindex="4"></canvas>
+		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
 			<div id="button-change-player">

@@ -282,8 +282,8 @@ LevelAnimation.prototype.animateDroppingCreatures = function(animationQ){
 	}else{
 		deferred.resolve();
 	}
-	return 	deferred.promise;
-}	
+	return deferred.promise;
+};
 
 LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 	var levelAnimation = this;
@@ -298,7 +298,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 			levelAnimation.animateDropping(animationQ, deferred, ++cnt);
 		});
 	}	
-}
+};
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
 	if(this.rolloverAnimation){
@@ -325,10 +325,9 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 		if(markTile){ 
 			tileMarkImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
 		}
-		this.rolloverAnimation = new RolloverAnimation(layer, tileActive.getXCoord(),tileActive.getYCoord(), rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
+		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();
 	}
-
 };
 
 LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev, callback){
@@ -379,23 +378,23 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		var x = tileUp.getXCoord();
 		var y = tileUp.getYCoord();
 		if(rolloverImageSpriteSheet || rolloverImageSpriteSheet1){
-			var width, height;
 			var imageArray = [];
 			var imageArray1 = [];
 			var imgCnt = 0;
+			var image;
 			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					var image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
 				}
 				if(rolloverImageSpriteSheet1){
-					var image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
+					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
 				}
 			}
 			imgCnt = 0;
 			var interval = setInterval(function(){
-				var image, image1;
+				var image1;
 				if(rolloverImageSpriteSheet){
 					image = imageArray[imgCnt];
 				}
@@ -444,9 +443,9 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 			var randomLevelId;
 			do{
 				randomLevelId = Math.ceil( Math.random() * highestCompletedId);
-			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId))
+			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId));
 			animatedLevels.push(randomLevelId);
-		};
+		}
 		_.each(animatedLevels, function(animatedLevel){
 			var level = Level.findById(animatedLevel);
 			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
@@ -465,7 +464,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	}
 	animateRandomBornFires();
 	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
-}
+}; //LevelAnimation.prototype.animateBonFire()
 
 LevelAnimation.prototype.animateBombs = function(layer){
 	var levelAnimation = this;
@@ -493,16 +492,16 @@ LevelAnimation.prototype.animateBombs = function(layer){
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
 				coordinates = [744 , 295 - image.height];
 				break;
-		}
+		} //switch( randomBombId ) {
 		if(levelAnimation.bombAnimation){
 			levelAnimation.bombAnimation.stop();
 		}
 		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer,callback);		
 		bombAnimation.start();
 		levelAnimation.bombAnimation = bombAnimation;
-	};
+	} //function animateBomb(callback)()
 	animateBomb(animateBomb);
-}
+}; //LevelAnimation.prototype.animateBombs()
 
 LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
@@ -519,27 +518,27 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
 	}
 	animateGameStartArrow();
-}
+};
 
 LevelAnimation.prototype.stopGameStartArrow = function(){
 	if(this.gameStartArrowAnimation){
 		this.gameStartArrowAnimation.stop();
 		this.gameStartArrowAnimation = null;
 	}
-}
+};
 
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
 	nextLevelArrowAnimation.start();
-}
+};
 
 LevelAnimation.prototype.stopNextLevelArrows = function(){
 	if(this.nextLevelArrowAnimation){
 		this.nextLevelArrowAnimation.stop();
 		this.nextLevelArrowAnimation = null;
 	}
-}
+};
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
@@ -562,14 +561,14 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
-}
+};
 
 LevelAnimation.prototype.stopMakeMatchAnimation = function(layer, initialTile, swapTile){
 	if(this.makeMatchAnimation){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
 	}
-}
+};
 
 LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.rolloverAnimation){
@@ -602,7 +601,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
 	}
-}
+};
 
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	var minx =100000, miny=100000, maxx=0, maxy=0, x, y;
@@ -615,16 +614,15 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	x = minx + Math.floor((maxx - minx) / 2);
 	y = miny + Math.floor((maxy - miny) / 2);
 	return [x,y];	
-}
+};
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
-function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet){
+function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet){
 	this.layer = layer;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
 	this.interval = null;
 	this.rolloverSpriteId = 0;
-	this.xCoord = xCoord;
-	this.yCoord = yCoord;
+	this.tileActive = tileActive;
 	this.stopCallback = stopCallback;
 	this.tileMarkImageSpriteSheet = tileMarkImageSpriteSheet;
 	this.tileMarkSpriteId = 0;
@@ -633,9 +631,9 @@ function RolloverAnimation(layer, xCoord, yCoord, rolloverImageSpriteSheet, stop
 RolloverAnimation.prototype.start = function(){
 	this.rolloverSpriteId = 0;
 	var rolloverAnimation = this;
-	this.interval = setInterval(function(){
-		rolloverAnimation.animate(rolloverAnimation)}, 
-		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
+	this.interval = setInterval(function() {
+		rolloverAnimation.animate(rolloverAnimation);
+	}, RolloverAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
 RolloverAnimation.prototype.stop = function(){
@@ -645,12 +643,12 @@ RolloverAnimation.prototype.stop = function(){
 
 RolloverAnimation.prototype.animate = function(){
 	var image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
-	this.layer.putImageData(image, this.xCoord, this.yCoord);
+	this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
 	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 	if(this.tileMarkImageSpriteSheet){
 		image = this.tileMarkImageSpriteSheet.getSpriteNew([this.tileMarkSpriteId, 0]);
-		this.layer.drawImage(image, this.xCoord, this.yCoord, Tile.getWidth(), Tile.getHeight());
+		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
 		this.tileMarkSpriteId++;
 		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix[0].length;
 	}
@@ -669,7 +667,7 @@ BonFireAnimation.prototype.start = function(){
 	this.bonfireSpriteId = 0;
 	var bonFireAnimation = this;
 	this.interval = setInterval(function(){
-		bonFireAnimation.animate()}, 
+		bonFireAnimation.animate();}, 
 		BonFireAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
@@ -705,7 +703,7 @@ BombAnimation.prototype.start = function(){
 	this.bombSpriteId = 0;
 	var bombAnimation = this;
 	this.interval = setInterval(function(){
-		bombAnimation.animate()}, 
+		bombAnimation.animate();}, 
 		BombAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
@@ -744,7 +742,7 @@ GameStartArrowAnimation.prototype.start = function(){
 	this.spriteId = 0;
 	var animation = this;
 	this.interval = setInterval(function(){
-		animation.animate()}, 
+		animation.animate();},
 		GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
@@ -779,7 +777,7 @@ NextLevelArrowAnimation.prototype.start = function(){
 	this.rolloverSpriteId = 0;
 	var rolloverAnimation = this;
 	this.interval = setInterval(function(){
-		rolloverAnimation.animate(rolloverAnimation)}, 
+		rolloverAnimation.animate(rolloverAnimation);},
 		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
@@ -822,7 +820,7 @@ MakeMatchAnimation.prototype.start = function(){
 	this.rolloverSpriteId = 0;
 	var makeMatchAnimation = this;
 	this.interval = setInterval(function(){
-		makeMatchAnimation.animate()}, 
+		makeMatchAnimation.animate();}, 
 		MakeMatchAnimation.ROLLOVER_TIME_INTERVAL);
 };
 

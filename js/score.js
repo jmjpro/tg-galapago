@@ -1,8 +1,12 @@
 /* begin class Score */
 Score.FONT_SIZE = '26px';
 Score.FONT_NAME = 'JungleFever';
+Score.X = 300;
+Score.Y = 20;
+/*
 Score.X = 500;
 Score.Y = 60;
+*/
 Score.COLOR = 'rgb(255,255,255)';
 Score.MAX_WIDTH = 100;
 Score.MAX_HEIGHT = 25;

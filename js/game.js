@@ -42,6 +42,7 @@ Galapago.dangerBarImageNames = [
 	'progress_bar_fill01',
 	'progress_bar_fill02'
 ];
+Galapago.LAYER_BACKGROUND = 'layer-background';
 
 /* ym: this class shouldn't be instantiated */
 function Galapago() {
@@ -314,7 +315,7 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	var that=this;
 	var animationCanvas = $('#' + 'layer-map-animation')[0];
 	var imageData=st.getSpriteData([xIndex,0]);
-	animationCanvas.style.zIndex = 9;
+	//animationCanvas.style.zIndex = 9;
 	animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
@@ -602,7 +603,7 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 
 LevelMap.show = function(level){
 	Galapago.levelMap = new LevelMap(level);
- 	Galapago.levelMap.canvas.style.zIndex = 7;
+ 	//Galapago.levelMap.canvas.style.zIndex = 7;
 	Galapago.levelMap.canvas.focus();
 	Galapago.levelMap.registerEventHandlers();
 }; //LevelMap.show()
@@ -732,6 +733,8 @@ Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
+Level.LAYER_HILIGHT = 'layer-hilight';
+Level.LAYER_SCORE = 'layer-score';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
@@ -936,6 +939,7 @@ Level.prototype.display = function() {
 	level = this;
 	level.setBoard(new Board());
 	level.styleCanvas();
+	level.board.drawScore();
 	$('#screen-game').show();
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
@@ -1015,6 +1019,7 @@ Level.prototype.quit = function(){
 }
 
 Level.prototype.cleanup = function(){
+	this.board.screenDiv.hide();
 	Galapago.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
@@ -1118,22 +1123,29 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvas, themeComplete, resourcePath;
-	canvas = $('#screen-game #layer-background');
+	var canvasBackground, themeComplete, resourcePath, canvasScore;
+	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
 	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
 	resourcePath = 'background/background_' + themeComplete + '.jpg';
 	console.debug('setting background to ' + resourcePath);
-	canvas.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
 	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
-	canvas.width(LoadingScreen.STAGE_WIDTH);
-	canvas.height(LoadingScreen.STAGE_HEIGHT);
-	this.layerBackground = canvas[0].getContext('2d');
-	_.each( $('.game-layer'), function(layer) {
+	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
+	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
+	canvasBackground.css('left', '0px');
+	canvasBackground.css('top', '0px');
+	this.layerBackground = canvasBackground[0].getContext('2d');
+	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
 		layer.height = Board.GRID_HEIGHT;
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
+	canvasScore = $('#layer-score');
+	canvasScore[0].width = Score.MAX_WIDTH;
+	canvasScore[0].height = Score.MAX_HEIGHT;
+	canvasScore.css('left', Score.X + 'px');
+	canvasScore.css('top', Score.Y + 'px');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1197,16 +1209,19 @@ Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
 Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
 
 function Board() {
+	this.screenDiv = $('#screen-game');
+	this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
+	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
+	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
+	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
+	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	
 	this.score = 0;
-	this.drawScore();
 	this.hotspot = null;
 
-	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.goldTileMatrix = [];
 
-	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.creatureTileMatrix = [];
 
 	// hold the tile last clicked
@@ -1244,7 +1259,7 @@ Board.prototype.displayBlobCollections = function() {
 
 Board.prototype.displayLevelName = function() {
 	var layer, levelNameText;
-	layer = this.creatureLayer;
+	layer = this.backgroundLayer;
 	layer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 	layer.font = Board.LEVEL_NAME_FONT_SIZE + ' ' + Board.LEVEL_NAME_FONT_NAME;
 	layer.fillStyle = Board.LEVEL_NAME_FONT_COLOR;
@@ -2084,7 +2099,7 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 		board.setComplete();
 	}else{
 		//reset grid lines and active tile
-		board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
+		//board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
 		board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
 		board.tileActive.setActiveAsync().done();
 	}
@@ -2733,10 +2748,13 @@ Board.prototype.updateScore = function() {
 }; //Board.prototype.updateScore
 
 Board.prototype.drawScore = function() {
-	this.gridLayer.clearRect( Score.X, Score.Y - Score.MAX_HEIGHT, Score.MAX_WIDTH, Score.MAX_HEIGHT);
-	this.gridLayer.font = Score.FONT_SIZE + ' ' + Score.FONT_NAME;
-	this.gridLayer.fillStyle = Score.COLOR;
-	this.gridLayer.fillText(this.score, Score.X, Score.Y);
+	var layer;
+	layer = this.scoreLayer;
+	//layer = this.backgroundLayer;
+	layer.clearRect( 0, 0, Score.MAX_WIDTH, Score.MAX_HEIGHT);
+	layer.font = Score.FONT_SIZE + ' ' + Score.FONT_NAME;
+	layer.fillStyle = Score.COLOR;//Board.LEVEL_NAME_FONT_COLOR;
+	layer.fillText(this.score, 0, 0);
 	return this; //chainable
 }; //Board.prototype.drawScore()
 
@@ -2855,7 +2873,8 @@ Tile.prototype.setInactiveAsync = function() {
 	var deferred;
 	//console.debug('inactive tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	//this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	this.eraseHilight();
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
 	});
@@ -2903,23 +2922,28 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	width = Tile.getWidth() * offset;
 	height = Tile.getHeight() * offset;
 	imgTile = Galapago.level.tile_1;
-	layer.clearRect( x - offset, y - offset, width + 2 * offset, height + 2 * offset );
+	//layer.clearRect( x - offset, y - offset, width /*+ 2 * offset*/, height/* + 2 * offset*/ );
 	layer.drawImage( imgTile, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	
 	var layer, x, y, imgHilight, width, height, offset;
-	layer = this.board.gridLayer;
+	layer = this.board.hilightLayer;
 	offset = 1;
-	x = Tile.getXCoord(this.coordinates[0]) - offset;
-	y = Tile.getYCoord(this.coordinates[1]) - offset;
-	width = Tile.getWidth() + 2 * offset;
-	height = Tile.getHeight() + 2 * offset;
+	x = Tile.getXCoord(this.coordinates[0])/* - offset*/;
+	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
+	width = Tile.getWidth()/* + 2 * offset*/;
+	height = Tile.getHeight()/* + 2 * offset*/;
 	imgHilight = Galapago.level.tile_hilight;
-	//layer.clearRect( x, y, width, height );
-	//layer.drawImage( this.blob.image, x, y, width, height );
 	layer.drawImage( imgHilight, x, y, width, height );
+}; //Tile.prototype.drawHilight()
+
+Tile.prototype.eraseHilight = function() {	
+	var x, y;
+	x = Tile.getXCoord(this.coordinates[0]);
+	y = Tile.getYCoord(this.coordinates[1]);
+	this.board.hilightLayer.clearRect( x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.getXCoord = function() {	
@@ -3224,8 +3248,8 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
 	this.initImages(imageArray);
 	this.canvas = $('#layer-danger-bar'); 
-	this.canvas.width = this.progress_bar.width;
-	this.canvas.height = this.progress_bar.height;
+	this.canvas[0].width = this.progress_bar.width;
+	this.canvas[0].height = this.progress_bar.height;
 	this.canvas.css( 'left', DangerBar.LEFT + DangerBar.PROGRESS_BAR_FILL_ADJUSTMENT + 'px' );
 	this.canvas.css( 'top', DangerBar.PROGRESS_BAR_TOP + 'px' );
 	this.layer = this.canvas[0].getContext('2d');
@@ -3395,46 +3419,7 @@ BobCervantes.prototype.update = function() {
 /* end class BobCervantes */
 
 /* begin class BobCervantes */
-/*
-Powerup.LEFT = 124;
-Powerup.TOP = 232;
-Powerup.MARGIN = 10;
-Powerup.LAYER_POWER_UP = 'layer-power-up';
 
-function Powerup(images) {
-	this.initImages(images);
-	this.layer = $('#' + Powerup.LAYER_POWER_UP)[0].getContext('2d');
-	this.update();
-}
-
-Powerup.prototype.initImages = function(imageArray) {
-	var powerup;
-	var imageId;
-	powerup = this;
-
-	_.each(imageArray, function(image) {
-		imageId = image.id;
-		powerup[imageId] = image;
-	});
-}; //DangerBar.prototype.initImages
-
-Powerup.prototype.update = function() {
-	var ctx, left, top, width, height;
-	ctx = this.layer;
-	left = Powerup.LEFT;
-	top = Powerup.TOP;
-	width = this.PowerUps_Flame_Disabled.width;
-	height = this.PowerUps_Flame_Disabled.height;
-	ctx.clearRect( left, top, width, height );
-	ctx.drawImage( this.PowerUps_Holder, left, top );
-	top += Powerup.MARGIN * 3;
-	ctx.drawImage( this.PowerUps_Flame_Disabled, left, top );
-	top += this.PowerUps_Swap_Disabled.height + Powerup.MARGIN;
-	ctx.drawImage( this.PowerUps_Swap_Disabled, left, top );
-	top += this.PowerUps_Shuffle_Disabled.height + Powerup.MARGIN;
-	ctx.drawImage( this.PowerUps_Shuffle_Disabled, left, top );
-}; //BobCervantes.prototype.update()
-*/
 /* class FileUtil */
 // helper functions for manipulating files and filenames
 function FileUtil() {}
@@ -3577,3 +3562,59 @@ MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeRepla
  	}
  	return false;
 }
+
+// see @Tyler Whitehouse's answer at http://stackoverflow.com/a/11196395/567525
+function PauseableInterval(func, delay , sender){
+    this.func = func;
+    this.delay = delay;  
+    this.triggerSetAt = new Date().getTime();
+    this.triggerTime = this.triggerSetAt + this.delay;
+   // console.log('initial delay '+delay + ' now '+new Date().getTime());
+    this.i = window.setInterval(this.func, this.delay ,sender);
+    this.t_restart = null;
+    this.paused_timeLeft = 0;
+    this.getTimeLeft = function(){
+        var now = new Date();
+        return this.delay - ((now - this.triggerSetAt) % this.delay);
+    }
+    this.pause = function(){
+        this.paused_timeLeft = this.getTimeLeft();
+            //console.log('pause  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
+        window.clearInterval(this.i);
+        this.i = null;
+                //window.setTimeout(this.resume, 4000);
+    }
+ 
+    this.reset = function(sender){
+        window.clearInterval(this.i);
+        this.i = null;
+        this.i = window.setInterval(this.func, this.delay,sender);
+    }
+ 
+    this.restart = function(sender){
+        sender.i = window.setInterval(sender.func, sender.delay,sender);
+    }
+ 
+    this.callAndRestart = function(sender){
+      sender.restart(sender);
+      //console.log('callAndRestart function called : ' +' now : '+new Date().getTime());
+      sender.func();
+    }
+ 
+    this.resume = function(){
+        if (this.i == null){
+           // console.log('resume  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
+            this.i = window.setTimeout(this.callAndRestart, this.paused_timeLeft, this);
+        }
+    }
+ 
+    this.clearInterval = function(){
+           window.clearInterval(this.i);
+      }
+	  
+	 this.isRunning = function(){
+	     if(this.i != null)
+		   return true;
+		return false;
+     }	 
+} //function PauseableInterval

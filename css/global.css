@@ -61,7 +61,7 @@ canvas {
 	text-align: center;
 }
 
-canvas.game-layer {
+canvas.layer-board {
 	position: absolute;
 	left: 0;
 	top: 0;
