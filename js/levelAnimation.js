@@ -1,4 +1,4 @@
-LevelAnimation.CREATURE_DROPPING_INTERVAL=50;
+LevelAnimation.CREATURE_DROPPING_INTERVAL=300;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
@@ -192,8 +192,17 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 {cell: [135, 0], id: '6'}, 
 {cell: [162, 0], id: '7'}, 
 {cell: [189, 0], id: '8'}, 
-{cell: [216, 0], id: '9'}, 
-{cell: [243, 0], id: '10'}
+{cell: [216, 0], id: '9'}
+]];
+
+LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'}, 
+{cell: [97, 0], id: '2'}, 
+{cell: [194, 0], id: '3'}, 
+{cell: [291, 0], id: '4'}, 
+{cell: [388, 0], id: '5'}, 
+{cell: [485, 0], id: '6'}, 
+{cell: [582, 0], id: '7'}
 ]];
 
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
@@ -294,7 +303,15 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 			cnt = 0;
 		} 
 		Galapago.delay(LevelAnimation.CREATURE_DROPPING_INTERVAL).done(function(){
-			animationQ[cnt]();
+			var ele = animationQ[cnt];
+			if(ele instanceof Array){
+				_.each(ele,function(draw){
+					draw();
+				});
+			}else{
+				ele();
+			}
+
 			levelAnimation.animateDropping(animationQ, deferred, ++cnt);
 		});
 	}	
@@ -527,6 +544,44 @@ LevelAnimation.prototype.stopGameStartArrow = function(){
 	}
 };
 
+/////
+LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
+	var levelAnimation = this;
+	var powerAchievedAnimation;
+	var  image, powerAchievedImageSpriteSheet;
+	image = ScreenLoader.gal.get("screen-game/Powerup_ready_strip.png");
+	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
+	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
+	function animatePowerAchieved(){
+		powerAchievedAnimation.start();
+		if(!levelAnimation.powerAchievedAnimation){
+			levelAnimation.powerAchievedAnimation = new Array();
+		}
+		levelAnimation.powerAchievedAnimation.push(powerAchievedAnimation);
+	}
+	animatePowerAchieved();
+	return  powerAchievedAnimation;
+	
+}
+
+LevelAnimation.prototype.stopPowerAchieved = function(powerAchievedAnimation){
+	if(this.powerAchievedAnimation){
+			var index = this.powerAchievedAnimation.indexOf(powerAchievedAnimation)
+			this.powerAchievedAnimation[index].stop();
+			//this.powerAchievedAnimation[index] = null;
+			this.powerAchievedAnimation.splice( index, 1 );
+	}
+}
+
+LevelAnimation.prototype.stopAllPowerAchieved = function(){
+	if(this.powerAchievedAnimation){
+			for (var i=0; i < this.powerAchievedAnimation.length; i++){
+				this.powerAchievedAnimation[i].stop();
+			}
+	}
+}
+////
+
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
@@ -570,6 +625,12 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(layer, initialTile, s
 	}
 };
 
+LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLayer, tileMatrix, callback){
+	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, animationLayer, tileMatrix, callback);
+	boardBuildAnimation.start();
+}
+
+
 LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
@@ -593,6 +654,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.gameStartArrowAnimation.stop();
 		this.gameStartArrowAnimation = null;
 	}
+
 	if(this.nextLevelArrowAnimation){
 		this.nextLevelArrowAnimation.stop();
 		this.nextLevelArrowAnimation = null;
@@ -760,8 +822,9 @@ GameStartArrowAnimation.prototype.animate = function(){
 	this.imageWidth = image.width;
 	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
 	this.spriteId++;
-	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-2){
-		this.callback();
+	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-1){
+		//this.callback();
+		this.spriteId=0;
 	}
 };
 
@@ -841,4 +904,63 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.layer.drawImage(image, this.x, this.y);
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix.length;
+};
+
+BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
+BoardBuildAnimation.HEIGHT_OFFSET = 15;
+function BoardBuildAnimation(creatureLayer, layer, tileMatrix, callback){
+	this.creatureLayer = creatureLayer;
+	this.layer = layer;
+	this.tileMatrix = tileMatrix;
+	this.noOfRows = 1;
+	this.width = Board.TILE_WIDTH;
+	this.height = Board.TILE_HEIGHT;
+	this.callback = callback;
+}
+
+BoardBuildAnimation.prototype.start = function(){
+	var boardBuildAnimation = this;
+	this.interval = setInterval(function(){
+		boardBuildAnimation.animate()}, 
+		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+BoardBuildAnimation.prototype.animate = function(){
+	var col, row, tile, rowsToDisplay, complete;
+	for(col = 0; col < this.tileMatrix.length; col++){
+		if(this.noOfRows > this.tileMatrix[col].length){
+			rowsToDisplay = this.tileMatrix[col].length;
+		}else{
+			rowsToDisplay = this.noOfRows;
+		}
+		for(row = 0; row < rowsToDisplay;row++){
+			tile = this.tileMatrix[col][row];
+			if(tile && tile.blob){
+				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
+				if(y < tile.getYCoord()){
+					complete = true;
+					break;
+				}
+				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
+				this.layer.drawImage(tile.blob.image, tile.getXCoord(), y, this.width, this.height);
+			}
+		}
+		if(complete){
+			break;
+		}
+	}
+	if(complete){
+		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
+		for(col = 0; col < this.tileMatrix.length; col++){
+			for(row = 0; row < this.tileMatrix[col].length; row++){
+				tile = this.tileMatrix[col][row];
+				if(tile && tile.blob){
+					this.creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+				}
+			}
+		}
+		clearInterval(this.interval);
+		this.callback();
+	}
+	this.noOfRows++;
 };

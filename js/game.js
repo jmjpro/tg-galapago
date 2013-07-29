@@ -382,10 +382,10 @@ LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
 	levelMap = this;
 
-	/*
-	levelMap.canvas.onmousemove = function(e) {
-		x = e.pageX - this.offsetLeft;
-		y = e.pageY - this.offsetTop;
+	
+	/*window.onmousemove = function(e) {
+		x = e.pageX ;//- this.offsetLeft;
+		y = e.pageY ;//- this.offsetTop;
 		point = new Array(2);
 		point[0] = x;
 		point[1] = y;
@@ -394,8 +394,9 @@ LevelMap.prototype.registerEventHandlers = function() {
 			level = Galapago.levels[levelIt];
 			mapHotspotRegion = level.mapHotspotRegion;
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
-				console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
-				levelMap.drawHotspot(mapHotspotRegion);
+				//console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
+				//levelMap.drawHotspot(mapHotspotRegion);
+				levelMap.setHotspotLevel(level);
 				break;
 			}
 			else {
@@ -403,10 +404,11 @@ LevelMap.prototype.registerEventHandlers = function() {
 				levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
-	} //onmousemove
-	*/
+	} //onmousemove*/
+	
 
-	levelMap.canvas.onclick = function(evt) {
+	//levelMap.canvas.onclick = function(evt) {
+	window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
 	}; //onclick
 
@@ -473,8 +475,8 @@ LevelMap.prototype.reset = function() {
 
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
-	x = evt.pageX - this.offsetLeft;
-	y = evt.pageY - this.offsetTop;
+	x = evt.pageX ;//- this.offsetLeft;
+	y = evt.pageY ;//- this.offsetTop;
 	point = new Array(2);
 	point[0] = x;
 	point[1] = y;
@@ -483,12 +485,16 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			Galapago.setLevel(level.id);
+			this.setHotspotLevel(level);
+			if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
+				window.onclick = null;
+				window.onmousemove = null;
 			this.handleKeyboardSelect();
+			}
 			break;
 		}
 		else {
-			console.debug(MatrixUtil.coordinatesToString(point) + " didn't click anywhere special ");
+			//console.debug(MatrixUtil.coordinatesToString(point) + " didn't click anywhere special ");
 		}
 	}
 }; //LevelMap.prototype.handleSelect()
@@ -520,7 +526,7 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 
 LevelMap.prototype.handleUpArrow = function() {
 	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
-	this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
+	//this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
@@ -738,6 +744,7 @@ Level.LAYER_CREATURE = 'layer-creature';
 Level.LAYER_HILIGHT = 'layer-hilight';
 Level.LAYER_SCORE = 'layer-score';
 Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
+Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
@@ -947,10 +954,13 @@ Level.prototype.display = function() {
 	if( level.levelConfig.blobPositions ) {
 		level.loadImagesAsync().then( function() {
 		level.board.init( level.levelConfig.blobPositions );
+		level.board.putInAnimationQ = true;
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
+		level.board.putInAnimationQ = false;
+		level.board.animationQ = [];
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.gameAnimationLayer, level.board.creatureTileMatrix, function(){
 		level.board.displayBlobCollections();
-
 		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
@@ -980,6 +990,7 @@ Level.prototype.display = function() {
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
 		return level; //chainable
 		}).done();
+		});
 	}
 	else {
 		return level; //chainable
@@ -1029,6 +1040,10 @@ Level.prototype.cleanup = function(){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
+	if(this.levelAnimation.powerAchievedAnimation){
+		this.levelAnimation.stopAllPowerAchieved();
+		this.levelAnimation.powerAchievedAnimation = null;
+	}
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
 }
@@ -1126,7 +1141,7 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, canvasScore;
+	var canvasBackground, themeComplete, resourcePath, canvasScore, canvasGameAnimation;
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
 	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
 	resourcePath = 'background/background_' + themeComplete + '.jpg';
@@ -1155,6 +1170,12 @@ Level.prototype.styleCanvas = function() {
 	canvasScore[0].height = Score.MAX_HEIGHT;
 	canvasScore.css('left', Score.X + 'px');
 	canvasScore.css('top', Score.Y + 'px');
+
+	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
+	canvasGameAnimation[0].width = Board.GRID_WIDTH;
+	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
+	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
+	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1226,7 +1247,8 @@ function Board() {
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
-	
+	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
+
 	this.score = 0;
 	this.hotspot = null;
 
@@ -1579,7 +1601,6 @@ Board.prototype.build = function(tilePositions) {
 			}
 		}
 	}
-	
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
 	return;
 }; //Board.prototype.build
@@ -1707,7 +1728,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 				layer.clearRect( x, y, width, height );
 				layer.drawImage(blob.image, x, y, width, height);
 			}
-			if(this.putInAnimationQ){
+			if(this.putInAnimationQ && blob.blobType != 'GOLD'){
 				this.animationQ.push(draw);
 			}else{
 				draw();
@@ -1737,9 +1758,16 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 				row = tile.coordinates[1];
 				x = Tile.getXCoord(col);
 				y = Tile.getYCoord(row);
-				tileMatrix[col][row] = tile; 
+				tileMatrix[col][row] = tile;
+				function draw(){ 
 				layer.clearRect( x, y, width, height );
 				layer.drawImage(tile.blob.image, x, y, width, height);
+				}
+				if(board.putInAnimationQ){
+					board.animationQ.push(draw);
+				}else{
+					draw();
+				}
 				return;
 			}
 		});
@@ -2361,7 +2389,7 @@ Board.prototype.handleLeftArrow = function() {
 		}).done();
 	} else {
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
-	    if(this.powerUp.isPowerAchieved()){
+	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
 			this.powerUp.addListner();
 			//this.powerUp.canvas.focus();
@@ -2493,7 +2521,7 @@ Board.prototype.getCreatureTileFromPoint = function(point) {
 
 
 Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
-	var pointsAbove, tilesAbove, emptyPoints, changedPoints;
+	var pointsAbove, tilesAbove, emptyPoints, changedPoints, boardAnimation;
 	var board = this;
 	var changedPointsArray = [];
 	var nonFirstRowPoints = [];
@@ -2509,6 +2537,10 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			pointsAbove = MatrixUtil.getNeighborsAbovePoints(verticalPointsSet);
 			//board.removeTiles(board.getCreatureTilesFromPoints(verticalPointsSet));
 			tilesAbove = board.getCreatureTilesFromPoints(pointsAbove);
+			if(board.putInAnimationQ){
+				boardAnimation = board.animationQ;
+				board.animationQ = [];
+			}
 			changedPoints = board.lowerTiles(tilesAbove, verticalPointsSet.length);
 			changedPointsArray = changedPointsArray.concat(changedPoints);
 			var startIndex = tilesAbove.length - changedPoints.length;
@@ -2521,6 +2553,10 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			else{
 				changedPoints = board.fillEmptyPoints(emptyPoints);
 				changedPointsArray = changedPointsArray.concat(changedPoints);
+			}
+			if(board.putInAnimationQ){
+				boardAnimation.push(board.animationQ);
+				board.animationQ = boardAnimation;
 			}
 			console.debug( 'changed points Array ' + MatrixUtil.pointsArrayToString(changedPointsArray) );
 		}

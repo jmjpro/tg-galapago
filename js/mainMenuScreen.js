@@ -48,8 +48,43 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.show();
 
 	mainMenuScreen.windowKeyHandler= window.onkeydown;
+	mainMenuScreen.addMouseListner();
 }; //MainMenuScreen.init()
 
+MainMenuScreen.prototype.addMouseListner = function(){
+var mainMenuScreen = this;
+				
+$('#button-timed')[0].onclick = function (evt){ 
+									mainMenuScreen.setNavItem($('#button-timed')); 
+									mainMenuScreen.selectHandler();
+									evt.preventDefault();evt.stopPropagation();
+								}
+$('#button-relaxed')[0].onclick = function (evt){ 
+									mainMenuScreen.setNavItem($('#button-relaxed')); 
+									mainMenuScreen.selectHandler();
+									evt.preventDefault();evt.stopPropagation();
+								}
+$('#button-how-to-play')[0].onclick = function (evt){ 
+										mainMenuScreen.setNavItem($('#button-how-to-play')); 
+										mainMenuScreen.selectHandler();
+										evt.preventDefault();evt.stopPropagation();
+									}
+$('#button-top-scores')[0].onclick = function (evt){ 
+											mainMenuScreen.setNavItem($('#button-top-scores')); 
+											mainMenuScreen.selectHandler();
+											evt.preventDefault();evt.stopPropagation();
+										}
+$('#button-set-language')[0].onclick = function (evt){ 
+												mainMenuScreen.setNavItem($('#button-set-language')); 
+												mainMenuScreen.selectHandler();
+												evt.preventDefault();evt.stopPropagation();
+											}
+$('#button-quit')[0].onclick = function (evt){ 
+												mainMenuScreen.setNavItem($('#button-quit')); 
+												mainMenuScreen.selectHandler();
+												evt.preventDefault();evt.stopPropagation();
+											}
+}
 /*
 MainMenuScreen.prototype.registerImageLoadEvents = function(){
 	var mainMenuScreen = this;
@@ -113,11 +148,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			new DialogMenu('main-menu-screen', this, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', 'button-big-hilight', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', 'button-big-hilight', TGH5.Reporting.Page.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -128,7 +163,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight');
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight');
 			break;
 	}
 }; //MainMenuScreen.prototype.selectHandler()
