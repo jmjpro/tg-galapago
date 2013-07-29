@@ -80,7 +80,9 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
 	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking === 'true' ? true : false;
-	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
+	// switch to the second version of this line to enable audio by default
+	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : false);
+	//Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
 	Galapago.bubbleTip = new BubbleTip(); //jj: why is bubbleTip a Galapago property instead of a Board or Level property?
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';

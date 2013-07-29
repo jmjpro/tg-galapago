@@ -43,37 +43,36 @@ LoadingScreen.registerEvent = function(){
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
 			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-loading/background-loading.jpg').src + ')' );
-		    LoadingScreen.progressBar = new ProgressBar(LoadingScreen.screenDiv);
 			LoadingScreen.gal.download('screen-main-menu and screen-map');
 		}
 	});
-	this.gal.onProgress("screen-main-menu and screen-map", function(progress) { 
-		 var percentage = progress.current/progress.total ;
-		 LoadingScreen.progressBar.progress(percentage);
-		 console.debug(Math.round(percentage * 100,3) + ' % loaded');
-		 setTimeout( function() {
-		 	/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
-			LoadingScreen.progressBar.canvas.onkeydown=null;*/
-		 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
-		 }, 1000 );
-	});
 	this.gal.onLoaded('screen-main-menu and screen-map', function(result) {
 		if (result.success) {
-			 LoadingScreen.progressBar.loaded(result);
-			 console.debug('screen-main-menu and screen-map resources loaded');
-			 LoadingScreen.gal.download('dialogs');
+			console.debug('screen-main-menu and screen-map resources loaded');
+			LoadingScreen.gal.download('dialogs');
 		}
 	});
 	this.gal.onLoaded('dialogs', function(result) {
 		if (result.success) {
-			 console.debug('dialogs resources loaded');
-			 LoadingScreen.gal.download('screen-game');
+			console.debug('dialogs resources loaded');
+			LoadingScreen.gal.download('screen-game');
+			LoadingScreen.progressBar = new ProgressBar(LoadingScreen.screenDiv);
 		}
+	});
+	this.gal.onProgress("screen-game", function(progress) { 
+		var percentage = progress.current/progress.total ;
+		LoadingScreen.progressBar.progress(percentage);
+		console.debug(Math.round(percentage * 100,3) + ' % loaded');
 	});
 	this.gal.onLoaded('screen-game', function(result) {
 		if (result.success) {
-			//alert("loaded");
 			console.debug('screen-game resources loaded');
+			LoadingScreen.progressBar.loaded(result);
+			setTimeout( function() {
+				/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
+				LoadingScreen.progressBar.canvas.onkeydown=null;*/
+				MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+			}, 1000 );
 		}
 	});
 }
