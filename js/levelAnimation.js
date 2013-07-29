@@ -312,8 +312,8 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	var imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
 	var rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
-		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
-		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		if(board.tileSelected == tileActive){
 			tileActive.setSelectedAsync().then( function() {
 				return;
@@ -648,7 +648,7 @@ RolloverAnimation.prototype.animate = function(){
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 	if(this.tileMarkImageSpriteSheet){
 		image = this.tileMarkImageSpriteSheet.getSpriteNew([this.tileMarkSpriteId, 0]);
-		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Tile.getWidth(), Tile.getHeight());
+		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		this.tileMarkSpriteId++;
 		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix[0].length;
 	}
@@ -825,18 +825,18 @@ MakeMatchAnimation.prototype.start = function(){
 };
 
 MakeMatchAnimation.prototype.stop = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
+	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	clearInterval(this.interval);
 };
 
 MakeMatchAnimation.prototype.animate = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Tile.getWidth(), Tile.getHeight());
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Tile.getWidth(), Tile.getHeight());
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Tile.getWidth(), Tile.getHeight());	
+	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	var image = this.rolloverImageSpriteSheet.getSpriteNew([0,this.rolloverSpriteId], this.degreesToRotate);
 	this.layer.drawImage(image, this.x, this.y);
 	this.rolloverSpriteId++;

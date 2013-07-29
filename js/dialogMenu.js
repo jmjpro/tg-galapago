@@ -47,7 +47,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 		case 'option-main-menu' :
 			this.hide();
 			board.level.quit();
-			MainMenuScreen.init('canvas-game', board.level);
+			MainMenuScreen.init('screen-game', board.level);
 			break;
 		case 'option-new-game' :
 			this.hide();

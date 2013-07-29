@@ -1,7 +1,7 @@
 BlobCollection.FONT_SIZE = '20px';
 BlobCollection.FONT_NAME = 'JungleFever';
 BlobCollection.FONT_COLOR = 'rgb(255,255,255)';
-BlobCollection.COLLECTION_Y = 652;
+BlobCollection.COLLECTION_Y = 632;
 BlobCollection.COUNT_HEIGHT = 30;
 /*
 BlobCollection.ITEM_WIDTH = 47;
@@ -14,8 +14,8 @@ BlobCollection.LEFT_OFFSET= -50;
 
 
 function BlobCollection(){
-	BlobCollection.ITEM_WIDTH = Tile.getWidth();
-	BlobCollection.ITEM_HEIGHT = Tile.getHeight();
+	BlobCollection.ITEM_WIDTH = Board.TILE_WIDTH;
+	BlobCollection.ITEM_HEIGHT = Board.TILE_HEIGHT;
 	BlobCollection.ITEM_COUNT_X_OFFSET = BlobCollection.ITEM_WIDTH/2 - 5;
 	this.blobCollection = {};
 	this.blobItemsCount=0;
@@ -82,6 +82,7 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 			layer.drawImage(image, x, BlobCollection.COUNT_HEIGHT, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_HEIGHT);
 		}
 		if(blobItemCount > 0){
+			layer.textBaseline = 'top';
 			layer.font = BlobCollection.FONT_SIZE + ' ' + BlobCollection.FONT_NAME;
 			layer.fillStyle = BlobCollection.FONT_COLOR;
 			layer.fillText(blobItemCount, x + BlobCollection.ITEM_COUNT_X_OFFSET, 0);

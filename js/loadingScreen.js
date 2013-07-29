@@ -50,6 +50,12 @@ LoadingScreen.registerEvent = function(){
 	this.gal.onProgress("screen-main-menu and screen-map", function(progress) { 
 		 var percentage = progress.current/progress.total ;
 		 LoadingScreen.progressBar.progress(percentage);
+		 console.debug(Math.round(percentage * 100,3) + ' % loaded');
+		 setTimeout( function() {
+		 	/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
+			LoadingScreen.progressBar.canvas.onkeydown=null;*/
+		 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+		 }, 1000 );
 	});
 	this.gal.onLoaded('screen-main-menu and screen-map', function(result) {
 		if (result.success) {

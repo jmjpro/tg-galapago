@@ -1,4 +1,3 @@
-
 BonusFrenzy.X_MIN = 325;
 BonusFrenzy.X_MAX = 748;
 BonusFrenzy.Y_MIN = 6;
@@ -7,29 +6,30 @@ BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
 BonusFrenzy.BORDER_WIDTH = 2;
 
 function BonusFrenzy(board) {
-this.board = board;
-var rows = board.level.levelConfig.blobPositions.length;
-BonusFrenzy.Y_MAX = BonusFrenzy.Y_MIN + ((rows-1)* Tile.getHeight()) + (2*Tile.getHeight());
-var cols = board.level.levelConfig.blobPositions[0].length;
-BonusFrenzy.X_MAX = BonusFrenzy.X_MIN + ((cols-1)* Tile.getWidth());
-this.randomCreatureMap = null;
-this.score = 0;
-this.drawBoard(board);
-this.registerEvents();
-this.startMoving();
-}
-BonusFrenzy.prototype.getScore = function () {
-	return this.score;
+	this.board = board;
+	var rows = board.level.levelConfig.blobPositions.length;
+	BonusFrenzy.Y_MAX = BonusFrenzy.Y_MIN + ((rows-1)* Board.TILE_HEIGHT) + (2*Board.TILE_HEIGHT);
+	var cols = board.level.levelConfig.blobPositions[0].length;
+	BonusFrenzy.X_MAX = BonusFrenzy.X_MIN + ((cols-1)* Board.TILE_WIDTH);
+	this.randomCreatureMap = null;
+	this.score = 0;
+	this.drawBoard(board);
+	this.registerEvents();
+	this.startMoving();
 }
 
+BonusFrenzy.prototype.getScore = function () {
+	return this.score;
+};
+
 BonusFrenzy.prototype.registerEvents = function () {
-window.onkeydown= null;
-var bonusFrenzy = this;
-this.currentX = this.board.tileActive.getXCoord();
-this.currentY = this.board.tileActive.getYCoord();
-this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Tile.getWidth() +4 , Tile.getHeight()+4);
-//this.board.tileActive.setInactiveAsync();
-window.onkeydown = function(evt) {
+	window.onkeydown= null;
+	var bonusFrenzy = this;
+	this.currentX = this.board.tileActive.getXCoord();
+	this.currentY = this.board.tileActive.getYCoord();
+	this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
+	//this.board.tileActive.setInactiveAsync();
+	window.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 37: // left arrow
@@ -51,131 +51,129 @@ window.onkeydown = function(evt) {
 			default:
 		}
 	};
-}
+}; //BonusFrenzy.prototype.registerEvents()
 
 BonusFrenzy.prototype.handleLeftArrow = function () {
-    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Tile.getWidth() +4 , Tile.getHeight()+4);
+    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
     if(this.currentX - 47 >= BonusFrenzy.X_MIN){
-	 this.currentX = this.currentX - 47;
+		this.currentX = this.currentX - 47;
 	}
 	this.board.creatureLayer.lineWidth = BonusFrenzy.BORDER_WIDTH;
 	this.board.creatureLayer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.board.creatureLayer.strokeRect(this.currentX, this.currentY,Tile.getWidth(), Tile.getHeight());	
+	this.board.creatureLayer.strokeRect(this.currentX, this.currentY,Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-}
+};
 
 BonusFrenzy.prototype.handleUpArrow = function () {
-    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Tile.getWidth() +4 , Tile.getHeight()+4);
+    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
     if(this.currentY - 47 >= BonusFrenzy.Y_MIN){
-	 this.currentY = this.currentY - 47;
+		this.currentY = this.currentY - 47;
 	}
 	this.board.creatureLayer.lineWidth = BonusFrenzy.BORDER_WIDTH;
 	this.board.creatureLayer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.board.creatureLayer.strokeRect(this.currentX, this.currentY, Tile.getWidth(), Tile.getHeight());	
+	this.board.creatureLayer.strokeRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-}
+};
 
 BonusFrenzy.prototype.handleRightArrow = function () {
-    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Tile.getWidth() +4 , Tile.getHeight()+4);
+    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
     if(this.currentX + 47 <= BonusFrenzy.X_MAX){
-	 this.currentX = this.currentX + 47;
+		this.currentX = this.currentX + 47;
 	}
 	this.board.creatureLayer.lineWidth = BonusFrenzy.BORDER_WIDTH;
 	this.board.creatureLayer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.board.creatureLayer.strokeRect(this.currentX, this.currentY, Tile.getWidth(), Tile.getHeight());	
+	this.board.creatureLayer.strokeRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-}
+};
 
 BonusFrenzy.prototype.handleDownArrow = function () {
-    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Tile.getWidth() +4 , Tile.getHeight()+4);
+    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
     if(this.currentY + 47 <= BonusFrenzy.Y_MAX){
-	 this.currentY = this.currentY + 47;
+		this.currentY = this.currentY + 47;
 	}
 	this.board.creatureLayer.lineWidth = BonusFrenzy.BORDER_WIDTH;
 	this.board.creatureLayer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.board.creatureLayer.strokeRect(this.currentX, this.currentY , Tile.getWidth(), Tile.getHeight());	
+	this.board.creatureLayer.strokeRect(this.currentX, this.currentY , Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-}
+};
 
 BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
-	for (var key in  this.randomCreatureMap){
-		 var tile =  this.randomCreatureMap[key];
-		 if(tile.xCoord == x && tile.yCoord == y){
-		    this.board.creatureLayer.clearRect(x, y, Tile.getWidth(), Tile.getHeight());
-		    delete this.randomCreatureMap[key];
+	for (var key in this.randomCreatureMap){
+		var tile = this.randomCreatureMap[key];
+		if(tile.xCoord == x && tile.yCoord == y){
+			this.board.creatureLayer.clearRect(x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			delete this.randomCreatureMap[key];
 			this.score++;
-		 }
+		}
 	}
-}
-
+};
 
 BonusFrenzy.prototype.sizeOfRandomCreatureMap = function () {
   var len = 0;
     for (var k in this.randomCreatureMap)
       len++;
   return len;
-}
+};
 
 BonusFrenzy.prototype.drawBoard = function(){
-var creaturemap = new Array();
-var i =0;
-while( i <30 ){
-var randomTileId = Math.ceil( Math.random() * 99);
-var row= randomTileId %10;
-var col= (randomTileId - (row)) /10;
-var tile ;
-if(this.board.creatureTileMatrix[col] != undefined && this.board.creatureTileMatrix[col][row] != undefined){
- tile = this.board.creatureTileMatrix[col][row];
-}
-if(tile && creaturemap[col+"_"+row] == undefined){
-    creaturemap[col+"_"+row] = tile ;
-    i++;
-}
-}
-this.randomCreatureMap = creaturemap;
-_.each(this.board.creatureTileMatrix, function(columnArray){
-  _.each(columnArray, function(tile){
-      if(tile){
-       var col = tile.coordinates[0];
-       var row = tile.coordinates[1];
-       if(creaturemap[col+"_"+row] == undefined){
-          tile.clear();
-       }
-      }
-    });
-  });
-
-}
+	var creaturemap = [];
+	var i =0;
+	while( i <30 ){
+		var randomTileId = Math.ceil( Math.random() * 99);
+		var row= randomTileId %10;
+		var col= (randomTileId - (row)) /10;
+		var tile ;
+		if(typeof this.board.creatureTileMatrix[col] !== 'undefined' && typeof this.board.creatureTileMatrix[col][row] != 'undefined'){
+			tile = this.board.creatureTileMatrix[col][row];
+		}
+		if(tile && typeof creaturemap[col+"_"+row] === 'undefined'){
+			creaturemap[col+"_"+row] = tile ;
+			i++;
+		}
+	}
+	this.randomCreatureMap = creaturemap;
+	_.each(this.board.creatureTileMatrix, function(columnArray){
+		_.each(columnArray, function(tile){
+			if(tile){
+				var col = tile.coordinates[0];
+				var row = tile.coordinates[1];
+				if(creaturemap[col+"_"+row] == undefined){
+					tile.clear();
+				}
+			}
+		});
+	});
+}; //BonusFrenzy.prototype.drawBoard()
 
 
 BonusFrenzy.prototype.startMoving = function(){
-var creatureLayer = this.board.creatureLayer;
-var bonusFrenzy = this;
-function fly(){
-    creatureLayer.clearRect(0, 0, creatureLayer.canvas.width, creatureLayer.canvas.height);
-	for (var key in  bonusFrenzy.randomCreatureMap){
-	 var tile =  bonusFrenzy.randomCreatureMap[key];
-	 if(tile.yCoord == undefined){
-		 tile.xCoord = tile.getXCoord();
-         tile.yCoord =  tile.getYCoord()- Tile.getHeight();
-     }else{
-         tile.yCoord =  tile.yCoord - Tile.getHeight();
-     }
-	 if(tile.yCoord < 0){
-          delete bonusFrenzy.randomCreatureMap[key];
-		  continue;
-     }
-	 creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord, Tile.getWidth(), Tile.getHeight());
-	}
-	
-	if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
-         window.clearInterval(bonusFrenzy.intervalHandle);
-		 console.log('score : '+bonusFrenzy.score);
-		 //bonusFrenzy.board.level.won()
-		 bonusFrenzy.board.setComplete();
-     }
-}
+	var creatureLayer = this.board.creatureLayer;
+	var bonusFrenzy = this;
+	function fly(){
+	    creatureLayer.clearRect(0, 0, creatureLayer.canvas.width, creatureLayer.canvas.height);
+		for (var key in  bonusFrenzy.randomCreatureMap){
+			var tile =  bonusFrenzy.randomCreatureMap[key];
+			if(tile.yCoord == undefined){
+				tile.xCoord = tile.getXCoord();
+				tile.yCoord =  tile.getYCoord()- Board.TILE_HEIGHT;
+			}else{
+				tile.yCoord =  tile.yCoord - Board.TILE_HEIGHT;
+			}
+			if(tile.yCoord < 0){
+				delete bonusFrenzy.randomCreatureMap[key];
+				continue;
+			}
+			creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		}
+		
+		if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
+	         window.clearInterval(bonusFrenzy.intervalHandle);
+			 console.log('score : '+bonusFrenzy.score);
+			 //bonusFrenzy.board.level.won()
+			 bonusFrenzy.board.setComplete();
+	     }
+	} //function fly()
 
- this.intervalHandle = window.setInterval(fly ,800 );
-}
+	this.intervalHandle = window.setInterval(fly ,800 );
+} //BonusFrenzy.prototype.startMoving()
 

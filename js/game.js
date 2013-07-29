@@ -735,6 +735,7 @@ Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
 Level.LAYER_HILIGHT = 'layer-hilight';
 Level.LAYER_SCORE = 'layer-score';
+Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
@@ -1141,7 +1142,13 @@ Level.prototype.styleCanvas = function() {
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
-	canvasScore = $('#layer-score');
+	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
+	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
+	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
+	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
+	canvasBonusFrenzy.css('top', '0px');
+
+	canvasScore = $('#' + Level.LAYER_SCORE);
 	canvasScore[0].width = Score.MAX_WIDTH;
 	canvasScore[0].height = Score.MAX_HEIGHT;
 	canvasScore.css('left', Score.X + 'px');
@@ -1216,6 +1223,7 @@ function Board() {
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
+	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	
 	this.score = 0;
 	this.hotspot = null;
@@ -1261,6 +1269,7 @@ Board.prototype.displayLevelName = function() {
 	var layer, levelNameText;
 	layer = this.backgroundLayer;
 	layer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
+	layer.textBaseline = 'top';
 	layer.font = Board.LEVEL_NAME_FONT_SIZE + ' ' + Board.LEVEL_NAME_FONT_NAME;
 	layer.fillStyle = Board.LEVEL_NAME_FONT_COLOR;
 	levelNameText =  i18n.t('levels.'+this.level.id) ;
@@ -1270,7 +1279,7 @@ Board.prototype.displayLevelName = function() {
 
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage, buttonHilight;
-	layer = this.creatureLayer;
+	layer = this.backgroundLayer;
 	menuButtonImage = this.blobCollection.button_menu;
 	buttonHilight = this.blobCollection.button_hilight;
 	if( isActive ) {
@@ -1291,7 +1300,7 @@ Board.prototype.displayMenuButton = function(isActive) {
 
 Board.prototype.displayQuitButton = function(isActive) {
 	var textColor, layer, quitButtonImage, buttonHilight;
-	layer = this.creatureLayer;
+	layer = this.backgroundLayer;
 	quitButtonImage = this.blobCollection.button_quit;
 	buttonHilight = this.blobCollection.button_hilight;
 	var quitImageX = Level.MENU_BUTTON_X;
@@ -1432,7 +1441,7 @@ Board.prototype.drawFlyingCreatures = function () {
 			if( rowIt % 2 === 0 && colIt % 2 === 0 ) {
 				ctx.translate(0, board.creatureYOffset);
 				tile = board.creatureTileMatrix[colIt][rowIt];
-				ctx.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight());
+				ctx.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 			}
 		}
 	}
@@ -1454,7 +1463,7 @@ Board.prototype.drawRotatedCreatures = function (angle) {
 			// rotate around that point, converting our angle from degrees to radians 
 			ctx.rotate(angle * TO_RADIANS);
 			tile = this.creatureTileMatrix[colIt][rowIt];
-			ctx.drawImage(tile.blob.image, -(Tile.getWidth()/2), -(Tile.getHeight()/2));
+			ctx.drawImage(tile.blob.image, -(Board.TILE_WIDTH/2), -(Board.TILE_HEIGHT/2));
 		}
 	}
 	// and restore the co-ords to how they were when we began
@@ -1641,8 +1650,8 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	row = coordinates[1];
 	x = Tile.getXCoord(col);
 	y = Tile.getYCoord(row);
-	width = Tile.getWidth();
-	height = Tile.getHeight();
+	width = Board.TILE_WIDTH;
+	height = Board.TILE_HEIGHT;
 	
 	if( tile ) {
 		imageName = tile.blob.creatureType;
@@ -1714,8 +1723,8 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 	var fixedTile = tile;
 	tileMatrix = this.creatureTileMatrix;
 	layer = this.creatureLayer;
-	width = Tile.getWidth();
-	height = Tile.getHeight();
+	width = Board.TILE_WIDTH;
+	height = Board.TILE_HEIGHT;
 	var board = this;
 	var matchingTilesSets = this.tilesEventProcessor.getMatchingTilesSets(fixedTile);
 	_.each(matchingTilesSets, function(matchingTilesSet){
@@ -2653,7 +2662,7 @@ Board.prototype.clearTiles = function(tiles) {
 	var pointsArray = Tile.tileArrayToPointsArray(tiles);
 	function draw(){
 		_.each( pointsArray, function(point) {
-			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Tile.getWidth(), Tile.getHeight() );
+			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		});
 	}
 	if(this.putInAnimationQ){
@@ -2719,7 +2728,7 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	Galapago.audioPlayer.playGoldOrBlockingMatch();
 	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
-		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	});
 	//deferred.resolve();
 	//return deferred.promise;
@@ -2752,7 +2761,8 @@ Board.prototype.drawScore = function() {
 	layer = this.scoreLayer;
 	//layer = this.backgroundLayer;
 	layer.clearRect( 0, 0, Score.MAX_WIDTH, Score.MAX_HEIGHT);
-	layer.font = Score.FONT_SIZE + ' ' + Score.FONT_NAME;
+	layer.textBaseline = 'top';
+	layer.font = Score.FONT_SIZE + 'px ' + Score.FONT_NAME;
 	layer.fillStyle = Score.COLOR;//Board.LEVEL_NAME_FONT_COLOR;
 	layer.fillText(this.score, 0, 0);
 	return this; //chainable
@@ -2766,7 +2776,7 @@ Board.prototype.redrawBorders = function(color, lineWidth) {
 	ctx.lineWidth = lineWidth;
 	_.each( board.creatureTileMatrix, function(col) {
 		_.each( board.creatureTileMatrix[col], function(tile) {
-			ctx.strokeRect(tile.getXCoord(), tile.getYCoord(), Tile.getHeight, Tile.getWidth());
+			ctx.strokeRect(tile.getXCoord(), tile.getYCoord(), Tile.getHeight, Board.TILE_WIDTH);
 		});
 	});
 	return this; //chainable
@@ -2885,8 +2895,8 @@ Tile.prototype.setSelectedAsync = function() {
 	var deferred;
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -2894,21 +2904,21 @@ Tile.prototype.setSelectedAsync = function() {
 }; //Tile.prototype.setSelectedAsync()
 
 Tile.prototype.setUnselected = function() {
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	this.board.gridLayer.drawImage( this.board.level.tile_1, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
-	//this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
 
 /*
 Tile.prototype.getFilteredPixels = function (filter, arg1, arg2, arg3) {
-	var pixelsOut = Filters.filterImage(filter, this.board.creatureLayer, this.blob.image, this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight(), arg1, arg2, arg3);
+	var pixelsOut = Filters.filterImage(filter, this.board.creatureLayer, this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT, arg1, arg2, arg3);
 	return pixelsOut;
 };
 */	
 
 Tile.prototype.clear = function() {
-	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Tile.getWidth(), Tile.getHeight() );
+	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
@@ -2919,8 +2929,8 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	layer.strokeStyle = color;
 	layer.lineWidth = lineWidth;
 	offset = 1;
-	width = Tile.getWidth() * offset;
-	height = Tile.getHeight() * offset;
+	width = Board.TILE_WIDTH * offset;
+	height = Board.TILE_HEIGHT * offset;
 	imgTile = Galapago.level.tile_1;
 	//layer.clearRect( x - offset, y - offset, width /*+ 2 * offset*/, height/* + 2 * offset*/ );
 	layer.drawImage( imgTile, x, y, width, height );
@@ -2933,8 +2943,8 @@ Tile.prototype.drawHilight = function() {
 	offset = 1;
 	x = Tile.getXCoord(this.coordinates[0])/* - offset*/;
 	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
-	width = Tile.getWidth()/* + 2 * offset*/;
-	height = Tile.getHeight()/* + 2 * offset*/;
+	width = Board.TILE_WIDTH/* + 2 * offset*/;
+	height = Board.TILE_HEIGHT/* + 2 * offset*/;
 	imgHilight = Galapago.level.tile_hilight;
 	layer.drawImage( imgHilight, x, y, width, height );
 }; //Tile.prototype.drawHilight()
@@ -2987,7 +2997,7 @@ Tile.posToPixels = function(pos, basePixels) {
 
 Tile.pixelsToPos = function(pixels, basePixels) {
 	var unitPixels;
-	pixels = pixels - offset;
+	pixels = pixels;
 	unitPixels = basePixels;
 	return Math.floor(pixels / unitPixels);
 }; //Tile.prototype.posToPixels()
@@ -3009,14 +3019,6 @@ Tile.getRow = function(yCoord) {
 	offsetY = $('#screen-game')[0].offsetTop - window.scrollY;
 	return Tile.pixelsToPos(yCoord, Board.TILE_HEIGHT, 1, offsetY);
 }; //Tile.prototype.getYCoord()
-
-Tile.getWidth = function() {
-	return Board.TILE_WIDTH;
-}; //Tile.getWidth()
-
-Tile.getHeight = function() {
-	return Board.TILE_HEIGHT;
-}; //Tile.getHeight()
 
 Tile.tileArrayToPointsArray = function (tiles) {
 	return _.map(tiles, function(tile) {
