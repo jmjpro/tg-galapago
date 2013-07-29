@@ -1,3 +1,4 @@
+BonusFrenzy.LEFT = 325;
 BonusFrenzy.X_MIN = 325;
 BonusFrenzy.X_MAX = 748;
 BonusFrenzy.Y_MIN = 6;
@@ -6,10 +7,11 @@ BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
 BonusFrenzy.BORDER_WIDTH = 2;
 
 function BonusFrenzy(board) {
-	this.board = board;
-	var rows = board.level.levelConfig.blobPositions.length;
+	var rows, cols;
+	this.board = board;	
+	rows = board.level.levelConfig.blobPositions.length;
 	BonusFrenzy.Y_MAX = BonusFrenzy.Y_MIN + ((rows-1)* Board.TILE_HEIGHT) + (2*Board.TILE_HEIGHT);
-	var cols = board.level.levelConfig.blobPositions[0].length;
+	cols = board.level.levelConfig.blobPositions[0].length;
 	BonusFrenzy.X_MAX = BonusFrenzy.X_MIN + ((cols-1)* Board.TILE_WIDTH);
 	this.randomCreatureMap = null;
 	this.score = 0;

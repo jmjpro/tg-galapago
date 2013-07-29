@@ -62,7 +62,7 @@ LoadingScreen.registerEvent = function(){
 	this.gal.onProgress("screen-game", function(progress) { 
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
-		console.debug(Math.round(percentage * 100,3) + ' % loaded');
+		//console.debug(Math.round(percentage * 100,3) + ' % loaded');
 	});
 	this.gal.onLoaded('screen-game', function(result) {
 		if (result.success) {
