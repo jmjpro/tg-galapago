@@ -5,7 +5,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
 	this.hide();
 };
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
-	var optionId, level;
+	var optionId, level, mainMenuScreen;
 	optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
 		case 'option-yes' :
@@ -15,18 +15,26 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 				level.quit();
 				LevelMap.show(level);
 				//level.showLevelMap(level);
-			}else{
+			}
+			else if(dialogMenu.callingObject instanceof MapScreen){
 				Galapago.levelMap.quit();
+			}
+			else if(dialogMenu.callingObject instanceof MainMenuScreen){
+				mainMenuScreen = dialogMenu.callingObject;
+				mainMenuScreen.quit();
+			}
+			else {
+				console.error( dialogMenu.callingObject + ' quit option not recognized');
 			}
 			break;
 		case 'option-no' :
 			if(dialogMenu.callingObject instanceof Board &&
-			   dialogMenu.callingObject.level.dangerBar){
+				dialogMenu.callingObject.level.dangerBar){
 				dialogMenu.callingObject.level.dangerBar.resume();
 			}
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	var optionId, board, mainCanvasId;
@@ -65,7 +73,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			board.hotspot = null;
 			board.display();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
 	var level;
@@ -96,7 +104,7 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	this.hide();
 	level.cleanup();
     sdkApi.requestModalAd("inGame").done(function(){
-    	LevelMap.show(level);
+		LevelMap.show(level);
 		//level.showLevelMap();
 	});
 	//show map screen;
@@ -127,7 +135,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			board.hotspot = null;
 			board.display();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-options'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
@@ -139,7 +147,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-options'] = function(dialogMenu) {
 		case 'option-cancel' :
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 	var optionId, profile;
@@ -154,7 +162,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 		case 'option-no' :
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
@@ -162,7 +170,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) 
 		case 'option-close' :
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
@@ -170,7 +178,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 		case 'option-save' :
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	var optionId, level;
@@ -194,7 +202,7 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 			//level.showLevelMap(Level.findById(1));
 			this.hide();
 			break;
-	};
+	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 	var optionId, scrollDiv;
@@ -212,7 +220,7 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 		case 'option-close' :
 			this.hide();
 			break;
-	};
+	}
 };
 /* end DialogMenu.SELECT_HANDLERS[] */
 
@@ -248,9 +256,9 @@ DialogMenu.prototype.hide = function() {
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject.registerEventHandlers){
-	  this.callingObject.registerEventHandlers();
+		this.callingObject.registerEventHandlers();
 	}else{
-	  window.onkeydown = this.windowKeyHandler;
+		window.onkeydown = this.windowKeyHandler;
 	}
 	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.show()
