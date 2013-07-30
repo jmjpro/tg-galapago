@@ -1032,8 +1032,13 @@ Level.prototype.quit = function(){
 	this.cleanup();
 }
 
-Level.prototype.cleanup = function(){
-	this.board.screenDiv.hide();
+Level.prototype.cleanup = function(isPreserveGridLayer){
+	if( isPreserveGridLayer ) {
+		this.board.hideGoldAndCreatures();
+	}
+	else {
+		this.board.screenDiv.hide();		
+	}
 	Galapago.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
@@ -1277,7 +1282,18 @@ function Board() {
 	this.animationQ = [];
 } //Board constructor
 
+Board.prototype.hideGoldAndCreatures = function() {
+	$('#' + Level.LAYER_GOLD).hide();
+	$('#' + Level.LAYER_CREATURE).hide();
+}; //Board.protoype.hideBoardLayer()
+
+Board.prototype.showGoldAndCreatures = function() {
+	$('#' + Level.LAYER_GOLD).show();
+	$('#' + Level.LAYER_CREATURE).show();
+}; //Board.protoype.showBoardLayer()
+
 Board.prototype.display = function() {
+	//this.showGoldAndCreatures();
 	this.creatureLayer.canvas.focus();
 	this.reshuffleService.start();
 }; //Board.protoype.display()
@@ -1938,7 +1954,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
-	this.level.cleanup();
+	this.level.cleanup(true);
 	if(this.bonusFrenzy == undefined){
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
@@ -1982,6 +1998,7 @@ Board.prototype.setComplete = function() {
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
+		this.showGoldAndCreatures();
 	}
 }
 

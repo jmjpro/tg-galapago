@@ -42,40 +42,29 @@ LoadingScreen.registerEvent = function(){
 	var LoadingScreen = this;
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
+			console.debug('screen-loading resource bundle loaded');
 			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-loading/background-loading.jpg').src + ')' );
-			LoadingScreen.gal.download('screen-main-menu and screen-map');
+			LoadingScreen.gal.download('all-but-audio');
+			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});
-	this.gal.onLoaded('screen-main-menu and screen-map', function(result) {
-		if (result.success) {
-			console.debug('screen-main-menu and screen-map resources loaded');
-			LoadingScreen.gal.download('dialogs');
-		}
-	});
-	this.gal.onLoaded('dialogs', function(result) {
-		if (result.success) {
-			console.debug('dialogs resources loaded');
-			LoadingScreen.gal.download('screen-game');
-			LoadingScreen.progressBar = new ProgressBar(LoadingScreen.screenDiv);
-		}
-	});
-	this.gal.onProgress("screen-game", function(progress) { 
+	this.gal.onProgress("all-but-audio", function(progress) { 
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
 		//console.debug(Math.round(percentage * 100,3) + ' % loaded');
 	});
-	this.gal.onLoaded('screen-game', function(result) {
+	this.gal.onLoaded('all-but-audio', function(result) {
 		if (result.success) {
-			console.debug('screen-game resources loaded');
-			LoadingScreen.progressBar.loaded(result);
-			setTimeout( function() {
+			console.debug('all-but-audio resource bundle loaded');
+			LoadingScreen.progressBar.loaded();
+			/*setTimeout( function() {*/
 				/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
 				LoadingScreen.progressBar.canvas.onkeydown=null;*/
-				MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
-			}, 1000 );
+				//MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+			/*}, 1000 );*/
 		}
 	});
-}
+};
 
 LoadingScreen.localization = function(){
     $("#option-continue-playing").i18n();
@@ -85,7 +74,7 @@ LoadingScreen.localization = function(){
     $("#option-options").i18n();
     $("#dialog-title").i18n();
     $("#dialog-leaderboards").i18n();
-}
+};
 
 /// progress bar
 ProgressBar.WIDTH = 475;
@@ -95,18 +84,16 @@ ProgressBar.MESSAGE_TOP = 560;
 ProgressBar.LOADING_MESSAGE_LEFT =575;
 ProgressBar.CLICK_MESSAGE_LEFT = 515;
 
-function ProgressBar(backgroundLayer){
-	this.backgroundLayer = backgroundLayer;
-	this.backgroundLayer.focus();
+function ProgressBar(){
 	this.loadingProgressBar = LoadingScreen.gal.get("screen-loading/loading-progress-bar.png");
 	this.loadingProgressBarLeftCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-left-cap.png");
 	this.loadingProgressBarFill =LoadingScreen.gal.get("screen-loading/loading-progress-bar-fill.png");
 	this.canvas = $('#layer-progress-bar')[0];
+	this.canvas.focus();
 	this.canvas.width = ProgressBar.WIDTH;
 	this.canvas.height = this.loadingProgressBar.height;
 	this.canvas.style.left = ProgressBar.LEFT + 'px';
 	this.canvas.style.top = ProgressBar.TOP + 'px';
-	console.debug( document.activeElement + ' has focus');
 	this.layer = this.canvas.getContext('2d');
 	this.layer.textBaseline = 'top';
 	this.layer.fillStyle = 'rgb(255,255,255)';
@@ -116,12 +103,11 @@ function ProgressBar(backgroundLayer){
 	/*this.canvas.focus();*/
 }
 
-ProgressBar.prototype.drawImages = function(progressBar,images) {
+ProgressBar.prototype.drawImages = function() {
 	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );	
 	this.layer.font = '27pt HelveticaBold';
 	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'),ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.MESSAGE_TOP );
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width, this.loadingProgressBarLeftCap.height);
-	this.showCopywrite();
 }; //DangerBar.prototype.drawImages()
 
 ProgressBar.prototype.progress = function(percentdownload) {
@@ -129,58 +115,55 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, newWidth,this.loadingProgressBarFill.height);
+	this.layer.textAlign = 'center';
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), 0, 0);
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, 0);
 };
 
-ProgressBar.prototype.loaded = function(result) {	
+ProgressBar.prototype.loaded = function() {
 	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
-	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap, 0, ProgressBar.WIDTH, this.loadingProgressBarFill.height);
+	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, ProgressBar.WIDTH, this.loadingProgressBarFill.height);
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), 0, 0);
+	this.layer.textAlign = 'center';
+	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.WIDTH/2, 0);
 	this.isLoadingComplete=true;
 };
 
-ProgressBar.prototype.showCopywrite =function(){
-	var copyrightChar = 169;
-	this.layer.font='13pt HelveticaBold'
-	this.layer.fillText('I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. ' + String.fromCharCode(copyrightChar) + ' 2008 Oberon Media.All Rights Reserved.', 180, 650);
-	this.layer.fillText(String.fromCharCode(copyrightChar) + ' 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.', 420, 665);
-}
-
 ProgressBar.prototype.registerEventHandlers = function() {
-var progressBar = this;
-progressBar.canvas.onclick = function(evt) {
-	   var x = evt.pageX;
-	   var y = evt.pageY ;
-	  if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT +ProgressBar.PROGRESS_BAR_Width)
-		 && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ 41 )){
-				 if(progressBar.isLoadingComplete){
-						progressBar.layer.clearRect(0,0,ScreenLoader.STAGE_WIDTH,ScreenLoader.STAGE_HEIGHT);
-						progressBar.canvas.onkeydown=null;
-						progressBar.canvas.style.zIndex = 5;
-						//Galapago.init(gameMode);
-						MainMenuScreen.init('canvas-main', progressBar);
-					 }
-			}
+	var progressBar = this;
+	window.onclick= function(evt) {
+		progressBar.canvas.focus();
 	};
-progressBar.canvas.onkeydown = function(evt) {
-		switch( evt.keyCode ) {
-			case 13: // enter
-				 if(progressBar.isLoadingComplete){
-					progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
-					progressBar.canvas.onkeydown=null;
-					//TODO if api.inDemoMode() skip the main menu screen?
-				    MainMenuScreen.init('screen-loading', progressBar);
-				    evt.stopPropagation();
-					evt.preventDefault();
-				 }
-				break;
+
+	progressBar.canvas.onclick = function(evt) {
+		var x = evt.pageX;
+		var y = evt.pageY ;
+		if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT + progressBar.canvas.width) && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ progressBar.canvas.height )){
+			if(progressBar.isLoadingComplete){
+				progressBar.unregisterEventHandlers();
+				MainMenuScreen.init('screen-loading', progressBar);
+				evt.stopPropagation();
+				evt.preventDefault();
+			}
 		}
 	};
-}
+	progressBar.canvas.onkeydown = function(evt) {
+		switch( evt.keyCode ) {
+		case 13: // enter
+			if( progressBar.isLoadingComplete ){
+				progressBar.unregisterEventHandlers();
+				//TODO if api.inDemoMode() skip the main menu screen?
+				MainMenuScreen.init('screen-loading', progressBar);
+				evt.stopPropagation();
+				evt.preventDefault();
+			}
+			break;
+		}
+	};
+};
 
 ProgressBar.prototype.unregisterEventHandlers = function() {
+	this.canvas.onclick = null;
 	this.canvas.onkeydown = null;
-}
+};

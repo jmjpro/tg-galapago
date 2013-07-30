@@ -13,7 +13,7 @@
     	]
     },
     {
-		"name": "screen-main-menu and screen-map",
+		"name": "all-but-audio",
 		"contents": [
 			"main-menu/main_menu_background.jpg",
 			"main-menu/main_menu_button_change_player_regular.png",
@@ -49,12 +49,7 @@
 			"screen-map/strip_bomb_right.png",
 			"screen-map/strip_bonfire.png",
 			"screen-map/strip_game_start_arrow.png",
-			"screen-map/strip_lava_idle.png"
-    	]
-    },
-  	{
-		"name": "dialogs",
-		"contents": [
+			"screen-map/strip_lava_idle.png",
 			"dialogs/arrow_down.png",
 			"dialogs/arrow_left.png",
 			"dialogs/arrow_right.png",
@@ -88,12 +83,7 @@
 			"dialogs/keyboard/keypad_cursor_letter.png",
 			"dialogs/keyboard/keypad_cursor_reset.png",
 			"dialogs/keyboard/keypad_cursor_space.png",
-			"dialogs/keyboard/keypad_regular.png"
-    	]
-    },
-  	{
-		"name": "screen-game",
-		"contents": [
+			"dialogs/keyboard/keypad_regular.png",
 	 		"background/background_beach_a.jpg",
 	 		"background/background_beach_b.jpg",
 	 		"background/background_beach_c.jpg",
@@ -245,7 +235,12 @@
 			"friends/teal_friend.png",
 			"friends/violet_friend.png",
 			"friends/yellow_friend.png",
-			"gold-tiles/tile_gold_1.png",
+			"gold-tiles/tile_gold_1.png"
+    	]
+    },
+    {
+		"name": "audio",
+		"contents": [
 			"BurnIcon.mp3",
 			"Cannot_select.mp3",
 			"Click.mp3",
@@ -274,6 +269,7 @@
 	    	"Volcano_01.mp3",
 			"Volcano_Eruption.mp3"
     	]
-    }],
+    }
+    ],
 	"autoDownload": false
 }

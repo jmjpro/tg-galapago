@@ -4,7 +4,7 @@ BonusFrenzy.X_MAX = 748;
 BonusFrenzy.Y_MIN = 6;
 BonusFrenzy.Y_MAX = 523;
 BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
-BonusFrenzy.BORDER_WIDTH = 2;
+BonusFrenzy.START_MOVING_DELAY_MS = 800;
 
 function BonusFrenzy(board) {
 	var rows, cols;
@@ -30,8 +30,8 @@ BonusFrenzy.prototype.registerEvents = function () {
 	var bonusFrenzy = this;
 	this.currentX = this.board.tileActive.getXCoord();
 	this.currentY = this.board.tileActive.getYCoord();
-	//this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
-	bonusFrenzy.layer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
+	this.board.tileActive.eraseHilight();
+	//bonusFrenzy.board.creatureLayer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	window.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
@@ -57,46 +57,38 @@ BonusFrenzy.prototype.registerEvents = function () {
 }; //BonusFrenzy.prototype.registerEvents()
 
 BonusFrenzy.prototype.handleLeftArrow = function () {	
-    this.board.creatureLayer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
-    if(this.currentX - 47 >= BonusFrenzy.X_MIN){
-		this.currentX = this.currentX - 47;
+    this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+    if(this.currentX - Board.TILE_WIDTH >= BonusFrenzy.X_MIN){
+		this.currentX = this.currentX - Board.TILE_WIDTH;
 	}
-	this.board.creatureLayer.lineWidth = BonusFrenzy.BORDER_WIDTH;
-	this.board.creatureLayer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.board.creatureLayer.strokeRect(this.currentX, this.currentY,Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
 BonusFrenzy.prototype.handleUpArrow = function () {
-    this.layer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
-    if(this.currentY - 47 >= BonusFrenzy.Y_MIN){
-		this.currentY = this.currentY - 47;
+    this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+    if(this.currentY - Board.TILE_HEIGHT >= BonusFrenzy.Y_MIN){
+		this.currentY = this.currentY - Board.TILE_HEIGHT;
 	}
-	this.layer.lineWidth = BonusFrenzy.BORDER_WIDTH;
-	this.layer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.layer.strokeRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
 BonusFrenzy.prototype.handleRightArrow = function () {
-    this.layer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
-    if(this.currentX + 47 <= BonusFrenzy.X_MAX){
-		this.currentX = this.currentX + 47;
+    this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+    if(this.currentX + Board.TILE_WIDTH <= BonusFrenzy.X_MAX){
+		this.currentX = this.currentX + Board.TILE_WIDTH;
 	}
-	this.layer.lineWidth = BonusFrenzy.BORDER_WIDTH;
-	this.layer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.layer.strokeRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
 BonusFrenzy.prototype.handleDownArrow = function () {
-    this.layer.clearRect(this.currentX -2, this.currentY-2, Board.TILE_WIDTH +4 , Board.TILE_HEIGHT+4);
-    if(this.currentY + 47 <= BonusFrenzy.Y_MAX){
-		this.currentY = this.currentY + 47;
+    this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+    if(this.currentY + Board.TILE_HEIGHT <= BonusFrenzy.Y_MAX){
+		this.currentY = this.currentY + Board.TILE_HEIGHT;
 	}
-	this.layer.lineWidth = BonusFrenzy.BORDER_WIDTH;
-	this.layer.strokeStyle = BonusFrenzy.FRENZY_COLOR_ACTIVE;
-	this.layer.strokeRect(this.currentX, this.currentY , Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
@@ -121,10 +113,10 @@ BonusFrenzy.prototype.sizeOfRandomCreatureMap = function () {
 BonusFrenzy.prototype.drawBoard = function(){
 	var creaturemap = [];
 	var i =0;
-	while( i <30 ){
-		var randomTileId = Math.ceil( Math.random() * 99);
-		var row= randomTileId %10;
-		var col= (randomTileId - (row)) /10;
+	while( i <30 ){ //TODO: create a constant from this "magic" number
+		var randomTileId = Math.ceil( Math.random() * 99); //TODO: will this work properly for a 13x11 board?
+		var row = randomTileId % 10;
+		var col= (randomTileId - (row)) / 10;
 		var tile ;
 		if(typeof this.board.creatureTileMatrix[col] !== 'undefined' && typeof this.board.creatureTileMatrix[col][row] != 'undefined'){
 			tile = this.board.creatureTileMatrix[col][row];
@@ -154,7 +146,7 @@ BonusFrenzy.prototype.startMoving = function(){
 	var bonusFrenzy = this;
 	var layer = this.layer;
 	function fly(){		
-	    //creatureLayer.clearRect(0, 0, creatureLayer.canvas.width, creatureLayer.canvas.height);
+	    layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
 		for (var key in  bonusFrenzy.randomCreatureMap){
 			var tile =  bonusFrenzy.randomCreatureMap[key];
 			if(tile.yCoord == undefined){
@@ -167,7 +159,6 @@ BonusFrenzy.prototype.startMoving = function(){
 				delete bonusFrenzy.randomCreatureMap[key];
 				continue;
 			}
-			//creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 			layer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}
 		
@@ -179,5 +170,5 @@ BonusFrenzy.prototype.startMoving = function(){
 	     }
 	} //function fly()
 
-	this.intervalHandle = window.setInterval(fly ,800 );
+	this.intervalHandle = window.setInterval( fly , BonusFrenzy.START_MOVING_DELAY_MS );
 } //BonusFrenzy.prototype.startMoving()
