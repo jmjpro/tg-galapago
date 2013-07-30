@@ -80,7 +80,7 @@ LoadingScreen.localization = function(){
 ProgressBar.WIDTH = 475;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
-ProgressBar.MESSAGE_TOP = 560;
+ProgressBar.MESSAGE_TOP = 40;
 ProgressBar.LOADING_MESSAGE_LEFT =575;
 ProgressBar.CLICK_MESSAGE_LEFT = 515;
 
@@ -95,7 +95,7 @@ function ProgressBar(){
 	this.canvas.style.left = ProgressBar.LEFT + 'px';
 	this.canvas.style.top = ProgressBar.TOP + 'px';
 	this.layer = this.canvas.getContext('2d');
-	this.layer.textBaseline = 'top';
+	this.layer.textBaseline = 'bottom';
 	this.layer.fillStyle = 'rgb(255,255,255)';
 	this.drawImages();
 	this.isLoadingComplete = false;
@@ -104,9 +104,11 @@ function ProgressBar(){
 }
 
 ProgressBar.prototype.drawImages = function() {
-	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );	
+	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );
+	this.layer.textAlign = 'center';
+	this.layer.textBaseline = 'bottom';
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'),ProgressBar.LOADING_MESSAGE_LEFT, ProgressBar.MESSAGE_TOP );
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP );
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width, this.loadingProgressBarLeftCap.height);
 }; //DangerBar.prototype.drawImages()
 
@@ -116,8 +118,9 @@ ProgressBar.prototype.progress = function(percentdownload) {
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, newWidth,this.loadingProgressBarFill.height);
 	this.layer.textAlign = 'center';
+	this.layer.textBaseline = 'bottom';
 	this.layer.font = '27pt HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, 0);
+	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP );
 };
 
 ProgressBar.prototype.loaded = function() {
@@ -126,7 +129,8 @@ ProgressBar.prototype.loaded = function() {
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, ProgressBar.WIDTH, this.loadingProgressBarFill.height);
 	this.layer.font = '27pt HelveticaBold';
 	this.layer.textAlign = 'center';
-	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.WIDTH/2, 0);
+	this.layer.textBaseline = 'bottom';
+	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP);
 	this.isLoadingComplete=true;
 };
 
