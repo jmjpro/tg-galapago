@@ -1133,10 +1133,8 @@ Level.registerEventHandlers = function() {
 
 Level.prototype.unregisterEventHandlers = function() {
 	document.onclick = null;
-	$('#layer-grid').click();
-
-	$('#layer-grid').tap();
-
+	$('#layer-grid').off('click');
+	$('#layer-grid').off('tap');
 	window.onkeydown = null;
 }; //Level.prototype.unregisterEventHandlers()
 

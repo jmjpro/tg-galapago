@@ -107,7 +107,6 @@ MainMenuScreen.prototype.setImages = function() {
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
 		galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[selector];
-		console.debug('galFilePath: ' + galFilePath);
 		$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
 		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
 		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';
