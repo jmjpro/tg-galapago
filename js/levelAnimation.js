@@ -549,7 +549,7 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
 	var  image, powerAchievedImageSpriteSheet;
-	image = ScreenLoader.gal.get("screen-game/Powerup_ready_strip.png");
+	image = LoadingScreen.gal.get("screen-game/Powerup_ready_strip.png");
 	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
 	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
 	function animatePowerAchieved(){
