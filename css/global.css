@@ -276,6 +276,24 @@ div.dialog-title {
 	line-height: 102px;
 }
 
+.button-regular {
+	background: url('../res/img/dialogs/button_gameMenu_regular.png') no-repeat left top;
+	width: 184px;
+	height: 108px;
+	vertical-align: middle;
+	line-height: 108px;
+	display: inline-block;
+}
+
+.game-option-arrow {
+	position: relative;
+	top: 5px;
+}
+
+.button-regular-hilight {
+	background: url('../res/img/dialogs/button_gameMenu_hilight.png') no-repeat left top;
+}
+
 .button-small-hilight {
 	background-image: url('../res/img/dialogs/button_small_highlight.png');
 }
