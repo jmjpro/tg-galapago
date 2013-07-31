@@ -461,6 +461,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 }; //LevelMap.prototype.registerEventHandlers
 
 LevelMap.prototype.quit = function() {
+	this.cleanup();
 	sdkApi.exit();
 	return this; //chainable
 };
