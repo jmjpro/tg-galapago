@@ -556,7 +556,7 @@ ul.galapago-drop-down {
 	width:700px;
 	font-family: 'JungleFever';
 	font-size: 18px; 
-	left: 230px; 
+	left: 200px; 
 	top:80px;
 	z-index:1000; 
 	position:absolute; 
@@ -565,8 +565,9 @@ ul.galapago-drop-down {
 	z-index: 1000;
 	display: none;
 }
+
 .bubbleTip:after, .bubbleTip:before {
-	right: 100%;
+	top: 100%;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -577,16 +578,15 @@ ul.galapago-drop-down {
 
 .bubbleTip:after {
 	border-color: rgba(255, 255, 255, 0);
-	border-right-color: #ffffff;
-	border-width: 7px;
-	top: 60%;
-	margin-top: -7px;
+	border-top-color: #ffffff;
+	border-width: 10px;
+	left: 4%;
+	margin-left: -10px;
 }
-
 .bubbleTip:before {
 	border-color: rgba(0, 0, 0, 0);
-	border-right-color: #000000;
-	border-width: 10px;
-	top: 60%;
-	margin-top: -10px;
+	border-top-color: #000000;
+	border-width: 13px;
+	left: 4%;
+	margin-left: -13px;
 }
