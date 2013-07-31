@@ -236,15 +236,78 @@ LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [[
 {cell: [360, 0], id: '7'}
 ]];
 
+LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [202, 0], id: '2'},  
+{cell: [404, 0], id: '3'}, 
+{cell: [606, 0], id: '4'},  
+{cell: [808, 0], id: '5'},
+{cell: [1010, 0], id: '6'},   
+{cell: [1212, 0], id: '7'},   
+{cell: [1414, 0], id: '8'},   
+{cell: [1616, 0], id: '9'},   
+{cell: [1818, 0], id: '10'},   
+{cell: [2020, 0], id: '11'},   
+{cell: [2222, 0], id: '12'}
+]];
+
+LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [202, 0], id: '2'},  
+{cell: [404, 0], id: '3'}, 
+{cell: [606, 0], id: '4'},  
+{cell: [808, 0], id: '5'},
+{cell: [1010, 0], id: '6'},   
+{cell: [1212, 0], id: '7'} 
+]];
+
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
+
 	this.bonFireParentAnimationInterval = null;
 	this.bombAnimation = null;
 	this.bombParentAnimationInterval = null;
 	this.gameStartArrowAnimation = null;
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
+	this.bobCervantesAnimation = null;
+}
+
+LevelAnimation.prototype.initBobCervantes = function(layer) {
+	var img, canvasBC, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
+	img = LoadingScreen.gal.get("screen-game/talking_heads_base.png");
+	canvasBC = $('#layer-bob-cervantes');
+	canvasBC[0].width = img.width;
+	canvasBC[0].height = img.height;
+	canvasBC.css('left','0px');
+	canvasBC.css('top', '0px');
+	layerBobCervantes = canvasBC[0].getContext('2d');
+	layer.drawImage(img, 0, 0);
+	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_left_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_right_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_mouth_strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
+	imgLeftHeadEyes = bcLeftHeadImageSpriteSheet.getSpriteNew([0,0]);
+	imgLeftHeadEyes.onload =function() {
+		layer.drawImage(imgLeftHeadEyes, 0, 0);
+	}
+	imgRightHeadEyes = bcRightHeadImageSpriteSheet.getSpriteNew([0,0]);
+	imgRightHeadEyes.onload =function() {
+		layer.drawImage(imgRightHeadEyes, 0, 0);		
+	}
+	imgRightHeadMouth = bcMouthImageSpriteSheet.getSpriteNew([0,0])
+	imgRightHeadMouth.onload =function() {
+		layer.drawImage(imgRightHeadMouth, 0, 0);
+	}
+	this.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
+}
+
+LevelAnimation.prototype.animateBobCervantes = function(imageArray) {
+	this.bobCervantesAnimation.start();
+}
+
+LevelAnimation.prototype.stopBobCervantes = function(imageArray) {
+	this.bobCervantesAnimation.stop();
 }
 
 LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
@@ -663,6 +726,10 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
 	}
+	if(this.bobCervantesAnimation){
+		this.bobCervantesAnimation.stop();
+		this.bobCervantesAnimation = null;
+	}
 };
 
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
@@ -963,4 +1030,63 @@ BoardBuildAnimation.prototype.animate = function(){
 		this.callback();
 	}
 	this.noOfRows++;
+};
+
+BobCervantesAnimation.ROLLOVER_TIME_INTERVAL=200;
+function BobCervantesAnimation(layer, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet){
+	this.layer = layer;
+	this.interval = null;
+	this.eyeRolloverSpriteId = 0;
+	this.mouthRolloverSpriteId = 0;
+	this.bcLeftHeadImageArray = [];
+	this.bcRightHeadImageArray = [];
+	this.bcMouthImageArray= [];
+	this.init(bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
+}
+
+BobCervantesAnimation.prototype.init = function(bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet){
+	var image, imgCnt;
+	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX[0].length; imgCnt++){
+		image = bcLeftHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
+		this.bcLeftHeadImageArray.push(image);
+		image = bcRightHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
+		this.bcRightHeadImageArray.push(image);
+	}
+	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX[0].length; imgCnt++){
+		image = bcMouthImageSpriteSheet.getSpriteNew([imgCnt, 0]);
+		this.bcMouthImageArray.push(image);
+	}
+}
+
+BobCervantesAnimation.prototype.start = function(){
+	if(this.interval){
+		this.stop();
+	}
+	var bobCervantesAnimation = this;
+	this.interval = setInterval(function() {
+		bobCervantesAnimation.animate();
+	}, BobCervantesAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+BobCervantesAnimation.prototype.stop = function(){
+	if(this.interval){
+		var image = this.bcRightHeadImageArray[0];
+		this.layer.clearRect(0, 0, image.width, image.height);
+		this.layer.drawImage(image, 0, 0);
+		image = this.bcMouthImageArray[0];
+		this.layer.drawImage(image, 0, 0);
+		clearInterval(this.interval);
+	}
+};
+
+BobCervantesAnimation.prototype.animate = function(){
+	var image = this.bcRightHeadImageArray[this.eyeRolloverSpriteId];
+	this.layer.clearRect(0, 0, image.width, image.height);
+	this.layer.drawImage(image, 0, 0);
+	image = this.bcMouthImageArray[this.mouthRolloverSpriteId];
+	this.layer.drawImage(image, 0, 0);
+	this.eyeRolloverSpriteId++;
+	this.eyeRolloverSpriteId = this.eyeRolloverSpriteId % this.bcRightHeadImageArray.length;
+	this.mouthRolloverSpriteId++;
+	this.mouthRolloverSpriteId = this.mouthRolloverSpriteId % this.bcMouthImageArray.length;
 };
