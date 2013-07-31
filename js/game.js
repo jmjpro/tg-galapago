@@ -83,6 +83,7 @@ Galapago.init = function(isTimedMode) {
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
 	//Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
+	Galapago.mapScreen =new MapScreen();
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
@@ -382,7 +383,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 	levelMap = this;
 
 	
-	/*window.onmousemove = function(e) {
+	window.onmousemove = function(e) {
 		x = e.pageX ;//- this.offsetLeft;
 		y = e.pageY ;//- this.offsetTop;
 		point = new Array(2);
@@ -399,11 +400,11 @@ LevelMap.prototype.registerEventHandlers = function() {
 				break;
 			}
 			else {
-				console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.name);
-				levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
+				//console.debug(MatrixUtil.coordinatesToString(point) + ' is not in mapHotspotRegion for level ' + level.name);
+				//levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
-	} //onmousemove*/
+	} //onmousemove
 	
 
 	//levelMap.canvas.onclick = function(evt) {
@@ -544,7 +545,7 @@ LevelMap.prototype.handleDownArrow = function() {
 		this.levelAnimation.stopGameStartArrow();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
-		mapScreen = new MapScreen();
+		mapScreen = Galapago.mapScreen ;
 		mapScreen.registerEventHandlers();
 		mapNav = $('#map-nav');
 		mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
@@ -1089,7 +1090,13 @@ Level.registerEventHandlers = function() {
 	$('#layer-grid').tap(function(evt) { 
 		board.handleClickOrTap(evt);
 	});
-
+	
+	//$('#layer-bonus-frenzy').click(function(evt){
+	window.onclick = function(evt){
+		board.handleMouseEvent(evt);
+	};
+	
+	
 	window.onkeydown = function(evt) {
 		if(board.animationQ.length){
 			return;
@@ -1385,6 +1392,7 @@ Board.prototype.setActiveTile = function(tile) {
 		tileActive = this.creatureTileMatrix[col][row];
 		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
 		this.level.bubbleTip.showBubbleTip(i18n.t(key));
+		this.bubbleInitialTile = this.initialSwapForTripletInfo.tipInfo.initialTile;
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
 		markTile = true;
 	}	
@@ -1826,6 +1834,66 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
+Board.prototype.handleMouseEvent = function(evt) {
+		var board = this;
+		if(board.animationQ.length){
+			return;
+		}
+		var	x = evt.pageX ;//- this.offsetLeft;
+		var y = evt.pageY ;
+		var found =false;
+		//alert("x : "+x +" y :"+y);
+		var tileMatrix = board.creatureTileMatrix;
+		for (var col = 0 ; col <= tileMatrix.length - 1; col++) {
+			for (var row = 0; row <= tileMatrix[col].length - 1; row++) {
+				var tile = tileMatrix[col][row];
+				if(tile){
+					var currentX = tile.getXCoord()+325;
+					var currentY = tile.getYCoord()+100;
+					
+					if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> currentY && y< (currentY+ Board.TILE_HEIGHT )){
+					   if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
+							var icol = board.bubbleInitialTile[0];
+							var irow = board.bubbleInitialTile[1];
+							if(icol != col && irow != row){
+								board.initialSwapForTripletInfo=null ;
+								board.bubbleInitialTile =null;
+								Galapago.bubbleTip.clearBubbleTip();							
+							}
+						}
+						board.displayMenuButton(false);
+						board.displayQuitButton(false);
+						board.hotspot = null;
+						console.log("active tile : "+board.tileActive);
+						board.tileActive.setInactiveAsync().then(function() {
+						console.log("tile : "+tile);
+						board.setActiveTile(tile);
+						board.handleKeyboardSelect();
+						}).done();
+						found =true;
+						break;
+					}
+				}
+			}
+			  if(found)
+			    break;
+		}
+		var menuButtonImage = board.blobCollection.button_menu;
+		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+				board.displayMenuButton(true);
+				board.displayQuitButton(false);
+				board.hotspot = Board.HOTSPOT_MENU;
+				board.handleKeyboardSelect();
+		}
+		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
+		var quitButtonImage = board.blobCollection.button_quit;
+		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+				board.displayMenuButton(false);
+				board.displayQuitButton(true);
+				board.hotspot = Board.HOTSPOT_QUIT;
+				board.handleKeyboardSelect();
+		}	
+}
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;
@@ -1999,7 +2067,7 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
+		window.dialog = new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
 		this.showGoldAndCreatures();
 	}
 }
@@ -2263,9 +2331,9 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
-			new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight');
 	}else{
-			new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight');
 	}
 } //Board.prototype.dangerBarEmptied
 
@@ -2320,14 +2388,14 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
+			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
-			new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
+			window.dialog = new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
 		    break;
 		case null:
 		default:

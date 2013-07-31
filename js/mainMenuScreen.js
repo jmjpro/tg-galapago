@@ -53,6 +53,7 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 
 MainMenuScreen.prototype.addMouseListner = function(){
 var mainMenuScreen = this;
+
 				
 $('#button-timed')[0].onclick = function (evt){ 
 									mainMenuScreen.setNavItem($('#button-timed')); 
@@ -63,7 +64,7 @@ $('#button-relaxed')[0].onclick = function (evt){
 									mainMenuScreen.setNavItem($('#button-relaxed')); 
 									mainMenuScreen.selectHandler();
 									evt.preventDefault();evt.stopPropagation();
-								}
+								}				
 $('#button-how-to-play')[0].onclick = function (evt){ 
 										mainMenuScreen.setNavItem($('#button-how-to-play')); 
 										mainMenuScreen.selectHandler();
@@ -84,7 +85,22 @@ $('#button-quit')[0].onclick = function (evt){
 												mainMenuScreen.selectHandler();
 												evt.preventDefault();evt.stopPropagation();
 											}
+this.registerMouseOverEvent('button-timed');
+this.registerMouseOverEvent('button-relaxed');
+this.registerMouseOverEvent('button-how-to-play');
+this.registerMouseOverEvent('button-top-scores');
+this.registerMouseOverEvent('button-set-language');
+this.registerMouseOverEvent('button-quit');
+
 }
+
+MainMenuScreen.prototype.registerMouseOverEvent = function(id){
+	var mainMenuScreen = this;
+	$('#'+id)[0].onmouseover = function (evt){
+				mainMenuScreen.setNavItem($('#'+id));
+	}
+}
+
 /*
 MainMenuScreen.prototype.registerImageLoadEvents = function(){
 	var mainMenuScreen = this;
