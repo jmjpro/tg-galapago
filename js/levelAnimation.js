@@ -659,6 +659,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 };
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
+	var image, imgCnt, imageArray = [];
 	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
@@ -676,7 +677,28 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	if(initialTile.coordinates[0] < swapTile.coordinates[0]){
 		tile = initialTile;
 	}
-	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
+	if(degreesToRotate){
+		if(!this.makeMatchHorizontalSpritesArray){
+			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
+				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
+				imageArray.push(image);
+			}
+			this.makeMatchHorizontalSpritesArray = imageArray;
+		}else{
+			imageArray = this.makeMatchHorizontalSpritesArray;
+		}	 
+	}else{
+		if(!this.makeMatchVerticalSpritesArray){
+			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
+				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
+				imageArray.push(image);
+			}
+			this.makeMatchVerticalSpritesArray = imageArray;
+		}else{
+			imageArray = this.makeMatchVerticalSpritesArray;
+		}	 
+	}
+	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, imageArray, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
 };
@@ -935,12 +957,12 @@ NextLevelArrowAnimation.prototype.animate = function(){
 };
 
 MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=100;
-function MakeMatchAnimation(layer, initialTile, swapTile, rolloverImageSpriteSheet, x, y, degreesToRotate){
+function MakeMatchAnimation(layer, initialTile, swapTile, imageArray, x, y, degreesToRotate){
 	this.layer = layer;
 	this.initialTile = initialTile;
 	this.swapTile = swapTile;
 	this.rolloverSpriteId = 0;
-	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
+	this.imageArray = imageArray;
 	this.x = x;
 	this.y = y;
 	this.degreesToRotate = degreesToRotate;
@@ -967,10 +989,10 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
-	var image = this.rolloverImageSpriteSheet.getSpriteNew([0,this.rolloverSpriteId], this.degreesToRotate);
+	var image = this.imageArray[this.rolloverSpriteId];
 	this.layer.drawImage(image, this.x, this.y);
 	this.rolloverSpriteId++;
-	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix.length;
+	this.rolloverSpriteId = this.rolloverSpriteId % this.imageArray.length;
 };
 
 BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
