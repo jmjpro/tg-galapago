@@ -51,13 +51,13 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			new DialogMenu(mainCanvasId, board, 'dialog-new-game', 'button-huge-hilight');
+			window.dialog =new DialogMenu(mainCanvasId, board, 'dialog-new-game', 'button-huge-hilight');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			new DialogMenu(mainCanvasId, board, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
+			window.dialog = new DialogMenu(mainCanvasId, board, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
 			break;
 		case 'option-options' :
 			this.hide();
@@ -113,7 +113,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	switch( optionId ) {
-		case 'option-yes' :
+		case 'new-game-option-yes' :
 			console.log("starting new game");
 			this.hide();
 			board.level.cleanup();
@@ -121,7 +121,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			localStorage.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
 			Galapago.setLevel(board.level.id);
 			break;
-		case 'option-no' :
+		case 'new-game-option-no' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
@@ -178,14 +178,14 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	level = dialogMenu.callingObject.hotspotLevel;
 	 
 	switch( optionId ) {
-		case 'option-no' :
+		case 'reset-game-option-no' :
 			Galapago.levelMap.cleanup();
 			//Galapago.init(Galapago.gameMode);
 			LevelMap.show(level);
 			//level.showLevelMap(level);
 			this.hide();
 			break;
-		case 'option-yes' :
+		case 'reset-game-option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
 			Galapago.levelMap.cleanup();
@@ -209,7 +209,7 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 				dialogMenu.currentNavItem.next();
 			}
 			break;
-		case 'option-close' :
+		case 'dialog-help-option-close' :
 			this.hide();
 			break;
 	};
