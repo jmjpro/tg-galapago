@@ -203,6 +203,11 @@ MainMenuScreen.prototype.hide = function() {
 	}
 	this.callingScreen.show();
 	*/
+}; //MainMenuScreen.prototype.hide()
+
+MainMenuScreen.prototype.quit = function() {
+	this.hide();
+	sdkApi.exit();
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.isFirstTimeShown = function() {

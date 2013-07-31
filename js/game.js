@@ -83,7 +83,6 @@ Galapago.init = function(isTimedMode) {
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
 	//Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
-	Galapago.bubbleTip = new BubbleTip(); //jj: why is bubbleTip a Galapago property instead of a Board or Level property?
 	Galapago.mapScreen =new MapScreen();
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
@@ -463,6 +462,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 }; //LevelMap.prototype.registerEventHandlers
 
 LevelMap.prototype.quit = function() {
+	this.cleanup();
 	sdkApi.exit();
 	return this; //chainable
 };
@@ -777,6 +777,7 @@ function Level(id) {
 	this.layerBackground = null;
 	this.neighbors = {};
 	this.levelAnimation = new LevelAnimation();
+	this.bubbleTip = new BubbleTip(this.levelAnimation);
 	this.isUnlocked = false;
 }
 
@@ -965,7 +966,6 @@ Level.prototype.display = function() {
 		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
 			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 		}
-		level.board.setActiveTile();
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		if( Galapago.isTimedMode ) {
 			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
@@ -987,6 +987,7 @@ Level.prototype.display = function() {
 		level.board.displayMenuButton(false);
 		level.board.displayQuitButton(false);
 		level.board.display();
+		level.board.setActiveTile();
 		var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
 		return level; //chainable
@@ -1040,7 +1041,7 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 	else {
 		this.board.screenDiv.hide();		
 	}
-	Galapago.bubbleTip.hideBubbleTip();
+	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
 	}
@@ -1302,6 +1303,7 @@ Board.prototype.showGoldAndCreatures = function() {
 Board.prototype.display = function() {
 	//this.showGoldAndCreatures();
 	this.creatureLayer.canvas.focus();
+	this.level.levelAnimation.initBobCervantes(this.backgroundLayer);
 	this.reshuffleService.start();
 }; //Board.protoype.display()
 
@@ -1389,7 +1391,7 @@ Board.prototype.setActiveTile = function(tile) {
 		row = this.initialSwapForTripletInfo.tipInfo.initialTile[1];
 		tileActive = this.creatureTileMatrix[col][row];
 		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
-		Galapago.bubbleTip.showBubbleTip(i18n.t(key));
+		this.level.bubbleTip.showBubbleTip(i18n.t(key));
 		this.bubbleInitialTile = this.initialSwapForTripletInfo.tipInfo.initialTile;
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
 		markTile = true;
@@ -2401,7 +2403,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.initialSwapForTripletInfo){
 				if(this.initialSwapForTripletInfo.tipInfo.initialTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip2';
-					Galapago.bubbleTip.showBubbleTip(i18n.t(key));
+					this.level.bubbleTip.showBubbleTip(i18n.t(key));
 					var col = this.initialSwapForTripletInfo.tipInfo.swapTile[0];
 					var row = this.initialSwapForTripletInfo.tipInfo.swapTile[1];
 					this.initialSwapForTripletInfo.tipInfo.initialTile = 'done';
@@ -2413,8 +2415,8 @@ Board.prototype.handleKeyboardSelect = function() {
 					}).done();
 				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
-					Galapago.bubbleTip.showBubbleTip(i18n.t(key));
-					Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t(key))});
+					this.level.bubbleTip.showBubbleTip(i18n.t(key));
+					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t(key))});
 				}
 			}
 			break;
@@ -2428,7 +2430,7 @@ Board.prototype.handleRightArrow = function() {
 	board = this;
 	if(this.initialSwapForTripletInfo){
 	    this.initialSwapForTripletInfo=null ;
-		Galapago.bubbleTip.clearBubbleTip();
+		this.level.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
@@ -2454,7 +2456,7 @@ Board.prototype.handleLeftArrow = function() {
 	board = this;
 	if(this.initialSwapForTripletInfo){
 	    this.initialSwapForTripletInfo=null ;
-		Galapago.bubbleTip.clearBubbleTip();
+		this.level.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
@@ -2489,7 +2491,7 @@ Board.prototype.handleDownArrow = function() {
 	board = this;
 	if(this.initialSwapForTripletInfo){
 	    this.initialSwapForTripletInfo=null ;
-		Galapago.bubbleTip.clearBubbleTip();
+		this.level.bubbleTip.clearBubbleTip();
 	}
 	col = board.tileActive.coordinates[0];
 	row = board.tileActive.coordinates[1];
@@ -2523,7 +2525,7 @@ Board.prototype.handleUpArrow = function() {
 	board = this;
 	if(this.initialSwapForTripletInfo){
 	    this.initialSwapForTripletInfo=null ;
-		Galapago.bubbleTip.clearBubbleTip();
+		this.level.bubbleTip.clearBubbleTip();
 	}
 	if(this.hotspot == Board.HOTSPOT_QUIT){
 		board.displayMenuButton(true);
@@ -3505,44 +3507,6 @@ DangerBar.prototype.playWarningSoundRepeated = function() {
 
 /* end class DangerBar */
 
-/* begin class BobCervantes */
-BobCervantes.BOB_LEFT = 50;
-BobCervantes.BOB_TOP = 0;
-BobCervantes.CERVANTES_LEFT = 96;
-BobCervantes.CERVANTES_TOP = 0;
-BobCervantes.REFRESH_INTERVAL_SEC = 1;
-
-function BobCervantes() {
-	this.imageBobEyes = Galapago.gameImages[0];
-	this.intervalId = -1;
-}
-
-BobCervantes.prototype.start = function() {
-	var bobCervantes;
-	bobCervantes = this;
-	this.intervalId = setInterval(bobCervantes.update, BobCervantes.REFRESH_INTERVAL_SEC * 1000);
-	return this; //chainable
-}; //BobCervantes.prototype.start()
-
-BobCervantes.prototype.stop = function() {
-	console.debug('stopping bobcervantes animation');
-	clearInterval(this.intervalId);
-	return this; //chainable
-}; //BobCervantes.prototype.stop()
-
-BobCervantes.prototype.update = function() {
-	var ctx, bobEyesLeft, bobEyesTop, bobEyesWidth, bobEyesHeight;
-	ctx = Galapago.bobCervantesLayer;
-	bobEyesWidth = this.imageBobEyes.width;
-	bobEyesHeight = this.imageBobEyes.height;
-	ctx.drawImage( this.imageBobEyes, bobEyesLeft, bobEyesTop );
-	ctx.clearRect( bobEyesLeft, bobEyesTop, bobEyesWidth, bobEyesHeight );
-}; //BobCervantes.prototype.update()
-
-/* end class BobCervantes */
-
-/* begin class BobCervantes */
-
 /* class FileUtil */
 // helper functions for manipulating files and filenames
 function FileUtil() {}
@@ -3591,6 +3555,7 @@ function ReshuffleService(board){
 
 ReshuffleService.prototype.start = function() {
 	var reshuffleService = this;
+	var board = this.board
 	if( !this.reshuffleInterval) {
 		this.reshuffleInterval = setInterval(function(){
 			var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
@@ -3602,20 +3567,20 @@ ReshuffleService.prototype.start = function() {
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
 				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
-					Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
-					Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
+					board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
+					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
 				}
 			}
 			if(powerActive && !validMoveFound){
-				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
-				Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
+				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
+				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
 			}
 			if(!powerActive && !validMoveFound){
-				Galapago.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
+				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
 				Galapago.audioPlayer.playReshuffle();
 				reshuffleService.board.shuffleBoard();
 				console.log("reshuffled");
-				Galapago.delay(5000).done(function(){Galapago.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
+				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
 			}
 		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
 		this.isStarted = true;

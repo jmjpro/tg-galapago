@@ -1,9 +1,11 @@
-function BubbleTip() {
+function BubbleTip(levelAnimation) {
+	this.levelAnimation = levelAnimation;
 }
 BubbleTip.prototype.showBubbleTip = function (text) {
     this.content = text;
     var bubbleTip = $('#bubbleTip')[0];
 	if(this.content!=''){
+		this.levelAnimation.animateBobCervantes();
 		bubbleTip.innerHTML=this.content;
 		bubbleTip.style.display='block';
 	} 
@@ -13,6 +15,7 @@ BubbleTip.prototype.clearBubbleTip = function (text) {
 	if(!text || this.content == text){
 		this.content="";
 		this.hideBubbleTip();
+		this.levelAnimation.stopBobCervantes();
 	}
 }
 
