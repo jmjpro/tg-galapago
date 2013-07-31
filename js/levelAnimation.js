@@ -678,24 +678,9 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 		tile = initialTile;
 	}
 	if(degreesToRotate){
-		if(!this.makeMatchHorizontalSpritesArray){
-			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
-				if(!image.height){
-					validArray = false;
-				}
-				imageArray.push(image);
-			}
-			if(validArray){
-				this.makeMatchHorizontalSpritesArray = imageArray;
-			}
-		}else{
-			imageArray = this.makeMatchHorizontalSpritesArray;
-		}	 
-	}else{
 		if(!this.makeMatchVerticalSpritesArray){
 			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
+				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
 				if(!image.height){
 					validArray = false;
 				}
@@ -706,6 +691,21 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 			}
 		}else{
 			imageArray = this.makeMatchVerticalSpritesArray;
+		}	 
+	}else{
+		if(!this.makeMatchHorizontalSpritesArray){
+			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
+				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
+				if(!image.height){
+					validArray = false;
+				}
+				imageArray.push(image);
+			}
+			if(validArray){
+				this.makeMatchHorizontalSpritesArray = imageArray;
+			}
+		}else{
+			imageArray = this.makeMatchHorizontalSpritesArray;
 		}	 
 	}
 	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, imageArray, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
