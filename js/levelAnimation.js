@@ -659,7 +659,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 };
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var image, imgCnt, imageArray = [];
+	var image, imgCnt, validArray = true, imageArray = [];
 	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
@@ -681,9 +681,14 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 		if(!this.makeMatchHorizontalSpritesArray){
 			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
 				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
+				if(!image.height){
+					validArray = false;
+				}
 				imageArray.push(image);
 			}
-			this.makeMatchHorizontalSpritesArray = imageArray;
+			if(validArray){
+				this.makeMatchHorizontalSpritesArray = imageArray;
+			}
 		}else{
 			imageArray = this.makeMatchHorizontalSpritesArray;
 		}	 
@@ -691,9 +696,14 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 		if(!this.makeMatchVerticalSpritesArray){
 			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
 				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
+				if(!image.height){
+					validArray = false;
+				}
 				imageArray.push(image);
 			}
-			this.makeMatchVerticalSpritesArray = imageArray;
+			if(validArray){
+				this.makeMatchVerticalSpritesArray = imageArray;
+			}
 		}else{
 			imageArray = this.makeMatchVerticalSpritesArray;
 		}	 
