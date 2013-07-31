@@ -456,21 +456,6 @@ span#final-score {
 	height: 238px;
 }
 
-.bubbleTip {
-	width:700px;
-	font-family: 'JungleFever';
-	font-size: 18px; 
-	left: 280px; 
-	top:30px;
-	background-color: white;
-	position: absolute;
-	z-index: 1000;
-	border : 2px solid black; 
-	padding-left: 10px;
-	padding-top: 10px;
-	display:none;
-}
-
 ul.galapago-drop-down {
 	list-style-type: none;
 	text-align: left;
@@ -564,5 +549,44 @@ ul.galapago-drop-down {
 
 #dialog-help .button-medium {
 	height: 61px;
+	margin-top: -10px;
+}
+
+.bubbleTip {
+	width:700px;
+	font-family: 'JungleFever';
+	font-size: 18px; 
+	left: 230px; 
+	top:80px;
+	z-index:1000; 
+	position:absolute; 
+	background: #ffffff;
+	border: 2px solid #000000;
+	z-index: 1000;
+	display: none;
+}
+.bubbleTip:after, .bubbleTip:before {
+	right: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.bubbleTip:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 7px;
+	top: 60%;
+	margin-top: -7px;
+}
+
+.bubbleTip:before {
+	border-color: rgba(0, 0, 0, 0);
+	border-right-color: #000000;
+	border-width: 10px;
+	top: 60%;
 	margin-top: -10px;
 }
