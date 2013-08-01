@@ -1,4 +1,14 @@
-﻿/* begin class Galapago */
+﻿CREATURE_BEACH_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [47, 0], id: 'b2'},{cell: [93, 0], id: 'b3'}],
+[{cell: [0, 47], id: 'y1'},{cell: [0, 0], id: 'y2'},{cell: [0, 0], id: 'y3'}],
+[{cell: [0, 93], id: 'g1'},{cell: [0, 0], id: 'g2'},{cell: [0, 0], id: 'g3'}],
+[{cell: [0, 139], id: 'p1'},{cell: [0, 0], id: 'p2'},{cell: [0, 0], id: 'p3'}],
+[{cell: [0, 185], id: 'v1'},{cell: [0, 0], id: 'v2'},{cell: [0, 0], id: 'v3'}],
+[{cell: [0, 231], id: 'r1'},{cell: [0, 0], id: 'r2'},{cell: [0, 0], id: 'r3'}],
+[{cell: [0, 277], id: 't1'},{cell: [0, 0], id: 't2'},{cell: [0, 0], id: 't3'}]
+]
+
+/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
