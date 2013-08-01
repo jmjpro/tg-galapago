@@ -154,10 +154,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 		var y = evt.pageY ;
 		if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT + progressBar.canvas.width) && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ progressBar.canvas.height )){
 			if(progressBar.isLoadingComplete){
-				progressBar.unregisterEventHandlers();
-				MainMenuScreen.init('screen-loading', progressBar);
-				evt.stopPropagation();
-				evt.preventDefault();
+				LoadingScreen.hide(evt);
 			}
 		}
 	};
@@ -165,10 +162,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			if( progressBar.isLoadingComplete ){
-				progressBar.unregisterEventHandlers();
-				MainMenuScreen.init('screen-loading', progressBar);
-				evt.stopPropagation();
-				evt.preventDefault();
+				LoadingScreen.hide(evt);
 			}
 			break;
 		}
