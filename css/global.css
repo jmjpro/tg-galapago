@@ -56,7 +56,7 @@ canvas {
 	font-size: 13pt;
 	color: rgb(255,255,255);
 	position: absolute;
-	left: 150px;
+	width: 1280px; /* with less this could be a variable shared with galapago.width */
 	top: 635px;
 	text-align: center;
 }

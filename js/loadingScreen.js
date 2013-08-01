@@ -4,6 +4,7 @@ LoadingScreen.STAGE_WIDTH = 1280;
 LoadingScreen.STAGE_HEIGHT = 720;
 LoadingScreen.BACKGROUND_PATH_PREFIX = 'res/img/screen-loading/';
 LoadingScreen.BACKGROUND_PATH_SUFFIX = '.jpg)';
+LoadingScreen.DIALOG_IDS = ['option-continue-playing', 'option-main-menu', 'option-new-game', 'option-how-to-play', 'option-options', 'dialog-title', 'dialog-leaderboards'];
 
 LoadingScreen.mapScreenImageNames = {
 	button_cursor_map: "button_cursor_map.png",
@@ -66,15 +67,23 @@ LoadingScreen.registerEvent = function(){
 	});
 };
 
+LoadingScreen.hide = function(evt) {
+	//TODO if api.inDemoMode() skip the main menu screen?
+	LoadingScreen.progressBar.unregisterEventHandlers();
+	if( evt ) {
+		evt.stopPropagation();
+		evt.preventDefault();		
+	}
+	this.screenDiv.hide();
+	MainMenuScreen.init('screen-loading', progressBar);
+}; //LoadingScreen.hide
+
 LoadingScreen.localization = function(){
-    $("#option-continue-playing").i18n();
-    $("#option-main-menu").i18n();
-    $("#option-new-game").i18n();
-    $("#option-how-to-play").i18n();
-    $("#option-options").i18n();
-    $("#dialog-title").i18n();
-    $("#dialog-leaderboards").i18n();
-};
+	_.each( LoadingScreen.DIALOG_IDS, function ( dialogId ) {
+		$('#' + dialogId).i18n();
+	});
+}; //LoadingScreen.localization
+/// end LoadingScreen class
 
 /// progress bar
 ProgressBar.WIDTH = 475;
@@ -157,7 +166,6 @@ ProgressBar.prototype.registerEventHandlers = function() {
 		case 13: // enter
 			if( progressBar.isLoadingComplete ){
 				progressBar.unregisterEventHandlers();
-				//TODO if api.inDemoMode() skip the main menu screen?
 				MainMenuScreen.init('screen-loading', progressBar);
 				evt.stopPropagation();
 				evt.preventDefault();
@@ -165,9 +173,9 @@ ProgressBar.prototype.registerEventHandlers = function() {
 			break;
 		}
 	};
-};
+}; //ProgressBar.prototype.registerEventHandlers()
 
 ProgressBar.prototype.unregisterEventHandlers = function() {
 	this.canvas.onclick = null;
 	this.canvas.onkeydown = null;
-};
+}; //ProgressBar.prototype.unregisterEventHandlers()
