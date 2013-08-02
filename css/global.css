@@ -56,7 +56,7 @@ canvas {
 	font-size: 13pt;
 	color: rgb(255,255,255);
 	position: absolute;
-	left: 150px;
+	width: 1280px; /* with less this could be a variable shared with galapago.width */
 	top: 635px;
 	text-align: center;
 }
@@ -116,7 +116,6 @@ ul#map-nav {
 	position: absolute;
 	left: 257px;
 	top: 647px;
-	z-index: 8;
 }
 
 ul#map-nav>li {
@@ -131,18 +130,19 @@ ul#map-nav>li {
 	background: url('res/img/screen-map/button_cursor_map.png') no-repeat left top;
 }
 
-img.cursor {
+img#map-nav-cursor {
 	position:relative;
-	z-index: 2;
-	top: -54px;
+	top: -5px;
 	left: -3px;
 }
 
-img.nav-button {
+div.nav-button {
 	position:relative;
 	z-index: 1;
 	top: 0px;
 	left: 0px;
+	width: 145px;
+	height: 49px;
 }
 
 .vertical-align-helper {
@@ -456,21 +456,6 @@ span#final-score {
 	height: 238px;
 }
 
-.bubbleTip {
-	width:700px;
-	font-family: 'JungleFever';
-	font-size: 18px; 
-	left: 280px; 
-	top:30px;
-	background-color: white;
-	position: absolute;
-	z-index: 1000;
-	border : 2px solid black; 
-	padding-left: 10px;
-	padding-top: 10px;
-	display:none;
-}
-
 ul.galapago-drop-down {
 	list-style-type: none;
 	text-align: left;
@@ -565,4 +550,43 @@ ul.galapago-drop-down {
 #dialog-help .button-medium {
 	height: 61px;
 	margin-top: -10px;
+}
+
+.bubbleTip {
+	width:700px;
+	font-family: 'JungleFever';
+	font-size: 18px; 
+	left: 200px; 
+	top:80px;
+	z-index:1000; 
+	position:absolute; 
+	background: #ffffff;
+	border: 2px solid #000000;
+	z-index: 1000;
+	display: none;
+}
+
+.bubbleTip:after, .bubbleTip:before {
+	top: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.bubbleTip:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-top-color: #ffffff;
+	border-width: 10px;
+	left: 4%;
+	margin-left: -10px;
+}
+.bubbleTip:before {
+	border-color: rgba(0, 0, 0, 0);
+	border-top-color: #000000;
+	border-width: 13px;
+	left: 4%;
+	margin-left: -13px;
 }

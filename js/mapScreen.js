@@ -1,56 +1,66 @@
-MapScreen.WIDTH = 1280;
-MapScreen.HEIGHT = 670;
+MapScreen.NAV_BUTTON_IDS = ['button_play_map', 'button_start_map', 'button_reset_map', 'button_menu_map', 'button_quit_map' ];
+MapScreen.GAL_PREFIX = 'screen-map/';
 
 function MapScreen() {
-	var mapNav;
+	var mapNav, galFilePathCursor;
+	this.setImages();
 	mapNav = $('#map-nav');
 	this.currentNavItem = mapNav.children('li:nth-child(1)');
+	galFilePathCursor = MapScreen.GAL_PREFIX + 'button_cursor_map.png';
+	this.cursor = LoadingScreen.gal.get(galFilePathCursor);
+	this.cursor.id = 'map-nav-cursor';
+}
+
+MapScreen.prototype.setImages = function() {
+	var galFilePath;
+	_.each( MapScreen.NAV_BUTTON_IDS, function( navButtonId ) {
+		galFilePath = MapScreen.GAL_PREFIX + navButtonId + '.png';
+		console.debug( '#' + navButtonId + " : " + galFilePath);
+		$('#' + navButtonId).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+	});
 }
 
 MapScreen.prototype.setNavItem = function(item) {
-	var cursor;
-	cursor = '<img class="cursor" src="res/img/screen-map/button_cursor_map.png"/>';
 	// remove cursor from old item
 	this.unsetNavItem();
 	this.currentNavItem = item;
 	// add cursor to new item
-	this.currentNavItem.append(cursor);
+	this.currentNavItem.find('div').html(this.cursor);
 }; //MapScreen.prototype.setNavItem()
 
 MapScreen.prototype.unsetNavItem = function() {
-	this.currentNavItem.children('img:nth-child(2)').remove();
+	//this.currentNavItem.children('img:nth-child(2)').remove();
+	this.currentNavItem.find('div').html('');
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	var mapScreen, itemId, levelMap;
-	itemId = navItem.children('img:nth-child(1)')[0].id;
+	itemId = navItem.children('div')[0].id;
 	levelMap = Galapago.levelMap;
-	//console.log(itemId);
+	console.log('itemId:' + itemId);
 	this.unsetNavItem();
 	switch( itemId ) {
-		case 'menu-map' :
+		case 'button_play_map' :
+			levelMap.handleKeyboardSelect();
+			//console.log( 'selected play map button');
+			break;
+		case 'button_start_map' :
+			levelMap.setHotspotLevel(LevelMap.getNextLevel());
+			levelMap.handleKeyboardSelect();
+			console.log( 'selected start map button');
+			break;
+		case 'button_reset_map' :
+			//console.log( 'selected reset map button');
+			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
+			break;
+		case 'button_menu_map' :
 			console.log( 'selected menu map button');
 			levelMap.cleanup();
 			MainMenuScreen.init('screen-map', this);
 			//MainMenuScreen.show();
 			break;
-		case 'play-map' :
-			levelMap.handleKeyboardSelect();
-			//console.log( 'selected play map button');
-			break;
-		case 'quit-map' :
-			//var dialogQuit = new DialogQuit();
+		case 'button_quit_map' :
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');
-			break;
-		case 'reset-map' :
-			//console.log( 'selected reset map button');
-			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
-
-			break;
-		case 'start-next-map' :
-			levelMap.setHotspotLevel(LevelMap.getNextLevel());
-			levelMap.handleKeyboardSelect();
-			console.log( 'selected start map button');
 			break;
 	}
 }; //MapScreen.prototype.handleNavButtonSelect()
@@ -77,7 +87,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.unsetNavItem();
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			if(!Level.isComplete("1")){
+			if(!Level.isComplete('1')){
 				levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
 			}
 			levelMap.registerEventHandlers();

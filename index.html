@@ -18,7 +18,6 @@
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
 		<script src="SDK/TGH5.min.js" type="text/javascript"></script>
-		<!--<script src="js/dialogMenu.js"></script> -->
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/mainMenuScreen.js"></script>
@@ -75,13 +74,12 @@
 			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4"></canvas>
 			
 			<ul id="map-nav">
-			<li><img id="menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);" src="res/img/screen-map/button_menu_map.png" width="145" height"49"/></li>
-			<li><img id="play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();" src="res/img/screen-map/button_play_map.png" width="145" height"49"/></li>
-			<li><img id="quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');" src="res/img/screen-map/button_quit_map.png" width="145" height"49"/></li>
-			<li><img id="reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')" src="res/img/screen-map/button_reset_map.png" width="145" height"49"/></li>
-			<li><img id="start-next-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();" src="res/img/screen-map/button_start_map.png" width="145" height"49"/></li>
+				<li><div id="button_play_map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"></div></li>
+				<li><div id="button_start_map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"></div></li>
+				<li><div id="button_reset_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"></div></li>
+				<li><div id="button_menu_map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"></div></li>
+				<li><div id="button_quit_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"></div></li>
 			</ul>
-			
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
