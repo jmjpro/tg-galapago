@@ -246,6 +246,17 @@
     	]
     },
     {
+		"name": "dialogs-and-menus-testing",
+		"contents": [
+			"screen-map/button_cursor_map.png",
+			"screen-map/button_menu_map.png",
+			"screen-map/button_play_map.png",
+			"screen-map/button_quit_map.png",
+			"screen-map/button_reset_map.png",
+			"screen-map/button_start_map.png"
+    	]
+    },
+    {
 		"name": "audio",
 		"contents": [
 			"BurnIcon.mp3",

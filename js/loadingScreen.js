@@ -58,11 +58,6 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('all-but-audio resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
-			/*setTimeout( function() {*/
-				/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
-				LoadingScreen.progressBar.canvas.onkeydown=null;*/
-				//MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
-			/*}, 1000 );*/
 		}
 	});
 };
@@ -75,7 +70,7 @@ LoadingScreen.hide = function(evt) {
 		evt.preventDefault();		
 	}
 	this.screenDiv.hide();
-	MainMenuScreen.init('screen-loading', progressBar);
+	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){
