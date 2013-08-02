@@ -1865,7 +1865,7 @@ Board.prototype.handleMouseEvent = function(evt) {
 					   if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
 							var icol = board.bubbleInitialTile[0];
 							var irow = board.bubbleInitialTile[1];
-							if(icol != col && irow != row){
+							if(icol != col || irow != row){
 								board.initialSwapForTripletInfo=null ;
 								board.bubbleInitialTile =null;
 								Galapago.bubbleTip.clearBubbleTip();							
