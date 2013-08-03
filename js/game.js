@@ -1920,7 +1920,7 @@ Board.prototype.handleMouseEvent = function(evt) {
 							if(icol != col || irow != row){
 								board.initialSwapForTripletInfo=null ;
 								board.bubbleInitialTile =null;
-								Galapago.bubbleTip.clearBubbleTip();							
+								board.level.bubbleTip.clearBubbleTip();							
 							}
 						}
 						board.displayMenuButton(false);
@@ -2281,13 +2281,10 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	   board.saveBoard();
 	   board.collectionModified = false;
 	}
+	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
+	board.tileActive.setActiveAsync().done();
 	if( board.blobCollection.isEmpty()){
 		board.setComplete();
-	}else{
-		//reset grid lines and active tile
-		//board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-		board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
-		board.tileActive.setActiveAsync().done();
 	}
 }
 
