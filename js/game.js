@@ -1,11 +1,31 @@
-﻿CREATURE_BEACH_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [47, 0], id: 'b2'},{cell: [93, 0], id: 'b3'}],
-[{cell: [0, 47], id: 'y1'},{cell: [0, 0], id: 'y2'},{cell: [0, 0], id: 'y3'}],
-[{cell: [0, 93], id: 'g1'},{cell: [0, 0], id: 'g2'},{cell: [0, 0], id: 'g3'}],
-[{cell: [0, 139], id: 'p1'},{cell: [0, 0], id: 'p2'},{cell: [0, 0], id: 'p3'}],
-[{cell: [0, 185], id: 'v1'},{cell: [0, 0], id: 'v2'},{cell: [0, 0], id: 'v3'}],
-[{cell: [0, 231], id: 'r1'},{cell: [0, 0], id: 'r2'},{cell: [0, 0], id: 'r3'}],
-[{cell: [0, 277], id: 't1'},{cell: [0, 0], id: 't2'},{cell: [0, 0], id: 't3'}]
+﻿Galapago.CREATURE_BEACH_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'y1'},{cell: [46, 46], id: 'y2'},{cell: [92, 46], id: 'y3'}],
+[{cell: [0, 92], id: 'g1'},{cell: [46, 92], id: 'g2'},{cell: [92, 92], id: 'g3'}],
+[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
+[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
+[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
+[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
+]
+
+Galapago.CREATURE_CAVE_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'g1'},{cell: [46, 0], id: 'g2'},{cell: [92, 0], id: 'g3'}],
+[{cell: [0, 46], id: 'b1'},{cell: [46, 46], id: 'b2'},{cell: [92, 46], id: 'b3'}],
+[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
+[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
+[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
+[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
+[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
+]
+
+Galapago.CREATURE_FOREST_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'r1'},{cell: [46, 46], id: 'r2'},{cell: [92, 46], id: 'r3'}],
+[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
+[{cell: [0, 138], id: 'g1'},{cell: [46, 138], id: 'g2'},{cell: [92, 138], id: 'g3'}],
+[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
+[{cell: [0, 230], id: 'p1'},{cell: [46, 230], id: 'p2'},{cell: [92, 230], id: 'p3'}],
+[{cell: [0, 276], id: 'v1'},{cell: [46, 276], id: 'v2'},{cell: [92, 276], id: 'v3'}]
 ]
 
 /* begin class Galapago */
@@ -18,6 +38,7 @@ Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.NUM_LEVELS = 70;
+Galapago.creatureImages = {};
 Galapago.gameImageNames = [
 	'button_quit',
 	'button_menu',
@@ -911,6 +932,43 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 	return deferred.promise;
 };
 
+Level.prototype.getCreatureImages = function(bgTheme) {
+	var creatureSpriteSheet;
+	if(!(bgTheme  in Galapago.creatureImages)){
+		switch( bgTheme ) {
+			case 'beach':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/beach/creature_strip_beach.png"),Galapago.CREATURE_BEACH_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
+				break;
+			case 'forest':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/forest/creature_strip_forest.png"),Galapago.CREATURE_FOREST_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
+				break;
+			case 'cave':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/cave/creature_strip_cave.png"),Galapago.CREATURE_CAVE_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
+		}
+	}
+	return Galapago.creatureImages[bgTheme];
+}
+
+Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
+	var images={};
+	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
+		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
+			var image = creatureSpriteSheet.getSpriteNew([y,x]);
+			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
+			var creatureType = _.filter(creatureTypes, function(creatureType) {
+				return creatureType.startsWith(id[0]);
+			})[0];
+			image.id = creatureType + '_' + id[1]; 
+			creatureSpriteSheet.spriteMatrix[x][y].id;
+			images[image.id] = image;
+		}
+	}
+	return images;
+}
+
 Level.prototype.loadImagesAsync = function() {
 	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths, levelAnimationImagePaths;
 	level = this;
@@ -920,7 +978,7 @@ Level.prototype.loadImagesAsync = function() {
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
-
+	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	return Q.all([
 	level.imgpreloadAsync(gameImagePaths).then( function(imageObjectArray) {
 		level.gameImages = imageObjectArray;
@@ -930,11 +988,6 @@ Level.prototype.loadImagesAsync = function() {
 	})/*.done()*/,
 	level.imgpreloadAsync(dangerBarImagePaths).then( function(imageObjectArray) {
 		level.dangerBarImages = imageObjectArray;
-	}, function failure(message) {
-		throw new Error(message);
-	})/*.done()*/,
-	level.imgpreloadAsync(creatureImagePaths).then( function(imageObjectArray) {
-		level.creatureImages = imageObjectArray;
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/,
@@ -1213,9 +1266,8 @@ Level.prototype.getImageByPath = function(images, imagePath) {
 };
 
 Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
-	var creatureImagePath;
-	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
-	return this.getImageByPath(this.creatureImages, creatureImagePath);
+	var creatureImageKey = creatureType + '_' + spriteNumber;
+	return this.creatureImages[creatureImageKey];
 };
 
 Level.prototype.isNew = function() {
