@@ -4,6 +4,7 @@ LoadingScreen.STAGE_WIDTH = 1280;
 LoadingScreen.STAGE_HEIGHT = 720;
 LoadingScreen.BACKGROUND_PATH_PREFIX = 'res/img/screen-loading/';
 LoadingScreen.BACKGROUND_PATH_SUFFIX = '.jpg)';
+LoadingScreen.DIALOG_IDS = ['option-continue-playing', 'option-main-menu', 'option-new-game', 'option-how-to-play', 'option-options', 'dialog-title', 'dialog-leaderboards'];
 
 LoadingScreen.mapScreenImageNames = {
 	button_cursor_map: "button_cursor_map.png",
@@ -57,24 +58,27 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('all-but-audio resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
-			/*setTimeout( function() {*/
-				/*LoadingScreen.progressBar.layer.clearRect(0,0,LoadingScreen.STAGE_WIDTH,LoadingScreen.STAGE_HEIGHT);
-				LoadingScreen.progressBar.canvas.onkeydown=null;*/
-				//MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
-			/*}, 1000 );*/
 		}
 	});
 };
 
+LoadingScreen.hide = function(evt) {
+	//TODO if api.inDemoMode() skip the main menu screen?
+	LoadingScreen.progressBar.unregisterEventHandlers();
+	if( evt ) {
+		evt.stopPropagation();
+		evt.preventDefault();		
+	}
+	this.screenDiv.hide();
+	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+}; //LoadingScreen.hide
+
 LoadingScreen.localization = function(){
-    $("#option-continue-playing").i18n();
-    $("#option-main-menu").i18n();
-    $("#option-new-game").i18n();
-    $("#option-how-to-play").i18n();
-    $("#option-options").i18n();
-    $("#dialog-title").i18n();
-    $("#dialog-leaderboards").i18n();
-};
+	_.each( LoadingScreen.DIALOG_IDS, function ( dialogId ) {
+		$('#' + dialogId).i18n();
+	});
+}; //LoadingScreen.localization
+/// end LoadingScreen class
 
 /// progress bar
 ProgressBar.WIDTH = 475;
@@ -145,10 +149,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 		var y = evt.pageY ;
 		if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT + progressBar.canvas.width) && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ progressBar.canvas.height )){
 			if(progressBar.isLoadingComplete){
-				progressBar.unregisterEventHandlers();
-				MainMenuScreen.init('screen-loading', progressBar);
-				evt.stopPropagation();
-				evt.preventDefault();
+				LoadingScreen.hide(evt);
 			}
 		}
 	};
@@ -156,18 +157,14 @@ ProgressBar.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			if( progressBar.isLoadingComplete ){
-				progressBar.unregisterEventHandlers();
-				//TODO if api.inDemoMode() skip the main menu screen?
-				MainMenuScreen.init('screen-loading', progressBar);
-				evt.stopPropagation();
-				evt.preventDefault();
+				LoadingScreen.hide(evt);
 			}
 			break;
 		}
 	};
-};
+}; //ProgressBar.prototype.registerEventHandlers()
 
 ProgressBar.prototype.unregisterEventHandlers = function() {
 	this.canvas.onclick = null;
 	this.canvas.onkeydown = null;
-};
+}; //ProgressBar.prototype.unregisterEventHandlers()

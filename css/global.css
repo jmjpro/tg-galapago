@@ -56,7 +56,7 @@ canvas {
 	font-size: 13pt;
 	color: rgb(255,255,255);
 	position: absolute;
-	left: 150px;
+	width: 1280px; /* with less this could be a variable shared with galapago.width */
 	top: 635px;
 	text-align: center;
 }
@@ -116,7 +116,6 @@ ul#map-nav {
 	position: absolute;
 	left: 257px;
 	top: 647px;
-	z-index: 8;
 }
 
 ul#map-nav>li {
@@ -131,18 +130,19 @@ ul#map-nav>li {
 	background: url('res/img/screen-map/button_cursor_map.png') no-repeat left top;
 }
 
-img.cursor {
+img#map-nav-cursor {
 	position:relative;
-	z-index: 2;
-	top: -54px;
+	top: -5px;
 	left: -3px;
 }
 
-img.nav-button {
+div.nav-button {
 	position:relative;
 	z-index: 1;
 	top: 0px;
 	left: 0px;
+	width: 145px;
+	height: 49px;
 }
 
 .vertical-align-helper {
