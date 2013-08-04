@@ -261,10 +261,21 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [1212, 0], id: '7'} 
 ]];
 
+LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [292, 0], id: '2'},  
+{cell: [584, 0], id: '3'}, 
+{cell: [876, 0], id: '4'},  
+{cell: [1168, 0], id: '5'},
+{cell: [1460, 0], id: '6'},   
+{cell: [1752, 0], id: '7'},   
+{cell: [2044, 0], id: '8'} 
+]];
+
+LevelAnimation.sparklesImages = [];
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
-
 	this.bonFireParentAnimationInterval = null;
 	this.bombAnimation = null;
 	this.bombParentAnimationInterval = null;
@@ -272,6 +283,8 @@ function LevelAnimation(layer){
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
 	this.bobCervantesAnimation = null;
+	this.sparklesAnimation = null;
+	this.initSparkles();
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -713,11 +726,26 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	makeMatchAnimation.start();
 };
 
-LevelAnimation.prototype.stopMakeMatchAnimation = function(layer, initialTile, swapTile){
+LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	if(this.makeMatchAnimation){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
 	}
+};
+
+LevelAnimation.prototype.initSparkles = function() {
+	if(!LevelAnimation.sparklesImages.length){
+		var image = LoadingScreen.gal.get("screen-game/creature_explosion_strip.png");
+		var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
+		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
+			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x,0]));
+		}
+	}
+}
+
+LevelAnimation.prototype.animateSparkles = function(layer, x, y){
+	var sparklesAnimation = new SparklesAnimation(layer, x, y);
+	sparklesAnimation.start();
 };
 
 LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLayer, tileMatrix, callback){
@@ -1121,4 +1149,45 @@ BobCervantesAnimation.prototype.animate = function(){
 	this.eyeRolloverSpriteId = this.eyeRolloverSpriteId % this.bcRightHeadImageArray.length;
 	this.mouthRolloverSpriteId++;
 	this.mouthRolloverSpriteId = this.mouthRolloverSpriteId % this.bcMouthImageArray.length;
+};
+
+SparklesAnimation.ROLLOVER_TIME_INTERVAL=100;
+function SparklesAnimation(layer, x, y){
+	this.layer = layer;
+	this.interval = null;
+	this.x = x;
+	this.y = y;
+	this.rolloverSpriteId = 0;
+}
+
+SparklesAnimation.prototype.start = function(){
+	if(this.interval){
+		this.stop();
+	}
+	this.x = this.x + (Board.TILE_WIDTH);
+	this.y = this.y + (Board.TILE_HEIGHT);
+	this.x = this.x - (LevelAnimation.sparklesImages[0].width/2);
+	this.y = this.y - (LevelAnimation.sparklesImages[0].height/2);
+	
+	var sparklesAnimation = this;
+	this.interval = setInterval(function() {
+		sparklesAnimation.animate();
+	}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+SparklesAnimation.prototype.stop = function(){
+	if(this.interval){
+		this.layer.clearRect(this.x,this.y, LevelAnimation.sparklesImages[0].width, LevelAnimation.sparklesImages[0].height);
+		clearInterval(this.interval);
+	}
+};
+
+SparklesAnimation.prototype.animate = function(){
+	var image = LevelAnimation.sparklesImages[this.rolloverSpriteId];
+	this.layer.clearRect(this.x,this.y, image.width, image.height);
+	this.layer.drawImage(image, this.x, this.y);
+	this.rolloverSpriteId++;
+	if(this.rolloverSpriteId == LevelAnimation.sparklesImages.length){
+		this.stop();
+	}
 };

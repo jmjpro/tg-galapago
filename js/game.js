@@ -2953,7 +2953,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
-		board.clearTiles(tileTriplet);
+		board.clearTiles(tileTriplet, true);
 	});
 	return this; //chainable
 }; //Board.prototype.removeTriplets
@@ -2966,11 +2966,15 @@ Board.prototype.removeTiles = function(tiles) {
 	});
 }
 
-Board.prototype.clearTiles = function(tiles) {
+Board.prototype.clearTiles = function(tiles, sparkles) {
 	var board;
 	board = this;
 	var pointsArray = Tile.tileArrayToPointsArray(tiles);
 	function draw(){
+		if(sparkles){
+			var centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
+			board.level.levelAnimation.animateSparkles(board.gameAnimationLayer, Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
+		}
 		_.each( pointsArray, function(point) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		});
