@@ -435,12 +435,16 @@ LevelMap.prototype.registerEventHandlers = function() {
 				//levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
+		e.preventDefault();
+		e.stopPropagation();
 	} //onmousemove
 	
 
 	//levelMap.canvas.onclick = function(evt) {
 	window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
 	}; //onclick
 
 	levelMap.canvas.onkeydown = function(evt) {
@@ -1156,7 +1160,14 @@ Level.registerEventHandlers = function() {
 	
 	//$('#layer-bonus-frenzy').click(function(evt){
 	window.onclick = function(evt){
-		board.handleMouseEvent(evt);
+		board.handleMouseClickEvent(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
+	};
+	window.onmousemove = function(evt){
+		board.handleMouseMoveEvent(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
 	};
 	
 	
@@ -1896,7 +1907,78 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleMouseEvent = function(evt) {
+Board.prototype.handleMouseMoveEvent = function(evt) {
+	var board = this;
+	
+	if(board.animationQ.length){
+			return;
+		}
+	var	x = evt.pageX ;//- this.offsetLeft;
+	var y = evt.pageY ;
+	if(board.powerUp && board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
+		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
+			//alert('power up cliecked'+ x +"  "+ y);
+			if(!board.isPowerUpFocused){
+				//alert('adddinggg');
+				board.powerUp.addListner();
+				board.isPowerUpFocused = true;
+			}
+			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+					//alert('flipflop power up');
+					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
+					board.powerUp.focus();
+					
+			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
+					//alert('fire power up');
+					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
+					board.powerUp.focus();
+					
+				
+			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
+					//alert('shuffler power up');
+					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
+					board.powerUp.focus();
+					
+			}
+			
+		}else if(board.isPowerUpFocused){
+		         // alert('removing...');
+				  board.isPowerUpFocused =false
+			      board.powerUp.update();
+				  board.powerUp.currentFocus=0;
+				  board.powerUp.nextFocus=0;
+				  window.onkeydown=null;
+				  board.powerUp.focusOn= 0;
+				  //board.powerUp.canvas.onfocus=null;
+			      window.onkeydown = board.powerUp.boardKeyHandler;		
+		}
+	}
+	
+	if(board.blobCollection && board.blobCollection.button_menu){
+		var menuButtonImage = board.blobCollection.button_menu;
+		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
+		var quitButtonImage = board.blobCollection.button_quit;
+		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+				board.displayMenuButton(true);
+				board.displayQuitButton(false);
+				board.hotspot = Board.HOTSPOT_MENU;
+		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+				board.displayMenuButton(false);
+				board.displayQuitButton(true);
+				board.hotspot = Board.HOTSPOT_QUIT;
+		}else if(board.hotspot){
+				board.displayMenuButton(false);
+				board.displayQuitButton(false);
+				board.hotspot = null;	
+		}
+	}
+	
+}
+
+Board.prototype.handleMouseClickEvent = function(evt) {
 		var board = this;
 		if(board.animationQ.length){
 			return;
@@ -1940,21 +2022,64 @@ Board.prototype.handleMouseEvent = function(evt) {
 			  if(found)
 			    break;
 		}
-		var menuButtonImage = board.blobCollection.button_menu;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
-				board.hotspot = Board.HOTSPOT_MENU;
-				board.handleKeyboardSelect();
+	
+		this.handleMouseClickForMenuAndQuit(x,y);
+		//powerup handling 
+		this.handleMouseClickForPowerUp(x,y);
+}
+
+Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
+	var board = this;
+	var menuButtonImage = board.blobCollection.button_menu;
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			board.hotspot = Board.HOTSPOT_MENU;
+			board.handleKeyboardSelect();
+	}
+	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
+	var quitButtonImage = board.blobCollection.button_quit;
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+			board.displayMenuButton(false);
+			board.displayQuitButton(true);
+			board.hotspot = Board.HOTSPOT_QUIT;
+			board.handleKeyboardSelect();
+	}
+}
+
+Board.prototype.handleMouseClickForPowerUp = function(x,y) {
+	var board = this;
+	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
+		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
+			//alert('power up cliecked'+ x +"  "+ y);
+			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+					//alert('flipflop power up');
+					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+				
+			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
+					//alert('fire power up');
+					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+				
+				
+			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
+					//alert('shuffler power up');
+					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+			}
+			
 		}
-		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_quit;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
-				board.hotspot = Board.HOTSPOT_QUIT;
-				board.handleKeyboardSelect();
-		}	
+	}
 }
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
@@ -2088,6 +2213,9 @@ Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
 	if(this.bonusFrenzy == undefined){
+		window.onkeydown= null;
+		window.onclick = null;
+		window.onmousemove = null;
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
@@ -2561,7 +2689,7 @@ Board.prototype.handleDownArrow = function() {
 		}
 		tileDown = board.creatureTileMatrix[col][row];
 	}while(tileDown == null)
-	if( tileDown ) {
+	if( tileDown && (!this.hotspot)) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileDown);
 		return this; //chainable

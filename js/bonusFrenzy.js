@@ -32,11 +32,16 @@ BonusFrenzy.prototype.getScore = function () {
 
 BonusFrenzy.prototype.registerEvents = function () {
 	window.onkeydown= null;
+	window.onclick = null;
+	window.onmousemove = null;
 	var bonusFrenzy = this;
 	this.currentX = this.board.tileActive.getXCoord() ;
 	this.currentY = this.board.tileActive.getYCoord() + BonusFrenzy.Y_OFFSET;
 	this.board.tileActive.eraseHilight();
 	//bonusFrenzy.board.creatureLayer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	window.onclick = function(evt){
+		bonusFrenzy.handleMouseClickEvent(evt);
+	}
 	window.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
@@ -60,6 +65,29 @@ BonusFrenzy.prototype.registerEvents = function () {
 		}
 	};
 }; //BonusFrenzy.prototype.registerEvents()
+
+
+BonusFrenzy.prototype.handleMouseClickEvent = function(evt) {
+		var bonusFrenzy = this;
+		var	x = evt.pageX ;//- this.offsetLeft;
+		var y = evt.pageY ;
+		console.log(BonusFrenzy.X_MAX+ " " + BonusFrenzy.Y_MAX);
+		if(x >BonusFrenzy.LEFT && x< (BonusFrenzy.LEFT+BonusFrenzy.X_MAX) && y> BonusFrenzy.Y_MIN && y< (BonusFrenzy.Y_MAX )){
+			var correctionX = -4; // don't know the reason
+			var correctionY = +6;
+			this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			this.currentX = (x -(x % Board.TILE_WIDTH))/ Board.TILE_WIDTH * Board.TILE_WIDTH - BonusFrenzy.LEFT +correctionX;
+			this.currentY = (y -(y % Board.TILE_HEIGHT))/ Board.TILE_HEIGHT * Board.TILE_HEIGHT +correctionY;
+			console.log('this.currentX : '+this.currentX +" this.currentY "+this.currentY);
+			this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );		
+			this.checkForCreatureCatch(this.currentX , this.currentY );
+		}
+		//if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> BonusFrenzy.Y_MIN && y< (currentY+ Board.TILE_HEIGHT )){
+				
+					
+	
+		//}		
+}
 
 BonusFrenzy.prototype.handleLeftArrow = function () {	
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -100,6 +128,7 @@ BonusFrenzy.prototype.handleDownArrow = function () {
 BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 	for (var key in this.randomCreatureMap){
 		var tile = this.randomCreatureMap[key];
+		//console.log(tile.xCoord +" "+ x + " "+ tile.yCoord +"  "+ (y-BonusFrenzy.Y_OFFSET))
 		if(tile.xCoord == x && tile.yCoord == (y-BonusFrenzy.Y_OFFSET)){
 			this.layer.clearRect(x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 			this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
@@ -166,15 +195,17 @@ BonusFrenzy.prototype.startMoving = function(){
 			}else{
 				tile.yCoord =  tile.yCoord - Board.TILE_HEIGHT;
 			}
-			if(tile.yCoord < -100){
+			if(tile.yCoord < -BonusFrenzy.Y_OFFSET){
 				delete bonusFrenzy.randomCreatureMap[key];
 				continue;
 			}
-			layer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			layer.drawImage(tile.blob.image, tile.getXCoord(), tile.yCoord + BonusFrenzy.Y_OFFSET, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}
 		
 		if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
 	         window.clearInterval(bonusFrenzy.intervalHandle);
+			 window.onkeydown= null;
+			 window.onclick = null;
 			 console.log('score : '+bonusFrenzy.score);
 			 //bonusFrenzy.board.level.won()
 			 bonusFrenzy.board.setComplete();

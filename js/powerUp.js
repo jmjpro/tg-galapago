@@ -17,6 +17,11 @@ Powerup.POWER_ROLLOVER= 2;
 Powerup.POWER_PRESSED= 3;
 
 Powerup.POWER_ICON_HEIGHT= 40;
+Powerup.POWER_UP_WIDTH= 70;
+Powerup.POWER_UP_HEIGHT = 280;
+Powerup.LAYER_WIDTH = 70;
+Powerup.LAYER_HEIGHT = 280;
+
 
 
 function Powerup(images,board ,powerupPoints) {
@@ -52,6 +57,7 @@ Powerup.prototype.addListner = function(){
    //this.canvas.onfocus= function(){
        //console.log('on focus called');
 	   powerup.boardKeyHandler = window.onkeydown;
+	   powerup.board.isPowerUpFocused = true;
 	   window.onkeydown=null;
 	   powerup.focus();
 	   powerup.focusOn= 1;
@@ -74,6 +80,7 @@ Powerup.prototype.registerEvents=function(){
 				  powerup.nextFocus=0;
 				  window.onkeydown=null;
 				  powerup.focusOn= 0;
+				  powerup.board.isPowerUpFocused = false;
 				  powerup.canvas.onfocus=null;
 			      window.onkeydown = powerup.boardKeyHandler;
 				break;				
@@ -85,10 +92,11 @@ Powerup.prototype.registerEvents=function(){
 			// User pressed "enter"
 			case 13:
 				  powerup.handleSelect();
-				  powerup.currentFocus=0;
+				  //powerup.currentFocus=0;
 				  powerup.nextFocus=0;
 				  window.onkeydown=null;
 				  powerup.canvas.onfocus=null;
+				  powerup.board.isPowerUpFocused = false;
 			      window.onkeydown = powerup.boardKeyHandler;
 			      break;
 		}
@@ -98,15 +106,15 @@ Powerup.prototype.registerEvents=function(){
 Powerup.prototype.powerUsed = function(){
  if(this.isFlipFlopSelected()){
     this.flipflopPowerAchieved = false;
-	this.board.level.levelAnimation.stopPowerAchieved(this.flipflopAnimator);
+//this.board.level.levelAnimation.stopPowerAchieved(this.flipflopAnimator);
 	//this.drawFlipFlop();
  }else if(this.isFireSelected()){
  	this.firePowerAchieved = false;
-	this.board.level.levelAnimation.stopPowerAchieved(this.fireAnimator);	
+//	this.board.level.levelAnimation.stopPowerAchieved(this.fireAnimator);	
 	//this.drawFire();
  }else if(this.isShufflerSelected()){
 	this.shufflerPowerAchieved = false;
-	this.board.level.levelAnimation.stopPowerAchieved(this.shufflerAnimator);		
+//	this.board.level.levelAnimation.stopPowerAchieved(this.shufflerAnimator);		
 	//this.drawShuffler();
  }
  this.update();
@@ -211,15 +219,21 @@ Powerup.prototype.focus = function(){
 	this.layer.clearRect(0-2, Powerup.FIRE_TOP-2, this.PowerUps_Flame_Disabled.width+4, this.PowerUps_Flame_Disabled.height+4);
 	this.layer.clearRect(0-2, Powerup.SHUFFLER_TOP-2, this.PowerUps_Shuffle_Disabled.width+4, this.PowerUps_Shuffle_Disabled.height+4);			
 	*/
-	this.layer.clearRect( 0, 0, this.layer.width, this.layer.height);
+	this.layer.clearRect( 0, 0, Powerup.LAYER_WIDTH, Powerup.LAYER_HEIGHT);
+	
 	ctx.drawImage( this.PowerUps_Holder, 0, 0 );
+	
 	console.log('this.flipflopPowerAchieved : '+this.flipflopPowerAchieved);
 	console.log('this.firePowerAchieved : '+this.firePowerAchieved);
 	console.log('this.shufflerPowerAchieved : '+this.shufflerPowerAchieved);
 	console.log('this.currentFocus : '+this.currentFocus);
 	console.log('this.nextFocus : '+this.nextFocus);
   if(  (this.flipflopPowerAchieved && (this.currentFocus == 0 || (this.nextFocus == 0 && this.currentFocus == Powerup.FLIPFLOP_SELECTED) )) || (this.nextFocus == Powerup.FLIPFLOP_SELECTED)  ){
-		this.drawFlipFlop(Powerup.POWER_ROLLOVER);
+		if(this.isFlipFlopSelected()){
+			this.drawFlipFlop(Powerup.POWER_PRESSED);
+		}else{
+			this.drawFlipFlop(Powerup.POWER_ROLLOVER);
+		}
 		this.currentFocus=Powerup.FLIPFLOP_SELECTED;
 		
 		if(this.firePowerAchieved){
@@ -240,8 +254,11 @@ Powerup.prototype.focus = function(){
 		}else{
 		    this.drawFlipFlop();
 		}
-		
-		this.drawFire(Powerup.POWER_ROLLOVER);
+		if(this.isFireSelected()){
+			this.drawFire(Powerup.POWER_PRESSED);
+		}else{
+			this.drawFire(Powerup.POWER_ROLLOVER);
+		}
 		
 		if(this.shufflerPowerAchieved){
 			this.drawShuffler(Powerup.POWER_ACTIVATED);
@@ -262,7 +279,11 @@ Powerup.prototype.focus = function(){
 		}else{
 			this.drawFire();
 		}
-		this.drawShuffler(Powerup.POWER_ROLLOVER);
+		if(this.isShufflerSelected()){
+			this.drawShuffler(Powerup.POWER_PRESSED);
+		}else{
+			this.drawShuffler(Powerup.POWER_ROLLOVER);
+		}
         this.currentFocus=Powerup.SHUFFLER_SELECTED;		
   
   }
@@ -377,6 +398,8 @@ Powerup.prototype.drawFlipFlop = function(state) {
 		this.layer.strokeRect(0, Powerup.FLIPFLOP_TOP, this.PowerUps_Swap_Disabled.width, this.PowerUps_Swap_Disabled.height);	
 		this.layer.drawImage( this.PowerUps_Swap_Rollover, 0, Powerup.FLIPFLOP_TOP );
 	}else if(state == Powerup.POWER_PRESSED){
+		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+		this.layer.strokeRect(0, Powerup.FLIPFLOP_TOP, this.PowerUps_Swap_Disabled.width, this.PowerUps_Swap_Disabled.height);	
 	    this.layer.drawImage( this.PowerUps_Swap_Pressed, 0, Powerup.FLIPFLOP_TOP );
 	}
 }
@@ -391,6 +414,8 @@ Powerup.prototype.drawFire = function(state) {
 		this.layer.strokeRect(0, Powerup.FIRE_TOP, this.PowerUps_Flame_Disabled.width, this.PowerUps_Flame_Disabled.height);		
 		this.layer.drawImage( this.PowerUps_Flame_Rollover, 0, Powerup.FIRE_TOP );
 	}else if(state == Powerup.POWER_PRESSED){
+		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+		this.layer.strokeRect(0, Powerup.FIRE_TOP, this.PowerUps_Flame_Disabled.width, this.PowerUps_Flame_Disabled.height);			
 	    this.layer.drawImage( this.PowerUps_Flame_Pressed, 0, Powerup.FIRE_TOP );
 	}
 }
@@ -405,6 +430,8 @@ Powerup.prototype.drawShuffler = function(state) {
 		this.layer.strokeRect(0, Powerup.SHUFFLER_TOP, this.PowerUps_Shuffle_Disabled.width, this.PowerUps_Shuffle_Disabled.height);			
 		this.layer.drawImage( this.PowerUps_Shuffle_Rollover, 0, Powerup.SHUFFLER_TOP );
 	}else if(state == Powerup.POWER_PRESSED){
+		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+		this.layer.strokeRect(0, Powerup.SHUFFLER_TOP, this.PowerUps_Shuffle_Disabled.width, this.PowerUps_Shuffle_Disabled.height);				
 	    this.layer.drawImage( this.PowerUps_Shuffle_Pressed, 0, Powerup.SHUFFLER_TOP );
 	}
 }
@@ -423,8 +450,10 @@ Powerup.prototype.update = function() {
 	ctx.clearRect(0-2, Powerup.FIRE_TOP-2, this.PowerUps_Flame_Disabled.width+4, this.PowerUps_Flame_Disabled.height+4);
 	ctx.clearRect(0-2, Powerup.SHUFFLER_TOP-2, this.PowerUps_Shuffle_Disabled.width+4, this.PowerUps_Shuffle_Disabled.height+4);			
 	*/
-	this.layer.clearRect( 0, 0, this.layer.width, this.layer.height );
+	this.layer.clearRect( 0, 0, Powerup.LAYER_WIDTH , Powerup.LAYER_HEIGHT );
+
 	this.layer.drawImage( this.PowerUps_Holder, 0, 0 );
+	
 	//top += Powerup.MARGIN * 3;
 	if(this.flipflopPowerAchieved){
 		this.drawFlipFlop(Powerup.POWER_ACTIVATED);
