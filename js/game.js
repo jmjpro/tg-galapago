@@ -1962,10 +1962,12 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
 		var quitButtonImage = board.blobCollection.button_quit;
 		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
 		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
 				board.hotspot = Board.HOTSPOT_QUIT;
@@ -1973,6 +1975,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 				board.displayMenuButton(false);
 				board.displayQuitButton(false);
 				board.hotspot = null;	
+				board.setActiveTile(board.tileActive);
 		}
 	}
 	
@@ -2628,7 +2631,7 @@ Board.prototype.handleRightArrow = function() {
 		}
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
-	if( tileRight ) {
+	if( tileRight && (!this.hotspot) ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
 		return this; //chainable;
@@ -2654,7 +2657,7 @@ Board.prototype.handleLeftArrow = function() {
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
-	if( tileLeft ) {
+	if( tileLeft && (!this.hotspot)) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
 		return this; //chainable
@@ -2695,6 +2698,7 @@ Board.prototype.handleDownArrow = function() {
 		return this; //chainable
 		}).done();
 	}else if(this.hotspot != Board.HOTSPOT_MENU){
+		board.tileActive.setInactiveAsync();
 		board.displayMenuButton(true);
 		board.displayQuitButton(false);
 		this.hotspot = Board.HOTSPOT_MENU;
@@ -2722,6 +2726,8 @@ Board.prototype.handleUpArrow = function() {
 	    if(this.hotspot == Board.HOTSPOT_MENU) {
 		  board.displayMenuButton(false);
 		  this.hotspot=null;
+		  board.setActiveTile(board.tileActive);
+		  return;
 		}
 		col = board.tileActive.coordinates[0];
 		row = board.tileActive.coordinates[1];
