@@ -2269,12 +2269,16 @@ Board.prototype.setComplete = function() {
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
 	board = this;
+	board.navigationLock = true;
+	console.log("appling navigation lock in handle tile select 2273");
 	tilePrev = this.tileSelected;
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
 	if(tile && !(tile.isCreatureOnly() || tile.hasSuperFriend()) && !this.powerUp.isFireSelected()){
 		//board.sounds['cannot-select'].play();
 		Galapago.audioPlayer.playInvalidTileSelect();
+		board.navigationLock = false;
+		console.log('reverting navigation lock in handle tile select 2281');
 		return;
 	}
 	
@@ -2282,6 +2286,8 @@ Board.prototype.handleTileSelect = function(tile) {
 	if( (!this.powerUp.isFireSelected()) && tilePrev === null ) {
 		board.tileSelected = tile;
 		tile.setSelectedAsync().then( function() {
+			board.navigationLock = false;
+			console.log('reverting navigation lock in handle tile select 2290');
 			return;
 		}).done();
 	}
@@ -2321,6 +2327,7 @@ Board.prototype.handleTileSelect = function(tile) {
 							if( ! board.reshuffleService.isStarted ){
 								board.reshuffleService.start();
 							}
+							board.navigationLock = false;
 						}
 						else if(!board.powerUp.isFlipFlopSelected()) {
 							Galapago.audioPlayer.playInvalidSwap();
@@ -2330,6 +2337,7 @@ Board.prototype.handleTileSelect = function(tile) {
 								board.swapCreatures( tile, tilePrev );
 								board.animateSwapCreaturesAsync( tile, tilePrev ).then(function() {
 									board.setActiveTile(tile);
+									board.navigationLock = false;
 								}).done();
 							}, function(error) {
 								console.error(error);
@@ -2338,6 +2346,7 @@ Board.prototype.handleTileSelect = function(tile) {
 						if(board.powerUp.isFlipFlopSelected()){
 							board.setActiveTile(tilePrev);
 							board.powerUp.powerUsed();
+							board.navigationLock = false;
 						}
 					}, function(error) {
 						console.error(error);
@@ -2397,11 +2406,13 @@ Board.prototype.handleTileSelect = function(tile) {
 		this.powerUp.powerUsed();	
 		this.saveBoard();
 		this.reshuffleService.start();
+		board.navigationLock = false;
 	}
 	// same tile selected; unselect it and move on
 	else {
 		tilePrev.setUnselected();
 		this.tileSelected = null;
+		board.navigationLock = false;
 		return;
 	}
 }; //Board.prototype.handleTileSelect
