@@ -1360,6 +1360,7 @@ function Board() {
 	this.tilesEventProcessor = new TilesEventProcessor(this);
 	this.reshuffleService = new ReshuffleService(this);
 	this.putInAnimationQ = false;
+	this.navigationLock = false;  // for multiple cursor on game screen
 	this.animationQ = [];
 } //Board constructor
 
@@ -2631,9 +2632,11 @@ Board.prototype.handleRightArrow = function() {
 		}
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
-	if( tileRight && (!this.hotspot) ) {
+	if( tileRight && (!this.hotspot) && (!this.navigationLock)) {
+		board.navigationLock = true;
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
+		board.navigationLock = false;
 		return this; //chainable;
 		}).done();
 	}
@@ -2657,9 +2660,11 @@ Board.prototype.handleLeftArrow = function() {
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
-	if( tileLeft && (!this.hotspot)) {
+	if( tileLeft && (!this.hotspot) && (!this.navigationLock)) {
+		board.navigationLock=true;
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
+		board.navigationLock=false;
 		return this; //chainable
 		}).done();
 	} else {
@@ -2692,9 +2697,11 @@ Board.prototype.handleDownArrow = function() {
 		}
 		tileDown = board.creatureTileMatrix[col][row];
 	}while(tileDown == null)
-	if( tileDown && (!this.hotspot)) {
+	if( tileDown && (!this.hotspot) && (!this.navigationLock)) {
+		board.navigationLock=true;
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileDown);
+		board.navigationLock=false;
 		return this; //chainable
 		}).done();
 	}else if(this.hotspot != Board.HOTSPOT_MENU){
@@ -2738,9 +2745,11 @@ Board.prototype.handleUpArrow = function() {
 			}
 			tileUp = board.creatureTileMatrix[col][row];
 		}while(tileUp == null)
-		if( tileUp ) {
+		if( tileUp && (!this.navigationLock)) {
+			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
 			board.setActiveTile(tileUp);
+			board.navigationLock=false;;
 			return this; //chainable
 			}).done();
 		}
