@@ -108,7 +108,14 @@ function ProgressBar(){
 }
 
 ProgressBar.prototype.drawImages = function() {
-	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );
+	var backgroundCanvas, backgroundLayer
+	backgroundCanvas = $('#screen-loading #layer-background')[0];
+	backgroundLayer = backgroundCanvas.getContext('2d');
+	backgroundCanvas.width = this.canvas.width;
+	backgroundCanvas.height = this.canvas.height;
+	backgroundCanvas.style.left = this.canvas.style.left;
+	backgroundCanvas.style.top = this.canvas.style.top;
+	backgroundLayer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );
 	this.layer.textAlign = 'center';
 	this.layer.textBaseline = 'bottom';
 	this.layer.font = '27pt HelveticaBold';
