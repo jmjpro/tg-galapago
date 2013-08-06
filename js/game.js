@@ -1,11 +1,31 @@
-﻿CREATURE_BEACH_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [47, 0], id: 'b2'},{cell: [93, 0], id: 'b3'}],
-[{cell: [0, 47], id: 'y1'},{cell: [0, 0], id: 'y2'},{cell: [0, 0], id: 'y3'}],
-[{cell: [0, 93], id: 'g1'},{cell: [0, 0], id: 'g2'},{cell: [0, 0], id: 'g3'}],
-[{cell: [0, 139], id: 'p1'},{cell: [0, 0], id: 'p2'},{cell: [0, 0], id: 'p3'}],
-[{cell: [0, 185], id: 'v1'},{cell: [0, 0], id: 'v2'},{cell: [0, 0], id: 'v3'}],
-[{cell: [0, 231], id: 'r1'},{cell: [0, 0], id: 'r2'},{cell: [0, 0], id: 'r3'}],
-[{cell: [0, 277], id: 't1'},{cell: [0, 0], id: 't2'},{cell: [0, 0], id: 't3'}]
+﻿Galapago.CREATURE_BEACH_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'y1'},{cell: [46, 46], id: 'y2'},{cell: [92, 46], id: 'y3'}],
+[{cell: [0, 92], id: 'g1'},{cell: [46, 92], id: 'g2'},{cell: [92, 92], id: 'g3'}],
+[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
+[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
+[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
+[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
+]
+
+Galapago.CREATURE_CAVE_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'g1'},{cell: [46, 0], id: 'g2'},{cell: [92, 0], id: 'g3'}],
+[{cell: [0, 46], id: 'b1'},{cell: [46, 46], id: 'b2'},{cell: [92, 46], id: 'b3'}],
+[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
+[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
+[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
+[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
+[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
+]
+
+Galapago.CREATURE_FOREST_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'r1'},{cell: [46, 46], id: 'r2'},{cell: [92, 46], id: 'r3'}],
+[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
+[{cell: [0, 138], id: 'g1'},{cell: [46, 138], id: 'g2'},{cell: [92, 138], id: 'g3'}],
+[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
+[{cell: [0, 230], id: 'p1'},{cell: [46, 230], id: 'p2'},{cell: [92, 230], id: 'p3'}],
+[{cell: [0, 276], id: 'v1'},{cell: [46, 276], id: 'v2'},{cell: [92, 276], id: 'v3'}]
 ]
 
 /* begin class Galapago */
@@ -18,6 +38,7 @@ Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.NUM_LEVELS = 70;
+Galapago.creatureImages = {};
 Galapago.gameImageNames = [
 	'button_quit',
 	'button_menu',
@@ -414,12 +435,16 @@ LevelMap.prototype.registerEventHandlers = function() {
 				//levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
+		e.preventDefault();
+		e.stopPropagation();
 	} //onmousemove
 	
 
 	//levelMap.canvas.onclick = function(evt) {
 	window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
 	}; //onclick
 
 	levelMap.canvas.onkeydown = function(evt) {
@@ -761,7 +786,7 @@ Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizar
 Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
 Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
-Level.MENU_BUTTON_X = 20;
+Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 Level.MENU_BUTTON_WIDTH = 100;
 Level.MENU_BUTTON_HEIGHT = 35;
@@ -911,6 +936,43 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 	return deferred.promise;
 };
 
+Level.prototype.getCreatureImages = function(bgTheme) {
+	var creatureSpriteSheet;
+	if(!(bgTheme  in Galapago.creatureImages)){
+		switch( bgTheme ) {
+			case 'beach':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/beach/creature_strip_beach.png"),Galapago.CREATURE_BEACH_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
+				break;
+			case 'forest':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/forest/creature_strip_forest.png"),Galapago.CREATURE_FOREST_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
+				break;
+			case 'cave':
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/cave/creature_strip_cave.png"),Galapago.CREATURE_CAVE_SPRITE_MATRIX);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
+		}
+	}
+	return Galapago.creatureImages[bgTheme];
+}
+
+Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
+	var images={};
+	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
+		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
+			var image = creatureSpriteSheet.getSpriteNew([y,x]);
+			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
+			var creatureType = _.filter(creatureTypes, function(creatureType) {
+				return creatureType.startsWith(id[0]);
+			})[0];
+			image.id = creatureType + '_' + id[1]; 
+			creatureSpriteSheet.spriteMatrix[x][y].id;
+			images[image.id] = image;
+		}
+	}
+	return images;
+}
+
 Level.prototype.loadImagesAsync = function() {
 	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths, levelAnimationImagePaths;
 	level = this;
@@ -920,7 +982,7 @@ Level.prototype.loadImagesAsync = function() {
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
-
+	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	return Q.all([
 	level.imgpreloadAsync(gameImagePaths).then( function(imageObjectArray) {
 		level.gameImages = imageObjectArray;
@@ -930,11 +992,6 @@ Level.prototype.loadImagesAsync = function() {
 	})/*.done()*/,
 	level.imgpreloadAsync(dangerBarImagePaths).then( function(imageObjectArray) {
 		level.dangerBarImages = imageObjectArray;
-	}, function failure(message) {
-		throw new Error(message);
-	})/*.done()*/,
-	level.imgpreloadAsync(creatureImagePaths).then( function(imageObjectArray) {
-		level.creatureImages = imageObjectArray;
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/,
@@ -1103,7 +1160,14 @@ Level.registerEventHandlers = function() {
 	
 	//$('#layer-bonus-frenzy').click(function(evt){
 	window.onclick = function(evt){
-		board.handleMouseEvent(evt);
+		board.handleMouseClickEvent(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
+	};
+	window.onmousemove = function(evt){
+		board.handleMouseMoveEvent(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
 	};
 	
 	
@@ -1213,9 +1277,8 @@ Level.prototype.getImageByPath = function(images, imagePath) {
 };
 
 Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
-	var creatureImagePath;
-	creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
-	return this.getImageByPath(this.creatureImages, creatureImagePath);
+	var creatureImageKey = creatureType + '_' + spriteNumber;
+	return this.creatureImages[creatureImageKey];
 };
 
 Level.prototype.isNew = function() {
@@ -1844,7 +1907,81 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleMouseEvent = function(evt) {
+Board.prototype.handleMouseMoveEvent = function(evt) {
+	var board = this;
+	
+	if(board.animationQ.length){
+			return;
+		}
+	var	x = evt.pageX ;//- this.offsetLeft;
+	var y = evt.pageY ;
+	if(board.powerUp && board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
+		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
+			//alert('power up cliecked'+ x +"  "+ y);
+			if(!board.isPowerUpFocused){
+				//alert('adddinggg');
+				board.powerUp.addListner();
+				board.isPowerUpFocused = true;
+			}
+			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+					//alert('flipflop power up');
+					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
+					board.powerUp.focus();
+					
+			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
+					//alert('fire power up');
+					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
+					board.powerUp.focus();
+					
+				
+			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
+					//alert('shuffler power up');
+					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
+					board.powerUp.focus();
+					
+			}
+			
+		}else if(board.isPowerUpFocused){
+		         // alert('removing...');
+				  board.isPowerUpFocused =false
+			      board.powerUp.update();
+				  board.powerUp.currentFocus=0;
+				  board.powerUp.nextFocus=0;
+				  window.onkeydown=null;
+				  board.powerUp.focusOn= 0;
+				  //board.powerUp.canvas.onfocus=null;
+			      window.onkeydown = board.powerUp.boardKeyHandler;		
+		}
+	}
+	
+	if(board.blobCollection && board.blobCollection.button_menu){
+		var menuButtonImage = board.blobCollection.button_menu;
+		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
+		var quitButtonImage = board.blobCollection.button_quit;
+		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+				board.tileActive.setInactiveAsync();
+				board.displayMenuButton(true);
+				board.displayQuitButton(false);
+				board.hotspot = Board.HOTSPOT_MENU;
+		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+				board.tileActive.setInactiveAsync();
+				board.displayMenuButton(false);
+				board.displayQuitButton(true);
+				board.hotspot = Board.HOTSPOT_QUIT;
+		}else if(board.hotspot){
+				board.displayMenuButton(false);
+				board.displayQuitButton(false);
+				board.hotspot = null;	
+				board.setActiveTile(board.tileActive);
+		}
+	}
+	
+}
+
+Board.prototype.handleMouseClickEvent = function(evt) {
 		var board = this;
 		if(board.animationQ.length){
 			return;
@@ -1868,7 +2005,7 @@ Board.prototype.handleMouseEvent = function(evt) {
 							if(icol != col || irow != row){
 								board.initialSwapForTripletInfo=null ;
 								board.bubbleInitialTile =null;
-								Galapago.bubbleTip.clearBubbleTip();							
+								board.level.bubbleTip.clearBubbleTip();							
 							}
 						}
 						board.displayMenuButton(false);
@@ -1888,21 +2025,64 @@ Board.prototype.handleMouseEvent = function(evt) {
 			  if(found)
 			    break;
 		}
-		var menuButtonImage = board.blobCollection.button_menu;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
-				board.hotspot = Board.HOTSPOT_MENU;
-				board.handleKeyboardSelect();
+	
+		this.handleMouseClickForMenuAndQuit(x,y);
+		//powerup handling 
+		this.handleMouseClickForPowerUp(x,y);
+}
+
+Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
+	var board = this;
+	var menuButtonImage = board.blobCollection.button_menu;
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			board.hotspot = Board.HOTSPOT_MENU;
+			board.handleKeyboardSelect();
+	}
+	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
+	var quitButtonImage = board.blobCollection.button_quit;
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+			board.displayMenuButton(false);
+			board.displayQuitButton(true);
+			board.hotspot = Board.HOTSPOT_QUIT;
+			board.handleKeyboardSelect();
+	}
+}
+
+Board.prototype.handleMouseClickForPowerUp = function(x,y) {
+	var board = this;
+	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
+		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
+			//alert('power up cliecked'+ x +"  "+ y);
+			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+					//alert('flipflop power up');
+					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+				
+			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
+					//alert('fire power up');
+					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+				
+				
+			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
+					//alert('shuffler power up');
+					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
+					board.powerUp.focusOn= 1;
+					board.powerUp.handleSelect();
+					powerup.board.isPowerUpFocused = false;
+			}
+			
 		}
-		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_quit;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
-				board.hotspot = Board.HOTSPOT_QUIT;
-				board.handleKeyboardSelect();
-		}	
+	}
 }
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
@@ -2036,6 +2216,9 @@ Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
 	if(this.bonusFrenzy == undefined){
+		window.onkeydown= null;
+		window.onclick = null;
+		window.onmousemove = null;
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
@@ -2229,13 +2412,10 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	   board.saveBoard();
 	   board.collectionModified = false;
 	}
+	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
+	board.tileActive.setActiveAsync().done();
 	if( board.blobCollection.isEmpty()){
 		board.setComplete();
-	}else{
-		//reset grid lines and active tile
-		//board.redrawBorders( Tile.BORDER_COLOR, Tile.BORDER_WIDTH );
-		board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
-		board.tileActive.setActiveAsync().done();
 	}
 }
 
@@ -2451,7 +2631,7 @@ Board.prototype.handleRightArrow = function() {
 		}
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
-	if( tileRight ) {
+	if( tileRight && (!this.hotspot) ) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
 		return this; //chainable;
@@ -2477,7 +2657,7 @@ Board.prototype.handleLeftArrow = function() {
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
-	if( tileLeft ) {
+	if( tileLeft && (!this.hotspot)) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
 		return this; //chainable
@@ -2512,12 +2692,13 @@ Board.prototype.handleDownArrow = function() {
 		}
 		tileDown = board.creatureTileMatrix[col][row];
 	}while(tileDown == null)
-	if( tileDown ) {
+	if( tileDown && (!this.hotspot)) {
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileDown);
 		return this; //chainable
 		}).done();
 	}else if(this.hotspot != Board.HOTSPOT_MENU){
+		board.tileActive.setInactiveAsync();
 		board.displayMenuButton(true);
 		board.displayQuitButton(false);
 		this.hotspot = Board.HOTSPOT_MENU;
@@ -2545,6 +2726,8 @@ Board.prototype.handleUpArrow = function() {
 	    if(this.hotspot == Board.HOTSPOT_MENU) {
 		  board.displayMenuButton(false);
 		  this.hotspot=null;
+		  board.setActiveTile(board.tileActive);
+		  return;
 		}
 		col = board.tileActive.coordinates[0];
 		row = board.tileActive.coordinates[1];
@@ -2776,7 +2959,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
-		board.clearTiles(tileTriplet);
+		board.clearTiles(tileTriplet, true);
 	});
 	return this; //chainable
 }; //Board.prototype.removeTriplets
@@ -2789,11 +2972,15 @@ Board.prototype.removeTiles = function(tiles) {
 	});
 }
 
-Board.prototype.clearTiles = function(tiles) {
+Board.prototype.clearTiles = function(tiles, sparkles) {
 	var board;
 	board = this;
 	var pointsArray = Tile.tileArrayToPointsArray(tiles);
 	function draw(){
+		if(sparkles){
+			var centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
+			board.level.levelAnimation.animateSparkles(board.gameAnimationLayer, Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
+		}
 		_.each( pointsArray, function(point) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		});
