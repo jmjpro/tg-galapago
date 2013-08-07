@@ -227,6 +227,10 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
+	if(callingObject instanceof Board){
+			callingObject.level.bubbleTip.hideBubbleTip()
+			callingObject.reshuffleService.stop();
+	}
 	this.windowKeyHandler= window.onkeydown;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
@@ -255,6 +259,9 @@ DialogMenu.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
+	if(this.callingObject instanceof Board){
+			this.callingObject.reshuffleService.start();
+	}
 	if(this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
 	}else{
