@@ -231,6 +231,9 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 			callingObject.level.bubbleTip.hideBubbleTip()
 			callingObject.reshuffleService.stop();
 	}
+	this.mouseClickHandler = window.onclick;
+	this.mouseMoveHandler = window.onmousemove;
+	window.onclick =null; window.onmousemove = null;
 	this.windowKeyHandler= window.onkeydown;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
@@ -238,6 +241,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
 	this.initialNavItem = this.currentNavItem;
 	this.registerEventHandlers();
+	this.registerMouseHandlers();
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
@@ -268,13 +272,34 @@ DialogMenu.prototype.hide = function() {
 		window.onkeydown = this.windowKeyHandler;
 	}
 	this.callingScreen.removeClass('transparent');
+	window.onclick =this.mouseClickHandler; 
+	window.onmousemove = this.mouseMoveHandler;
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.setNavItem = function(item) {
+
 	this.currentNavItem.removeClass(this.hilightClass); // remove hilight from old item
 	this.currentNavItem = item;
 	this.currentNavItem.addClass(this.hilightClass); // add hilight to new item
 }; //DialogMenu.prototype.setNavItem()
+
+
+
+DialogMenu.prototype.registerMouseHandlers = function() {
+	var menuButtonSize = this.dialogNav.children().length;
+	var dialogMenu = this;
+	for(var i =0 ; i< menuButtonSize ; i++){
+		var liElement = (dialogMenu.dialogNav.children()[i]);
+		liElement.onmousemove = function(){
+			dialogMenu.setNavItem($('#'+this.id));
+		}
+		liElement.onclick = function(){
+			dialogMenu.currentNavItem[0]=this;
+			dialogMenu.selectHandler(dialogMenu);
+		}
+		
+	}
+}
 
 DialogMenu.prototype.registerEventHandlers = function() {
 	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector;
@@ -323,4 +348,11 @@ DialogMenu.prototype.registerEventHandlers = function() {
 
 DialogMenu.prototype.unregisterEventHandlers = function() {
 	window.onkeydown = null;
+	var menuButtonSize = this.dialogNav.children().length;
+	var dialogMenu = this;
+	for(var i =0 ; i< menuButtonSize ; i++){
+		var liElement = (dialogMenu.dialogNav.children()[i]);
+		liElement.onmousemove =null;
+		liElement.onclick = null;
+	}
 }; //MapScreen.prototype.unregisterEventHandlers()
