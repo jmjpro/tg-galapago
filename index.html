@@ -20,6 +20,7 @@
 		<script src="../SDK/TGH5.min.js" type="text/javascript"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
+		<script src="js/dialogHelp.js"></script>
 		<script src="js/mainMenuScreen.js"></script>
 		<script src="js/score.js"></script>
 		<script src="js/blobCollection.js"></script>
@@ -36,7 +37,8 @@
 		<script src="js/priorityQueue.js"></script>
 		
 		<script>
-			var sdkApi;
+			var sdkApi, galapagoVersion;
+			galapagoVersion = 'Ver. 1.3';
 			function loadGame(){
 				if( typeof jsErrLog !== 'undefined' ) {
 						jsErrLog.debugMode = false;
@@ -98,22 +100,25 @@
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
-			<div id="button-change-player">
+			<!-- hidden until after IFA exhibition
+			div id="button-change-player">
 				<span id="hello-player">Hello Tim!</span>
 				<span id="click-here">Click here to change player</span>
-			</div>
+			</div-->
 			<div id="button-timed" class="main-menu-mode"></div>
 			<div id="button-relaxed" class="main-menu-mode"></div>
 			<table id="main-menu-button-group">
 				<tr>
 					<td id="button-how-to-play" class="main-menu-button">How To Play</td>
-					<td id="button-top-scores" class="main-menu-button">Top Scores</td>
+					<td id="button-quit" class="main-menu-button">Quit</td>
+					<!-- hidden until after IFA exhibition td id="button-top-scores" class="main-menu-button">Top Scores</td-->
 				</tr>
+				<!-- hidden until after IFA exhibition
 				<tr>
-					<td id="button-set-language" class="main-menu-button">Set Language
-					</td>
-			<td id="button-quit" class="main-menu-button">Quit</td>
-			</tr>
+					<td id="button-set-language" class="main-menu-button">Set Language</td>
+					<td id="button-quit" class="main-menu-button">Quit</td>
+				</tr>
+			-->
 			</table>
 
 			<ul class="galapago-drop-down">
@@ -298,7 +303,7 @@
 					<span data-i18n="Dialog Help.Body Text">
 						<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
 						<h4>Object</h4>
-						<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano… reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
+						<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano... reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
 						<h4>Navigating Galapago</h4>
 						<p>To play a level just select any tile on the map.</p>
 						<p>New levels will unlock once you win a level.</p>
@@ -337,22 +342,12 @@
 					</span>
 				</div>
 
-				<script>
-				function updateScrollDivPages() {
-					var scrollDiv, currentPage, pageCount;
-					scrollDiv = $('#help-text-scroll')[0];
-					pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
-					currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight) / scrollDiv.scrollHeight * pageCount );
-					$('#current-page').html(currentPage);
-					$('#page-count').html(pageCount);
-				}
-				</script>
-
 				<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>
 				<ul class="vertical-button-nav">
-				<li id="option-scroll" data-i18n="Dialog Help.ScrollDown"   class="button-medium button-medium-hilight">Scroll</li>
-				<li id="dialog-help-option-close" data-i18n="Dialog Help.Close"   class="button-medium">Close</li>
+					<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
+					<li id="option-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
 				</ul>
+				<div id="version"></div>		
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
