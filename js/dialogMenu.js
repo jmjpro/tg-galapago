@@ -217,7 +217,7 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 				dialogMenu.currentNavItem.next();
 			}
 			break;
-		case 'dialog-help-option-close' :
+		case 'option-close' :
 			this.hide();
 			break;
 	}
@@ -274,16 +274,13 @@ DialogMenu.prototype.hide = function() {
 	this.callingScreen.removeClass('transparent');
 	window.onclick =this.mouseClickHandler; 
 	window.onmousemove = this.mouseMoveHandler;
-}; //DialogMenu.prototype.show()
+}; //DialogMenu.prototype.hide()
 
 DialogMenu.prototype.setNavItem = function(item) {
-
 	this.currentNavItem.removeClass(this.hilightClass); // remove hilight from old item
 	this.currentNavItem = item;
 	this.currentNavItem.addClass(this.hilightClass); // add hilight to new item
 }; //DialogMenu.prototype.setNavItem()
-
-
 
 DialogMenu.prototype.registerMouseHandlers = function() {
 	var menuButtonSize = this.dialogNav.children().length;
@@ -299,7 +296,7 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 		}
 		
 	}
-}
+} //DialogMenu.prototype.registerMouseHandlers()
 
 DialogMenu.prototype.registerEventHandlers = function() {
 	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector;
@@ -347,11 +344,12 @@ DialogMenu.prototype.registerEventHandlers = function() {
 }; //DialogMenu.prototype.registerEventHandlers()
 
 DialogMenu.prototype.unregisterEventHandlers = function() {
+	var menuButtonSize, dialogMenu, i, liElement;
 	window.onkeydown = null;
-	var menuButtonSize = this.dialogNav.children().length;
-	var dialogMenu = this;
-	for(var i =0 ; i< menuButtonSize ; i++){
-		var liElement = (dialogMenu.dialogNav.children()[i]);
+	menuButtonSize = this.dialogNav.children().length;
+	dialogMenu = this;
+	for(i =0 ; i< menuButtonSize ; i++){
+		liElement = (dialogMenu.dialogNav.children()[i]);
 		liElement.onmousemove =null;
 		liElement.onclick = null;
 	}

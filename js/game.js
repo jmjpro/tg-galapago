@@ -33,11 +33,12 @@ Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
 Galapago.CONFIG_FILE_PATH = 'js/levels.json';
+Galapago.CONFIG_FILE_PATH_YA = 'js/levels-ya.json';
+Galapago.NUM_LEVELS = 70;
 Galapago.GAME_IMAGE_DIRECTORY = 'res/img/screen-game/';
 Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
-Galapago.NUM_LEVELS = 70;
 Galapago.creatureImages = {};
 Galapago.gameImageNames = [
 	'button_quit',
@@ -125,7 +126,9 @@ Galapago.init = function(isTimedMode) {
 		levelTemp = new Level(levelIt + 1);
 		Galapago.levels.push(levelTemp);
 	}
-	Galapago.loadJsonAsync(Galapago.CONFIG_FILE_PATH).then(function(data) {
+	var configFilePath = QueryString.levels === 'ya' ? Galapago.CONFIG_FILE_PATH_YA : Galapago.CONFIG_FILE_PATH;
+	console.debug( 'configFilePath: ' + configFilePath );
+	Galapago.loadJsonAsync(configFilePath).then(function(data) {
 		Galapago.setLevelsFromJson(data);
 		level = LevelMap.getNextLevel();
 		Galapago.levelMap = new LevelMap(level);
@@ -1184,18 +1187,22 @@ Level.registerEventHandlers = function() {
 			case 37: // left arrow
 				board.handleLeftArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 38: // up arrow
 				board.handleUpArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 39: // right arrow
 				board.handleRightArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			case 40: // down arrow
 				board.handleDownArrow();
 				evt.preventDefault();
+				evt.stopPropagation();
 				break;
 			//TODO code below here should removed before production
 			case 48: // numeric 0

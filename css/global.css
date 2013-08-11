@@ -528,9 +528,9 @@ ul.galapago-drop-down {
 #help-text-scroll {
 	overflow-y: scroll;
 	height: 300px;
-	margin-top: 50px;
+	margin-top: 20px;
 	padding: 0px 20px 0px 50px;
-	font-family: 'Helvitica';
+	font-family: 'Helvetica';
 	text-align: left;
 }
 
@@ -543,8 +543,14 @@ ul.galapago-drop-down {
 }
 
 #dialog-help #paging {
-	font-family: 'Helvitica';
+	font-family: 'Helvetica';
 	font-size: 14px;
+}
+
+#dialog-help #version {
+	font-family: 'Helvetica';
+	font-size: 14px;
+	text-align: left;
 }
 
 #dialog-help .button-medium {
