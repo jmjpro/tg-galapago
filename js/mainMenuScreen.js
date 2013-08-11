@@ -18,6 +18,7 @@ MainMenuScreen.HILIGHT_IMAGE_MAP = {
 	"main_menu_button_timed_regular.png" : "main_menu_button_timed_selected.png"
 };
 
+/* navigation after IFA exhibition
 MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "UP" : "button-change-player", "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
@@ -26,6 +27,14 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-top-scores" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play", "DOWN" : "button-quit" },
 	"button-set-language" : { "UP" : "button-how-to-play", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-top-scores", "LEFT" : "button-set-language" }
+};
+*/
+MainMenuScreen.BUTTON_NAV_MAP = {
+	//"button-change-player" : { "DOWN" : "button-timed" },
+	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
+ 	"button-relaxed" : { "UP" : "button-change-player", "LEFT" : "button-timed", "DOWN" : "button-quit" },
+	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
+	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
 
 function MainMenuScreen() {}
@@ -163,7 +172,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
+			window.dialog = new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
