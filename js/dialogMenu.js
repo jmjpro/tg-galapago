@@ -28,14 +28,11 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 			}
 			break;
 		case 'option-no' :
-			if(dialogMenu.callingObject instanceof Board &&
-				dialogMenu.callingObject.level.dangerBar){
-				dialogMenu.callingObject.level.dangerBar.resume();
-			}
-			this.hide();
+			dialogMenu.dialogQuitOptionNo();
 			break;
 	}
 };
+
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	var optionId, board, mainCanvasId;
 	optionId = dialogMenu.currentNavItem[0].id;
@@ -76,23 +73,13 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
-	var level;
-	level = dialogMenu.callingObject.level;
-	this.hide();
-	level.won();
-	//show map screen;
+	dialogMenu.dialogLevelWon.select();
+};
+DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
+	dialogMenu.dialogLevelWon.select();
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
-	var level;
-	level = dialogMenu.callingObject.level;
-	this.hide();
-	level.cleanup();
-	sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level);
-	});
-    
-	
-	//show map screen;
+	dialogMenu.dialogGameOverSelect();
 };
 DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	this.hide();
@@ -107,13 +94,6 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 		LevelMap.show(level);
 		//level.showLevelMap();
 	});
-	//show map screen;
-};
-DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
-	var level;
-	level = dialogMenu.callingObject.level;
-	this.hide();	
-	level.won();
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
@@ -137,6 +117,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			break;
 	}
 };
+
 DialogMenu.SELECT_HANDLERS['dialog-game-options'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
@@ -235,6 +216,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.mouseMoveHandler = window.onmousemove;
 	window.onclick =null; window.onmousemove = null;
 	this.windowKeyHandler= window.onkeydown;
+	this.dialogId = dialogId;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = hilightClass;
@@ -299,7 +281,7 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 } //DialogMenu.prototype.registerMouseHandlers()
 
 DialogMenu.prototype.registerEventHandlers = function() {
-	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector;
+	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector, board;
 	dialogMenu = this;
 	lastIndex = dialogMenu.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
@@ -333,6 +315,28 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
+		case 8: // back/backspace key
+			switch ( dialogMenu.dialogId ) {
+				case 'dialog-new-game':
+					board = dialogMenu.callingObject;
+					dialogMenu.dialogNewGameOptionNo(board);
+					break;
+				case 'dialog-quit':
+					dialogMenu.dialogQuitOptionNo();
+					break;
+				case 'dialog-level-won':
+					dialogMenu.dialogLevelWonSelect();
+					break;
+				case 'dialog-you-won':
+					dialogMenu.dialogLevelWonSelect();
+					break;
+				case 'dialog-game-over':
+					dialogMenu.dialogGameOverSelect();
+					break;
+			}
+			evt.stopPropagation();
+			evt.preventDefault();		
+			break;
 		}
 	};
 
@@ -342,6 +346,40 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	});
 	*/
 }; //DialogMenu.prototype.registerEventHandlers()
+
+DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
+	this.hide();
+	board.displayMenuButton(false);
+	board.hotspot = null;
+	board.display();
+}; //DialogMenu.prototype.dialogNewGameOptionNo()
+
+DialogMenu.prototype.dialogQuitOptionNo = function() {
+	this.hide();
+	if(this.callingObject instanceof Board &&
+		this.callingObject.level.dangerBar){
+		this.callingObject.level.dangerBar.resume();
+	}
+}; //DialogMenu.prototype.dialogQuitOptionNo()
+
+DialogMenu.prototype.dialogLevelWonSelect = function() {
+	var level;
+	level = this.callingObject.level;
+	this.hide();
+	level.won();
+	//show map screen;
+}; //DialogMenu.prototype.dialogLevelWonSelect()
+
+DialogMenu.prototype.dialogGameOverSelect = function() {
+	var level;
+	level = this.callingObject.level;
+	this.hide();
+	level.cleanup();
+	sdkApi.requestModalAd("inGame").done(function(){
+		LevelMap.show(level);
+	});
+	//show map screen;
+};
 
 DialogMenu.prototype.unregisterEventHandlers = function() {
 	var menuButtonSize, dialogMenu, i, liElement;

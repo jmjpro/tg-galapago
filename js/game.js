@@ -478,6 +478,11 @@ LevelMap.prototype.registerEventHandlers = function() {
 				evt.preventDefault();
 				evt.stopPropagation();
 				break;
+			case 8: // back/backspace key
+				evt.stopPropagation();
+				evt.preventDefault();
+				Galapago.mapScreen.toMainMenuScreen(levelMap);
+				break;
 			case 48: // numeric 0
 				Galapago.isBypassLevelLocking = true;
 				console.debug( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
@@ -1171,14 +1176,12 @@ Level.registerEventHandlers = function() {
 		board.handleMouseMoveEvent(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
-	};
-	
-	
+	};	
 	window.onkeydown = function(evt) {
 		if(board.animationQ.length){
 			return;
 		}
-	//board.creatureLayer.canvas.onkeydown = function(evt) {
+		//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 13: // enter
@@ -1203,6 +1206,12 @@ Level.registerEventHandlers = function() {
 				board.handleDownArrow();
 				evt.preventDefault();
 				evt.stopPropagation();
+				break;
+			case 8: // back/backspace key
+				level.quit();
+				LevelMap.show(level);				
+				evt.stopPropagation();
+				evt.preventDefault();		
 				break;
 			//TODO code below here should removed before production
 			case 48: // numeric 0

@@ -57,51 +57,53 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.show();
 
 	mainMenuScreen.windowKeyHandler= window.onkeydown;
-	mainMenuScreen.addMouseListner();
+	mainMenuScreen.addMouseListener();
 }; //MainMenuScreen.init()
 
-MainMenuScreen.prototype.addMouseListner = function(){
-var mainMenuScreen = this;
+MainMenuScreen.prototype.addMouseListener = function(){
+	var mainMenuScreen = this;
 
-				
-$('#button-timed')[0].onclick = function (evt){ 
-									mainMenuScreen.setNavItem($('#button-timed')); 
-									mainMenuScreen.selectHandler();
-									evt.preventDefault();evt.stopPropagation();
-								}
-$('#button-relaxed')[0].onclick = function (evt){ 
-									mainMenuScreen.setNavItem($('#button-relaxed')); 
-									mainMenuScreen.selectHandler();
-									evt.preventDefault();evt.stopPropagation();
-								}				
-$('#button-how-to-play')[0].onclick = function (evt){ 
-										mainMenuScreen.setNavItem($('#button-how-to-play')); 
+	$('#button-timed')[0].onclick = function (evt){ 
+										mainMenuScreen.setNavItem($('#button-timed')); 
 										mainMenuScreen.selectHandler();
 										evt.preventDefault();evt.stopPropagation();
 									}
-$('#button-top-scores')[0].onclick = function (evt){ 
-											mainMenuScreen.setNavItem($('#button-top-scores')); 
+	$('#button-relaxed')[0].onclick = function (evt){ 
+										mainMenuScreen.setNavItem($('#button-relaxed')); 
+										mainMenuScreen.selectHandler();
+										evt.preventDefault();evt.stopPropagation();
+									}				
+	$('#button-how-to-play')[0].onclick = function (evt){ 
+											mainMenuScreen.setNavItem($('#button-how-to-play')); 
 											mainMenuScreen.selectHandler();
 											evt.preventDefault();evt.stopPropagation();
 										}
-$('#button-set-language')[0].onclick = function (evt){ 
-												mainMenuScreen.setNavItem($('#button-set-language')); 
+	/* jj: disabled until after IFA exhibition
+	$('#button-top-scores')[0].onclick = function (evt){ 
+												mainMenuScreen.setNavItem($('#button-top-scores')); 
 												mainMenuScreen.selectHandler();
 												evt.preventDefault();evt.stopPropagation();
 											}
-$('#button-quit')[0].onclick = function (evt){ 
-												mainMenuScreen.setNavItem($('#button-quit')); 
-												mainMenuScreen.selectHandler();
-												evt.preventDefault();evt.stopPropagation();
-											}
-this.registerMouseOverEvent('button-timed');
-this.registerMouseOverEvent('button-relaxed');
-this.registerMouseOverEvent('button-how-to-play');
-this.registerMouseOverEvent('button-top-scores');
-this.registerMouseOverEvent('button-set-language');
-this.registerMouseOverEvent('button-quit');
-
-}
+	$('#button-set-language')[0].onclick = function (evt){ 
+													mainMenuScreen.setNavItem($('#button-set-language')); 
+													mainMenuScreen.selectHandler();
+													evt.preventDefault();evt.stopPropagation();
+												}
+	*/
+	$('#button-quit')[0].onclick = function (evt){ 
+													mainMenuScreen.setNavItem($('#button-quit')); 
+													mainMenuScreen.selectHandler();
+													evt.preventDefault();evt.stopPropagation();
+												}
+	this.registerMouseOverEvent('button-timed');
+	this.registerMouseOverEvent('button-relaxed');
+	this.registerMouseOverEvent('button-how-to-play');
+	/* jj: disabled until after IFA event
+	this.registerMouseOverEvent('button-top-scores');
+	this.registerMouseOverEvent('button-set-language');
+	*/
+	this.registerMouseOverEvent('button-quit');
+} //MainMenuScreen.prototype.addMouseListener()
 
 MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 	var mainMenuScreen = this;
@@ -320,6 +322,11 @@ MainMenuScreen.prototype.registerEventHandlers = function() {
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('DOWN'));
 			evt.stopPropagation();
 			evt.preventDefault();
+			break;
+		case 8: // back/backspace key
+			mainMenuScreen.quit();
+			evt.stopPropagation();
+			evt.preventDefault();		
 			break;
 		}
 	};

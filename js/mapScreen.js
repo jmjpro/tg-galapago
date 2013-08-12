@@ -41,22 +41,21 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	this.unsetNavItem();
 	switch( itemId ) {
 		case 'button_play_map' :
-			levelMap.handleKeyboardSelect();
 			//console.log( 'selected play map button');
+			levelMap.handleKeyboardSelect();
 			break;
 		case 'button_start_map' :
+			//console.log( 'selected start map button');
 			levelMap.setHotspotLevel(LevelMap.getNextLevel());
 			levelMap.handleKeyboardSelect();
-			console.log( 'selected start map button');
 			break;
 		case 'button_reset_map' :
 			//console.log( 'selected reset map button');
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight');
 			break;
 		case 'button_menu_map' :
-			console.log( 'selected menu map button');
-			levelMap.cleanup();
-			MainMenuScreen.init('screen-map', this);
+			//console.log( 'selected menu map button');
+			mapScreen.toMainMenuScreen(levelMap);
 			//MainMenuScreen.show();
 			break;
 		case 'button_quit_map' :
@@ -103,6 +102,12 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
 			evt.preventDefault();
 			break;
+		case 8: // back/backspace key
+			evt.stopPropagation();
+			evt.preventDefault();
+			mapScreen.unsetNavItem();
+			mapScreen.toMainMenuScreen(levelMap);
+			break;
 		}
 	};
 
@@ -111,6 +116,11 @@ MapScreen.prototype.registerEventHandlers = function() {
 		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
 	});
 }; //MapScreen.prototype.registerEventHandlers()
+
+MapScreen.prototype.toMainMenuScreen = function(levelMap) {
+	levelMap.cleanup();
+	MainMenuScreen.init('screen-map', levelMap);
+}; //MapScreen.prototype.toMainMenuScreen()
 
 MapScreen.prototype.unregisterEventHandlers = function() {
 	window.onkeydown = null;
