@@ -71,10 +71,10 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
-	dialogMenu.dialogLevelWon.select();
+	dialogMenu.dialogLevelWonSelect();
 };
 DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
-	dialogMenu.dialogLevelWon.select();
+	dialogMenu.dialogLevelWonSelect();
 };
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	dialogMenu.dialogGameOverSelect();
