@@ -34,7 +34,7 @@ MapScreen.prototype.unsetNavItem = function() {
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
-	var mapScreen, itemId, levelMap;
+	var itemId, levelMap;
 	itemId = navItem.children('div')[0].id;
 	levelMap = Galapago.levelMap;
 	console.log('itemId:' + itemId);
@@ -55,7 +55,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button_menu_map' :
 			//console.log( 'selected menu map button');
-			mapScreen.toMainMenuScreen(levelMap);
+			this.toMainMenuScreen(levelMap);
 			//MainMenuScreen.show();
 			break;
 		case 'button_quit_map' :
