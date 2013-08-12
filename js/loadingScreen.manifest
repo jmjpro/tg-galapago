@@ -13,6 +13,37 @@
     	]
     },
     {
+		"name": "common",
+		"contents": [
+			"main_menu_static.png",
+			"map_level_ui_static.png",
+			"map_animated.png",
+			"on_board_common_animated.png",
+			"level_ui_animated.png"
+    	]
+    },
+    {
+		"name": "beach",
+		"contents": [
+			"on_board_beach_static.png",
+			"on_board_beach_animated.png"
+		]
+    },
+    {
+		"name": "forest",
+		"contents": [
+			"on_board_forest_static.png",
+			"on_board_forest_animated.png"
+		]
+    },
+    {
+		"name": "cave",
+		"contents": [
+			"on_board_forest_static.png",
+			"on_board_forest_animated.png"
+		]
+    },
+    {
 		"name": "all-but-audio",
 		"contents": [
 			"main-menu/main_menu_background.jpg",
@@ -45,7 +76,7 @@
 			"screen-map/next_level_arrow_up.png",
 			"screen-map/strip_bomb_left_one.png",
 			"screen-map/strip_bomb_left_two.png",
-			"screen-map/strip_bomb_mid.png",
+		"screen-map/strip_bomb_mid.png",
 			"screen-map/strip_bomb_right.png",
 			"screen-map/strip_bonfire.png",
 			"screen-map/strip_game_start_arrow.png",
