@@ -1380,6 +1380,12 @@ function Board() {
 	this.animationQ = [];
 } //Board constructor
 
+Board.prototype.quit = function() {
+	this.level.cleanup(false);
+	sdkApi.exit();
+	return this; //chainable
+}; //Board.prototype.quit()
+
 Board.prototype.hideGoldAndCreatures = function() {
 	$('#' + Level.LAYER_GOLD).hide();
 	$('#' + Level.LAYER_CREATURE).hide();

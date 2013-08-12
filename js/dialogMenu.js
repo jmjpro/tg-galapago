@@ -5,16 +5,14 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
 	this.hide();
 };
 DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
-	var optionId, level, mainMenuScreen;
+	var optionId, level, mainMenuScreen, board;
 	optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
 		case 'option-yes' :
 			this.hide();
 			if(dialogMenu.callingObject instanceof Board){
-				level = dialogMenu.callingObject.level;
-				level.quit();
-				LevelMap.show(level);
-				//level.showLevelMap(level);
+				board = dialogMenu.callingObject;
+				board.quit();
 			}
 			else if(dialogMenu.callingObject instanceof MapScreen){
 				Galapago.levelMap.quit();
