@@ -2737,15 +2737,19 @@ Board.prototype.handleDownArrow = function() {
 		board.navigationLock=false;
 		return this; //chainable
 		}).done();
-	}else if(this.hotspot != Board.HOTSPOT_MENU){
+	}else if(this.hotspot != Board.HOTSPOT_MENU && (!this.navigationLock) ){
+		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
 		board.displayMenuButton(true);
 		board.displayQuitButton(false);
 		this.hotspot = Board.HOTSPOT_MENU;
-	}else{
+		board.navigationLock=false;
+	}else if(!this.navigationLock){
+		board.navigationLock=true;
 		board.displayMenuButton(false);
 		board.displayQuitButton(true);
 		this.hotspot = Board.HOTSPOT_QUIT;
+		board.navigationLock=false;
 	}
 	return this; //chainable
 }; //Board.prototype.handleDownArrow
