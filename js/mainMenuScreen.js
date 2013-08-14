@@ -18,7 +18,7 @@ MainMenuScreen.HILIGHT_IMAGE_MAP = {
 	"main_menu_button_timed_regular.png" : "main_menu_button_timed_selected.png"
 };
 
-MainMenuScreen.IMAGE_MATRIX = [
+MainMenuScreen.IMAGE_COORDINATE_ARRAY = [
  {cell: [0, 0, 611, 121], id: 'main_menu_button_change_player_selected.png'}, 
  {cell: [0, 121, 611, 121], id: 'main_menu_button_change_player_regular.png'},
  {cell: [0, 242, 467, 329], id: 'main_menu_button_timed_selected.png'},
@@ -145,7 +145,7 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 MainMenuScreen.prototype.getImages = function() {
 	var mainMenuScreen, galFilePath, spriteSheet, sprite, spriteArray;
 	mainMenuScreen = this;
-	spriteSheet = new CoordinateSpriteSheet(LoadingScreen.gal.get('main_menu_static.png'), MainMenuScreen.IMAGE_MATRIX);
+	spriteSheet = new CoordinateSpriteSheet(LoadingScreen.gal.get('main_menu_static.png'), MainMenuScreen.IMAGE_COORDINATE_ARRAY);
 	spriteArray = spriteSheet.getSprites();
 	$('#screen-main-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.GAL_PREFIX + 'main_menu_background.jpg').src + ')');
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
