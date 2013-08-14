@@ -2256,7 +2256,7 @@ Board.prototype.setComplete = function() {
 		window.dialog = new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
 		this.showGoldAndCreatures();
 	}
-}
+} //Board.prototype.setComplete()
 
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;

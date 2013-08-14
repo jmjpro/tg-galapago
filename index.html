@@ -17,7 +17,7 @@
 		<script src="ext/zepto-touch-1.0.js"></script>
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
-		<script src="../SDK/TGH5.min.js" type="text/javascript"></script>
+		<script src="../SDK/TGH5.min.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -44,17 +44,19 @@
 						jsErrLog.debugMode = false;
 						jsErrLog.info = "Galapago debugging";                
 				}
-				TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../SDK/" }).done(function (api) {
-					sdkApi = api;
-			        // SDK successfully initialized
-			        api.preferredLanguage().always(function (language) {
-				        /* Update the UI to use the selected language */
-				        i18n.init({ lng: 'en' , fallbackLng: 'en'});
+				if( typeof TGH5 !== 'undefined' ) {
+					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../SDK/" }).done(function (api) {
+						sdkApi = api;
+				        // SDK successfully initialized
+				        api.preferredLanguage().always(function (language) {
+					        /* Update the UI to use the selected language */
+					        i18n.init({ lng: 'en' , fallbackLng: 'en'});
+					    });
+				    	LoadingScreen.init();
+				    }).fail(function (error) {
+				        console.log(error);
 				    });
-			    	LoadingScreen.init();
-			    }).fail(function (error) {
-			        console.log(error);
-			    });
+				}
 			}
 		</script>
 	</head>

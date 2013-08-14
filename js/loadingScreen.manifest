@@ -3,16 +3,16 @@
 	"assetRootAudio": "res/audio/",
 	"audioExts": "mp3",
 	"bundles": [
-    {
+	{
 		"name": "screen-loading",
 		"contents": [
 			"screen-loading/background-loading.jpg",
 			"screen-loading/loading-progress-bar.png",
 			"screen-loading/loading-progress-bar-fill.png",
 			"screen-loading/loading-progress-bar-left-cap.png"
-    	]
-    },
-    {
+		]
+	},
+	{
 		"name": "common",
 		"contents": [
 			"main_menu_static.png",
@@ -20,16 +20,16 @@
 			"map_animated.png",
 			"on_board_common_animated.png",
 			"level_ui_animated.png"
-    	]
-    },
-    {
+		]
+	},
+	{
 		"name": "beach",
 		"contents": [
 			"on_board_beach_static.png",
 			"on_board_beach_animated.png"
 		]
-    },
-    {
+	},
+	{
 		"name": "forest",
 		"contents": [
 			"on_board_forest_static.png",
@@ -43,7 +43,7 @@
 			"on_board_cave_animated.png"
 		]
     },
-    {
+	{
 		"name": "all-but-audio",
 		"contents": [
 			"main-menu/main_menu_background.jpg",
