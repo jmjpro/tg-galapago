@@ -39,8 +39,8 @@
     {
 		"name": "cave",
 		"contents": [
-			"on_board_forest_static.png",
-			"on_board_forest_animated.png"
+			"on_board_cave_static.png",
+			"on_board_cave_animated.png"
 		]
     },
     {
@@ -175,7 +175,6 @@
 			"creatures/beach/violet_crab_rollover.png",
 			"creatures/beach/yellow_fish_jumps.png",
 			"creatures/beach/yellow_fish_rollover.png",
-			"creatures/beach/creature_strip_beach.png",
 			"creatures/cave/blue_crystal_jumps.png",
 			"creatures/cave/blue_crystal_rollover.png",
 			"creatures/cave/green_frog_jumps.png",
@@ -189,7 +188,6 @@
 			"creatures/cave/violet_lizard_jumps.png",
 			"creatures/cave/violet_lizard_rollover.png",
 			"creatures/cave/yellow_bug_jumps.png",
-			"creatures/cave/creature_strip_cave.png",
 			"creatures/cave/yellow_bug_rollover.png",
 			"creatures/forest/blue_beetle_jumps.png",
 			"creatures/forest/blue_beetle_rollover.png",
@@ -205,7 +203,6 @@
 			"creatures/forest/violet_moth_rollover.png",
 			"creatures/forest/yellow_frog_jumps.png",
 			"creatures/forest/yellow_frog_rollover.png",
-			"creatures/forest/creature_strip_forest.png",
 			"friends/blue_friend.png",
 			"friends/green_friend.png",
 			"friends/pink_friend.png",
