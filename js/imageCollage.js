@@ -13,6 +13,32 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [942, 0, 25, 25], 'id': 'main_menu_arrow_left.png'},
 			 {'cell': [942, 25, 25, 25], 'id': 'main_menu_arrow_right.png'}
 		]
+	},
+	{
+		'collageId': 'map_level_ui_static.png',
+		'imageCoordinateArray': [
+			 {'cell': [0, 0, 52, 514], 'id': 'danger_bar.png'}, 
+			 {'cell': [52, 0, 70, 71], 'id': 'PowerUps_Flame_Disabled.png'},
+			 {'cell': [52, 71, 70, 71], 'id': 'PowerUps_Flame_Rollover.png'},
+			 {'cell': [52, 142, 70, 71], 'id': 'PowerUps_Flame_Pressed.png'},
+			 {'cell': [52, 213, 70, 71], 'id': 'PowerUps_Flame_Activated.png'},
+			 {'cell': [122, 0, 70, 71], 'id': 'PowerUps_Swap_Disabled.png'},
+			 {'cell': [122, 71, 70, 71], 'id': 'PowerUps_Swap_Rollover.png'},
+			 {'cell': [122, 142, 70, 71], 'id': 'PowerUps_Swap_Pressed.png'},
+			 {'cell': [122, 213, 70, 71], 'id': 'PowerUps_Swap_Activated.png'},
+			 {'cell': [192, 0, 70, 71], 'id': 'PowerUps_Shuffle_Disabled.png'},
+			 {'cell': [192, 71, 70, 71], 'id': 'PowerUps_Shuffle_Rollover.png'},
+			 {'cell': [192, 142, 70, 71], 'id': 'PowerUps_Shuffle_Pressed.png'},
+			 {'cell': [261, 0, 19, 284], 'id': 'PowerUps_Holder.png'},
+			 {'cell': [281, 0, 38, 26], 'id': 'next_level_arrow_down.png'},
+			 {'cell': [281, 26, 37, 24], 'id': 'next_level_arrow_left_down.png'},
+			 {'cell': [281, 50, 37, 24], 'id': 'next_level_arrow_right_down.png'},
+			 {'cell': [281, 74, 30, 24], 'id': 'next_level_arrow_left_up.png'},
+			 {'cell': [281, 98, 30, 24], 'id': 'next_level_arrow_right_up.png'},
+			 {'cell': [281, 122, 34, 25], 'id': 'next_level_arrow_left.png'},
+			 {'cell': [281, 147, 34, 25], 'id': 'next_level_arrow_right.png'},
+			 {'cell': [281, 172, 27, 23], 'id': 'next_level_arrow_up.png'}
+		]
 	}
 ];
 
