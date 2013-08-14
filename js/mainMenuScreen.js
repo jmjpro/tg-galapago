@@ -18,19 +18,6 @@ MainMenuScreen.HILIGHT_IMAGE_MAP = {
 	"main_menu_button_timed_regular.png" : "main_menu_button_timed_selected.png"
 };
 
-MainMenuScreen.IMAGE_COORDINATE_ARRAY = [
- {cell: [0, 0, 611, 121], id: 'main_menu_button_change_player_selected.png'}, 
- {cell: [0, 121, 611, 121], id: 'main_menu_button_change_player_regular.png'},
- {cell: [0, 242, 467, 329], id: 'main_menu_button_timed_selected.png'},
- {cell: [0, 571, 467, 329], id: 'main_menu_button_timed_regular.png'},
- {cell: [467, 242, 467, 329], id: 'main_menu_button_relaxed_selected.png'}, 
- {cell: [467, 571, 467, 329], id: 'main_menu_button_relaxed_regular.png'},
- {cell: [611, 0, 331, 116], id: 'main_menu_button_options_selected.png'}, 
- {cell: [611, 116, 331, 116], id: 'main_menu_button_options_regular.png'},
- {cell: [942, 0, 25, 25], id: 'main_menu_arrow_left.png'},
- {cell: [942, 25, 25, 25], id: 'main_menu_arrow_right.png'}
- ];
-
 /* navigation after IFA exhibition
 MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-change-player" : { "DOWN" : "button-timed" },
@@ -137,7 +124,7 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 MainMenuScreen.prototype.getImages = function() {
 	var mainMenuScreen, imageCollage, image, imageArray, imageBackground;
 	mainMenuScreen = this;
-	imageCollage = new ImageCollage(LoadingScreen.gal.get('main_menu_static.png'), MainMenuScreen.IMAGE_COORDINATE_ARRAY);
+	imageCollage = ImageCollage.loadByName('main_menu_static.png');
 	imageArray = imageCollage.getImages();
 	imageBackground = LoadingScreen.gal.get(MainMenuScreen.GAL_PREFIX + 'main_menu_background.jpg');
 	$('#screen-main-menu').css('background-image','url(' + imageBackground.src + ')');

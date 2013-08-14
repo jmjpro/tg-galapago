@@ -1,7 +1,26 @@
+ImageCollage.COLLAGE_ARRAY = [
+	{
+		'collageId': 'main_menu_static.png',
+		'imageCoordinateArray': [
+			 {'cell': [0, 0, 611, 121], 'id': 'main_menu_button_change_player_selected.png'}, 
+			 {'cell': [0, 121, 611, 121], 'id': 'main_menu_button_change_player_regular.png'},
+			 {'cell': [0, 242, 467, 329], 'id': 'main_menu_button_timed_selected.png'},
+			 {'cell': [0, 571, 467, 329], 'id': 'main_menu_button_timed_regular.png'},
+			 {'cell': [467, 242, 467, 329], 'id': 'main_menu_button_relaxed_selected.png'}, 
+			 {'cell': [467, 571, 467, 329], 'id': 'main_menu_button_relaxed_regular.png'},
+			 {'cell': [611, 0, 331, 116], 'id': 'main_menu_button_options_selected.png'}, 
+			 {'cell': [611, 116, 331, 116], 'id': 'main_menu_button_options_regular.png'},
+			 {'cell': [942, 0, 25, 25], 'id': 'main_menu_arrow_left.png'},
+			 {'cell': [942, 25, 25, 25], 'id': 'main_menu_arrow_right.png'}
+		]
+	}
+];
+
 // assumes a sheet of symmetric images defined by a 1 or 2 dimensional image matrix
-function ImageCollage(image, imageCoordinateArray) {
-	this.image = image;
-	this.imageCoordinateArray = imageCoordinateArray;
+function ImageCollage(collageDescriptor) {
+	this.image = LoadingScreen.gal.get(collageDescriptor.collageId);
+	this.collageId = collageDescriptor.collageId;
+	this.imageCoordinateArray = collageDescriptor.imageCoordinateArray;
 	var tempCanvas = document.createElement('canvas');
 	this._canvas = tempCanvas;
 	this._canvas.style.display = 'none';
@@ -9,7 +28,7 @@ function ImageCollage(image, imageCoordinateArray) {
 	this._canvas.style.left = -1000;
 	this._canvas.style.top = -1000;
 	this._ctx = this._canvas.getContext('2d');
-} //constructor
+} //constructor 
 
 //return an array of image objects corresponding to the rectangular regions in the this.coordinateArray
 ImageCollage.prototype.getImage = function (imageId) {
@@ -39,3 +58,14 @@ ImageCollage.prototype.getImages = function () {
 	});
 	return imageArray;
 }; //ImageCollage.prototype.getImages()
+
+ImageCollage.loadByName = function (collageId) {
+	var imageCollage, collageDescriptor;
+	collageDescriptor = _.find( ImageCollage.COLLAGE_ARRAY, function( collageDescriptor ) {
+		if( collageDescriptor.collageId === collageId ) {
+			return collageDescriptor;
+		}
+	});
+	imageCollage = new ImageCollage(collageDescriptor);
+	return imageCollage;
+}; //ImageCollage.loadByName()
