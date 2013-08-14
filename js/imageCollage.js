@@ -39,19 +39,19 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [281, 147, 34, 25], 'id': 'next_level_arrow_right.png'},
 			 {'cell': [281, 172, 27, 23], 'id': 'next_level_arrow_up.png'},
 			 {'cell': [319, 0, 56, 56], 'id': 'tile_2.png'},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''},
-			 {'cell': [281, 172, 27, 23], 'id': ''}
+			 {'cell': [319, 56, 52, 52], 'id': 'tile_hilight'},
+			 {'cell': [281, 172, 27, 23], 'id': 'tile_1.png'},
+			 {'cell': [52, 284, 150, 55], 'id': 'map_button_regular.png'},
+			 {'cell': [202, 284, 150, 255], 'id': 'map_button_hilight.png'},
+			 {'cell': [52, 339, 120, 47], 'id': 'game_button_regular.png'},
+			 {'cell': [172, 339, 120, 47], 'id': 'game_button_hilight.png'},
+			 {'cell': [292, 339, 47, 47], 'id': 'item_collected_mark.png'},
+			 {'cell': [52, 386, 186, 43], 'id': 'level_stars_gold.png'},
+			 {'cell': [52, 429, 186, 43], 'id': 'level_stars_silver.png'},
+			 {'cell': [238, 386, 39, 35], 'id': 'green_v.png'},
+			 {'cell': [277, 386, 30, 35], 'id': 'level_lock.png'},
+			 {'cell': [307, 386, 24, 52], 'id': 'Bracket_Left.png'},
+			 {'cell': [331, 386, 24, 52], 'id': 'Bracket_Right.png'}
 		]
 	}
 ];
