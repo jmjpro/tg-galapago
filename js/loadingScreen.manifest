@@ -47,15 +47,6 @@
 	{
 		"name": "all-but-audio",
 		"contents": [
-			"main-menu/main_menu_background.jpg",
-			"main-menu/main_menu_button_change_player_regular.png",
-			"main-menu/main_menu_button_change_player_selected.png",
-			"main-menu/main_menu_button_timed_regular.png",
-			"main-menu/main_menu_button_timed_selected.png",
-			"main-menu/main_menu_button_relaxed_regular.png",
-			"main-menu/main_menu_button_relaxed_selected.png",
-			"main-menu/main_menu_button_options_regular.png",
-			"main-menu/main_menu_button_options_selected.png",
 			"screen-map/button_cursor_map.png",
 			"screen-map/button_menu_map.png",
 			"screen-map/button_play_map.png",

@@ -17,7 +17,7 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'map_level_ui_static.png',
 		'imageCoordinateArray': [
-			 {'cell': [0, 0, 52, 514], 'id': 'danger_bar.png'}, 
+			 {'cell': [0, 0, 52, 514], 'id': 'danger_bar.png'},
 			 {'cell': [52, 0, 70, 71], 'id': 'PowerUps_Flame_Disabled.png'},
 			 {'cell': [52, 71, 70, 71], 'id': 'PowerUps_Flame_Rollover.png'},
 			 {'cell': [52, 142, 70, 71], 'id': 'PowerUps_Flame_Pressed.png'},
@@ -37,7 +37,21 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [281, 98, 30, 24], 'id': 'next_level_arrow_right_up.png'},
 			 {'cell': [281, 122, 34, 25], 'id': 'next_level_arrow_left.png'},
 			 {'cell': [281, 147, 34, 25], 'id': 'next_level_arrow_right.png'},
-			 {'cell': [281, 172, 27, 23], 'id': 'next_level_arrow_up.png'}
+			 {'cell': [281, 172, 27, 23], 'id': 'next_level_arrow_up.png'},
+			 {'cell': [319, 0, 56, 56], 'id': 'tile_2.png'},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''},
+			 {'cell': [281, 172, 27, 23], 'id': ''}
 		]
 	}
 ];
