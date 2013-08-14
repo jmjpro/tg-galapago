@@ -15,6 +15,7 @@
 	{
 		"name": "common",
 		"contents": [
+			"main-menu/main_menu_background.jpg",
 			"main_menu_static.png",
 			"map_level_ui_static.png",
 			"map_animated.png",
