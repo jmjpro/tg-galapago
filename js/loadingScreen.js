@@ -45,18 +45,18 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('screen-loading resource bundle loaded');
 			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-loading/background-loading.jpg').src + ')' );
-			LoadingScreen.gal.download('all-but-audio');
+			LoadingScreen.gal.download('common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});
-	this.gal.onProgress("all-but-audio", function(progress) { 
+	this.gal.onProgress("common", function(progress) { 
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
 		//console.debug(Math.round(percentage * 100,3) + ' % loaded');
 	});
-	this.gal.onLoaded('all-but-audio', function(result) {
+	this.gal.onLoaded('common', function(result) {
 		if (result.success) {
-			console.debug('all-but-audio resource bundle loaded');
+			console.debug('common resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
 		}
 	});

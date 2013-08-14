@@ -1,7 +1,7 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#screen-main-menu" : "main_menu_background.jpg",
+	/*"#screen-main-menu" : "main_menu_background.jpg",*/
 	"#button-change-player" : "main_menu_button_change_player_regular.png",
 	"#button-timed" : "main_menu_button_timed_regular.png",
 	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
@@ -18,6 +18,19 @@ MainMenuScreen.HILIGHT_IMAGE_MAP = {
 	"main_menu_button_timed_regular.png" : "main_menu_button_timed_selected.png"
 };
 
+MainMenuScreen.IMAGE_MATRIX = [
+ {cell: [0, 0, 611, 121], id: 'main_menu_button_change_player_selected.png'}, 
+ {cell: [0, 121, 611, 121], id: 'main_menu_button_change_player_regular.png'},
+ {cell: [0, 242, 467, 329], id: 'main_menu_button_timed_selected.png'},
+ {cell: [0, 571, 467, 329], id: 'main_menu_button_timed_regular.png'},
+ {cell: [467, 242, 467, 329], id: 'main_menu_button_relaxed_selected.png'}, 
+ {cell: [467, 571, 467, 329], id: 'main_menu_button_relaxed_regular.png'},
+ {cell: [611, 0, 331, 116], id: 'main_menu_button_options_selected.png'}, 
+ {cell: [611, 116, 331, 116], id: 'main_menu_button_options_regular.png'},
+ {cell: [942, 0, 25, 25], id: 'main_menu_arrow_left.png'},
+ {cell: [942, 25, 25, 25], id: 'main_menu_arrow_right.png'}
+ ];
+
 /* navigation after IFA exhibition
 MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-change-player" : { "DOWN" : "button-timed" },
@@ -32,7 +45,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { "UP" : "button-change-player", "LEFT" : "button-timed", "DOWN" : "button-quit" },
+ 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
 	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
@@ -52,7 +65,7 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 		mainMenuScreen.setInitialNavItem();
 	}
 	*/
-	mainMenuScreen.setImages();
+	mainMenuScreen.spriteArray = mainMenuScreen.getImages();
 	mainMenuScreen.setInitialNavItem();
 	mainMenuScreen.show();
 
@@ -129,7 +142,21 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
-MainMenuScreen.prototype.setImages = function() {
+MainMenuScreen.prototype.getImages = function() {
+	var mainMenuScreen, galFilePath, spriteSheet, sprite, spriteArray;
+	mainMenuScreen = this;
+	spriteSheet = new CoordinateSpriteSheet(LoadingScreen.gal.get('main_menu_static.png'), MainMenuScreen.IMAGE_MATRIX);
+	spriteArray = spriteSheet.getSprites();
+	$('#screen-main-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.GAL_PREFIX + 'main_menu_background.jpg').src + ')');
+	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
+		console.debug( selector );
+		sprite = _.find( spriteArray, {'id' : MainMenuScreen.IMAGE_MAP[selector] });
+		$(selector).css('background-image','url(' + sprite.src + ')');
+	});
+	return spriteArray;
+}; //MainMenuScreen.prototype.getImages()
+
+MainMenuScreen.prototype.getImagesOrig = function() {
 	var mainMenuScreen, galFilePath;
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
@@ -138,7 +165,7 @@ MainMenuScreen.prototype.setImages = function() {
 		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
 		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';
 	});
-}; //MainMenuScreen.prototype.setImages()
+}; //MainMenuScreen.prototype.getImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
 	var navItem, isTimedMode, level;
@@ -277,19 +304,18 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 }; //MainMenuScreen.prototype.setNavItem()
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
-	var galFilePath;
-	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
-	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')' );
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
+	var galFilePath, sprite;
+	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
+	sprite = _.find( this.spriteArray, {'id' : galFilePath} );
+	navItem.css( 'background-image', 'url(' + sprite.src + ')' );
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
-	var galFilePath, galHilightFilePath;
+	var galFilePath, galHilightFilePath, sprite;
 	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
-	galHilightFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
-	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galHilightFilePath) + ')' );
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
-	//navItem[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')';
+	galHilightFilePath = MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
+	sprite = _.find( this.spriteArray, {'id' : galHilightFilePath} );
+	navItem.css( 'background-image', 'url(' + sprite.src + ')' );
 };
 
 MainMenuScreen.prototype.registerEventHandlers = function() {
