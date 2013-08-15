@@ -57,38 +57,38 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collages/level_ui_animated.png',
 		'imageCoordinateArray': [
-			 {'cell': [0, 0, 1029, 149], 'id': 'screen-game/Powerup_active_strip.png'},
-			 {'cell': [0, 150, 679, 113], 'id': 'screen-game/Powerup_ready_strip.png'},
-			 {'cell': [13, 298, 283, 433], 'id': 'screen-game/danger_bar_fill_strip.png'},
-			 {'cell': [318, 723, 39, 45], 'id': 'screen-game/danger_bar_red_button_regular.png'},
-			 {'cell': [363, 718, 52, 56], 'id': 'screen-game/danger_bar_red_button_warning.png'},
+			{'cell': [0, 0, 1029, 149], 'id': 'screen-game/Powerup_active_strip.png'},
+			/*{'cell': [0, 150, 679, 113], 'id': 'screen-game/Powerup_ready_strip.png'},*/
+			{'cell': [13, 298, 283, 433], 'id': 'screen-game/danger_bar_fill_strip.png'},
+			{'cell': [318, 723, 39, 45], 'id': 'screen-game/danger_bar_red_button_regular.png'},
+			{'cell': [363, 718, 52, 56], 'id': 'screen-game/danger_bar_red_button_warning.png'}
 		]
 	},
 	{
 		'collageId': 'collages/map_animated.png',
 		'imageCoordinateArray': [
-			 {'cell': [0, 0, 5700, 216], 'id': 'screen-map/strip_bonfire.png'},
+			 {'cell': [0, 0, 5700, 216], 'id': 'screen-map/strip_lava_idle.png'},
 			 {'cell': [0, 216, 4088, 210], 'id': 'screen-map/strip_bomb_left_one.png'},
 			 {'cell': [0, 426, 5600, 242], 'id': 'screen-map/strip_bomb_left_two.png'},
 			 {'cell': [0, 668, 682, 247], 'id': 'screen-map/strip_bomb_mid.png'},
 			 {'cell': [682, 668, 336, 36], 'id': 'screen-map/strip_bonfire.png'},
 			 {'cell': [1018, 668, 243, 65], 'id': 'screen-map/strip_game_start_arrow.png'},
-			 {'cell': [0, 914, 4416, 196], 'id': 'screen-map/strip_bomb_right.png'},
+			 {'cell': [0, 914, 4416, 196], 'id': 'screen-map/strip_bomb_right.png'}
 		]
 	},
 	{
-		'collageId': 'collages/on_board_common_animated',
+		'collageId': 'collages/on_board_common_animated.png',
 		'imageCoordinateArray': [
-			 {'cell': [0, 0, 244, 2336], 'id': 'screen-game/creature_explosion_strip.png'},
+			 /*{'cell': [0, 0, 244, 2336], 'id': 'screen-game/creature_explosion_strip.png'},*/
 			 {'cell': [292, 0, 466, 690], 'id': 'screen-game/lightning_strip.png'},
 			 {'cell': [292, 690, 5600, 242], 'id': 'screen-game/cocoon_removed_strip.png'},
-			 {'cell': [359, 690, 82, 648], 'id': 'screen-game/hint_strip.png'},
-			 {'cell': [441, 690, 60, 420], 'id': 'screen-game/tile_mark_strip.png'},
-			 {'cell': [1018, 668, 47, 329], 'id': 'screen-game/tile_gold.png'},
+			 /*{'cell': [359, 690, 82, 648], 'id': 'screen-game/hint_strip.png'},*/
+			 /*{'cell': [441, 690, 60, 420], 'id': 'screen-game/tile_mark_strip.png'},*/
+			 {'cell': [1018, 668, 47, 329], 'id': 'screen-game/tile_gold.png'}
 		]
 	},
 	{
-		'collageId': 'collages/on_board_beach_animated',
+		'collageId': 'collages/on_board_beach_animated.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/beach/blue_crab_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/beach/green_turtle_jumps.png'},
@@ -103,11 +103,11 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 792, 460, 46], 'id': 'creatures/beach/red_starfish_rollover.png'},
 			 {'cell': [0, 838, 460, 46], 'id': 'creatures/beach/teal_blob_rollover.png'},
 			 {'cell': [0, 884, 460, 46], 'id': 'creatures/beach/violet_crab_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/beach/yellow_fish_rollover.png'},
+			 {'cell': [0, 930, 460, 46], 'id': 'creatures/beach/yellow_fish_rollover.png'}
 		]
 	},
 	{
-		'collageId': 'collages/on_board_forest_animated',
+		'collageId': 'collages/on_board_forest_animated.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/forest/blue_beetle_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/forest/green_butterfly_jumps.png'},
@@ -122,11 +122,11 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 792, 460, 46], 'id': 'creatures/forest/red_beetle_rollover.png'},
 			 {'cell': [0, 838, 460, 46], 'id': 'creatures/forest/teal_bug_rollover.png'},
 			 {'cell': [0, 884, 460, 46], 'id': 'creatures/forest/violet_moth_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/forest/yellow_frog_rollover.png'},
+			 {'cell': [0, 930, 460, 46], 'id': 'creatures/forest/yellow_frog_rollover.png'}
 		]
 	},
 	{
-		'collageId': 'collages/on_board_cave_animated',
+		'collageId': 'collages/on_board_cave_animated.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/cave/blue_crystal_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/cave/green_frog_jumps.png'},
@@ -141,11 +141,14 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 792, 460, 46], 'id': 'creatures/cave/red_beetle_rollover.png'},
 			 {'cell': [0, 838, 460, 46], 'id': 'creatures/cave/teal_flyer_rollover.png'},
 			 {'cell': [0, 884, 460, 46], 'id': 'creatures/cave/violet_lizard_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/cave/yellow_bug_rollover.png'},
+			 {'cell': [0, 930, 460, 46], 'id': 'creatures/cave/yellow_bug_rollover.png'}
 		]
-	},
-
+	}
 ];
+
+	/* todo: add as second row to collages/level_ui_animated.png once sprite sheet coordinate matrix is adjusted
+			 
+	*/
 
 // assumes a sheet of symmetric images defined by a 1 or 2 dimensional image matrix
 function ImageCollage(collageDescriptor) {
@@ -192,6 +195,7 @@ ImageCollage.prototype.getImages = function () {
 
 ImageCollage.loadByName = function (collageId) {
 	var imageCollage, collageDescriptor;
+	/*console.debug( 'collageId: ' + collageId );*/
 	collageDescriptor = _.find( ImageCollage.COLLAGE_ARRAY, function( collageDescriptor ) {
 		if( collageDescriptor.collageId === collageId ) {
 			return collageDescriptor;
