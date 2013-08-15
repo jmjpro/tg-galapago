@@ -161,13 +161,22 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId) {
+	var theme;
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
-	console.log( 'theme: ' + this.level.bgTheme + '_' + this.level.bgSubTheme );
-	this.level.display();
-	Level.registerEventHandlers();
+	theme = this.level.bgTheme;
+	console.log( 'theme: ' + theme + '_' + this.level.bgSubTheme );
+	LoadingScreen.gal.download(theme);
+	LoadingScreen.gal.onLoaded(theme, function(result) {
+		if (result.success) {
+			console.debug('theme ' + theme + ' resource bundle loaded');
+			Galapago.level.display();
+			Level.registerEventHandlers();
+		}
+	});
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
 };
+
 
 Galapago.printLevelConfigs = function (levelConfigs) {
 	_.each( levelConfigs, function(levelConfig) {

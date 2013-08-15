@@ -27,13 +27,22 @@
 	{
 		"name": "beach",
 		"contents": [
+	 		"background/background_beach_a.jpg",
+	 		"background/background_beach_b.jpg",
+	 		"background/background_beach_c.jpg",
+	 		"background/background_beach_d.jpg",
 			"creatures/on_board_beach_static.png",
-			"collages/on_board_beach_animated.png"
+			"collages/on_board_beach_animated.png"			
 		]
 	},
 	{
 		"name": "forest",
 		"contents": [
+	 		"background/background_forest_a.jpg",
+	 		"background/background_forest_b.jpg",
+	 		"background/background_forest_c.jpg",
+	 		"background/background_forest_d.jpg",
+	 		"background/background_forest_e.jpg",
 			"creatures/on_board_forest_static.png",
 			"collages/on_board_forest_animated.png"
 		]
@@ -41,6 +50,12 @@
     {
 		"name": "cave",
 		"contents": [
+	 		"background/background_cave_a.jpg",
+	 		"background/background_cave_b.jpg",
+	 		"background/background_cave_c.jpg",
+	 		"background/background_cave_d.jpg",
+	 		"background/background_cave_e.jpg",
+	 		"background/background_cave_f.jpg",
 			"creatures/on_board_cave_static.png",
 			"collages/on_board_cave_animated.png"
 		]
@@ -48,13 +63,27 @@
 	{
 		"name": "all-but-audio",
 		"contents": [
+			"screen-map/Map.jpg",
 			"screen-map/button_cursor_map.png",
 			"screen-map/button_menu_map.png",
 			"screen-map/button_play_map.png",
-			"screen-map/button_quit_map.png",
+ 			"screen-map/button_quit_map.png",
 			"screen-map/button_reset_map.png",
 			"screen-map/button_start_map.png",
-			"screen-map/Map.jpg",
+			"progress-bar/danger_bar.png",
+			"progress-bar/progress_bar.png",
+			"progress-bar/progress_bar_fill01.png",
+			"progress-bar/progress_bar_fill02.png",
+			"screen-game/Powerup_ready_strip.png",
+			"screen-game/button_quit.png",
+			"screen-game/button_menu.png",
+			"screen-game/tile_mark_strip.png",
+			"screen-game/talking_heads_base.png",
+			"screen-game/talking_heads_left_head_eyes_strip.png",
+			"screen-game/talking_heads_right_head_eyes_strip.png",
+			"screen-game/talking_heads_mouth_strip.png",
+			"screen-game/creature_explosion_strip.png",
+			"gold-tiles/tile_gold_1.png",
 			"dialogs/arrow_down.png",
 			"dialogs/arrow_left.png",
 			"dialogs/arrow_right.png",
@@ -88,36 +117,7 @@
 			"dialogs/keyboard/keypad_cursor_letter.png",
 			"dialogs/keyboard/keypad_cursor_reset.png",
 			"dialogs/keyboard/keypad_cursor_space.png",
-			"dialogs/keyboard/keypad_regular.png",
-	 		"background/background_beach_a.jpg",
-	 		"background/background_beach_b.jpg",
-	 		"background/background_beach_c.jpg",
-	 		"background/background_beach_d.jpg",
-	 		"background/background_cave_a.jpg",
-	 		"background/background_cave_b.jpg",
-	 		"background/background_cave_c.jpg",
-	 		"background/background_cave_d.jpg",
-	 		"background/background_cave_e.jpg",
-	 		"background/background_cave_f.jpg",
-	 		"background/background_forest_a.jpg",
-	 		"background/background_forest_b.jpg",
-	 		"background/background_forest_c.jpg",
-	 		"background/background_forest_d.jpg",
-	 		"background/background_forest_e.jpg",
-			"progress-bar/danger_bar.png",
-			"progress-bar/progress_bar.png",
-			"progress-bar/progress_bar_fill01.png",
-			"progress-bar/progress_bar_fill02.png",
-			"screen-game/Powerup_ready_strip.png",
-			"screen-game/button_quit.png",
-			"screen-game/button_menu.png",
-			"screen-game/tile_mark_strip.png",
-			"screen-game/talking_heads_base.png",
-			"screen-game/talking_heads_left_head_eyes_strip.png",
-			"screen-game/talking_heads_right_head_eyes_strip.png",
-			"screen-game/talking_heads_mouth_strip.png",
-			"screen-game/creature_explosion_strip.png",
-			"gold-tiles/tile_gold_1.png"
+			"dialogs/keyboard/keypad_regular.png"			
     	]
     },
     {
@@ -129,9 +129,9 @@
 			"screen-map/button_quit_map.png",
 			"screen-map/button_reset_map.png",
 			"screen-map/button_start_map.png"
-    	]
-    },
-    {
+		]
+	},
+	{
 		"name": "audio",
 		"contents": [
 			"BurnIcon.mp3",
