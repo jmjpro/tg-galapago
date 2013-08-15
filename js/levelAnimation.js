@@ -507,7 +507,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-map/strip_bonfire.png"), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -544,22 +544,22 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_one.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
 				coordinates = [556, 305 - image.height];
 				break;
 			case 2:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_two.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
 				coordinates = [546, 295 - image.height];
 				break;
 			case 3:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_mid.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
 				coordinates = [715, 386 - image.height];
 				break;
 			case 4:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_right.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
 				coordinates = [744 , 295 - image.height];
 				break;
@@ -578,7 +578,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
 		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = LoadingScreen.gal.get("screen-map/strip_game_start_arrow.png");
+		image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_game_start_arrow.png');
 		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
 		coordinates = [200 , 265 ];
 		if(levelAnimation.gameStartArrowAnimation){
