@@ -104,6 +104,7 @@ GAL.prototype.download = function(bundleName) {
         audio.id = key;
       }else{
         var url = that.manifest.assetRootImage + key;
+        console.debug( 'gal url: ' + url);
         var image = new Image();
         image.onload =function() {
           that.lookupTable[key] = image;
