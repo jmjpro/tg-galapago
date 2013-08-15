@@ -106,14 +106,14 @@ GAL.prototype.download = function(bundleName) {
         var url = that.manifest.assetRootImage + key;
         var image = new Image();
         image.onload =function() {
-          var collage = false;
+          /*var collage = false;
           if(key.indexOf(collageDirectory) > -1){
             keyArray = key.split("/");
             key = keyArray[keyArray.length-1];
             collage = true;       
-          }
+          }*/
           that.lookupTable[key] = image;
-          if(collage){
+          if(key.indexOf(collageDirectory) > -1){
             GAL.loadCollageImages(that, key);            
           }
           fireCallback_(that.progress, bundleName, {

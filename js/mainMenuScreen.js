@@ -1,7 +1,7 @@
-MainMenuScreen.GAL_PREFIX = '';
+MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#screen-main-menu" : "main-menu/main_menu_background.jpg",
+	"#screen-main-menu" : "main_menu_background.jpg",
 	"#button-change-player" : "main_menu_button_change_player_regular.png",
 	"#button-timed" : "main_menu_button_timed_regular.png",
 	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
