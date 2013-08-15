@@ -3,7 +3,7 @@ LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
-LevelAnimation.JUMP_TIME_INTERVAL=100;
+LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [46, 0], id: '2'}, 
@@ -226,15 +226,15 @@ LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 612], id: '18'}]
 ];
 
-LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [60, 0], id: '2'},  
-{cell: [120, 0], id: '3'}, 
-{cell: [180, 0], id: '4'},  
-{cell: [240, 0], id: '5'},
-{cell: [300, 0], id: '6'},   
-{cell: [360, 0], id: '7'}
-]];
+LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 60], id: '2'}],  
+[{cell: [0, 120], id: '3'}], 
+[{cell: [0, 180], id: '4'}],  
+[{cell: [0, 240], id: '5'}],
+[{cell: [0, 300], id: '6'}],   
+[{cell: [0, 360], id: '7'}]
+];
 
 LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'},
@@ -261,16 +261,16 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [1212, 0], id: '7'} 
 ]];
 
-LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [292, 0], id: '2'},  
-{cell: [584, 0], id: '3'}, 
-{cell: [876, 0], id: '4'},  
-{cell: [1168, 0], id: '5'},
-{cell: [1460, 0], id: '6'},   
-{cell: [1752, 0], id: '7'},   
-{cell: [2044, 0], id: '8'} 
-]];
+LevelAnimation.SPARKLES_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 244], id: '2'}],  
+[{cell: [0, 488], id: '3'}], 
+[{cell: [0, 732], id: '4'}],  
+[{cell: [0, 976], id: '5'}],
+[{cell: [0, 1220], id: '6'}],   
+[{cell: [0, 1464], id: '7'}],   
+[{cell: [0, 1708], id: '8'}] 
+];
 
 LevelAnimation.sparklesImages = [];
 function LevelAnimation(layer){
@@ -715,8 +715,8 @@ LevelAnimation.prototype.initSparkles = function() {
 	if(!LevelAnimation.sparklesImages.length){
 		var image = LoadingScreen.gal.get("screen-game/creature_explosion_strip.png");
 		var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
-			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x,0]));
+		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
+			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
 		}
 	}
 }
@@ -814,10 +814,10 @@ RolloverAnimation.prototype.animate = function(){
 	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 	if(this.tileMarkImageSpriteSheet){
-		image = this.tileMarkImageSpriteSheet.getSpriteNew([this.tileMarkSpriteId, 0]);
+		image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
 		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		this.tileMarkSpriteId++;
-		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix[0].length;
+		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix.length;
 	}
 };
 

@@ -80,11 +80,11 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collages/on_board_common_animated.png',
 		'imageCoordinateArray': [
-			 /*{'cell': [0, 0, 244, 2336], 'id': 'screen-game/creature_explosion_strip.png'},*/
+			 {'cell': [0, 0, 292, 1952], 'id': 'screen-game/creature_explosion_strip.png'},
 			 {'cell': [292, 0, 466, 690], 'id': 'screen-game/lightning_strip.png'},
 			 {'cell': [292, 690, 5600, 242], 'id': 'screen-game/cocoon_removed_strip.png'},
-			 /*{'cell': [359, 690, 82, 648], 'id': 'screen-game/hint_strip.png'},*/
-			 /*{'cell': [441, 690, 60, 420], 'id': 'screen-game/tile_mark_strip.png'},*/
+			 {'cell': [359, 690, 82, 648], 'id': 'screen-game/hint_strip.png'},
+			 {'cell': [441, 690, 60, 420], 'id': 'screen-game/tile_mark_strip.png'},
 			 {'cell': [1018, 668, 47, 329], 'id': 'screen-game/tile_gold.png'}
 		]
 	},
