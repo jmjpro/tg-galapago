@@ -114,7 +114,7 @@ GAL.prototype.download = function(bundleName) {
           }
           that.lookupTable[key] = image;
           if(collage){
-            GAL.loadCollageImages(that, key);            
+            GAL.loadCollageImages(that, key);
           }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,

@@ -1,4 +1,4 @@
-MainMenuScreen.GAL_PREFIX = '';
+MainMenuScreen.GAL_PREFIX = 'screen-main-menu';
 
 MainMenuScreen.IMAGE_MAP = {
 	"#screen-main-menu" : "main-menu/main_menu_background.jpg",
