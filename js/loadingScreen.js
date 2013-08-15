@@ -50,24 +50,12 @@ LoadingScreen.registerEvent = function(){
 		}
 	});
 	this.gal.onProgress("common", function(progress) {
-		/*
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
-		*/
 	});
 	this.gal.onLoaded('common', function(result) {
 		if (result.success) {
 			console.debug('common resource bundle loaded');
-			LoadingScreen.gal.download('all-but-audio');
-		}
-	});
-	this.gal.onProgress('all-but-audio', function(progress) {
-		var percentage = progress.current/progress.total ;
-		LoadingScreen.progressBar.progress(percentage);
-	});
-	this.gal.onLoaded('all-but-audio', function(result) {
-		if (result.success) {
-			console.debug('all-but-audio bundle loaded');
 			LoadingScreen.progressBar.loaded();
 		}
 	});

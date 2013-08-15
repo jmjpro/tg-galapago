@@ -21,50 +21,8 @@
 			"collages/map_level_ui_static.png",
 			"collages/map_animated.png",
 			"collages/on_board_common_animated.png",
-			"collages/level_ui_animated.png"
-		]
-	},
-	{
-		"name": "beach",
-		"contents": [
-	 		"background/background_beach_a.jpg",
-	 		"background/background_beach_b.jpg",
-	 		"background/background_beach_c.jpg",
-	 		"background/background_beach_d.jpg",
-			"creatures/on_board_beach_static.png",
-			"collages/on_board_beach_animated.png"			
-		]
-	},
-	{
-		"name": "forest",
-		"contents": [
-	 		"background/background_forest_a.jpg",
-	 		"background/background_forest_b.jpg",
-	 		"background/background_forest_c.jpg",
-	 		"background/background_forest_d.jpg",
-	 		"background/background_forest_e.jpg",
-			"creatures/on_board_forest_static.png",
-			"collages/on_board_forest_animated.png"
-		]
-    },
-    {
-		"name": "cave",
-		"contents": [
-	 		"background/background_cave_a.jpg",
-	 		"background/background_cave_b.jpg",
-	 		"background/background_cave_c.jpg",
-	 		"background/background_cave_d.jpg",
-	 		"background/background_cave_e.jpg",
-	 		"background/background_cave_f.jpg",
-			"creatures/on_board_cave_static.png",
-			"collages/on_board_cave_animated.png"
-		]
-    },
-	{
-		"name": "all-but-audio",
-		"contents": [
+			"collages/level_ui_animated.png",
 			"screen-map/Map.jpg",
-			"screen-map/button_cursor_map.png",
 			"screen-map/button_menu_map.png",
 			"screen-map/button_play_map.png",
  			"screen-map/button_quit_map.png",
@@ -117,8 +75,44 @@
 			"dialogs/keyboard/keypad_cursor_letter.png",
 			"dialogs/keyboard/keypad_cursor_reset.png",
 			"dialogs/keyboard/keypad_cursor_space.png",
-			"dialogs/keyboard/keypad_regular.png"			
-    	]
+			"dialogs/keyboard/keypad_regular.png"
+		]
+	},
+	{
+		"name": "beach",
+		"contents": [
+	 		"background/background_beach_a.jpg",
+	 		"background/background_beach_b.jpg",
+	 		"background/background_beach_c.jpg",
+	 		"background/background_beach_d.jpg",
+			"creatures/on_board_beach_static.png",
+			"collages/on_board_beach_animated.png"			
+		]
+	},
+	{
+		"name": "forest",
+		"contents": [
+	 		"background/background_forest_a.jpg",
+	 		"background/background_forest_b.jpg",
+	 		"background/background_forest_c.jpg",
+	 		"background/background_forest_d.jpg",
+	 		"background/background_forest_e.jpg",
+			"creatures/on_board_forest_static.png",
+			"collages/on_board_forest_animated.png"
+		]
+    },
+    {
+		"name": "cave",
+		"contents": [
+	 		"background/background_cave_a.jpg",
+	 		"background/background_cave_b.jpg",
+	 		"background/background_cave_c.jpg",
+	 		"background/background_cave_d.jpg",
+	 		"background/background_cave_e.jpg",
+	 		"background/background_cave_f.jpg",
+			"creatures/on_board_cave_static.png",
+			"collages/on_board_cave_animated.png"
+		]
     },
     {
 		"name": "dialogs-and-menus-testing",
