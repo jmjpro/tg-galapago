@@ -27,19 +27,6 @@ Galapago.gameImageNames = [
 	'Bracket_Left',
 	'Bracket_Right',
 	'item_collected_mark',
-	'PowerUps_Flame_Activated',
-	'PowerUps_Flame_Disabled',
-	'PowerUps_Flame_Pressed',
-	'PowerUps_Flame_Rollover',
-	'PowerUps_Holder',
-	'PowerUps_Shuffle_Activated',
-	'PowerUps_Shuffle_Disabled',
-	'PowerUps_Shuffle_Pressed',
-	'PowerUps_Shuffle_Rollover',
-	'PowerUps_Swap_Activated',
-	'PowerUps_Swap_Disabled',
-	'PowerUps_Swap_Pressed',
-	'PowerUps_Swap_Rollover',
 	'tile_1',
 	'tile_2',
 	'tile_hilight'
@@ -966,7 +953,7 @@ Level.prototype.loadImagesAsync = function() {
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
-	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
+	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	level.superFriendImages = Galapago.creatureImages['superFriends'];
 	return Q.all([
@@ -984,11 +971,6 @@ Level.prototype.loadImagesAsync = function() {
 	level.imgpreloadAsync(goldImagePaths).then( function(imageObjectArray) {
 		level.goldImages = imageObjectArray;
 		console.debug('level.goldImages = ' + level.goldImages);
-	}, function failure(message) {
-		throw new Error(message);
-	})/*.done()*/,
-	level.imgpreloadAsync(levelAnimationImagePaths).then( function(imageObjectArray) {
-		level.levelAnimation.initImages(imageObjectArray);
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/]);
@@ -1439,7 +1421,7 @@ Board.prototype.displayQuitButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
-	this.powerUp=new Powerup(this.level.gameImages , this , Level.POWER_UP_SCORE);
+	this.powerUp=new Powerup(this , Level.POWER_UP_SCORE);
 	Level.POWER_UP_SCORE=0;
 };
 
