@@ -957,7 +957,7 @@ Level.prototype.loadImagesAsync = function() {
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
-	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
+	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	level.superFriendImages = Galapago.creatureImages['superFriends'];
 	return Q.all([
@@ -975,11 +975,6 @@ Level.prototype.loadImagesAsync = function() {
 	level.imgpreloadAsync(goldImagePaths).then( function(imageObjectArray) {
 		level.goldImages = imageObjectArray;
 		console.debug('level.goldImages = ' + level.goldImages);
-	}, function failure(message) {
-		throw new Error(message);
-	})/*.done()*/,
-	level.imgpreloadAsync(levelAnimationImagePaths).then( function(imageObjectArray) {
-		level.levelAnimation.initImages(imageObjectArray);
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/]);
