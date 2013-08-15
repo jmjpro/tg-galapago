@@ -1,6 +1,7 @@
 {
 	"assetRootImage": "res/img/",
 	"assetRootAudio": "res/audio/",
+	"collageDirectory" : "collages",
 	"audioExts": "mp3",
 	"bundles": [
 	{
@@ -16,7 +17,7 @@
 		"name": "common",
 		"contents": [
 			"main-menu/main_menu_background.jpg",
-			"main_menu_static.png",
+			"collages/main_menu_static.png",
 			"map_level_ui_static.png",
 			"map_animated.png",
 			"on_board_common_animated.png",
@@ -68,7 +69,7 @@
 			"screen-map/next_level_arrow_up.png",
 			"screen-map/strip_bomb_left_one.png",
 			"screen-map/strip_bomb_left_two.png",
-		"screen-map/strip_bomb_mid.png",
+			"screen-map/strip_bomb_mid.png",
 			"screen-map/strip_bomb_right.png",
 			"screen-map/strip_bonfire.png",
 			"screen-map/strip_game_start_arrow.png",

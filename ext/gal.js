@@ -87,6 +87,7 @@ GAL.prototype.download = function(bundleName) {
     if(!(key in that.lookupTable)){
       // Get the full url to the asset.
       var audioExts = that.manifest.audioExts;
+      var collageDirectory = that.manifest.collageDirectory;
       var keyArray = key.split(".");
       if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
         var url = that.manifest.assetRootAudio + key;
@@ -105,7 +106,16 @@ GAL.prototype.download = function(bundleName) {
         var url = that.manifest.assetRootImage + key;
         var image = new Image();
         image.onload =function() {
+          var collage = false;
+          if(key.indexOf(collageDirectory) > -1){
+            keyArray = key.split("/");
+            key = keyArray[keyArray.length-1];
+            collage = true;       
+          }
           that.lookupTable[key] = image;
+          if(collage){
+            GAL.loadCollageImages(that, key);            
+          }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
             total: bundle.length
@@ -119,6 +129,14 @@ GAL.prototype.download = function(bundleName) {
   })(0);
 };
  
+GAL.loadCollageImages = function(manifest, imageName){
+  var imageCollage = ImageCollage.loadByName(imageName);
+  var images = imageCollage.getImages();
+  for(index in images){
+    var imageId = images[index].id;
+    manifest.lookupTable[imageId] = images[index];
+  }        
+}
  
 /**
 * Adds a callback to fire when a bundle has been loaded.

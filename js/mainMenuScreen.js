@@ -1,7 +1,7 @@
-MainMenuScreen.GAL_PREFIX = 'main-menu/';
+MainMenuScreen.GAL_PREFIX = '';
 
 MainMenuScreen.IMAGE_MAP = {
-	/*"#screen-main-menu" : "main_menu_background.jpg",*/
+	"#screen-main-menu" : "main-menu/main_menu_background.jpg",
 	"#button-change-player" : "main_menu_button_change_player_regular.png",
 	"#button-timed" : "main_menu_button_timed_regular.png",
 	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
@@ -32,7 +32,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
+ 	"button-relaxed" : { "UP" : "button-change-player", "LEFT" : "button-timed", "DOWN" : "button-quit" },
 	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
@@ -44,7 +44,15 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	mainMenuScreen.imageArray = mainMenuScreen.getImages();
+	/*
+	if( callingScreenId == 'screen-loading') {
+		mainMenuScreen.registerImageLoadEvents();
+	}
+	else {
+		mainMenuScreen.setInitialNavItem();
+	}
+	*/
+	mainMenuScreen.setImages();
 	mainMenuScreen.setInitialNavItem();
 	mainMenuScreen.show();
 
@@ -121,20 +129,16 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
-MainMenuScreen.prototype.getImages = function() {
-	var mainMenuScreen, imageCollage, image, imageArray, imageBackground;
+MainMenuScreen.prototype.setImages = function() {
+	var mainMenuScreen, galFilePath;
 	mainMenuScreen = this;
-	imageCollage = ImageCollage.loadByName('main_menu_static.png');
-	imageArray = imageCollage.getImages();
-	imageBackground = LoadingScreen.gal.get(MainMenuScreen.GAL_PREFIX + 'main_menu_background.jpg');
-	$('#screen-main-menu').css('background-image','url(' + imageBackground.src + ')');
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
-		console.debug( selector );
-		image = _.find( imageArray, {'id' : MainMenuScreen.IMAGE_MAP[selector] });
-		$(selector).css('background-image','url(' + image.src + ')');
+		galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[selector];
+		$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
+		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';
 	});
-	return imageArray;
-}; //MainMenuScreen.prototype.getImages()
+}; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
 	var navItem, isTimedMode, level;
@@ -273,18 +277,19 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 }; //MainMenuScreen.prototype.setNavItem()
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
-	var id, image;
-	id = MainMenuScreen.IMAGE_MAP[navItem.selector];
-	image = _.find( this.imageArray, {'id' : id} );
-	navItem.css( 'background-image', 'url(' + image.src + ')' );
+	var galFilePath;
+	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
+	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')' );
+	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
-	var id, galHilightFilePath, image;
-	id = MainMenuScreen.IMAGE_MAP[navItem.selector];
-	idHilight = MainMenuScreen.HILIGHT_IMAGE_MAP[id];
-	image = _.find( this.imageArray, {'id' : idHilight} );
-	navItem.css( 'background-image', 'url(' + image.src + ')' );
+	var galFilePath, galHilightFilePath;
+	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
+	galHilightFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
+	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galHilightFilePath) + ')' );
+	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
+	//navItem[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')';
 };
 
 MainMenuScreen.prototype.registerEventHandlers = function() {
