@@ -27,19 +27,6 @@ Galapago.gameImageNames = [
 	'Bracket_Left',
 	'Bracket_Right',
 	'item_collected_mark',
-	'PowerUps_Flame_Activated',
-	'PowerUps_Flame_Disabled',
-	'PowerUps_Flame_Pressed',
-	'PowerUps_Flame_Rollover',
-	'PowerUps_Holder',
-	'PowerUps_Shuffle_Activated',
-	'PowerUps_Shuffle_Disabled',
-	'PowerUps_Shuffle_Pressed',
-	'PowerUps_Shuffle_Rollover',
-	'PowerUps_Swap_Activated',
-	'PowerUps_Swap_Disabled',
-	'PowerUps_Swap_Pressed',
-	'PowerUps_Swap_Rollover',
 	'tile_1',
 	'tile_2',
 	'tile_hilight'
@@ -1425,7 +1412,7 @@ Board.prototype.displayQuitButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
-	this.powerUp=new Powerup(this.level.gameImages , this , Level.POWER_UP_SCORE);
+	this.powerUp=new Powerup(this , Level.POWER_UP_SCORE);
 	Level.POWER_UP_SCORE=0;
 };
 
