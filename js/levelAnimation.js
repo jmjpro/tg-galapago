@@ -3,7 +3,7 @@ LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
-LevelAnimation.JUMP_TIME_INTERVAL=10;
+LevelAnimation.JUMP_TIME_INTERVAL=100;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [46, 0], id: '2'}, 
@@ -323,41 +323,19 @@ LevelAnimation.prototype.stopBobCervantes = function(imageArray) {
 	this.bobCervantesAnimation.stop();
 }
 
-LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
-	var creatureTypeIt, creatureImagePathIt, creatureImagePath, creatureImagePaths, creatureType;
-	creatureImagePaths = [];
-	creatureImagePathIt = 0;
+LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
+	var path, creatureTypeIt, image, creatureImagePaths, creatureType;
+	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
 			creatureType = creatureTypes[creatureTypeIt];
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION;
-			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
-			creatureImagePathIt++;
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION;
-			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
-			creatureImagePathIt++;
+			image =  LoadingScreen.gal.get(path + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION);
+			this[creatureType + '_rollover'] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
+			image = LoadingScreen.gal.get(path + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION);
+			this[creatureType + '_jumps'] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
 	return creatureImagePaths;
 };
-
-LevelAnimation.prototype.initImages = function(imageArray) {
-	var levelAnimation;
-	var imageId;
-	levelAnimation = this;
-
-	_.each(imageArray, function(image) {
-		if(image.width > 0){
-			imageId = image.id;
-			if(imageId.indexOf('_rollover') > 0){
-				levelAnimation[imageId] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			}
-			if(imageId.indexOf('_jumps') > 0){
-				levelAnimation[imageId] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
-			}
-		}
-	});
-};
-
 
 LevelAnimation.prototype.animateDroppingCreatures = function(animationQ){
 	var deferred;

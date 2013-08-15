@@ -100,10 +100,10 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 644, 460, 46], 'id': 'creatures/beach/blue_crab_rollover.png'},
 			 {'cell': [0, 690, 460, 46], 'id': 'creatures/beach/green_turtle_rollover.png'},
 			 {'cell': [0, 736, 460, 46], 'id': 'creatures/beach/pink_frog_rollover.png'},
-			 {'cell': [0, 792, 460, 46], 'id': 'creatures/beach/red_starfish_rollover.png'},
-			 {'cell': [0, 838, 460, 46], 'id': 'creatures/beach/teal_blob_rollover.png'},
-			 {'cell': [0, 884, 460, 46], 'id': 'creatures/beach/violet_crab_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/beach/yellow_fish_rollover.png'}
+			 {'cell': [0, 782, 460, 46], 'id': 'creatures/beach/red_starfish_rollover.png'},
+			 {'cell': [0, 828, 460, 46], 'id': 'creatures/beach/teal_blob_rollover.png'},
+			 {'cell': [0, 874, 460, 46], 'id': 'creatures/beach/violet_crab_rollover.png'},
+			 {'cell': [0, 920, 460, 46], 'id': 'creatures/beach/yellow_fish_rollover.png'}
 		]
 	},
 	{
@@ -119,10 +119,10 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 644, 460, 46], 'id': 'creatures/forest/blue_beetle_rollover.png'},
 			 {'cell': [0, 690, 460, 46], 'id': 'creatures/forest/green_butterfly_rollover.png'},
 			 {'cell': [0, 736, 460, 46], 'id': 'creatures/forest/pink_lizard_rollover.png'},
-			 {'cell': [0, 792, 460, 46], 'id': 'creatures/forest/red_beetle_rollover.png'},
-			 {'cell': [0, 838, 460, 46], 'id': 'creatures/forest/teal_bug_rollover.png'},
-			 {'cell': [0, 884, 460, 46], 'id': 'creatures/forest/violet_moth_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/forest/yellow_frog_rollover.png'}
+			 {'cell': [0, 782, 460, 46], 'id': 'creatures/forest/red_beetle_rollover.png'},
+			 {'cell': [0, 828, 460, 46], 'id': 'creatures/forest/teal_bug_rollover.png'},
+			 {'cell': [0, 874, 460, 46], 'id': 'creatures/forest/violet_moth_rollover.png'},
+			 {'cell': [0, 920, 460, 46], 'id': 'creatures/forest/yellow_frog_rollover.png'}
 		]
 	},
 	{
@@ -138,10 +138,10 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [0, 644, 460, 46], 'id': 'creatures/cave/blue_crystal_rollover.png'},
 			 {'cell': [0, 690, 460, 46], 'id': 'creatures/cave/green_frog_rollover.png'},
 			 {'cell': [0, 736, 460, 46], 'id': 'creatures/cave/pink_spike_rollover.png'},
-			 {'cell': [0, 792, 460, 46], 'id': 'creatures/cave/red_beetle_rollover.png'},
-			 {'cell': [0, 838, 460, 46], 'id': 'creatures/cave/teal_flyer_rollover.png'},
-			 {'cell': [0, 884, 460, 46], 'id': 'creatures/cave/violet_lizard_rollover.png'},
-			 {'cell': [0, 930, 460, 46], 'id': 'creatures/cave/yellow_bug_rollover.png'}
+			 {'cell': [0, 782, 460, 46], 'id': 'creatures/cave/red_beetle_rollover.png'},
+			 {'cell': [0, 828, 460, 46], 'id': 'creatures/cave/teal_flyer_rollover.png'},
+			 {'cell': [0, 874, 460, 46], 'id': 'creatures/cave/violet_lizard_rollover.png'},
+			 {'cell': [0, 920, 460, 46], 'id': 'creatures/cave/yellow_bug_rollover.png'}
 		]
 	}
 ];
