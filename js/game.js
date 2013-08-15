@@ -1,31 +1,11 @@
-﻿Galapago.CREATURE_BEACH_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
-[{cell: [0, 46], id: 'y1'},{cell: [46, 46], id: 'y2'},{cell: [92, 46], id: 'y3'}],
-[{cell: [0, 92], id: 'g1'},{cell: [46, 92], id: 'g2'},{cell: [92, 92], id: 'g3'}],
-[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
-[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
-[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
-[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
-]
-
-Galapago.CREATURE_CAVE_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'g1'},{cell: [46, 0], id: 'g2'},{cell: [92, 0], id: 'g3'}],
-[{cell: [0, 46], id: 'b1'},{cell: [46, 46], id: 'b2'},{cell: [92, 46], id: 'b3'}],
-[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
-[{cell: [0, 138], id: 'p1'},{cell: [46, 138], id: 'p2'},{cell: [92, 138], id: 'p3'}],
-[{cell: [0, 184], id: 'v1'},{cell: [46, 184], id: 'v2'},{cell: [92, 184], id: 'v3'}],
-[{cell: [0, 230], id: 'r1'},{cell: [46, 230], id: 'r2'},{cell: [92, 230], id: 'r3'}],
-[{cell: [0, 276], id: 't1'},{cell: [46, 276], id: 't2'},{cell: [92, 276], id: 't3'}]
-]
-
-Galapago.CREATURE_FOREST_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
-[{cell: [0, 46], id: 'r1'},{cell: [46, 46], id: 'r2'},{cell: [92, 46], id: 'r3'}],
-[{cell: [0, 92], id: 'y1'},{cell: [46, 92], id: 'y2'},{cell: [92, 92], id: 'y3'}],
-[{cell: [0, 138], id: 'g1'},{cell: [46, 138], id: 'g2'},{cell: [92, 138], id: 'g3'}],
-[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
-[{cell: [0, 230], id: 'p1'},{cell: [46, 230], id: 'p2'},{cell: [92, 230], id: 'p3'}],
-[{cell: [0, 276], id: 'v1'},{cell: [46, 276], id: 'v2'},{cell: [92, 276], id: 'v3'}]
+﻿Galapago.CREATURE_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'},{cell: [138, 0], id: 'b4'}],
+[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'},{cell: [138, 46], id: 'g4'}],
+[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'},{cell: [138, 92], id: 'p4'}],
+[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'},{cell: [138, 138], id: 'r4'}],
+[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'},{cell: [138, 184], id: 't4'}],
+[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'},{cell: [138, 230], id: 'v4'}],
+[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'},{cell: [138, 276], id: 'y4'}]
 ]
 
 /* begin class Galapago */
@@ -855,8 +835,7 @@ Level.prototype.getSuperFriendByColorId = function(colorId) {
 	sfType = _.filter( Level.SUPER_FRIENDS, function(sfIt) {
 		return sfIt.startsWith(colorId);
 	})[0];
-	sfImagePath = Level.SUPER_FRIEND_PATH + sfType + Galapago.IMAGE_PATH_SUFFIX;
-	sfImage = this.getImageByPath(this.superFriendImages, sfImagePath);
+	sfImage = this.superFriendImages[sfType];
 	sf = new SuperFriend(sfImage, sfType.replace('_friend',''));
 	return sf;
 }; //Level.prototype.getCreatureByColorId
@@ -892,39 +871,12 @@ Level.prototype.setBoard = function(board) {
 	board.level = this;
 };
 
-Level.prototype.buildCreatureImagePaths = function() {
-	var creatureTypeIt, creatureImagePathIt, creatureImagePath, creatureImagePaths, spriteIt, creatureType, spriteNumber;
-	creatureImagePaths = [];
-	creatureImagePathIt = 0;
-	for( creatureTypeIt = 0; creatureTypeIt < this.creatureTypes.length; creatureTypeIt++ ) {
-		for( spriteIt = 0; spriteIt < Level.CREATURE_SPRITE_NUMBERS.length; spriteIt++ ) {
-			creatureType = this.creatureTypes[creatureTypeIt];
-			spriteNumber = Level.CREATURE_SPRITE_NUMBERS[spriteIt];
-			creatureImagePath = Level.CREATURE_PATH + this.bgTheme + '/' + creatureType + '_' + spriteNumber + '.' + Level.BLOB_IMAGE_EXTENSION;
-			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
-			creatureImagePathIt++;
-		}
-	}
-	//console.debug('creatureImagePaths: ' + creatureImagePaths);
-	return creatureImagePaths;
-}; //Level.prototype.buildCreatureImagePaths()
-
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
 	goldImagePaths = [];
 	goldImagePaths[0] = Level.GOLD_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
-
-Level.prototype.buildSuperFriendImagePaths = function() {
-	var superFriendPaths, superFriendPath, superFriendIt;
-	superFriendPaths = [];
-	for( superFriendIt = 0; superFriendIt < Level.SUPER_FRIENDS.length; superFriendIt++ ) {
-		superFriendPath = Level.SUPER_FRIEND_PATH + Level.SUPER_FRIENDS[superFriendIt] + Galapago.IMAGE_PATH_SUFFIX;
-		superFriendPaths[superFriendIt] = superFriendPath;
-	}
-	return superFriendPaths;
-}; //Level.prototype.buildSuperFriendImagePaths()
 
 Level.prototype.imgpreloadAsync = function(imagePaths) {
 	var deferred, imageObjectArray, imageObjectArrayAsString;
@@ -949,16 +901,19 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/beach/creature_strip_beach.png"),Galapago.CREATURE_BEACH_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_beach_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/forest/creature_strip_forest.png"),Galapago.CREATURE_FOREST_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_forest_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
 				break;
 			case 'cave':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/cave/creature_strip_cave.png"),Galapago.CREATURE_CAVE_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_cave_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
+		}
+		if(!('superFriends'  in Galapago.creatureImages)){
+			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(creatureSpriteSheet);
 		}
 	}
 	return Galapago.creatureImages[bgTheme];
@@ -967,14 +922,29 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
 	var images={};
 	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
+		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length - 1;y++){
 			var image = creatureSpriteSheet.getSpriteNew([y,x]);
 			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
 			var creatureType = _.filter(creatureTypes, function(creatureType) {
 				return creatureType.startsWith(id[0]);
 			})[0];
 			image.id = creatureType + '_' + id[1]; 
-			creatureSpriteSheet.spriteMatrix[x][y].id;
+			images[image.id] = image;
+		}
+	}
+	return images;
+}
+
+Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
+	var images={};
+	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
+		for(var y=creatureSpriteSheet.spriteMatrix[x].length - 1; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
+			var image = creatureSpriteSheet.getSpriteNew([y,x]);
+			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
+			var sfType = _.filter(Level.SUPER_FRIENDS, function(sfType) {
+				return sfType.startsWith(id[0]);
+			})[0];
+			image.id = sfType; 
 			images[image.id] = image;
 		}
 	}
@@ -982,15 +952,14 @@ Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatu
 }
 
 Level.prototype.loadImagesAsync = function() {
-	var level, creatureImagePaths, goldImagePaths, gameImagePaths, dangerBarImagePaths, superFriendImagePaths, levelAnimationImagePaths;
+	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, levelAnimationImagePaths;
 	level = this;
-	creatureImagePaths = level.buildCreatureImagePaths();
 	goldImagePaths = level.buildGoldImagePaths();
-	superFriendImagePaths = level.buildSuperFriendImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 	levelAnimationImagePaths = LevelAnimation.buildImagePaths(level.bgTheme, level.creatureTypes);
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
+	level.superFriendImages = Galapago.creatureImages['superFriends'];
 	return Q.all([
 	level.imgpreloadAsync(gameImagePaths).then( function(imageObjectArray) {
 		level.gameImages = imageObjectArray;
@@ -1000,11 +969,6 @@ Level.prototype.loadImagesAsync = function() {
 	})/*.done()*/,
 	level.imgpreloadAsync(dangerBarImagePaths).then( function(imageObjectArray) {
 		level.dangerBarImages = imageObjectArray;
-	}, function failure(message) {
-		throw new Error(message);
-	})/*.done()*/,
-	level.imgpreloadAsync(superFriendImagePaths).then( function(imageObjectArray) {
-		level.superFriendImages = imageObjectArray;
 	}, function failure(message) {
 		throw new Error(message);
 	})/*.done()*/,
@@ -1642,27 +1606,33 @@ Board.prototype.build = function(tilePositions) {
     restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	restoreLookup;
 	if(restoreLookupString != undefined){
-	 restoreLookup = JSON.parse(restoreLookupString);
-	 this.score = restoreLookup['score'];
-	 this.drawScore();
-	 var nilCollection = restoreLookup['nilCollection'];
-	 var image ;
-	 var id;
-	 for(var key in nilCollection){
-	    image=null;
-		id=null;
-		var tempimages = [];
-		tempimages=tempimages.concat(this.level.creatureImages, this.level.superFriendImages, this.level.goldImages);
-	    for(var creatureKey in tempimages){
-		 id = tempimages[creatureKey].id;
-		  if(id == nilCollection[key]){
-		     image = tempimages[creatureKey];
-		      break;
-		  }
-		  }
-		  var blobItem = new BlobItem(image, 0);
-		  this.blobCollection.blobCollection[id] = blobItem;
-	 }
+		restoreLookup = JSON.parse(restoreLookupString);
+		this.score = restoreLookup['score'];
+		this.drawScore();
+		var nilCollection = restoreLookup['nilCollection'];
+		var image ;
+		var id;
+		for(var key in nilCollection){
+		    image=null;
+			id=null;
+			if(nilCollection[key] in this.level.creatureImages){
+				id = nilCollection[key];
+				image = this.level.creatureImages[id];
+			}else if(nilCollection[key] in this.level.superFriendImages){
+				id = nilCollection[key];
+				image = this.level.superFriendImages[id];
+			}else{
+			    for(var creatureKey in this.level.goldImages){
+					id = this.level.goldImages[creatureKey].id;
+				  	if(id == nilCollection[key]){
+				    	image = this.level.goldImages[creatureKey];
+				    	break;
+				  	}
+				}
+			}
+			var blobItem = new BlobItem(image, 0);
+			this.blobCollection.blobCollection[id] = blobItem;
+		}
 	}
 	//yj: populate the grid
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {

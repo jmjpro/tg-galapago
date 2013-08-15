@@ -41,8 +41,8 @@
     {
 		"name": "cave",
 		"contents": [
-			"creatures/on_board_forest_static.png",
-			"collages/on_board_forest_animated.png"
+			"creatures/on_board_cave_static.png",
+			"collages/on_board_cave_animated.png"
 		]
     },
 	{
