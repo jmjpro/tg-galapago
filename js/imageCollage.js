@@ -15,7 +15,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'map_level_ui_static.png',
+		'collageId': 'collages/map_level_ui_static.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 52, 514], 'id': 'screen-game/danger_bar.png'},
 			 {'cell': [52, 0, 70, 71], 'id': 'screen-game/PowerUps_Flame_Disabled.png'},
@@ -55,7 +55,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'level_ui_animated.png',
+		'collageId': 'collages/level_ui_animated.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 1029, 149], 'id': 'screen-game/Powerup_active_strip.png'},
 			 {'cell': [0, 150, 679, 113], 'id': 'screen-game/Powerup_ready_strip.png'},
@@ -65,7 +65,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'map_animated.png',
+		'collageId': 'collages/map_animated.png',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 5700, 216], 'id': 'screen-map/strip_bonfire.png'},
 			 {'cell': [0, 216, 4088, 210], 'id': 'screen-map/strip_bomb_left_one.png'},
@@ -77,7 +77,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'on_board_common_animated',
+		'collageId': 'collages/on_board_common_animated',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 244, 2336], 'id': 'screen-game/creature_explosion_strip.png'},
 			 {'cell': [292, 0, 466, 690], 'id': 'screen-game/lightning_strip.png'},
@@ -88,7 +88,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'on_board_beach_animated',
+		'collageId': 'collages/on_board_beach_animated',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/beach/blue_crab_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/beach/green_turtle_jumps.png'},
@@ -107,7 +107,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'on_board_forest_animated',
+		'collageId': 'collages/on_board_forest_animated',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/forest/blue_beetle_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/forest/green_butterfly_jumps.png'},
@@ -126,7 +126,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'on_board_cave_animated',
+		'collageId': 'collages/on_board_cave_animated',
 		'imageCoordinateArray': [
 			 {'cell': [0, 0, 644, 92], 'id': 'creatures/cave/blue_crystal_jumps.png'},
 			 {'cell': [0, 92, 644, 92], 'id': 'creatures/cave/green_frog_jumps.png'},
