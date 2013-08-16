@@ -284,12 +284,11 @@ function LevelAnimation(layer){
 	this.makeMatchAnimation = null;
 	this.bobCervantesAnimation = null;
 	this.sparklesAnimation = null;
-	this.initSparkles();
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
 	var img, canvasBC, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
-	img = LoadingScreen.gal.get("screen-game/talking_heads_base.png");
+	img = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_base.png");
 	canvasBC = $('#layer-bob-cervantes');
 	canvasBC[0].width = img.width;
 	canvasBC[0].height = img.height;
@@ -297,9 +296,9 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	canvasBC.css('top', '0px');
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	layer.drawImage(img, 0, 0);
-	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_left_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
-	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_right_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
-	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_mouth_strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
+	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_left_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_right_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_mouth_strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
 	imgLeftHeadEyes = bcLeftHeadImageSpriteSheet.getSpriteNew([0,0]);
 	imgLeftHeadEyes.onload =function() {
 		layer.drawImage(imgLeftHeadEyes, 0, 0);
@@ -604,7 +603,7 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
 	var  image, powerAchievedImageSpriteSheet;
-	image = LoadingScreen.gal.get("screen-game/Powerup_ready_strip.png");
+	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "Powerup_ready_strip.png");
 	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
 	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
 	function animatePowerAchieved(){
@@ -652,7 +651,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var image, imgCnt, validArray = true, imageArray = [];
-	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
+	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint_strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
@@ -714,7 +713,7 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 
 LevelAnimation.prototype.initSparkles = function() {
 	if(!LevelAnimation.sparklesImages.length){
-		var image = LoadingScreen.gal.get("screen-game/creature_explosion_strip.png");
+		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "creature_explosion_strip.png");
 		var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
 		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
 			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));

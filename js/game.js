@@ -158,10 +158,19 @@ Galapago.setLevel = function(levelId) {
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
 	console.log( 'theme: ' + theme + '_' + this.level.bgSubTheme );
-	LoadingScreen.gal.download(theme);
+	LoadingScreen.gal.download('board-common');
+	LoadingScreen.gal.onLoaded('board-common', function(result) {
+		if (result.success) {
+			console.debug('board-common resource bundle loaded');
+			LoadingScreen.gal.download(theme);
+		}
+	});
 	LoadingScreen.gal.onLoaded(theme, function(result) {
 		if (result.success) {
 			console.debug('theme ' + theme + ' resource bundle loaded');
+			Galapago.level.levelAnimation = new LevelAnimation();
+			Galapago.level.levelAnimation.initSparkles();
+			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
 			Level.registerEventHandlers();
 		}
@@ -803,8 +812,8 @@ function Level(id) {
 	this.dangerBarImages = [];
 	this.layerBackground = null;
 	this.neighbors = {};
-	this.levelAnimation = new LevelAnimation();
-	this.bubbleTip = new BubbleTip(this.levelAnimation);
+	this.levelAnimation = null;
+	this.bubbleTip = null;
 	this.isUnlocked = false;
 }
 
@@ -3678,13 +3687,13 @@ DangerBar.prototype.update = function(sender) {
 	fillNormal.height = fillHeight;
 	fillDanger.height = fillHeight;
 	//clear the space between the top cap and the bottom cap
-	dangerBar.layer.clearRect( 0, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+	dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 	
 	if( ratio > DangerBar.RATIO_DANGER ) {
-		dangerBar.layer.drawImage( fillNormal, 0, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
+		dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
 	}
 	else if( ratio > 0 ) { //0 < ratio <= DangerBar.RATIO_DANGER
-		dangerBar.layer.drawImage( fillDanger, 0, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
+		dangerBar.layer.drawImage( fillDanger, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
 
 		if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
 		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
@@ -3695,7 +3704,7 @@ DangerBar.prototype.update = function(sender) {
 	}
 	else { //ratio = 0; timeout!
 		//clear the space between the top cap and the bottom cap, including the bottom cap
-		dangerBar.layer.clearRect( 0, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.stop();
 		Galapago.level.board.dangerBarEmptied();
 	}

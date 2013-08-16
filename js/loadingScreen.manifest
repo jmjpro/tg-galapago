@@ -20,8 +20,6 @@
 			"collages/main_menu_static.png",
 			"collages/map_level_ui_static.png",
 			"collages/map_animated.png",
-			"collages/on_board_common_animated.png",
-			"collages/level_ui_animated.png",
 			"screen-map/Map.jpg",
 			"screen-map/button_menu_map.png",
 			"screen-map/button_play_map.png",
@@ -53,24 +51,14 @@
 			"dialogs/button_medium_highlight.png",
 			"dialogs/button_medium_regular.png",
 			"dialogs/button_small_highlight.png",
-			"dialogs/button_small_regular.png",
-			"dialogs/drop_down_menu.png",
-			"dialogs/profiles_name_area.png",
-			"dialogs/V_dis.png",
-			"dialogs/V_regular.png",
-			"dialogs/X_dis.png",
-			"dialogs/X_regular.png",
-			"dialogs/keyboard/keypad_button_delete_pressed.png",
-			"dialogs/keyboard/keypad_button_done_pressed.png",
-			"dialogs/keyboard/keypad_button_letter_pressed.png",
-			"dialogs/keyboard/keypad_button_reset_pressed.png",
-			"dialogs/keyboard/keypad_button_space_pressed.png",
-			"dialogs/keyboard/keypad_cursor_delete.png",
-			"dialogs/keyboard/keypad_cursor_done.png",
-			"dialogs/keyboard/keypad_cursor_letter.png",
-			"dialogs/keyboard/keypad_cursor_reset.png",
-			"dialogs/keyboard/keypad_cursor_space.png",
-			"dialogs/keyboard/keypad_regular.png"
+			"dialogs/button_small_regular.png"
+		]
+	},
+	{
+		"name": "board-common",
+		"contents": [
+			"collages/on_board_common_animated.png",
+			"collages/level_ui_animated.png"
 		]
 	},
 	{
@@ -107,6 +95,28 @@
 	 		"background/background_cave_f.jpg",
 			"creatures/on_board_cave_static.png",
 			"collages/on_board_cave_animated.png"
+		]
+    },
+    {
+		"name": "dialogs",
+		"contents": [
+			"dialogs/drop_down_menu.png",
+			"dialogs/profiles_name_area.png",
+			"dialogs/V_dis.png",
+			"dialogs/V_regular.png",
+			"dialogs/X_dis.png",
+			"dialogs/X_regular.png",
+			"dialogs/keyboard/keypad_button_delete_pressed.png",
+			"dialogs/keyboard/keypad_button_done_pressed.png",
+			"dialogs/keyboard/keypad_button_letter_pressed.png",
+			"dialogs/keyboard/keypad_button_reset_pressed.png",
+			"dialogs/keyboard/keypad_button_space_pressed.png",
+			"dialogs/keyboard/keypad_cursor_delete.png",
+			"dialogs/keyboard/keypad_cursor_done.png",
+			"dialogs/keyboard/keypad_cursor_letter.png",
+			"dialogs/keyboard/keypad_cursor_reset.png",
+			"dialogs/keyboard/keypad_cursor_space.png",
+			"dialogs/keyboard/keypad_regular.png"
 		]
     },
     {
