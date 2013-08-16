@@ -2650,6 +2650,16 @@ Board.prototype.handleRightArrow = function() {
 		board.navigationLock = false;
 		return this; //chainable;
 		}).done();
+	}else { // move to powerup if on the rightmost 
+	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
+			this.powerUp.addListner();
+		}else{
+			board.tileActive.setInactiveAsync();
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			this.hotspot = Board.HOTSPOT_MENU;
+		}
+	
 	}
 	return this; //chainable
 }; //Board.prototype.handleRightArrow
