@@ -2582,6 +2582,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
+			board.reshuffleService.stop();
 			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
 			break;
 			//gameMenu.show(this);
@@ -2589,6 +2590,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
+			board.reshuffleService.stop();
 			window.dialog = new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
 		    break;
 		case null:
