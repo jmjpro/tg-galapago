@@ -16,7 +16,6 @@ Galapago.CONFIG_FILE_PATH = 'js/levels.json';
 Galapago.CONFIG_FILE_PATH_YA = 'js/levels-ya.json';
 Galapago.NUM_LEVELS = 70;
 Galapago.GAME_SCREEN_GAL_PREFIX = 'screen-game/';
-Galapago.DANGER_BAR_IMAGE_DIRECTORY = 'res/img/progress-bar/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
@@ -40,13 +39,12 @@ Galapago.gameImageNames = [
 ];
 Galapago.dangerBarImageNames = [
 	'danger_bar',
-	'progress_bar',
-	/*'progress_bar_cap_bottom01',
-	'progress_bar_cap_bottom02',
-	'progress_bar_cap_top01',
-	'progress_bar_cap_top02',*/
-	'progress_bar_fill01',
-	'progress_bar_fill02'
+	/*'danger_bar_cap_bottom01',
+	'danger_bar_cap_bottom02',
+	'danger_bar_cap_top01',
+	'danger_bar_cap_top02',*/
+	'danger_bar_fill01',
+	'danger_bar_fill02'
 ];
 Galapago.LAYER_BACKGROUND = 'layer-background';
 
@@ -128,7 +126,7 @@ Galapago.buildDangerBarImagePaths = function() {
 	var dangerBarImagePaths;
 	dangerBarImagePaths = [];
 	_.each( Galapago.dangerBarImageNames, function(imageName) {
-		dangerBarImagePaths.push(Galapago.DANGER_BAR_IMAGE_DIRECTORY + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		dangerBarImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
 	});
 	return dangerBarImagePaths;
 }; //Galapago.buildDangerBarImagePaths()
@@ -766,9 +764,6 @@ MapCell.prototype.toString = function() {
 /* end class MapCell */
 
 /* begin class Level */
-Level.CREATURE_PATH = 'res/img/creatures/';
-Level.SUPER_FRIEND_PATH = 'res/img/friends/';
-Level.GOLD_PATH = 'res/img/gold-tiles/';
 Level.BLOB_IMAGE_EXTENSION = 'png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
@@ -814,10 +809,8 @@ function Level(id) {
 }
 
 Level.prototype.getGold = function() {
-	var goldImagePath, goldImage, gold;
-	goldImagePath = Level.GOLD_PATH + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
-	goldImage = this.getImageByPath(this.goldImages, goldImagePath);
-	gold = new Gold(goldImage);
+	var gold;
+	gold = new Gold(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1.png'));
 	return gold;
 };
 
@@ -866,19 +859,18 @@ Level.prototype.toString = function() {
 
 Level.prototype.initImages = function(imageArray) {
 	var level;
-	var imageId;
 	level = this;
 
 	_.each(imageArray, function(image) {
-		imageId = image.id;
-		level[imageId] = image;
+		image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+		level.gameImages[image.id] = image;
 	});
 }; //Level.prototype.initImages
 
 Level.prototype.setBoard = function(board) {
 	this.board = board;
 	board.level = this;
-};
+}; //Level.prototype.setBoard()
 
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
@@ -910,7 +902,7 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_beach_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+ 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_beach_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
@@ -961,20 +953,21 @@ Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
 }; //Level.prototype.loadSuperFriends()
 
 Level.prototype.loadImages = function() {
-	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, levelAnimationImagePaths, levelAnimationImages;
-	level = this;
+	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, levelAnimationImagePaths, levelAnimationImages, image, gameImages;
+	level = this;	
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
 	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
-	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
+	gameImages = [];
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	level.superFriendImages = Galapago.creatureImages['superFriends'];
 
 	_.each( gameImagePaths, function( gameImagePath ) {
 		//console.debug( gameImagePath );
-		level.gameImages.push( LoadingScreen.gal.get( gameImagePath ) );
+		image = LoadingScreen.gal.get( gameImagePath );
+		gameImages.push( image );
 	});
-	level.initImages(level.gameImages);
+	level.initImages(gameImages);
 
 	_.each( dangerBarImagePaths, function( dangerBarImagePath ) {
 		level.dangerBarImages.push( LoadingScreen.gal.get( dangerBarImagePath ) );
@@ -988,7 +981,7 @@ Level.prototype.loadImages = function() {
 	_.each( levelAnimationImagePaths, function( levelAnimationImagePath ) {
 		levelAnimationImages.push( LoadingScreen.gal.get( levelAnimationImagePath ) );
 	});
-	level.levelAnimation.initImages( levelAnimationImages, level.creatureTypes );
+	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
 
 }; //Level.prototype.loadImages()
 
@@ -1036,7 +1029,7 @@ Level.prototype.display = function() {
 		level.board.setActiveTile();
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
 		return level; //chainable
-		}).done();
+		});
 	}
 	else {
 		return level; //chainable
@@ -1390,14 +1383,14 @@ Board.prototype.displayLevelName = function() {
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage, buttonHilight;
+	var textColor, layer, menuButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
 	menuButtonImage = this.blobCollection.button_menu;
-	buttonHilight = this.blobCollection.button_hilight;
+	gameButtonHilight = this.blobCollection.game_button_hilight;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
-		layer.drawImage(buttonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, buttonHilight.width, buttonHilight.height);
+		layer.drawImage(gameButtonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, gameButtonHilight.width, gameButtonHilight.height);
 		/*
 		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
 		layer.strokeRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
@@ -1411,17 +1404,17 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage, buttonHilight;
+	var textColor, layer, quitButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
 	quitButtonImage = this.blobCollection.button_quit;
-	buttonHilight = this.blobCollection.button_hilight;
+	gameButtonHilight = this.blobCollection.game_button_hilight;
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
 	
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
-		layer.drawImage(buttonHilight, quitImageX - 1, quitImageY - 1, buttonHilight.width, buttonHilight.height);
+		layer.drawImage(gameButtonHilight, quitImageX - 1, quitImageY - 1, gameButtonHilight.width, gameButtonHilight.height);
 		/*
 		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
 		layer.strokeRect(quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
@@ -3231,7 +3224,7 @@ Tile.prototype.setSelectedAsync = function() {
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.tile_2, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_2, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3240,7 +3233,7 @@ Tile.prototype.setSelectedAsync = function() {
 
 Tile.prototype.setUnselected = function() {
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	//this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
@@ -3266,7 +3259,7 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	offset = 1;
 	width = Board.TILE_WIDTH * offset;
 	height = Board.TILE_HEIGHT * offset;
-	layer.drawImage( LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_1.png'), x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_1, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
@@ -3278,7 +3271,7 @@ Tile.prototype.drawHilight = function() {
 	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
 	width = Board.TILE_WIDTH/* + 2 * offset*/;
 	height = Board.TILE_HEIGHT/* + 2 * offset*/;
-	layer.drawImage( LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_hilight.png'), x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_hilight, x, y, width, height );
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.eraseHilight = function() {	
@@ -3568,12 +3561,12 @@ DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 383;
-DangerBar.PROGRESS_BAR_TOP = 110;
+DangerBar.DANGER_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
-DangerBar.FILL_TOP_ADJUSTMENT = 48;
+DangerBar.FILL_ADJUSTMENT_LEFT = 18;
+DangerBar.FILL_ADJUSTMENT_TOP = 33;
 DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.LEFT = 1064;
-DangerBar.PROGRESS_BAR_FILL_ADJUSTMENT = 12;
 DangerBar.FILL_WIDTH = 15;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
@@ -3582,14 +3575,14 @@ function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
 	this.initImages(imageArray);
 	this.canvas = $('#layer-danger-bar'); 
-	this.canvas[0].width = this.progress_bar.width;
-	this.canvas[0].height = this.progress_bar.height;
-	this.canvas.css( 'left', DangerBar.LEFT + DangerBar.PROGRESS_BAR_FILL_ADJUSTMENT + 'px' );
-	this.canvas.css( 'top', DangerBar.PROGRESS_BAR_TOP + 'px' );
+	this.canvas[0].width = this.danger_bar.width;
+	this.canvas[0].height = this.danger_bar.height;
+	this.canvas.css( 'left', DangerBar.LEFT + 'px' );
+	this.canvas.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
 	this.layer = this.canvas[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
-	this.fillTop = DangerBar.FILL_TOP_ADJUSTMENT;
+	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
 	this.fillTopInitial = this.fillTop;
 	this.fillHeight = DangerBar.CAP_BOTTOM_TOP - DangerBar.CAP_TOP_TOP;
 	this.fillHeightInitial = this.fillHeight;
@@ -3610,16 +3603,16 @@ DangerBar.prototype.initImages = function(imageArray) {
 	dangerBar = this;
 
 	_.each(imageArray, function(image) {
-		imageId = image.id;
+		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
 		dangerBar[imageId] = image;
 	});
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.layerBackground.drawImage( this.progress_bar, DangerBar.LEFT, DangerBar.PROGRESS_BAR_TOP, this.progress_bar.width, this.progress_bar.height );
-	//this.layer.drawImage( this.progress_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.progress_bar_cap_top01.width, this.progress_bar_cap_top01.height );
-	//this.layer.drawImage( this.progress_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.progress_bar_cap_bottom01.width, this.progress_bar_cap_bottom01.height );
-	this.layer.drawImage( this.progress_bar_fill01, 0, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
+	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
+	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
+	this.layer.drawImage( this.danger_bar_fill01, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3670,10 +3663,10 @@ DangerBar.prototype.resume = function() {
 DangerBar.prototype.update = function(sender) {
 	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
 	dangerBar = Galapago.level.dangerBar;
-	fillNormal = dangerBar.progress_bar_fill01;
-	fillDanger = dangerBar.progress_bar_fill02;
-	bottomCapNormal = dangerBar.progress_bar_cap_bottom01;
-	bottomCapDanger = dangerBar.progress_bar_cap_bottom02;
+	fillNormal = dangerBar.danger_bar_fill01;
+	fillDanger = dangerBar.danger_bar_fill02;
+	bottomCapNormal = dangerBar.danger_bar_cap_bottom01;
+	bottomCapDanger = dangerBar.danger_bar_cap_bottom02;
 	dangerBar.timeRemainingMs -= DangerBar.REFRESH_INTERVAL_SEC * 1000;
 	ratio = dangerBar.timeRemainingMs / dangerBar.initialTimeMs;
 	console.debug( 'danger bar time remaining ' + dangerBar.timeRemainingMs/1000 + ' sec (' + Math.round(ratio* 100) + '%)' );

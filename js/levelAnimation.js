@@ -372,16 +372,17 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkImageSpriteSheet;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
-	var tileActive = board.tileActive;
+	tileActive = board.tileActive;
 	if(!tileActive.blob){
 		return;
 	}
-	var imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
-	var rolloverImageSpriteSheet = this[imageId];
+	imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
+	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
 		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -392,9 +393,9 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 		}
 	}
 	if(rolloverImageSpriteSheet){
-		var tileMarkImageSpriteSheet;
 		if(markTile){ 
-			tileMarkImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
+			tileMark = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_mark_strip.png');
+			tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();

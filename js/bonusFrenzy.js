@@ -186,7 +186,7 @@ BonusFrenzy.prototype.startMoving = function(){
 	var layer = this.layer;
 	function fly(){		
 	    layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
-		layer.drawImage( Galapago.level.tile_hilight, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		layer.drawImage( Galapago.level.gameImages.tile_hilight, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		for (var key in  bonusFrenzy.randomCreatureMap){
 			var tile =  bonusFrenzy.randomCreatureMap[key];
 			if(tile.yCoord == undefined){

@@ -41,7 +41,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {'cell': [281, 172, 27, 23], 'id': 'screen-map/next_level_arrow_up.png'},
 			 {'cell': [319, 0, 56, 56], 'id': 'screen-game/tile_2.png'},
 			 {'cell': [319, 56, 52, 52], 'id': 'screen-game/tile_hilight.png'},
-			 {'cell': [281, 172, 27, 23], 'id': 'screen-game/tile_1.png'},
+			 {'cell': [319, 108, 46, 46], 'id': 'screen-game/tile_1.png'},
 			 {'cell': [52, 284, 150, 55], 'id': 'screen-map/map_button_regular.png'},
 			 {'cell': [202, 284, 150, 255], 'id': 'screen-map/map_button_hilight.png'},
 			 {'cell': [52, 339, 120, 47], 'id': 'screen-game/game_button_regular.png'},
