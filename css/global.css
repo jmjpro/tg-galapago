@@ -126,10 +126,6 @@ ul#map-nav>li {
 	height: 55px;
 }
 
-.map-nav-border {
-	background: url('res/img/screen-map/button_cursor_map.png') no-repeat left top;
-}
-
 img#map-nav-cursor {
 	position:relative;
 	top: -5px;
