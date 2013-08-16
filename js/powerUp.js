@@ -67,6 +67,17 @@ function Powerup(board ,powerupPoints) {
 	}	
 	//this.addListner();
 }
+Powerup.prototype.activatePowerUpUsingCheatCode = function(){
+	console.log('Powerup CheatCode used');
+	if(!this.flipflopPowerAchieved){
+		this.flipflopPowerAchieved = true;
+	 }else if(!this.firePowerAchieved){
+		this.firePowerAchieved = true;
+	 }else if(!this.shufflerPowerAchieved){
+		this.shufflerPowerAchieved = true;
+	 }
+	 this.update();
+}
 
 Powerup.prototype.addListner = function(){
    var powerup = this;

@@ -1189,6 +1189,9 @@ Level.registerEventHandlers = function() {
 				board.completeAnimationAsync();
 				break;
 			case 49: // numeric 1
+				board.powerUp.activatePowerUpUsingCheatCode();
+				evt.stopPropagation();
+				evt.preventDefault();
 				//Galapago.setLevel('level_01');
 				break;
 			case 50: // numeric 2
