@@ -1152,6 +1152,10 @@ Level.registerEventHandlers = function() {
 		if(board.animationQ.length){
 			return;
 		}
+		if(board.level.levelCompleted){
+			board.setComplete();
+			return;
+		}
 		//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
@@ -2401,7 +2405,12 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
-			board.setComplete();
+			if(board.level.id==1){
+				board.level.bubbleTip.showBubbleTip(i18n.t("Game Tips.BonusFrienzy tip"));
+				board.level.levelCompleted = true;
+			}else{
+				board.setComplete();
+			}
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
@@ -2427,7 +2436,12 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
 	board.tileActive.setActiveAsync().done();
 	if( board.blobCollection.isEmpty()){
-		board.setComplete();
+		if(board.level.id==1){
+			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrienzy tip'));
+			board.level.levelCompleted = true;
+		}else{
+			board.setComplete();
+		}
 	}
 }
 
