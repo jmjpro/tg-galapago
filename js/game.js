@@ -2101,6 +2101,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		}
 		if(tilesMovedEventProcessorResult.totalMatchedCocoonTiles.length > 0 ) {
 			Galapago.audioPlayer.playCocoonMatch();
+			board.animateStars(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
 			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
 			board.clearTiles(tilesMovedEventProcessorResult.totalMatchedCocoonTiles);
 			//push cocooned tiles to tiles Array for removal and lowering
@@ -2129,6 +2130,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		}
 		if(tilesMovedEventProcessorResult.totalMatchedBlockingTiles.length > 0 ) {
 			Galapago.audioPlayer.playGoldOrBlockingMatch();
+			board.animateStars(tilesMovedEventProcessorResult.totalMatchedBlockingTiles);
 			board.blobCollection.removeBlobItems(tilesMovedEventProcessorResult.totalMatchedBlockingTiles);
 			validMatchWithCollection = true;
 			board.collectionModified = true;
@@ -2156,6 +2158,20 @@ Board.prototype.handleTriplets = function(tileFocals) {
 	}
 	return this; //chainable
 }; //Board.prototype.handleTriplets()
+
+Board.prototype.animateStars = function(tiles){
+	var board = this;
+	function draw(){
+		_.each(tiles, function(tile){
+			board.level.levelAnimation.animateStars(board.gameAnimationLayer, tile.getXCoord(), tile.getYCoord(), tile.blob.image.id, board.blobCollection);
+		});
+	}
+	if(this.putInAnimationQ){
+		this.animationQ.push(draw);
+	}else{
+		draw();
+	}
+}
 
 Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
 	var board = this;

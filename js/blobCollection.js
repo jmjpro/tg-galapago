@@ -77,6 +77,7 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 		}
 		blobItemCount = this.blobCollection[key].count;
 		x += BlobCollection.ITEM_WIDTH + BlobCollection.ITEM_SPACE;
+		this.blobCollection[key].x = left + x;
 		layer.clearRect(x + BlobCollection.ITEM_COUNT_X_OFFSET, 0, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_WIDTH);
 		if(!skipDrawingImage){
 			layer.drawImage(image, x, BlobCollection.COUNT_HEIGHT, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_HEIGHT);
@@ -115,4 +116,5 @@ BlobCollection.prototype.removeBlobItems= function(tiles) {
 function BlobItem(image, count){
 	this.image = image;
 	this.count = count;
+	this.x = 0;
 }
