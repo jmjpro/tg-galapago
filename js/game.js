@@ -430,7 +430,9 @@ LevelMap.prototype.registerEventHandlers = function() {
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
 				//console.debug(MatrixUtil.coordinatesToString(point) + ' is in mapHotspotRegion for level ' + level.name);
 				//levelMap.drawHotspot(mapHotspotRegion);
-				levelMap.setHotspotLevel(level);
+				if(level.isUnlocked){
+					levelMap.setHotspotLevel(level);
+				}
 				break;
 			}
 			else {
@@ -569,19 +571,25 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 } //LevelMap.prototype.cleanupAnimationAndSound()
 
 LevelMap.prototype.handleUpArrow = function() {
-	this.setHotspotLevel(this.hotspotLevel.neighbors.north);
+	if(this.hotspotLevel.neighbors.north.isUnlocked){
+		this.setHotspotLevel(this.hotspotLevel.neighbors.north);
+	}
 	//this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
-	this.setHotspotLevel(this.hotspotLevel.neighbors.east);
+	if(this.hotspotLevel.neighbors.east.isUnlocked){
+		this.setHotspotLevel(this.hotspotLevel.neighbors.east);
+	}
 }; //LevelMap.prototype.handleRightArrow()
 
 LevelMap.prototype.handleDownArrow = function() {
 	var mapScreen, mapNav, level;
 	level = this.hotspotLevel.neighbors.south;
 	if( level && level.mapHotspotRegion.length > 2 ) {
-		this.setHotspotLevel(level);
+		if(this.hotspotLevel.neighbors.south.isUnlocked){
+			this.setHotspotLevel(level);
+		}
 	}
 	else {
 		this.unregisterEventHandlers();
@@ -596,7 +604,9 @@ LevelMap.prototype.handleDownArrow = function() {
 }; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
-	this.setHotspotLevel(this.hotspotLevel.neighbors.west);
+	if(this.hotspotLevel.neighbors.west.isUnlocked){
+		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
+	}
 }; //LevelMap.prototype.handleLeftArrow()
 
 LevelMap.prototype.setHotspotLevel = function(level) {
