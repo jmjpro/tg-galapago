@@ -3140,20 +3140,6 @@ Board.prototype.drawScore = function() {
 	return this; //chainable
 }; //Board.prototype.drawScore()
 
-Board.prototype.redrawBorders = function(color, lineWidth) {
-	var board, ctx;
-	board = this;
-	ctx = board.gridLayer;
-	ctx.strokeStyle = color;
-	ctx.lineWidth = lineWidth;
-	_.each( board.creatureTileMatrix, function(col) {
-		_.each( board.creatureTileMatrix[col], function(tile) {
-			ctx.strokeRect(tile.getXCoord(), tile.getYCoord(), Tile.getHeight, Board.TILE_WIDTH);
-		});
-	});
-	return this; //chainable
-}; //Board.prototype.redrawBorders()
-
 Board.prototype.handleClickOrTap = function(evt) {
 	var col, row, tile, matrix, message, board;
 	board = this;
@@ -3176,7 +3162,7 @@ Board.prototype.handleClickOrTap = function(evt) {
 	}
 	console.debug(message);
 	return;
-}; //Board.prototype.redrawBorders()
+}; //Board.prototype.handleClickOrTap()
 
 /* end class Board */
 
