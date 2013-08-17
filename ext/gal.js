@@ -70,8 +70,7 @@ GAL.prototype.download = function(bundleName) {
   }
   var that = this;
  
- 
- 
+  var bundleAlreadyLoaded = false;
   // Setup a loop via callback chaining.
   (function loop(index) {
     // If we've finished loading all of the assets in the bundle.
@@ -120,8 +119,16 @@ GAL.prototype.download = function(bundleName) {
         image.src = url;
         image.id = key;
       }
-    }
+    }else{
+		bundleAlreadyLoaded = true;
+	}
   })(0);
+  if(bundleAlreadyLoaded){
+	  fireCallback_(that.loaded, bundleName, {
+        bundleName: bundleName,
+        success: true
+      });
+  }
 };
  
 GAL.loadCollageImages = function(manifest, imageName){
@@ -141,6 +148,10 @@ GAL.loadCollageImages = function(manifest, imageName){
 */
 GAL.prototype.onLoaded = function(opt_bundleName, callback) {
   addCallback_(this.loaded, opt_bundleName, callback);
+};
+
+GAL.prototype.clearOnLoaded = function(opt_bundleName) {
+	this.loaded[opt_bundleName] = [];
 };
  
 /**

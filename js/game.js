@@ -158,15 +158,19 @@ Galapago.setLevel = function(levelId) {
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
 	console.log( 'theme: ' + theme + '_' + this.level.bgSubTheme );
-	LoadingScreen.gal.download('board-common');
+	
 	LoadingScreen.gal.onLoaded('board-common', function(result) {
-		if (result.success) {
-			console.debug('board-common resource bundle loaded');
-			LoadingScreen.gal.download(theme);
-		}
-	});
+			if (result.success) {
+				LoadingScreen.gal.clearOnLoaded('board-common');
+				console.debug('board-common resource bundle loaded');
+				LoadingScreen.gal.download(theme);
+			}
+		});
+
+	
 	LoadingScreen.gal.onLoaded(theme, function(result) {
 		if (result.success) {
+			LoadingScreen.gal.clearOnLoaded(theme);
 			console.debug('theme ' + theme + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
 			Galapago.level.levelAnimation.initSparkles();
@@ -175,6 +179,7 @@ Galapago.setLevel = function(levelId) {
 			Level.registerEventHandlers();
 		}
 	});
+	LoadingScreen.gal.download('board-common');
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
 };
 
@@ -871,8 +876,11 @@ Level.prototype.initImages = function(imageArray) {
 	level = this;
 
 	_.each(imageArray, function(image) {
-		image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+		if(image.id.indexOf('.')!=-1){
+			image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+		}
 		level.gameImages[image.id] = image;
+		
 	});
 }; //Level.prototype.initImages
 
