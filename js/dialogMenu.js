@@ -46,6 +46,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			if(board.level.dangerBar){
 				board.level.dangerBar.resume();
 			}
+			board.reshuffleService.start();
 			break;
 		case 'option-main-menu' :
 			this.hide();
@@ -354,9 +355,11 @@ DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
 	this.hide();
-	if(this.callingObject instanceof Board &&
-		this.callingObject.level.dangerBar){
-		this.callingObject.level.dangerBar.resume();
+	if(this.callingObject instanceof Board){
+		if(this.callingObject.level.dangerBar){
+			this.callingObject.level.dangerBar.resume();
+		}
+		this.callingObject.reshuffleService.start();
 	}
 }; //DialogMenu.prototype.dialogQuitOptionNo()
 

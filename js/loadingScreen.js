@@ -58,6 +58,9 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('all-but-audio resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
+			LoadingScreen.gal.download('beach');
+			LoadingScreen.gal.download('forest');
+			LoadingScreen.gal.download('cave');
 		}
 	});
 };
