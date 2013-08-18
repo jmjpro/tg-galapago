@@ -79,11 +79,11 @@
 			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4"></canvas>
 			
 			<ul id="map-nav">
-				<li><div id="button_play_map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"></div></li>
-				<li><div id="button_start_map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"></div></li>
-				<li><div id="button_reset_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"></div></li>
-				<li><div id="button_menu_map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"></div></li>
-				<li><div id="button_quit_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"></div></li>
+				<li><div id="button_play_map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();">PLAY</div></li>
+				<li><div id="button_start_map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();">START NEXT LEVEL</div></li>
+				<li><div id="button_reset_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')">RESET MAP</div></li>
+				<li><div id="button_menu_map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);">MENU</div></li>
+				<li><div id="button_quit_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');">QUIT</div></li>
 			</ul>
 		</div>
 

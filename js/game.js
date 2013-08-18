@@ -1409,8 +1409,10 @@ Board.prototype.displayLevelName = function() {
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	menuButtonImage = this.blobCollection.button_menu;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	//menuButtonImage = this.blobCollection.button_menu;
+	//gameButtonHilight = this.blobCollection.game_button_hilight;
+	menuButtonImage = LoadingScreen.gal.get('screen-game/game_button_regular.png');
+	gameButtonHilight = LoadingScreen.gal.get('screen-game/game_button_hilight.png');
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
@@ -1425,13 +1427,18 @@ Board.prototype.displayMenuButton = function(isActive) {
 		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
 	}
+	layer.font = '12pt JungleFever';
+	layer.fillStyle = 'BLACK';
+	layer.fillText('MENU', Level.MENU_BUTTON_X+35, Level.MENU_BUTTON_Y+12);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
 	var textColor, layer, quitButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	quitButtonImage = this.blobCollection.button_quit;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	//quitButtonImage = this.blobCollection.button_quit;
+	//gameButtonHilight = this.blobCollection.game_button_hilight;
+	quitButtonImage = LoadingScreen.gal.get('screen-game/game_button_regular.png');
+	gameButtonHilight = LoadingScreen.gal.get('screen-game/game_button_hilight.png');
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
 	
@@ -1449,6 +1456,9 @@ Board.prototype.displayQuitButton = function(isActive) {
 		layer.clearRect(quitImageX - 1, quitImageY - 1, quitButtonImage.width + 2, quitButtonImage.height + 2);
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
 	}
+	layer.font = '12pt JungleFever';
+	layer.fillStyle = 'BLACK';
+	layer.fillText('QUIT', quitImageX+35, quitImageY+12);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {

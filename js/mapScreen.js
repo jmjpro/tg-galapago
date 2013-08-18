@@ -14,7 +14,7 @@ function MapScreen() {
 MapScreen.prototype.setImages = function() {
 	var galFilePath;
 	_.each( MapScreen.NAV_BUTTON_IDS, function( navButtonId ) {
-		galFilePath = MapScreen.GAL_PREFIX + navButtonId + '.png';
+		galFilePath =  MapScreen.GAL_PREFIX + 'map_button_regular.png';
 		console.debug( '#' + navButtonId + " : " + galFilePath);
 		$('#' + navButtonId).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
 	});
@@ -22,10 +22,13 @@ MapScreen.prototype.setImages = function() {
 
 MapScreen.prototype.setNavItem = function(item) {
 	// remove cursor from old item
-	this.unsetNavItem();
+	this.currentText = item.find('div').html()
+	//this.unsetNavItem();
+	this.currentNavItem.css('background-image','');
 	this.currentNavItem = item;
 	// add cursor to new item
-	this.currentNavItem.find('div').html(this.cursor);
+	this.currentNavItem.css('background-image','url(' + this.cursor.src + ')');
+	//html(this.cursor);
 }; //MapScreen.prototype.setNavItem()
 
 MapScreen.prototype.unsetNavItem = function() {
@@ -83,7 +86,8 @@ MapScreen.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-			mapScreen.unsetNavItem();
+			//mapScreen.unsetNavItem();
+			mapScreen.currentNavItem.css('background-image','');
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
 			if(!Level.isComplete('1')){
