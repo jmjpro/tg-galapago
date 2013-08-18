@@ -7,7 +7,7 @@
 	{
 		"name": "screen-loading",
 		"contents": [
-			"screen-loading/background-loading.jpg",
+			"background/background-loading.jpg",
 			"screen-loading/loading-progress-bar.png",
 			"screen-loading/loading-progress-bar-fill.png",
 			"screen-loading/loading-progress-bar-left-cap.png"
@@ -16,11 +16,11 @@
 	{
 		"name": "common",
 		"contents": [
-			"main-menu/main_menu_background.jpg",
+			"background/background_main_menu.jpg",
 			"collages/main_menu_static.png",
 			"collages/map_level_ui_static.png",
 			"collages/map_animated.png",
-			"screen-map/Map.jpg",
+			"background/background_map_screen.jpg",
 			"screen-map/button_menu_map.png",
 			"screen-map/button_play_map.png",
  			"screen-map/button_quit_map.png",

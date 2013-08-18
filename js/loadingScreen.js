@@ -44,7 +44,7 @@ LoadingScreen.registerEvent = function(){
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
 			console.debug('screen-loading resource bundle loaded');
-			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('screen-loading/background-loading.jpg').src + ')' );
+			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('background/background-loading.jpg').src + ')' );
 			LoadingScreen.gal.download('common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}

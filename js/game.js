@@ -250,40 +250,12 @@ function LevelMap(level) {
 	this.profile = 'Default';
 } //LevelMap constructor
 
-/*
-LevelMap.prototype.setImages = function( imageNames ) {
-	var levelMap = this;
-	_.each( imageNames, function(imageName) {
-
-		levelMap.images.push( LoadingScreen.gal.get(MapScreen.GAL_PREFIX + imageName) );
-	});
-}; //LevelMap.prototype.setImages()
-
-//TODO use q.js instead of callback
-LevelMap.prototype.setImages = function (sources, callback) {
-	var levelMap= this;
-	var images = {};
-	var loadedImages = 0;
-	var numImages = 0;
-	var src;
-	// get num of sources
-	for(src in sources) {
-		numImages++;
+LevelMap.prototype.display = function() {
+	var backgroundImage;
+	backgroundImage = LoadingScreen.gal.get('background/background_map_screen.jpg');
+	if( backgroundImage ) {
+		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
-	for(src in sources) {
-		images[src] = new Image();
-		images[src].onload = function() {
-			if(++loadedImages >= numImages) {
-				callback(levelMap, images);
-			}
-		};
-		images[src].src = LoadingScreen.MAP_SCREEN_IMAGE_DIRECTORY + sources[src];
-	}
-}; //LevelMap.prototype.loadImages()
-*/
-
-LevelMap.prototype.display = function() {	
-	this.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'Map.jpg').src + ')' );
 	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
 	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
