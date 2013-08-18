@@ -250,40 +250,12 @@ function LevelMap(level) {
 	this.profile = 'Default';
 } //LevelMap constructor
 
-/*
-LevelMap.prototype.setImages = function( imageNames ) {
-	var levelMap = this;
-	_.each( imageNames, function(imageName) {
-
-		levelMap.images.push( LoadingScreen.gal.get(MapScreen.GAL_PREFIX + imageName) );
-	});
-}; //LevelMap.prototype.setImages()
-
-//TODO use q.js instead of callback
-LevelMap.prototype.setImages = function (sources, callback) {
-	var levelMap= this;
-	var images = {};
-	var loadedImages = 0;
-	var numImages = 0;
-	var src;
-	// get num of sources
-	for(src in sources) {
-		numImages++;
+LevelMap.prototype.display = function() {
+	var backgroundImage;
+	backgroundImage = LoadingScreen.gal.get('background/background_map_screen.jpg');
+	if( backgroundImage ) {
+		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
-	for(src in sources) {
-		images[src] = new Image();
-		images[src].onload = function() {
-			if(++loadedImages >= numImages) {
-				callback(levelMap, images);
-			}
-		};
-		images[src].src = LoadingScreen.MAP_SCREEN_IMAGE_DIRECTORY + sources[src];
-	}
-}; //LevelMap.prototype.loadImages()
-*/
-
-LevelMap.prototype.display = function() {	
-	this.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'Map.jpg').src + ')' );
 	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
 	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
@@ -1417,10 +1389,6 @@ Board.prototype.displayMenuButton = function(isActive) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
 		layer.drawImage(gameButtonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, gameButtonHilight.width, gameButtonHilight.height);
-		/*
-		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
-		layer.strokeRect(Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
-		*/
 	}
 	else {
 		this.buttonActive = null;
@@ -1446,10 +1414,6 @@ Board.prototype.displayQuitButton = function(isActive) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
 		layer.drawImage(gameButtonHilight, quitImageX - 1, quitImageY - 1, gameButtonHilight.width, gameButtonHilight.height);
-		/*
-		layer.strokeStyle = Tile.BORDER_COLOR_ACTIVE;
-		layer.strokeRect(quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
-		*/
 	}
 	else {
 		this.buttonActive = null;
@@ -3183,13 +3147,10 @@ Tile has a matrix coordinate
 Tile can be Selected
 Tile can be MousedOver
 */
-Tile.CREATURE_BRIGHTNESS_ADJUSTMENT = 100;
 Tile.BORDER_COLOR = '#d3d3d3';
-Tile.BORDER_COLOR_ACTIVE = 'red';
 Tile.BORDER_WIDTH = 2;
-Tile.BORDER_RADIUS = 3;
-Tile.DELAY_AFTER_FLIP_MS = 250;
-Tile.DELAY_AFTER_ACTIVATE_MS = 10;
+Tile.DELAY_AFTER_FLIP_MS = 0;
+Tile.DELAY_AFTER_ACTIVATE_MS = 0;
 Tile.PLAIN_TILE_SPRITE_NUMBER = '0';
 Tile.CREATUREONLY_TILE_SPRITE_NUMBER = '1';
 Tile.BLOCKED_TILE_SPRITE_NUMBER = '2';
@@ -3239,7 +3200,6 @@ Tile.prototype.setActiveAsync = function(markTile) {
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawHilight();
-	//this.drawBorder(Tile.BORDER_COLOR_ACTIVE, Tile.BORDER_WIDTH);
 	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board, markTile);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
@@ -3251,7 +3211,6 @@ Tile.prototype.setInactiveAsync = function() {
 	var deferred;
 	//console.debug('inactive tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	//this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	this.eraseHilight();
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
@@ -3274,7 +3233,6 @@ Tile.prototype.setSelectedAsync = function() {
 Tile.prototype.setUnselected = function() {
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	//this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
 
