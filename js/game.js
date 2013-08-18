@@ -1395,9 +1395,10 @@ Board.prototype.displayMenuButton = function(isActive) {
 		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
 	}
-	layer.font = '12pt JungleFever';
-	layer.fillStyle = 'BLACK';
-	layer.fillText('MENU', Level.MENU_BUTTON_X+35, Level.MENU_BUTTON_Y+12);
+	layer.font = '17px JungleFever';
+	layer.fillStyle = 'rgb(107,45,0)';
+	layer.textAlign = 'center';
+	layer.fillText('MENU', menuButtonImage.width/2, Level.MENU_BUTTON_Y+12);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
@@ -1420,9 +1421,10 @@ Board.prototype.displayQuitButton = function(isActive) {
 		layer.clearRect(quitImageX - 1, quitImageY - 1, quitButtonImage.width + 2, quitButtonImage.height + 2);
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
 	}
-	layer.font = '12pt JungleFever';
-	layer.fillStyle = 'BLACK';
-	layer.fillText('QUIT', quitImageX+35, quitImageY+12);
+	layer.font = '17px JungleFever';
+	layer.fillStyle = 'rgb(107,45,0)';
+	layer.textAlign = 'center';
+	layer.fillText('QUIT', quitButtonImage.width/2, quitImageY+12);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {

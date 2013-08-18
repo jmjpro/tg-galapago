@@ -22,7 +22,7 @@ MapScreen.prototype.setImages = function() {
 
 MapScreen.prototype.setNavItem = function(item) {
 	// remove cursor from old item
-	this.currentText = item.find('div').html()
+	this.currentText = item.find('p').html()
 	//this.unsetNavItem();
 	this.currentNavItem.css('background-image','');
 	this.currentNavItem = item;
@@ -33,12 +33,12 @@ MapScreen.prototype.setNavItem = function(item) {
 
 MapScreen.prototype.unsetNavItem = function() {
 	//this.currentNavItem.children('img:nth-child(2)').remove();
-	this.currentNavItem.find('div').html('');
+	this.currentNavItem.find('p').html('');
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	var itemId, levelMap;
-	itemId = navItem.children('div')[0].id;
+	itemId = navItem.find('div.nav-button')[0].id;
 	levelMap = Galapago.levelMap;
 	console.log('itemId:' + itemId);
 	this.unsetNavItem();
