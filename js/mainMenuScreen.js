@@ -1,7 +1,7 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#screen-main-menu" : "main_menu_background.jpg",
+	"#screen-main-menu" : "background_main_menu.jpg",
 	"#button-change-player" : "main_menu_button_change_player_regular.png",
 	"#button-timed" : "main_menu_button_timed_regular.png",
 	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
@@ -32,7 +32,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { "UP" : "button-change-player", "LEFT" : "button-timed", "DOWN" : "button-quit" },
+ 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
 	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
@@ -112,17 +112,6 @@ MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 	}
 }
 
-/*
-MainMenuScreen.prototype.registerImageLoadEvents = function(){
-	var mainMenuScreen = this;
-	LoadingScreen.gal.onLoaded('mainMenuScreen', function(result) {
-		if (result.success) {
-			mainMenuScreen.setImages();
-			mainMenuScreen.setInitialNavItem();
-		}
-	});
-}; //MainMenuScreen.prototype.registerImageLoadEvents()
-*/
 MainMenuScreen.prototype.setInitialNavItem = function(){
 	this.currentNavItem = null;
 	this.setNavItem(this.getNavItem(null, this.callingScreen));
@@ -130,10 +119,12 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
-	var mainMenuScreen, galFilePath;
+	var mainMenuScreen, galFilePath, galPrefix;
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
-		galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[selector];
+		galPrefix = selector === '#screen-main-menu' ? 'background/' : MainMenuScreen.GAL_PREFIX;
+		galFilePath = galPrefix + MainMenuScreen.IMAGE_MAP[selector];
+		console.debug( 'selector: ' + selector + '; galFilePath: ' + galFilePath );
 		$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
 		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
 		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';

@@ -84,7 +84,6 @@ SpriteSheet.prototype.getSpriteNew = function (matrixCell, degreesToRotate) {
 	return savedImage;
 };
 
-
 SpriteSheet.prototype.getSpriteData = function (matrixCell) {
 	var spriteData, x, y, width, height, col, row, numCols, numRows;
 	col = matrixCell[0];

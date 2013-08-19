@@ -21,6 +21,7 @@ function BonusFrenzy(board) {
 
 	this.randomCreatureMap = null;
 	this.score = 0;
+	this.tile_hilight = Galapago.level.gameImages.tile_hilight;
 	this.drawBoard(board);
 	this.registerEvents();
 	this.startMoving();
@@ -79,7 +80,7 @@ BonusFrenzy.prototype.handleMouseClickEvent = function(evt) {
 			this.currentX = (x -(x % Board.TILE_WIDTH))/ Board.TILE_WIDTH * Board.TILE_WIDTH - BonusFrenzy.LEFT +correctionX;
 			this.currentY = (y -(y % Board.TILE_HEIGHT))/ Board.TILE_HEIGHT * Board.TILE_HEIGHT +correctionY;
 			console.log('this.currentX : '+this.currentX +" this.currentY "+this.currentY);
-			this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );		
+			this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );		
 			this.checkForCreatureCatch(this.currentX , this.currentY );
 		}
 		//if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> BonusFrenzy.Y_MIN && y< (currentY+ Board.TILE_HEIGHT )){
@@ -94,7 +95,7 @@ BonusFrenzy.prototype.handleLeftArrow = function () {
     if(this.currentX - Board.TILE_WIDTH >= BonusFrenzy.X_MIN){
 		this.currentX = this.currentX - Board.TILE_WIDTH;
 	}
-	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
@@ -103,7 +104,7 @@ BonusFrenzy.prototype.handleUpArrow = function () {
     if(this.currentY - Board.TILE_HEIGHT >= BonusFrenzy.Y_MIN){
 		this.currentY = this.currentY - Board.TILE_HEIGHT;
 	}
-	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
@@ -112,7 +113,7 @@ BonusFrenzy.prototype.handleRightArrow = function () {
     if(this.currentX + Board.TILE_WIDTH <= BonusFrenzy.X_MAX){
 		this.currentX = this.currentX + Board.TILE_WIDTH;
 	}
-	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
@@ -121,7 +122,7 @@ BonusFrenzy.prototype.handleDownArrow = function () {
     if(this.currentY + Board.TILE_HEIGHT <= BonusFrenzy.Y_MAX){
 		this.currentY = this.currentY + Board.TILE_HEIGHT;
 	}
-	this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
 };
 
@@ -131,7 +132,7 @@ BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 		//console.log(tile.xCoord +" "+ x + " "+ tile.yCoord +"  "+ (y-BonusFrenzy.Y_OFFSET))
 		if(tile.xCoord == x && tile.yCoord == (y-BonusFrenzy.Y_OFFSET)){
 			this.layer.clearRect(x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-			this.layer.drawImage( Galapago.level.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+			this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 			delete this.randomCreatureMap[key];
 			this.score++;
 		}
@@ -184,9 +185,9 @@ BonusFrenzy.prototype.startMoving = function(){
 	//var creatureLayer = this.board.creatureLayer;
 	var bonusFrenzy = this;
 	var layer = this.layer;
-	function fly(){		
+	function fly(){
 	    layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
-		layer.drawImage( Galapago.level.tile_hilight, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		layer.drawImage( bonusFrenzy.tile_hilight, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		for (var key in  bonusFrenzy.randomCreatureMap){
 			var tile =  bonusFrenzy.randomCreatureMap[key];
 			if(tile.yCoord == undefined){

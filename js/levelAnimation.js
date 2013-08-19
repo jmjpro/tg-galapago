@@ -228,15 +228,15 @@ LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 612], id: '18'}]
 ];
 
-LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [60, 0], id: '2'},  
-{cell: [120, 0], id: '3'}, 
-{cell: [180, 0], id: '4'},  
-{cell: [240, 0], id: '5'},
-{cell: [300, 0], id: '6'},   
-{cell: [360, 0], id: '7'}
-]];
+LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 60], id: '2'}],  
+[{cell: [0, 120], id: '3'}], 
+[{cell: [0, 180], id: '4'}],  
+[{cell: [0, 240], id: '5'}],
+[{cell: [0, 300], id: '6'}],   
+[{cell: [0, 360], id: '7'}]
+];
 
 LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'},
@@ -263,16 +263,16 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [1212, 0], id: '7'} 
 ]];
 
-LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [292, 0], id: '2'},  
-{cell: [584, 0], id: '3'}, 
-{cell: [876, 0], id: '4'},  
-{cell: [1168, 0], id: '5'},
-{cell: [1460, 0], id: '6'},   
-{cell: [1752, 0], id: '7'},   
-{cell: [2044, 0], id: '8'} 
-]];
+LevelAnimation.SPARKLES_SPRITE_MATRIX = [
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 244], id: '2'}],  
+[{cell: [0, 488], id: '3'}], 
+[{cell: [0, 732], id: '4'}],  
+[{cell: [0, 976], id: '5'}],
+[{cell: [0, 1220], id: '6'}],   
+[{cell: [0, 1464], id: '7'}],   
+[{cell: [0, 1708], id: '8'}] 
+];
 
 LevelAnimation.STARS_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
@@ -310,14 +310,13 @@ function LevelAnimation(layer){
 	this.makeMatchAnimation = null;
 	this.bobCervantesAnimation = null;
 	this.sparklesAnimation = null;
-	this.initSparkles();
 	this.initStars();
 	this.initLightning();
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
 	var img, canvasBC, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
-	img = LoadingScreen.gal.get("screen-game/talking_heads_base.png");
+	img = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_base.png");
 	canvasBC = $('#layer-bob-cervantes');
 	canvasBC[0].width = img.width;
 	canvasBC[0].height = img.height;
@@ -325,9 +324,9 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	canvasBC.css('top', '0px');
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	layer.drawImage(img, 0, 0);
-	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_left_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
-	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_right_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
-	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/talking_heads_mouth_strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
+	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_left_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_right_head_eyes_strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "talking_heads_mouth_strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
 	imgLeftHeadEyes = bcLeftHeadImageSpriteSheet.getSpriteNew([0,0]);
 	imgLeftHeadEyes.onload =function() {
 		layer.drawImage(imgLeftHeadEyes, 0, 0);
@@ -351,41 +350,19 @@ LevelAnimation.prototype.stopBobCervantes = function(imageArray) {
 	this.bobCervantesAnimation.stop();
 }
 
-LevelAnimation.buildImagePaths = function(bgTheme, creatureTypes){
-	var creatureTypeIt, creatureImagePathIt, creatureImagePath, creatureImagePaths, creatureType;
-	creatureImagePaths = [];
-	creatureImagePathIt = 0;
+LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
+	var path, creatureTypeIt, image, creatureImagePaths, creatureType;
+	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
 			creatureType = creatureTypes[creatureTypeIt];
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION;
-			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
-			creatureImagePathIt++;
-			creatureImagePath = Level.CREATURE_PATH + bgTheme + '/' + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION;
-			creatureImagePaths[creatureImagePathIt] = creatureImagePath;
-			creatureImagePathIt++;
+			image =  LoadingScreen.gal.get(path + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION);
+			this[creatureType + '_rollover'] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
+			image = LoadingScreen.gal.get(path + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION);
+			this[creatureType + '_jumps'] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
 	return creatureImagePaths;
 };
-
-LevelAnimation.prototype.initImages = function(imageArray) {
-	var levelAnimation;
-	var imageId;
-	levelAnimation = this;
-
-	_.each(imageArray, function(image) {
-		if(image.width > 0){
-			imageId = image.id;
-			if(imageId.indexOf('_rollover') > 0){
-				levelAnimation[imageId] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			}
-			if(imageId.indexOf('_jumps') > 0){
-				levelAnimation[imageId] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
-			}
-		}
-	});
-};
-
 
 LevelAnimation.prototype.animateDroppingCreatures = function(animationQ){
 	var deferred;
@@ -422,16 +399,17 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkImageSpriteSheet;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
-	var tileActive = board.tileActive;
+	tileActive = board.tileActive;
 	if(!tileActive.blob){
 		return;
 	}
-	var imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
-	var rolloverImageSpriteSheet = this[imageId];
+	imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
+	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
 		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -442,9 +420,9 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 		}
 	}
 	if(rolloverImageSpriteSheet){
-		var tileMarkImageSpriteSheet;
 		if(markTile){ 
-			tileMarkImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/tile_mark_strip.png"), LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX); 
+			tileMark = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_mark_strip.png');
+			tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();
@@ -557,7 +535,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-map/strip_bonfire.png"), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -594,22 +572,22 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_one.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
 				coordinates = [556, 305 - image.height];
 				break;
 			case 2:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_left_two.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
 				coordinates = [546, 295 - image.height];
 				break;
 			case 3:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_mid.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
 				coordinates = [715, 386 - image.height];
 				break;
 			case 4:
-				image = LoadingScreen.gal.get("screen-map/strip_bomb_right.png");
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
 				coordinates = [744 , 295 - image.height];
 				break;
@@ -628,7 +606,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
 		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = LoadingScreen.gal.get("screen-map/strip_game_start_arrow.png");
+		image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_game_start_arrow.png');
 		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
 		coordinates = [200 , 265 ];
 		if(levelAnimation.gameStartArrowAnimation){
@@ -653,7 +631,7 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
 	var  image, powerAchievedImageSpriteSheet;
-	image = LoadingScreen.gal.get("screen-game/Powerup_ready_strip.png");
+	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "Powerup_ready_strip.png");
 	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
 	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
 	function animatePowerAchieved(){
@@ -701,7 +679,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var image, imgCnt, validArray = true, imageArray = [];
-	var image = LoadingScreen.gal.get("screen-game/hint_strip.png");
+	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint_strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
@@ -763,10 +741,10 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 
 LevelAnimation.prototype.initSparkles = function() {
 	if(!LevelAnimation.sparklesImages.length){
-		var image = LoadingScreen.gal.get("screen-game/creature_explosion_strip.png");
+		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "creature_explosion_strip.png");
 		var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
-			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x,0]));
+		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
+			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
 		}
 	}
 }
@@ -921,10 +899,10 @@ RolloverAnimation.prototype.animate = function(){
 	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 	if(this.tileMarkImageSpriteSheet){
-		image = this.tileMarkImageSpriteSheet.getSpriteNew([this.tileMarkSpriteId, 0]);
+		image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
 		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		this.tileMarkSpriteId++;
-		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix[0].length;
+		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix.length;
 	}
 };
 

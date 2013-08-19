@@ -21,11 +21,27 @@ Powerup.POWER_UP_WIDTH= 70;
 Powerup.POWER_UP_HEIGHT = 280;
 Powerup.LAYER_WIDTH = 70;
 Powerup.LAYER_HEIGHT = 280;
+Powerup.GAME_IMAGE_DIRECTORY = 'screen-game/';
+Powerup.IMAGE_PATH_SUFFIX = '.png';
+Powerup.gameImageNames = [
+	'PowerUps_Flame_Activated',
+	'PowerUps_Flame_Disabled',
+	'PowerUps_Flame_Pressed',
+	'PowerUps_Flame_Rollover',
+	'PowerUps_Holder',
+	'PowerUps_Shuffle_Activated',
+	'PowerUps_Shuffle_Disabled',
+	'PowerUps_Shuffle_Pressed',
+	'PowerUps_Shuffle_Rollover',
+	'PowerUps_Swap_Activated',
+	'PowerUps_Swap_Disabled',
+	'PowerUps_Swap_Pressed',
+	'PowerUps_Swap_Rollover'
+];
 
 
-
-function Powerup(images,board ,powerupPoints) {
-	this.initImages(images);
+function Powerup(board ,powerupPoints) {
+	this.initImages();
 	this.board=board;
 	this.canvas = $('#' + Powerup.LAYER_POWER_UP)[0];
 	this.canvas.width = this.PowerUps_Swap_Disabled.width;
@@ -50,6 +66,17 @@ function Powerup(images,board ,powerupPoints) {
 		this.updatePowerAchieved();
 	}	
 	//this.addListner();
+}
+Powerup.prototype.activatePowerUpUsingCheatCode = function(){
+	console.log('Powerup CheatCode used');
+	if(!this.flipflopPowerAchieved){
+		this.flipflopPowerAchieved = true;
+	 }else if(!this.firePowerAchieved){
+		this.firePowerAchieved = true;
+	 }else if(!this.shufflerPowerAchieved){
+		this.shufflerPowerAchieved = true;
+	 }
+	 this.update();
 }
 
 Powerup.prototype.addListner = function(){
@@ -344,8 +371,6 @@ Powerup.prototype.animatePowerStatus = function(){
 		//this.layer.drawImage( this.PowerUps_Shuffle_Activated, 0, Powerup.SHUFFLER_TOP +newHeigth);
 		this.layer.drawImage( this.PowerUps_Shuffle_Activated ,0, 10+newHeigth, this.PowerUps_Shuffle_Activated.width , clipHeight, 0, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - clipHeight) ,this.PowerUps_Shuffle_Activated.width,clipHeight );
 	}
-	
-	
 }
 
 
@@ -374,17 +399,12 @@ Powerup.prototype.updatePowerAchieved = function(){
 		//this.board.saveBoard();
 	}
 	return flagPowerUpdated;
-
 }
 
-Powerup.prototype.initImages = function(imageArray) {
-	var powerup;
-	var imageId;
-	powerup = this;
-
-	_.each(imageArray, function(image) {
-		imageId = image.id;
-		powerup[imageId] = image;
+Powerup.prototype.initImages = function() {
+	var powerup = this;
+	_.each(Powerup.gameImageNames, function(image) {
+		powerup[image] = LoadingScreen.gal.get(Powerup.GAME_IMAGE_DIRECTORY + image + Powerup.IMAGE_PATH_SUFFIX);
 	});
 }; //DangerBar.prototype.initImages
 

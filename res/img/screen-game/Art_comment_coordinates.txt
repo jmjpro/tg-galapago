@@ -1,3 +1,0 @@
-Top left
-bob (image on the left ) x,y: 50,0
-Cervents (image on the right) x,y: 96,0
