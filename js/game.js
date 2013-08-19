@@ -779,6 +779,7 @@ Level.LAYER_HILIGHT = 'layer-hilight';
 Level.LAYER_SCORE = 'layer-score';
 Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
 Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
+Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
 Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
@@ -1251,6 +1252,12 @@ Level.prototype.styleCanvas = function() {
 	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
 	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
+
+	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
+	canvasGameLightning[0].width = 984;
+	canvasGameLightning[0].height = 984;
+	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - 492 + 'px');
+	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - 492 + 'px');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1322,6 +1329,7 @@ function Board() {
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
+	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
 
 	this.score = 0;
 	this.hotspot = null;
@@ -2120,7 +2128,6 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			board.collectionModified = true;
 		}
 		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
-			board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
@@ -3003,6 +3010,9 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
+		if(tileTriplet[0].hasLightningCreature()){
+			board.animateLightningStrikeAsync(tileTriplet);
+		}
 		board.clearTiles(tileTriplet, true);
 	});
 	return this; //chainable
@@ -3099,9 +3109,17 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	return;
 };
 
-Board.prototype.animateLightningStrikeAsync = function(goldTiles) {
-	Galapago.audioPlayer.playLightningStrike();
-	console.log('Ligthning Struck');
+Board.prototype.animateLightningStrikeAsync = function(matchingTilesSet) {
+	var board = this;
+	function draw(){
+		Galapago.audioPlayer.playLightningStrike();
+		board.level.levelAnimation.animateLightning(board.gameLightningLayer, matchingTilesSet);
+	}
+	if(this.putInAnimationQ){
+		this.animationQ.push(draw);
+	}else{
+		draw();
+	}
 };
 
 //generate a random number r between 0 and creatureTypes.length - 1

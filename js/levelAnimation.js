@@ -285,8 +285,18 @@ LevelAnimation.STARS_SPRITE_MATRIX = [
 [{cell: [0, 603], id: '10'}] 
 ];
 
+LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
+[{cell: [492, 0], id: '1'}],
+[{cell: [492, 115], id: '2'}],  
+[{cell: [492, 230], id: '3'}], 
+[{cell: [492, 345], id: '4'}],  
+[{cell: [492, 460], id: '5'}],
+[{cell: [492, 575], id: '6'}]   
+];
+
 LevelAnimation.sparklesImages = [];
 LevelAnimation.starImages = [];
+LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
@@ -300,6 +310,7 @@ function LevelAnimation(layer){
 	this.sparklesAnimation = null;
 	this.initSparkles();
 	this.initStars();
+	this.initLightning();
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -768,9 +779,51 @@ LevelAnimation.prototype.initStars = function() {
 	}
 }
 
+LevelAnimation.prototype.initLightning = function() {
+	var image;
+	if(!LevelAnimation.lightningImages.rightHorizontal.length){
+		var image = LoadingScreen.gal.get("screen-game/lightning_strip.png");
+		var spriteSheet = new SpriteSheet(image, LevelAnimation.LIGHTNING_SPRITE_MATRIX);
+		for(var x = 0; x < LevelAnimation.LIGHTNING_SPRITE_MATRIX.length; x++){
+			//load the original image
+			var image = spriteSheet.getSpriteNew([0,x]);
+			LevelAnimation.lightningImages.rightHorizontal.push(image);
+			//since loading may take time, attempt retrieving rotated images, once the original image gets loaded n cached.
+			//As subsequent calls to get the rotated image, will get the original cached image, and then rotating it would not fail
+			image.onload = LevelAnimation.makeLightningFunction(spriteSheet, x);
+		}
+	}
+}
+
+LevelAnimation.makeLightningFunction = function(spriteSheet, x) {
+	return function(){
+		LevelAnimation.lightningImages.bottomVertical.push(spriteSheet.getSpriteNew([0,x], 90));
+		LevelAnimation.lightningImages.leftHorizontal.push(spriteSheet.getSpriteNew([0,x], 180));
+		LevelAnimation.lightningImages.topVertical.push(spriteSheet.getSpriteNew([0,x], 270));
+	}
+}
+
 LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {
 	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP );
 	starsAnimation.start();	
+}
+
+LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
+	var x, y, previousTile, lightningAnimation, horizontal = true;
+	_.each(matchingTilesSet, function(tile){
+		x = tile.getXCoord();
+		y = tile.getYCoord();
+		if(previousTile && previousTile.coordinates[0] == tile.coordinates[0]){
+			horizontal = false;
+		}
+		previousTile = tile;
+	});
+	if(horizontal){
+		lightningAnimation = new LightningAnimation(layer, y , horizontal);
+	}else{
+		lightningAnimation = new LightningAnimation(layer, x , horizontal);
+	}
+	lightningAnimation.start();	
 }
 
 LevelAnimation.prototype.animateSparkles = function(layer, x, y){
@@ -1265,4 +1318,69 @@ StarsAnimation.prototype.animate = function(){
 	if(this.rolloverSpriteId == LevelAnimation.starImages.length){
 		this.stop();
 	}
+};
+
+LightningAnimation.ROLLOVER_TIME_INTERVAL=100;
+function LightningAnimation(layer, coordinate, horizontal){
+	this.layer = layer;
+	this.coordinate = coordinate;
+	this.horizontal = horizontal;
+	this.rolloverSpriteId = 0;
+}
+
+LightningAnimation.prototype.start = function(){
+	if(this.interval){
+		this.stop();
+	}
+	var lightningAnimation = this;
+	if(this.horizontal){
+		this.coordinate = (this.coordinate + Board.TILE_HEIGHT / 2) - 57.5 ;
+		this.coordinate = Board.GRID_TOP - this.layer.canvas.offsetTop + this.coordinate;
+	}else{
+		this.coordinate = (this.coordinate + Board.TILE_WIDTH / 2) - 57.5 ;
+		this.coordinate =  Board.GRID_LEFT - this.layer.canvas.offsetLeft  + this.coordinate;
+	}
+	this.interval = setInterval(function() {
+		lightningAnimation.animate();
+	}, LightningAnimation.ROLLOVER_TIME_INTERVAL);
+};
+
+LightningAnimation.prototype.stop = function(){
+	if(this.interval){
+		clearInterval(this.interval);
+	}
+};
+
+LightningAnimation.prototype.animate = function(){
+	var image;
+	if(this.horizontal){
+		if(this.rolloverSpriteId != LevelAnimation.LIGHTNING_SPRITE_MATRIX.length){ 
+			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];
+			this.layer.clearRect(0, this.coordinate, 2*image.width, image.height);
+			this.layer.drawImage(image, 0, this.coordinate);
+			image = LevelAnimation.lightningImages.rightHorizontal[this.rolloverSpriteId];
+			this.layer.drawImage(image, image.width , this.coordinate);
+			this.rolloverSpriteId++;
+		}else{
+			this.rolloverSpriteId--;
+			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];;
+			this.layer.clearRect(0, this.coordinate, 2 * image.width, image.height);
+			this.stop();
+		}
+	}else{
+		if(this.rolloverSpriteId != LevelAnimation.LIGHTNING_SPRITE_MATRIX.length){ 
+			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];
+			this.layer.clearRect(this.coordinate, 0, image.width, 2 * image.height);
+			this.layer.drawImage(image, this.coordinate, 0);
+			image = LevelAnimation.lightningImages.bottomVertical[this.rolloverSpriteId];
+			this.layer.drawImage(image, this.coordinate, image.height);
+			this.rolloverSpriteId++;
+		}else{
+			this.rolloverSpriteId--;
+			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];;
+			this.layer.clearRect(this.coordinate, 0, image.width, 2 * image.height);
+			this.stop();
+		}
+	}
+	
 };
