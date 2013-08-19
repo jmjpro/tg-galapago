@@ -1254,10 +1254,10 @@ Level.prototype.styleCanvas = function() {
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
 
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
-	canvasGameLightning[0].width = 984;
-	canvasGameLightning[0].height = 984;
-	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - 492 + 'px');
-	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - 492 + 'px');
+	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
+	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
+	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
+	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object

@@ -2,6 +2,8 @@ LevelAnimation.CREATURE_DROPPING_INTERVAL=300;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
+LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
+LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
@@ -1334,10 +1336,10 @@ LightningAnimation.prototype.start = function(){
 	}
 	var lightningAnimation = this;
 	if(this.horizontal){
-		this.coordinate = (this.coordinate + Board.TILE_HEIGHT / 2) - 57.5 ;
+		this.coordinate = (this.coordinate + Board.TILE_HEIGHT / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
 		this.coordinate = Board.GRID_TOP - this.layer.canvas.offsetTop + this.coordinate;
 	}else{
-		this.coordinate = (this.coordinate + Board.TILE_WIDTH / 2) - 57.5 ;
+		this.coordinate = (this.coordinate + Board.TILE_WIDTH / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
 		this.coordinate =  Board.GRID_LEFT - this.layer.canvas.offsetLeft  + this.coordinate;
 	}
 	this.interval = setInterval(function() {
