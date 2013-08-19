@@ -30,8 +30,7 @@ Galapago.gameImageNames = [
 	'tile_2',
 	'tile_1',
 	'tile_hilight',
-	'button_quit',
-	'button_menu',
+	'game_button_regular',
 	'game_button_hilight',
 	'item_collected_mark',
 	'Bracket_Left',
@@ -1053,7 +1052,7 @@ Level.prototype.won = function(){
 		LevelMap.show(LevelMap.getNextLevel());
 		//level.showLevelMap(LevelMap.getNextLevel());
 	});
-}; //Level.prototype.won()
+}; //Level.prototypepx()
 
 Level.prototype.quit = function(){
 	this.board.saveBoard();
@@ -1170,10 +1169,16 @@ Level.registerEventHandlers = function() {
 				break;
 			//TODO code below here should removed before production
 			case 48: // numeric 0
-				board.completeAnimationAsync();
+				if( QueryString.cheat === 'true' ) {
+					board.setComplete();
+				}
+				evt.stopPropagation();
+				evt.preventDefault();
 				break;
 			case 49: // numeric 1
-				board.powerUp.activatePowerUpUsingCheatCode();
+				if( QueryString.cheat === 'true' ) {
+					board.powerUp.activatePowerUpUsingCheatCode();
+				}
 				evt.stopPropagation();
 				evt.preventDefault();
 				//Galapago.setLevel('level_01');
@@ -1381,10 +1386,8 @@ Board.prototype.displayLevelName = function() {
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	//menuButtonImage = this.blobCollection.button_menu;
-	//gameButtonHilight = this.blobCollection.game_button_hilight;
-	menuButtonImage = LoadingScreen.gal.get('screen-game/game_button_regular.png');
-	gameButtonHilight = LoadingScreen.gal.get('screen-game/game_button_hilight.png');
+	menuButtonImage = this.blobCollection.game_button_regular;
+	gameButtonHilight = this.blobCollection.game_button_hilight;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
@@ -1397,22 +1400,19 @@ Board.prototype.displayMenuButton = function(isActive) {
 	}
 	layer.font = '17px JungleFever';
 	layer.fillStyle = 'rgb(107,45,0)';
-	layer.textAlign = 'center';
-	layer.fillText('MENU', menuButtonImage.width/2, Level.MENU_BUTTON_Y+12);
+	layer.fillText('MENU', Level.MENU_BUTTON_X+33, Level.MENU_BUTTON_Y+10);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
 	var textColor, layer, quitButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	//quitButtonImage = this.blobCollection.button_quit;
-	//gameButtonHilight = this.blobCollection.game_button_hilight;
-	quitButtonImage = LoadingScreen.gal.get('screen-game/game_button_regular.png');
-	gameButtonHilight = LoadingScreen.gal.get('screen-game/game_button_hilight.png');
+	quitButtonImage = this.blobCollection.game_button_regular;
+	gameButtonHilight = this.blobCollection.game_button_hilight;
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
 	
 	if( isActive ) {
-		this.buttonActive = 'menuButton';
+		this.buttonActive = 'quitButton';
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
 		layer.drawImage(gameButtonHilight, quitImageX - 1, quitImageY - 1, gameButtonHilight.width, gameButtonHilight.height);
 	}
@@ -1423,8 +1423,7 @@ Board.prototype.displayQuitButton = function(isActive) {
 	}
 	layer.font = '17px JungleFever';
 	layer.fillStyle = 'rgb(107,45,0)';
-	layer.textAlign = 'center';
-	layer.fillText('QUIT', quitButtonImage.width/2, quitImageY+12);
+	layer.fillText('QUIT', Level.MENU_BUTTON_X+35, quitImageY+10);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.addPowerups = function() {
