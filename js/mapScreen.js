@@ -22,9 +22,7 @@ MapScreen.prototype.setImages = function() {
 
 MapScreen.prototype.setNavItem = function(item) {
 	// remove cursor from old item
-	this.currentText = item.find('p').html()
-	//this.unsetNavItem();
-	this.currentNavItem.css('background-image','');
+	this.unsetNavItem();
 	this.currentNavItem = item;
 	// add cursor to new item
 	this.currentNavItem.css('background-image','url(' + this.cursor.src + ')');
@@ -32,8 +30,7 @@ MapScreen.prototype.setNavItem = function(item) {
 }; //MapScreen.prototype.setNavItem()
 
 MapScreen.prototype.unsetNavItem = function() {
-	//this.currentNavItem.children('img:nth-child(2)').remove();
-	this.currentNavItem.find('p').html('');
+	this.currentNavItem.css('background-image','');
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
