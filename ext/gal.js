@@ -70,8 +70,7 @@ GAL.prototype.download = function(bundleName) {
   }
   var that = this;
  
- 
- 
+  var bundleAlreadyLoaded = false;
   // Setup a loop via callback chaining.
   (function loop(index) {
     // If we've finished loading all of the assets in the bundle.
@@ -87,6 +86,7 @@ GAL.prototype.download = function(bundleName) {
     if(!(key in that.lookupTable)){
       // Get the full url to the asset.
       var audioExts = that.manifest.audioExts;
+      var collageDirectory = that.manifest.collageDirectory;
       var keyArray = key.split(".");
       if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
         var url = that.manifest.assetRootAudio + key;
@@ -103,9 +103,13 @@ GAL.prototype.download = function(bundleName) {
         audio.id = key;
       }else{
         var url = that.manifest.assetRootImage + key;
+        console.debug( 'loading ' + url);
         var image = new Image();
         image.onload =function() {
           that.lookupTable[key] = image;
+          if(key.indexOf(collageDirectory) > -1){
+            GAL.loadCollageImages(that, key);
+          }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
             total: bundle.length
@@ -115,10 +119,26 @@ GAL.prototype.download = function(bundleName) {
         image.src = url;
         image.id = key;
       }
-    }
+    }else{
+		bundleAlreadyLoaded = true;
+	}
   })(0);
+  if(bundleAlreadyLoaded){
+	  fireCallback_(that.loaded, bundleName, {
+        bundleName: bundleName,
+        success: true
+      });
+  }
 };
  
+GAL.loadCollageImages = function(manifest, imageName){
+  var imageCollage = ImageCollage.loadByName(imageName);
+  var images = imageCollage.getImages();
+  for(index in images){
+    var imageId = images[index].id;
+    manifest.lookupTable[imageId] = images[index];
+  }        
+}
  
 /**
 * Adds a callback to fire when a bundle has been loaded.
@@ -128,6 +148,10 @@ GAL.prototype.download = function(bundleName) {
 */
 GAL.prototype.onLoaded = function(opt_bundleName, callback) {
   addCallback_(this.loaded, opt_bundleName, callback);
+};
+
+GAL.prototype.clearOnLoaded = function(opt_bundleName) {
+	this.loaded[opt_bundleName] = [];
 };
  
 /**

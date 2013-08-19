@@ -24,11 +24,12 @@ function BlobCollection(){
 }
 
 BlobCollection.prototype.initImages= function(imageArray) {
-	var imageId, blobCollection = this;
-	_.each(imageArray, function(image) {
-		imageId = image.id;
-		blobCollection[imageId] = image;
-	});
+	var imageId, blobCollection, i, image;
+	blobCollection = this;
+	for( i in imageArray ) {
+		image = imageArray[i];
+		blobCollection[image.id] = image;
+	};
 };
 
 BlobCollection.prototype.addBlobItem= function(tile) {

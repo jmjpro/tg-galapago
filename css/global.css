@@ -53,7 +53,7 @@ canvas {
 
 #copyright {
 	font-family: 'HelveticaBold';
-	font-size: 13pt;
+	font-size: 13px;
 	color: rgb(255,255,255);
 	position: absolute;
 	width: 1280px; /* with less this could be a variable shared with galapago.width */
@@ -114,8 +114,8 @@ ul#map-nav {
 	margin:0;
 	padding:0;
 	position: absolute;
-	left: 257px;
-	top: 647px;
+	left: 252px;
+	top: 642px;
 }
 
 ul#map-nav>li {
@@ -124,25 +124,38 @@ ul#map-nav>li {
 	padding:0;
 	width: 150px;
 	height: 55px;
-}
-
-.map-nav-border {
-	background: url('res/img/screen-map/button_cursor_map.png') no-repeat left top;
+	vertical-align: top;
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 img#map-nav-cursor {
 	position:relative;
-	top: -5px;
-	left: -3px;
+}
+
+div.vertical-align-shiv {
+	position: relative;
 }
 
 div.nav-button {
-	position:relative;
-	z-index: 1;
-	top: 0px;
-	left: 0px;
-	width: 145px;
-	height: 49px;
+	position:absolute;
+	display: table; 
+	width: 150px;
+	height: 55px;
+}
+
+.nav-button p {
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
+	font-family: 'JungleFever';
+	font-size: 17px;
+	color: rgb(107,45,0);
 }
 
 .vertical-align-helper {
@@ -378,7 +391,7 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-you-won div.dialog-content p {
- 	font-size: 23pt;
+ 	font-size: 23px;
 }
 
 span#final-score {
@@ -561,7 +574,7 @@ ul.galapago-drop-down {
 .bubbleTip {
 	width:700px;
 	font-family: 'JungleFever';
-	font-size: 18px; 
+	font-size: 18px;
 	left: 200px; 
 	top:80px;
 	z-index:1000; 

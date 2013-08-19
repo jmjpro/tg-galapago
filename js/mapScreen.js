@@ -6,7 +6,7 @@ function MapScreen() {
 	this.setImages();
 	mapNav = $('#map-nav');
 	this.currentNavItem = mapNav.children('li:nth-child(1)');
-	galFilePathCursor = MapScreen.GAL_PREFIX + 'button_cursor_map.png';
+	galFilePathCursor = MapScreen.GAL_PREFIX + 'map_button_hilight.png';
 	this.cursor = LoadingScreen.gal.get(galFilePathCursor);
 	this.cursor.id = 'map-nav-cursor';
 }
@@ -14,7 +14,7 @@ function MapScreen() {
 MapScreen.prototype.setImages = function() {
 	var galFilePath;
 	_.each( MapScreen.NAV_BUTTON_IDS, function( navButtonId ) {
-		galFilePath = MapScreen.GAL_PREFIX + navButtonId + '.png';
+		galFilePath =  MapScreen.GAL_PREFIX + 'map_button_regular.png';
 		console.debug( '#' + navButtonId + " : " + galFilePath);
 		$('#' + navButtonId).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
 	});
@@ -22,20 +22,23 @@ MapScreen.prototype.setImages = function() {
 
 MapScreen.prototype.setNavItem = function(item) {
 	// remove cursor from old item
-	this.unsetNavItem();
+	this.currentText = item.find('p').html()
+	//this.unsetNavItem();
+	this.currentNavItem.css('background-image','');
 	this.currentNavItem = item;
 	// add cursor to new item
-	this.currentNavItem.find('div').html(this.cursor);
+	this.currentNavItem.css('background-image','url(' + this.cursor.src + ')');
+	//html(this.cursor);
 }; //MapScreen.prototype.setNavItem()
 
 MapScreen.prototype.unsetNavItem = function() {
 	//this.currentNavItem.children('img:nth-child(2)').remove();
-	this.currentNavItem.find('div').html('');
+	this.currentNavItem.find('p').html('');
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	var itemId, levelMap;
-	itemId = navItem.children('div')[0].id;
+	itemId = navItem.find('div.nav-button')[0].id;
 	levelMap = Galapago.levelMap;
 	console.log('itemId:' + itemId);
 	this.unsetNavItem();
@@ -83,7 +86,8 @@ MapScreen.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-			mapScreen.unsetNavItem();
+			//mapScreen.unsetNavItem();
+			mapScreen.currentNavItem.css('background-image','');
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
 			if(!Level.isComplete('1')){
