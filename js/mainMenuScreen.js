@@ -32,7 +32,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { "UP" : "button-change-player", "LEFT" : "button-timed", "DOWN" : "button-quit" },
+ 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
 	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
