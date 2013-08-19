@@ -46,6 +46,7 @@ LoadingScreen.registerEvent = function(){
 			console.debug('screen-loading resource bundle loaded');
 			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('background/background-loading.jpg').src + ')' );
 			LoadingScreen.gal.download('common');
+			LoadingScreen.gal.download('board-common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});

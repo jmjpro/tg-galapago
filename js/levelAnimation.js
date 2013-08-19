@@ -288,12 +288,12 @@ LevelAnimation.STARS_SPRITE_MATRIX = [
 ];
 
 LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
-[{cell: [492, 0], id: '1'}],
-[{cell: [492, 115], id: '2'}],  
-[{cell: [492, 230], id: '3'}], 
-[{cell: [492, 345], id: '4'}],  
-[{cell: [492, 460], id: '5'}],
-[{cell: [492, 575], id: '6'}]   
+[{cell: [0, 0], id: '1'}],
+[{cell: [0, 115], id: '2'}],  
+[{cell: [0, 230], id: '3'}], 
+[{cell: [0, 345], id: '4'}],  
+[{cell: [0, 460], id: '5'}],
+[{cell: [0, 575], id: '6'}]   
 ];
 
 LevelAnimation.sparklesImages = [];
@@ -310,6 +310,7 @@ function LevelAnimation(layer){
 	this.makeMatchAnimation = null;
 	this.bobCervantesAnimation = null;
 	this.sparklesAnimation = null;
+	this.initSparkles();
 	this.initStars();
 	this.initLightning();
 }
