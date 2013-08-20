@@ -741,37 +741,45 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 };
 
 LevelAnimation.prototype.initSparkles = function() {
+	console.debug('entering LevelAnimation.prototype.initSparkles()');
 	if(!LevelAnimation.sparklesImages.length){
 		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "creature_explosion_strip.png");
-		var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-		for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
-			LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
+		if( image ) {
+			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
+			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
+				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
+			}
 		}
 	}
+	console.debug('exiting LevelAnimation.prototype.initSparkles()');
 }
 
 LevelAnimation.prototype.initStars = function() {
 	if(!LevelAnimation.starImages.length){
 		var image = LoadingScreen.gal.get("screen-game/cocoon_removed_strip.png");
-		var spriteSheet = new SpriteSheet(image, LevelAnimation.STARS_SPRITE_MATRIX);
-		for(var x = 0; x < LevelAnimation.STARS_SPRITE_MATRIX.length; x++){
-			LevelAnimation.starImages.push(spriteSheet.getSpriteNew([0,x]));
+		if( image ) {
+			var spriteSheet = new SpriteSheet(image, LevelAnimation.STARS_SPRITE_MATRIX);
+			for(var x = 0; x < LevelAnimation.STARS_SPRITE_MATRIX.length; x++){
+				LevelAnimation.starImages.push(spriteSheet.getSpriteNew([0,x]));
+			}
 		}
 	}
 }
 
 LevelAnimation.prototype.initLightning = function() {
-	var image;
+	var image, spriteSheet, x;
 	if(!LevelAnimation.lightningImages.rightHorizontal.length){
-		var image = LoadingScreen.gal.get("screen-game/lightning_strip.png");
-		var spriteSheet = new SpriteSheet(image, LevelAnimation.LIGHTNING_SPRITE_MATRIX);
-		for(var x = 0; x < LevelAnimation.LIGHTNING_SPRITE_MATRIX.length; x++){
-			//load the original image
-			var image = spriteSheet.getSpriteNew([0,x]);
-			LevelAnimation.lightningImages.rightHorizontal.push(image);
-			//since loading may take time, attempt retrieving rotated images, once the original image gets loaded n cached.
-			//As subsequent calls to get the rotated image, will get the original cached image, and then rotating it would not fail
-			image.onload = LevelAnimation.makeLightningFunction(spriteSheet, x);
+		image = LoadingScreen.gal.get("screen-game/lightning_strip.png");
+		if( image ) {
+			spriteSheet = new SpriteSheet(image, LevelAnimation.LIGHTNING_SPRITE_MATRIX);
+			for(x = 0; x < LevelAnimation.LIGHTNING_SPRITE_MATRIX.length; x++){
+				//load the original image
+				image = spriteSheet.getSpriteNew([0,x]);
+				LevelAnimation.lightningImages.rightHorizontal.push(image);
+				//since loading may take time, attempt retrieving rotated images, once the original image gets loaded n cached.
+				//As subsequent calls to get the rotated image, will get the original cached image, and then rotating it would not fail
+				image.onload = LevelAnimation.makeLightningFunction(spriteSheet, x);
+			}
 		}
 	}
 }
@@ -1228,15 +1236,17 @@ SparklesAnimation.prototype.start = function(){
 	if(this.interval){
 		this.stop();
 	}
-	this.x = this.x + (Board.TILE_WIDTH);
-	this.y = this.y + (Board.TILE_HEIGHT);
-	this.x = this.x - (LevelAnimation.sparklesImages[0].width/2);
-	this.y = this.y - (LevelAnimation.sparklesImages[0].height/2);
-	
-	var sparklesAnimation = this;
-	this.interval = setInterval(function() {
-		sparklesAnimation.animate();
-	}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
+	if( LevelAnimation.sparklesImages && LevelAnimation.sparklesImages.length > 0 ) {
+		this.x = this.x + (Board.TILE_WIDTH);
+		this.y = this.y + (Board.TILE_HEIGHT);
+		this.x = this.x - (LevelAnimation.sparklesImages[0].width/2);
+		this.y = this.y - (LevelAnimation.sparklesImages[0].height/2);
+		
+		var sparklesAnimation = this;
+		this.interval = setInterval(function() {
+			sparklesAnimation.animate();
+		}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
+	}
 };
 
 SparklesAnimation.prototype.stop = function(){

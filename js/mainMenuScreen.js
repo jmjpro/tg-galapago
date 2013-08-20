@@ -1,14 +1,14 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#screen-main-menu" : "background_main_menu.jpg",
-	"#button-change-player" : "main_menu_button_change_player_regular.png",
-	"#button-timed" : "main_menu_button_timed_regular.png",
-	"#button-relaxed" : "main_menu_button_relaxed_regular.png",
-	"#button-how-to-play" : "main_menu_button_options_regular.png",
-	"#button-top-scores" : "main_menu_button_options_regular.png",
-	"#button-set-language" : "main_menu_button_options_regular.png",
-	"#button-quit" : "main_menu_button_options_regular.png",
+	"#screen-main-menu" : { fileName: "background_main_menu.jpg" }, 
+	"#button-change-player" : { fileName: "main_menu_button_change_player_regular.png", width: "611", height: "121" },
+	"#button-timed" : { fileName: "main_menu_button_timed_regular.png", width: "467", height: "329" },
+	"#button-relaxed" : { fileName: "main_menu_button_relaxed_regular.png", width: "467", height: "329" },
+	"#button-how-to-play" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
+	"#button-top-scores" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
+	"#button-set-language" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
+	"#button-quit" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" }
 };
 
 MainMenuScreen.HILIGHT_IMAGE_MAP = {
@@ -119,15 +119,18 @@ MainMenuScreen.prototype.setInitialNavItem = function(){
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
-	var mainMenuScreen, galFilePath, galPrefix;
+	var mainMenuScreen, galFilePath, galPrefix, image;
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
 		galPrefix = selector === '#screen-main-menu' ? 'background/' : MainMenuScreen.GAL_PREFIX;
-		galFilePath = galPrefix + MainMenuScreen.IMAGE_MAP[selector];
+		galFilePath = galPrefix + MainMenuScreen.IMAGE_MAP[selector].fileName;
 		console.debug( 'selector: ' + selector + '; galFilePath: ' + galFilePath );
-		$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
-		//$(selector).css('background-image','url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')');
-		//$(selector)[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galFilePath).src + ')';
+		image = LoadingScreen.gal.get(galFilePath);
+		if( image ) {
+			$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+			$(selector).css('width', MainMenuScreen.IMAGE_MAP[selector].width + 'px');
+			$(selector).css('height', MainMenuScreen.IMAGE_MAP[selector].height + 'px');
+		}
 	});
 }; //MainMenuScreen.prototype.setImages()
 
@@ -269,18 +272,21 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
 	var galFilePath;
-	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
+	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector].fileName;
 	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')' );
 	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
-	var galFilePath, galHilightFilePath;
-	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
+	var galFilePath, galHilightFilePath, hilightedImage;
+	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector].fileName;
 	galHilightFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
-	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galHilightFilePath) + ')' );
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
-	//navItem[0].style.backgroundImage = 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')';
+	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
+	if( hilightedImage ) {
+		navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
+		navItem.css('width', MainMenuScreen.IMAGE_MAP[navItem.selector].width + 'px');
+		navItem.css('height', MainMenuScreen.IMAGE_MAP[navItem.selector].height + 'px');
+	}
 };
 
 MainMenuScreen.prototype.registerEventHandlers = function() {

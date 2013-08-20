@@ -17,9 +17,10 @@
 		"name": "common",
 		"contents": [
 			"background/background_main_menu.jpg",
-			"collages/main_menu_static.png",
+			"collages/main_menu_static_1.png",
+			"collages/main_menu_static_2.png",
 			"collages/map_level_ui_static.png",
-			"collages/map_animated.png",
+			"collages/on_board_common_animated.png",
 			"background/background_map_screen.jpg",
 			"screen-game/danger_bar_fill01.png",
 			"screen-game/danger_bar_fill02.png",
@@ -50,17 +51,12 @@
 	{
 		"name": "board-common",
 		"contents": [
-			"collages/on_board_common_animated.png",
 			"collages/level_ui_animated.png"
 		]
 	},
 	{
 		"name": "beach",
 		"contents": [
-	 		"background/background_beach_a.jpg",
-	 		"background/background_beach_b.jpg",
-	 		"background/background_beach_c.jpg",
-	 		"background/background_beach_d.jpg",
 			"creatures/on_board_beach_static.png",
 			"collages/on_board_beach_animated.png"			
 		]
@@ -69,10 +65,6 @@
 		"name": "forest",
 		"contents": [
 	 		"background/background_forest_a.jpg",
-	 		"background/background_forest_b.jpg",
-	 		"background/background_forest_c.jpg",
-	 		"background/background_forest_d.jpg",
-	 		"background/background_forest_e.jpg",
 			"creatures/on_board_forest_static.png",
 			"collages/on_board_forest_animated.png"
 		]
@@ -80,16 +72,11 @@
     {
 		"name": "cave",
 		"contents": [
-	 		"background/background_cave_a.jpg",
-	 		"background/background_cave_b.jpg",
-	 		"background/background_cave_c.jpg",
-	 		"background/background_cave_d.jpg",
-	 		"background/background_cave_e.jpg",
-	 		"background/background_cave_f.jpg",
+			"background/background_cave_a.jpg",
 			"creatures/on_board_cave_static.png",
 			"collages/on_board_cave_animated.png"
 		]
-    },
+	},
 	{
 		"name": "dialogs",
 		"contents": [

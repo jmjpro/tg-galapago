@@ -1,15 +1,16 @@
 ImageCollage.COLLAGE_ARRAY = [
 	{
-		'collageId': 'collages/main_menu_static.png',
+		'collageId': 'collages/main_menu_static_1.png',
 		'imageCoordinateArray': [
-			 {'cell': [0, 0, 611, 121], 'id': 'main-menu/main_menu_button_change_player_selected.png'}, 
-			 {'cell': [0, 121, 611, 121], 'id': 'main-menu/main_menu_button_change_player_regular.png'},
-			 {'cell': [0, 242, 467, 329], 'id': 'main-menu/main_menu_button_timed_selected.png'},
-			 {'cell': [0, 571, 467, 329], 'id': 'main-menu/main_menu_button_timed_regular.png'},
-			 {'cell': [467, 242, 467, 329], 'id': 'main-menu/main_menu_button_relaxed_selected.png'}, 
-			 {'cell': [467, 571, 467, 329], 'id': 'main-menu/main_menu_button_relaxed_regular.png'},
-			 {'cell': [611, 0, 331, 116], 'id': 'main-menu/main_menu_button_options_selected.png'}, 
-			 {'cell': [611, 116, 331, 116], 'id': 'main-menu/main_menu_button_options_regular.png'},
+			 {'cell': [0, 120, 235, 160], 'id': 'main-menu/main_menu_button_timed_selected.png'},
+			 {'cell': [235, 120, 235, 160], 'id': 'main-menu/main_menu_button_timed_regular.png'},
+			 {'cell': [0, 285, 235, 160], 'id': 'main-menu/main_menu_button_relaxed_selected.png'}, 
+			 {'cell': [235, 285, 235, 160], 'id': 'main-menu/main_menu_button_relaxed_regular.png'}
+		]
+	},
+	{
+		'collageId': 'collages/main_menu_static_2.png',
+		'imageCoordinateArray': [
 			 {'cell': [942, 0, 25, 25], 'id': 'main-menu/main_menu_arrow_left.png'},
 			 {'cell': [942, 25, 25, 25], 'id': 'main-menu/main_menu_arrow_right.png'}
 		]

@@ -153,6 +153,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 
 Galapago.setLevel = function(levelId) {
 	var theme;
+	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
@@ -180,6 +181,7 @@ Galapago.setLevel = function(levelId) {
 	});
 	LoadingScreen.gal.download('board-common');
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
+	console.debug( 'exiting Galapago.setLevel()' );
 };
 
 
@@ -237,6 +239,7 @@ function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
+	this.animationCanvas = $('#' + 'layer-map-animation')[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	this.layer = this.canvas.getContext('2d');
 	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
@@ -257,6 +260,7 @@ LevelMap.prototype.display = function() {
 	}
 	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
+	/*
 	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
@@ -273,8 +277,9 @@ LevelMap.prototype.display = function() {
 	if(!Level.isComplete("1")){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
-	this.drawHotspots();
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	*/
+	this.drawHotspots();
 	this.registerEventHandlers();
 	Galapago.audioPlayer.playVolcanoLoop();
 }; //LevelMap.prototype.display()
@@ -320,16 +325,14 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
     var st=new SpriteSheet(image,spriteMatrix);
 	var xIndex =0;
 	var that=this;
-	var animationCanvas = $('#' + 'layer-map-animation')[0];
 	var imageData=st.getSpriteData([xIndex,0]);
 	//animationCanvas.style.zIndex = 9;
-	animationCanvas.onclick = function(evt) {
+	this.animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
-	animationCanvas.width = imageData.width;
-	animationCanvas.height = imageData.height;
-	this.animationCanvas = animationCanvas;
-	this.animationLayer =  animationCanvas.getContext('2d');	
+	this.animationCanvas.width = imageData.width;
+	this.animationCanvas.height = imageData.height;
+	this.animationLayer =  this.animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
 	    that.animationLayer.clearRect(0,0,imageData.width,imageData.height);			
@@ -983,11 +986,13 @@ Level.prototype.loadImages = function() {
 
 Level.prototype.display = function() {
 	var level, timedMode;
+	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
 	level.styleCanvas();
 	level.board.drawScore();
 	$('#screen-game').show();
+	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
 		level.board.init( level.levelConfig.blobPositions );
@@ -1024,10 +1029,12 @@ Level.prototype.display = function() {
 		level.board.display();
 		level.board.setActiveTile();
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
+		console.debug( 'exiting Level.prototype.display()');
 		return level; //chainable
 		});
 	}
 	else {
+		console.debug( 'exiting Level.prototype.display()');
 		return level; //chainable
 	}
 }; //Level.prototype.display()
@@ -1213,12 +1220,16 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, canvasScore, canvasGameAnimation;
+	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	console.debug('entering Level.prototype.styleCanvas()');
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
 	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
 	resourcePath = 'background/background_' + themeComplete + '.jpg';
-	console.debug('setting background to ' + resourcePath);
-	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+	backgroundImage = LoadingScreen.gal.get(resourcePath);
+	if( backgroundImage ) {
+		console.debug('setting background to ' + resourcePath);
+		canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+	}
 	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
 	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
@@ -1248,7 +1259,7 @@ Level.prototype.styleCanvas = function() {
 	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
 	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
-
+	console.debug('exiting Level.prototype.styleCanvas()');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
 	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
 	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
@@ -1614,6 +1625,7 @@ Board.prototype.init = function(tilePositions) {
 
 Board.prototype.build = function(tilePositions) {
 	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup, key, tile;
+	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
     restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	if(restoreLookupString != undefined){
@@ -1624,7 +1636,7 @@ Board.prototype.build = function(tilePositions) {
 		var image ;
 		var id;
 		for(key in nilCollection){
-		    image=null;
+			image=null;
 			id=null;
 			if(nilCollection[key] in this.level.creatureImages){
 				id = nilCollection[key];
@@ -1633,12 +1645,12 @@ Board.prototype.build = function(tilePositions) {
 				id = nilCollection[key];
 				image = this.level.superFriendImages[id];
 			}else{
-			    for(var creatureKey in this.level.goldImages){
+				for(var creatureKey in this.level.goldImages){
 					id = this.level.goldImages[creatureKey].id;
-				  	if(id == nilCollection[key]){
-				    	image = this.level.goldImages[creatureKey];
-				    	break;
-				  	}
+					if(id == nilCollection[key]){
+						image = this.level.goldImages[creatureKey];
+						break;
+					}
 				}
 			}
 			var blobItem = new BlobItem(image, 0);
@@ -1659,7 +1671,7 @@ Board.prototype.build = function(tilePositions) {
 			if(restoreLookup ){
 				key = colIt+'_'+rowIt;
 				if(cellObject.gold && restoreLookup[key]){
-				    cellObject = this.parseCell(restoreLookup[key]);
+					cellObject = this.parseCell(restoreLookup[key]);
 				}else if((cellObject.gold || cellObject.blocking || cellObject.cocoon || cellObject.hasTileOnly || cellObject.superFriend) && !restoreLookup[key]){
 					cellObject = this.parseCell('1');
 					//this.blobCollection.addBlobItem(tile);
@@ -1703,6 +1715,7 @@ Board.prototype.build = function(tilePositions) {
 		}
 	}
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
+	console.debug( 'exiting Board.prototype.build()' );
 	return;
 }; //Board.prototype.build
 
@@ -1928,7 +1941,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 				board.isPowerUpFocused = true;
 			}
 			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP ;
 			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
 			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
 					//alert('flipflop power up');
@@ -1949,13 +1962,13 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			}
 			
 		}else if(board.isPowerUpFocused){
-				  board.isPowerUpFocused =false
-			      board.powerUp.update();
-				  board.powerUp.currentFocus=0;
-				  board.powerUp.nextFocus=0;
-				  window.onkeydown=null;
-				  board.powerUp.focusOn= 0;
-				  //board.powerUp.canvas.onfocus=null;
+			board.isPowerUpFocused =false
+			board.powerUp.update();
+			board.powerUp.currentFocus=0;
+			board.powerUp.nextFocus=0;
+			window.onkeydown=null;
+			board.powerUp.focusOn= 0;
+			//board.powerUp.canvas.onfocus=null;
 			window.onkeydown = board.powerUp.boardKeyHandler;
 		}
 	}
@@ -2001,7 +2014,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 					var currentY = tile.getYCoord()+100;
 					
 					if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> currentY && y< (currentY+ Board.TILE_HEIGHT )){
-					   if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
+						if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
 							var icol = board.bubbleInitialTile[0];
 							var irow = board.bubbleInitialTile[1];
 							if(icol != col || irow != row){
@@ -2026,7 +2039,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 			}
 			if(found) {
 			    break;
-		}
+			}
 		}	
 		this.handleMouseClickForMenuAndQuit(x,y);
 		//powerup handling 
@@ -2120,6 +2133,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			board.collectionModified = true;
 		}
 		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;

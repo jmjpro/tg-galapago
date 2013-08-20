@@ -34,7 +34,7 @@
 			"id" : "2",
 			"name" : "Serenity Sands",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["1","3"],
 			"unlocksLevelsArrows" :[
 				{"1":
@@ -106,7 +106,7 @@
 			"id" : "4",
 			"name" : "Monkey Bay",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["3","5"],
 			"unlocksLevelsArrows" :[
 				{"3":
@@ -174,7 +174,7 @@
 			"id" : "6",
 			"name" : "Crab Key",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["5","7","14"],
 			"unlocksLevelsArrows" :[
 				{"5":
@@ -210,7 +210,7 @@
 			"id" : "7",
 			"name" : "Palm Beach",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["6","14","8"],
 			"unlocksLevelsArrows" :[
 				{"6":
@@ -245,7 +245,7 @@
 			"id" : "8",
 			"name" : "Bilas Beach",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["7","15","9"],
 			"unlocksLevelsArrows" :[
 				{"7":
@@ -355,7 +355,7 @@
 			"id" : "11",
 			"name" : "Blue Lagoon",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["10","18","19"],
 			"unlocksLevelsArrows" :[
 				{"10":
@@ -391,7 +391,7 @@
 			"id" : "12",
 			"name" : "Dina's Shore",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["13"],
 			"unlocksLevelsArrows" :[
 				{"13":
@@ -503,7 +503,7 @@
 			"id" : "15",
 			"name" : "Warm Sands",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["8","16"],
 				"unlocksLevelsArrows" :[
 				{"8":
@@ -545,7 +545,7 @@
 			"id" : "16",
 			"name" : "ELY'S BLUFF",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["9","10","17"],
 				"unlocksLevelsArrows" :[
 				{"9":
@@ -634,7 +634,7 @@
 			"id" : "18",
 			"name" : "BORB BAY",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["11","17","19"],
 			"unlocksLevelsArrows" :[
 				{"11":
@@ -722,7 +722,7 @@
 			"id" : "20",
 			"name" : "DABOB BAY",
 			"bgTheme" : "beach",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["13","21"],
 			"unlocksLevelsArrows" :[
 				{"13":
@@ -835,7 +835,7 @@
 			"id" : "24",
 			"name" : "FOGGY BOTTOM",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["25","26"],
 			"unlocksLevelsArrows" :[
 				{"25":
@@ -867,7 +867,7 @@
 			"id" : "25",
 			"name" : "CRAGGY RAVINE",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["26"],
 			"unlocksLevelsArrows" :[
 				{"26":
@@ -926,7 +926,7 @@
 			"id" : "27",
 			"name" : "ROSEMARY FOREST",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["30"],
 			"unlocksLevelsArrows" :[
 				{"30":
@@ -955,7 +955,7 @@
 			"id" : "28",
 			"name" : "Whispering Woods",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["33","34"],
 			"unlocksLevelsArrows" :[
 				{"33":
@@ -987,7 +987,7 @@
 			"id" : "29",
 			"name" : "LEAFY HIDEAWAY",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["30","35"],
 			"unlocksLevelsArrows" :[
 				{"30":
@@ -1018,7 +1018,7 @@
 			"id" : "30",
 			"name" : "MISTY THICKET",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "e",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["31","35"],
 			"unlocksLevelsArrows" :[
 				{"31":
@@ -1050,7 +1050,7 @@
 			"id" : "31",
 			"name" : "OBERON ROCK",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["32","36"],
 			"unlocksLevelsArrows" :[
 				{"32":
@@ -1082,7 +1082,7 @@
 			"id" : "32",
 			"name" : "RUSTIC ROCK",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["31","33","37"],
 			"unlocksLevelsArrows" :[
 				{"31":
@@ -1117,7 +1117,7 @@
 			"id" : "33",
 			"name" : "Dappled Meadow",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["28","32","34","38"],
 			"unlocksLevelsArrows" :[
 				{"28":
@@ -1194,7 +1194,7 @@
 			"id" : "35",
 			"name" : "EASTER MEADOW",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["36"],
 			"unlocksLevelsArrows" :[
 				{"36":
@@ -1223,7 +1223,7 @@
 			"id" : "36",
 			"name" : "TUBBY HILL",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "e",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["31","37"],
 			"unlocksLevelsArrows" :[
 				{"31":
@@ -1255,7 +1255,7 @@
 			"id" : "37",
 			"name" : "DUSK WOOD",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["32","38"],
 			"unlocksLevelsArrows" :[
 				{"32":
@@ -1319,7 +1319,7 @@
 			"id" : "39",
 			"name" : "Mossy Alcove",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["34","40"],
 			"unlocksLevelsArrows" :[
 				{"34":
@@ -1351,7 +1351,7 @@
 			"id" : "40",
 			"name" : "Ivy Glades",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["41"],
 				"unlocksLevelsArrows" :[
 				{"41":
@@ -1381,7 +1381,7 @@
 			"id" : "41",
 			"name" : "Sunny Swamp",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["43"],
 			"unlocksLevelsArrows" :[
 				{"43":
@@ -1410,7 +1410,7 @@
 			"id" : "42",
 			"name" : "Sweet Meadow",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "g",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["41","44","45"],
 			"unlocksLevelsArrows" :[
 				{"41":
@@ -1445,7 +1445,7 @@
 			"id" : "43",
 			"name" : "Soggy Bottom",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "b",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["44"],
 			"unlocksLevelsArrows" :[
 				{"44":
@@ -1474,7 +1474,7 @@
 			"id" : "44",
 			"name" : "Shady Deep",
 			"bgTheme" : "forest",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["42"],
 			"unlocksLevelsArrows" :[
 				{"42":
@@ -1594,7 +1594,7 @@
 			"id" : "48",
 			"name" : "Intrepid Peak",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["49"],
 			"unlocksLevelsArrows" :[
 				{"49":
@@ -1623,7 +1623,7 @@
 			"id" : "49",
 			"name" : "Pryde Promontory",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["50"],
 			"unlocksLevelsArrows" :[
 				{"50":
@@ -1652,7 +1652,7 @@
 			"id" : "50",
 			"name" : "HOT POCKET",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["51"],
 			"unlocksLevelsArrows" :[
 				{"51":
@@ -1710,7 +1710,7 @@
 			"id" : "52",
 			"name" : "ROCK SLIDE",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["53"],
 			"unlocksLevelsArrows" :[
 				{"53":
@@ -1768,7 +1768,7 @@
 			"id" : "54",
 			"name" : "Obsidian Slide",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["47"],
 			"unlocksLevelsArrows" :[
 				{"47":
@@ -1826,7 +1826,7 @@
 			"id" : "56",
 			"name" : "Badlands",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["55"],
 			"unlocksLevelsArrows" :[
 				{"55":
@@ -1887,7 +1887,7 @@
 			"id" : "58",
 			"name" : "Quanrud Quarry",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["57"],
 			"unlocksLevelsArrows" :[
 				{"57":
@@ -1945,7 +1945,7 @@
 			"id" : "60",
 			"name" : "DECEPTION PASS",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["59"],
 			"unlocksLevelsArrows" :[
 				{"59":
@@ -2002,7 +2002,7 @@
 			"id" : "62",
 			"name" : "PANORAMIC VISTA",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["61"],
 			"unlocksLevelsArrows" :[
 				{"61":
@@ -2059,7 +2059,7 @@
 			"id" : "64",
 			"name" : "Flaming Peak",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "d",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["55","65"],
 			"unlocksLevelsArrows" :[
 				{"55":
@@ -2092,7 +2092,7 @@
 			"id" : "65",
 			"name" : "Risky Ravine",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "e",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["66"],
 			"unlocksLevelsArrows" :[
 				{"66":
@@ -2151,7 +2151,7 @@
 			"id" : "67",
 			"name" : "ROCKY CRAG",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "e",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["68"],
 			"unlocksLevelsArrows" :[
 				{"68":
@@ -2180,7 +2180,7 @@
 			"id" : "68",
 			"name" : "BLANCHARD KNOLL",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "c",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["69"],
 			"unlocksLevelsArrows" :[
 				{"69":
@@ -2210,7 +2210,7 @@
 			"id" : "69",
 			"name" : "ATTICUS HILL",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "e",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :["70"],
 			"unlocksLevelsArrows" :[
 				{"70":
@@ -2239,7 +2239,7 @@
 			"id" : "70",
 			"name" : "The Finale",
 			"bgTheme" : "cave",
-			"bgSubTheme" : "f",
+			"bgSubTheme" : "a",
 			"unlocksLevels" :[],
 			"dangerBarSeconds" : "330",
 			"difficulty":"5",
