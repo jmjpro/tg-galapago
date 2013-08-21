@@ -92,6 +92,12 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
+		'collageId': 'collage/gold-strip.png',
+		'imageCoordinateArray': [
+			{'cell': [0, 0, 46, 46], 'id': 'screen-game/gold/gold-1.png'}
+		]
+	},
+	{
 		'collageId': 'collage/level-ui-animated.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 1029, 149], 'id': 'screen-game/Powerup-active-strip.png'},
@@ -128,6 +134,7 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-beach-rollover-strips.png',
 		'imageCoordinateArray': [
+			{'cell': [0, 0, 460, 46], 'id': 'creatures/beach/blue-crab-rollover-strip.png'},
 			{'cell': [0, 0, 460, 46], 'id': 'creatures/beach/green-turtle-rollover-strip.png'},
 			{'cell': [0, 46, 460, 46], 'id': 'creatures/beach/pink-frog-rollover-strip.png'},
 			{'cell': [0, 92, 460, 46], 'id': 'creatures/beach/red-starfish-rollover-strip.png'},

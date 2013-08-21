@@ -20,18 +20,18 @@ Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
 Galapago.gameImageNames = [
-	'flame_disabled',
-	'flame_fill',
-	'swap_disabled',
-	'swap_fill',
-	'shuffle_disabled',
-	'shuffle_fill',
-	'powerups_holder',
-	'tile_active',
-	'tile_regular',
-	'tile_selected',
-	'item_collected_mark',
-	'bracket_left',
+	'flame-disabled',
+	'flame-fill',
+	'swap-disabled',
+	'swap-fill',
+	'shuffle-disabled',
+	'shuffle-fill',
+	'powerups-holder',
+	'tile-active',
+	'tile-regular',
+	'tile-selected',
+	'item-collected-mark',
+	'bracket-left',
 	'bracket-right'
 ];
 Galapago.dangerBarImageNames = [
@@ -190,7 +190,6 @@ Galapago.setLevel = function(levelId) {
 	LoadingScreen.gal.download(backgroundBundle);
 	LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 	LoadingScreen.gal.download(themeBundle);
-	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
 	console.debug( 'exiting Galapago.setLevel()' );
 };
 
@@ -779,10 +778,10 @@ Level.LAYER_SCORE = 'layer-score';
 Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
 Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
 Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
-Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
-Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
-Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
-Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
+Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
+Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
+Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
+Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
@@ -816,7 +815,7 @@ function Level(id) {
 
 Level.prototype.getGold = function() {
 	var gold;
-	gold = new Gold(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1.png'));
+	gold = new Gold(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'));
 	return gold;
 };
 
@@ -871,7 +870,7 @@ Level.prototype.initImages = function(imageArray) {
 		if(image.id.indexOf('.')!=-1){
 			image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
 		}
-		level.gameImages[image.id] = image;
+		level.gameImages[image.id.replace('-', '_')] = image;
 		
 	});
 }; //Level.prototype.initImages

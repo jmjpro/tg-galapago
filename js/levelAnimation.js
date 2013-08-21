@@ -6,8 +6,8 @@ LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
 LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
-LevelAnimation.ROLLOVER_SUFFIX = '_rollover_strip';
-LevelAnimation.JUMP_SUFFIX = '_jump_strip';
+LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
+LevelAnimation.JUMP_SUFFIX = '-jump';
 
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
@@ -359,12 +359,22 @@ LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
 	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
 			creatureType = creatureTypes[creatureTypeIt];
-			galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + Level.BLOB_IMAGE_EXTENSION;
+			galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
 			image =  LoadingScreen.gal.get(galPath);
-			this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + Level.BLOB_IMAGE_EXTENSION;
+			if( image ) {
+				this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
+			}
+			else {
+				console.error( 'unable to load image ' + galPath);
+			}
+			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
 			image = LoadingScreen.gal.get(galPath);
-			this[creatureType + '_jumps'] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
+			if( image ) {
+				this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
+			}
+			else {
+				console.error( 'unable to load image ' + galPath);
+			}
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
 	return creatureImagePaths;
