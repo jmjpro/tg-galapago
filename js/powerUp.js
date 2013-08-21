@@ -389,9 +389,13 @@ Powerup.prototype.updatePowerAchieved = function(){
 }; //Powerup.prototype.updatePowerAchieved()
 
 Powerup.prototype.initImages = function() {
-	var powerup = this;
+	var powerup, image;
+	powerup = this;
 	_.each(Powerup.gameImageNames, function(imageName) {
-		powerup[replaceAll( imageName, '-', '_' )] = LoadingScreen.gal.get(Powerup.GAME_IMAGE_DIRECTORY + imageName + Powerup.IMAGE_PATH_SUFFIX);
+		image = LoadingScreen.gal.get(Powerup.GAME_IMAGE_DIRECTORY + imageName + Powerup.IMAGE_PATH_SUFFIX);
+		image.width *= 2;
+		image.height *= 2;
+		powerup[replaceAll( imageName, '-', '_' )] = image;
 	});
 }; //DangerBar.prototype.initImages
 

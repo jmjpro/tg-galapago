@@ -212,33 +212,33 @@ LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
-[{cell: [0, 36], id: '2'}],  
-[{cell: [0, 72], id: '3'}], 
-[{cell: [0, 108], id: '4'}],  
-[{cell: [0, 144], id: '5'}],
-[{cell: [0, 180], id: '6'}],   
-[{cell: [0, 216], id: '7'}],
-[{cell: [0, 252], id: '8'}],
-[{cell: [0, 288], id: '9'}],
-[{cell: [0, 324], id: '10'}],
-[{cell: [0, 360], id: '11'}],
-[{cell: [0, 396], id: '12'}],
-[{cell: [0, 432], id: '13'}],
-[{cell: [0, 468], id: '14'}],
-[{cell: [0, 504], id: '15'}],
-[{cell: [0, 540], id: '16'}],
-[{cell: [0, 576], id: '17'}],
-[{cell: [0, 612], id: '18'}]
+[{cell: [0, 18], id: '2'}],  
+[{cell: [0, 36], id: '3'}], 
+[{cell: [0, 54], id: '4'}],  
+[{cell: [0, 72], id: '5'}],
+[{cell: [0, 90], id: '6'}],   
+[{cell: [0, 108], id: '7'}],
+[{cell: [0, 126], id: '8'}],
+[{cell: [0, 144], id: '9'}],
+[{cell: [0, 162], id: '10'}],
+[{cell: [0, 180], id: '11'}],
+[{cell: [0, 198], id: '12'}],
+[{cell: [0, 216], id: '13'}],
+[{cell: [0, 234], id: '14'}],
+[{cell: [0, 252], id: '15'}],
+[{cell: [0, 270], id: '16'}],
+[{cell: [0, 288], id: '17'}],
+[{cell: [0, 306], id: '18'}]
 ];
 
 LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
-[{cell: [0, 60], id: '2'}],  
-[{cell: [0, 120], id: '3'}], 
-[{cell: [0, 180], id: '4'}],  
-[{cell: [0, 240], id: '5'}],
-[{cell: [0, 300], id: '6'}],   
-[{cell: [0, 360], id: '7'}]
+[{cell: [0, 30], id: '2'}],  
+[{cell: [0, 60], id: '3'}], 
+[{cell: [0, 90], id: '4'}],  
+[{cell: [0, 120], id: '5'}],
+[{cell: [0, 150], id: '6'}],   
+[{cell: [0, 180], id: '7'}]
 ];
 
 LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX = [[
@@ -437,7 +437,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMark = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_mark_strip.png');
+			tileMark = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile-mark-strip.png');
 			tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
@@ -695,7 +695,7 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var image, imgCnt, validArray = true, imageArray = [];
-	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint_strip.png");
+	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint-strip.png");
 	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
@@ -1131,7 +1131,7 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	var image = this.imageArray[this.rolloverSpriteId];
-	this.layer.drawImage(image, this.x, this.y);
+	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % this.imageArray.length;
 };
