@@ -35,13 +35,13 @@ Galapago.gameImageNames = [
 	'bracket-right'
 ];
 Galapago.dangerBarImageNames = [
-	'danger_bar',
+	'danger-bar',
 	/*'danger_bar_cap_bottom01',
 	'danger_bar_cap_bottom02',
 	'danger_bar_cap_top01',
 	'danger_bar_cap_top02',*/
-	'danger_bar_fill01',
-	'danger_bar_fill02'
+	'danger-bar-fill-1',
+	'danger-bar-fill-2'
 ];
 Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
@@ -165,6 +165,7 @@ Galapago.setLevel = function(levelId) {
 		if (result.success) {
 			LoadingScreen.gal.clearOnLoaded( backgroundBundle );
 			console.debug( backgroundBundle + ' resource bundle loaded' );
+			LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 		}
 	});
 
@@ -172,6 +173,7 @@ Galapago.setLevel = function(levelId) {
 		if (result.success) {
 			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
+			LoadingScreen.gal.download(themeBundle);
 		}
 	});
 	
@@ -188,8 +190,6 @@ Galapago.setLevel = function(levelId) {
 	});
 
 	LoadingScreen.gal.download(backgroundBundle);
-	LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-	LoadingScreen.gal.download(themeBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
 
@@ -1234,22 +1234,21 @@ Level.prototype.styleCanvas = function() {
 	console.debug('styling background canvas');
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
 	console.debug( 'canvasBackground: ' + canvasBackground.selector );
-	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
+	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
 	resourcePath = 'background/' + themeComplete + '.jpg';
 	backgroundImage = LoadingScreen.gal.get(resourcePath);
 	if( backgroundImage ) {
 		console.debug('setting background to ' + resourcePath);
 		canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
 	}
-	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
 	/*
 	console.debug('before changing canvas width and height');
 	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
 	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
 	console.debug('after changing canvas width and height');
+	*/
 	canvasBackground.css('left', '0px');
 	canvasBackground.css('top', '0px');
-	*/
 	this.layerBackground = canvasBackground[0].getContext('2d');
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
@@ -3685,7 +3684,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 
 	_.each(imageArray, function(image) {
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
-		dangerBar[imageId] = image;
+		dangerBar[imageId.replace( '-', '_' )] = image;
 	});
 }; //DangerBar.prototype.initImages
 
