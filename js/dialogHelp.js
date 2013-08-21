@@ -37,7 +37,7 @@ function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
-		sdkApi.reportPageView(sdkReportingPage);
+		//sdkApi.reportPageView(sdkReportingPage);
 	}
 	this.updateScrollDivPages();
 	/*

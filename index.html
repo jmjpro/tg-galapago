@@ -17,7 +17,7 @@
 		<script src="ext/zepto-touch-1.0.js"></script>
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
-		<script src="../SDK/TGH5.min.js"></script>
+		<!--script src="../SDK/TGH5.min.js"></script-->
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -51,13 +51,14 @@
 				        // SDK successfully initialized
 				        api.preferredLanguage().always(function (language) {
 					        /* Update the UI to use the selected language */
-					        i18n.init({ lng: 'en' , fallbackLng: 'en'});
+					        //i18n.init({ lng: 'en' , fallbackLng: 'en'});
 					    });
-				    	LoadingScreen.init();
 				    }).fail(function (error) {
 				        console.log(error);
 				    });
 				}
+				i18n.init({ lng: 'en' , fallbackLng: 'en'});
+		    	LoadingScreen.init();
 			}
 		</script>
 	</head>
@@ -74,21 +75,21 @@
 
 		<div id="screen-map" class="canvas-fullscreen">
 			<canvas id="layer-background" style="z-index: 1;" tabindex="1"></canvas>
-			<canvas id="layer-map" style="z-index: 2;" tabindex="2" width="1280" height="670"></canvas>
+			<canvas id="layer-map" style="z-index: 2;" tabindex="2" width="1279" height="670"></canvas>
 			<canvas id="layer-map-other-animation" style="z-index: 3;" tabindex="3"></canvas>
 			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4"></canvas>
 			
 			<ul id="map-nav">
-				<li><div class="vertical-align-shiv"><div id="button_play_map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button_start_map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button_reset_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button_menu_map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button_quit_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
 			</ul>
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;"></canvas>
+			<canvas id="layer-background" style="z-index: 1;" width="1279" height="720"></canvas>
 			<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>
 			<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>
 			<canvas id="layer-creature" class="layer-board" style="z-index: 4;"></canvas>
@@ -125,6 +126,7 @@
 			-->
 			</table>
 
+			<!--
 			<ul class="galapago-drop-down">
 				<li>English</li>
 				<li>French</li>
@@ -132,6 +134,7 @@
 				<li>Russian</li>
 				<li>Spanish</li>
 			</ul>
+			-->
 		</div>
 
 		<div id="dialog-leaderboards" class="overlay2">
@@ -200,7 +203,7 @@
 					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
 					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
 					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
-					<li>Game Tips<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialogs/arrow_left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialogs/arrow_right.png" class="game-option-arrow" width="37" height="27"></div></li>
+					<li>Game Tips<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><!--<img src="res/img/dialog/arrow-left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialog/arrow-right.png" class="game-option-arrow" width="37" height="27">--></div></li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->

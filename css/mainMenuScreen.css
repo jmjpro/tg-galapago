@@ -2,7 +2,7 @@
 	display: none;
 	background-repeat: no-repeat;
 	background-position: left top;
-	width: 1280px;
+	width: 1279px;
 	height: 720px;
 	left: 0px;
 	top: 0px;
@@ -63,7 +63,7 @@
 .main-menu-button {
 	background-repeat: no-repeat;
 	background-position: left top;
-	/*background: url('../res/img/main-menu/main_menu_button_options_regular.png') no-repeat left top;*/
+	background-size: 100%;
 	width: 331px;
 	height: 116px;
 	vertical-align: middle;

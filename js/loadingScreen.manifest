@@ -1,13 +1,13 @@
 {
 	"assetRootImage": "res/img/",
 	"assetRootAudio": "res/audio/",
-	"collageDirectory" : "collages",
+	"collageDirectory" : "collage",
 	"audioExts": "mp3",
 	"bundles": [
 	{
 		"name": "screen-loading",
 		"contents": [
-			"background/background-loading.jpg",
+			"background/loading.jpg",
 			"screen-loading/loading-progress-bar.png",
 			"screen-loading/loading-progress-bar-fill.png",
 			"screen-loading/loading-progress-bar-left-cap.png"
@@ -16,93 +16,95 @@
 	{
 		"name": "common",
 		"contents": [
-			"background/background_main_menu.jpg",
-			"collages/main_menu_static_1.png",
-			"collages/main_menu_static_2.png",
-			"collages/map_level_ui_static.png",
-			"collages/on_board_common_animated.png",
-			"background/background_map_screen.jpg",
-			"screen-game/danger_bar_fill01.png",
-			"screen-game/danger_bar_fill02.png",
-			"screen-game/talking_heads_base.png",
-			"screen-game/talking_heads_left_head_eyes_strip.png",
-			"screen-game/talking_heads_right_head_eyes_strip.png",
-			"screen-game/talking_heads_mouth_strip.png",
-			"screen-game/tile_gold_1.png",
-			"dialogs/arrow_down.png",
-			"dialogs/arrow_left.png",
-			"dialogs/arrow_right.png",
-			"dialogs/arrow_up.png",
-			"dialogs/bg_large.png",
-			"dialogs/bg_regular.png",
-			"dialogs/bg_regular_noTitle.png",
-			"dialogs/bg_small.png",
-			"dialogs/bg_small_noTitle.png",
-			"dialogs/button_big_highlight.png",
-			"dialogs/button_big_regular.png",
-			"dialogs/button_huge_highlight.png",
-			"dialogs/button_huge_regular.png",
-			"dialogs/button_medium_highlight.png",
-			"dialogs/button_medium_regular.png",
-			"dialogs/button_small_highlight.png",
-			"dialogs/button_small_regular.png"
+			"background/main-menu.jpg",
+			"collage/main-menu.png",
+			"collage/arrows.png",
+			"collage/dialog-buttons.png",
+			"collage/dialog-arrow-buttons.png",
+			"collage/dialog-keypad-buttons.png",
+			"collage/map-board-1.png",
+			"collage/map-board-2.png",
+			"collage/map-board-buttons.png",
+			"background/map.jpg",
+			"collage/map-bonfire-arrow-strips.png",
+			"screen-map/bomb-left-one-strip.png",
+			"screen-map/bomb-left-two-strip.png",
+			"screen-map/bomb-mid-strip.png",
+			"screen-map/bomb-right-strip.png",
+			"screen-map/lava-strip.png"
 		]
 	},
 	{
 		"name": "board-common",
 		"contents": [
-			"collages/level_ui_animated.png"
+			"collage/game-powerup.png",
+			"screen-game/cocoon-removed-strip.png",
+			"screen-game/creatures-beach-strip.png",
+			"screen-game/creatures-cave-strip.png",
+			"screen-game/creatures-forest-strip.png",
+			"screen-game/danger-bar-fill-1.png",
+			"screen-game/danger-bar-fill-2.png",
+			"screen-game/danger-bar-fill-strip.png",
+			"screen-game/danger-bar-warning-strip.png",
+			"screen-game/danger-bar.png",
+			"screen-game/gold-strip.png",
+			"screen-game/heads-base.png",
+			"screen-game/heads-eyes-strip.png",
+			"screen-game/heads-mouth-strip.png",
+			"screen-game/hint-strip.png",
+			"screen-game/lightning-strip.png",
+			"screen-game/powerup-activated-strip.png",
+			"screen-game/powerup-gained-strip.png",
+			"screen-game/sparkle-strip.png",
+			"screen-game/superfriends.png",
+			"screen-game/tile-mark-strip.png"
 		]
 	},
+	{ "name": "beach-a", "contents": [ "background/beach-a.jpg" ] },
+	{ "name": "beach-b", "contents": [ "background/beach-b.jpg" ] },
+	{ "name": "beach-c", "contents": [ "background/beach-c.jpg" ] },
+	{ "name": "beach-d", "contents": [ "background/beach-d.jpg" ] },
 	{
-		"name": "beach",
+		"name": "beach-common",
 		"contents": [
-			"creatures/on_board_beach_static.png",
-			"collages/on_board_beach_animated.png"			
+			"screen-game/creatures-beach-strip.png",
+			"collage/game-beach-jump-strips.png",
+			"collage/game-beach-rollover-strips.png"
 		]
 	},
+	{ "name": "forest-a", "contents": [ "background/forest-a.jpg" ] },
+	{ "name": "forest-b", "contents": [ "background/forest-b.jpg" ] },
+	{ "name": "forest-c", "contents": [ "background/forest-c.jpg" ] },
+	{ "name": "forest-d", "contents": [ "background/forest-d.jpg" ] },
+	{ "name": "forest-e", "contents": [ "background/forest-e.jpg" ] },
+	{ "name": "forest-f", "contents": [ "background/forest-f.jpg" ] },
+	{ "name": "forest-g", "contents": [ "background/forest-g.jpg" ] },
 	{
-		"name": "forest",
+		"name": "forest-common",
 		"contents": [
-	 		"background/background_forest_a.jpg",
-			"creatures/on_board_forest_static.png",
-			"collages/on_board_forest_animated.png"
+			"screen-game/creatures-forest-strip.png",
+			"collage/game-forest-jump-strips.png",
+			"collage/game-forest-rollover-strips.png"
 		]
     },
+	{ "name": "cave-a", "contents": [ "background/cave-a.jpg" ] },
+	{ "name": "cave-b", "contents": [ "background/cave-b.jpg" ] },
+	{ "name": "cave-c", "contents": [ "background/cave-c.jpg" ] },
+	{ "name": "cave-d", "contents": [ "background/cave-d.jpg" ] },
+	{ "name": "cave-e", "contents": [ "background/cave-e.jpg" ] },
+	{ "name": "cave-f", "contents": [ "background/cave-f.jpg" ] },
     {
-		"name": "cave",
+		"name": "cave-common",
 		"contents": [
-			"background/background_cave_a.jpg",
-			"creatures/on_board_cave_static.png",
-			"collages/on_board_cave_animated.png"
+			"screen-game/creatures-cave-strip.png",
+			"collage/game-cave-rollover-strips.png",
+			"collage/game-cave-jump-strips.png"
 		]
 	},
-	{
-		"name": "dialogs",
-		"contents": [
-			"dialogs/drop_down_menu.png",
-			"dialogs/profiles_name_area.png",
-			"dialogs/V_dis.png",
-			"dialogs/V_regular.png",
-			"dialogs/X_dis.png",
-			"dialogs/X_regular.png",
-			"dialogs/keyboard/keypad_button_delete_pressed.png",
-			"dialogs/keyboard/keypad_button_done_pressed.png",
-			"dialogs/keyboard/keypad_button_letter_pressed.png",
-			"dialogs/keyboard/keypad_button_reset_pressed.png",
-			"dialogs/keyboard/keypad_button_space_pressed.png",
-			"dialogs/keyboard/keypad_cursor_delete.png",
-			"dialogs/keyboard/keypad_cursor_done.png",
-			"dialogs/keyboard/keypad_cursor_letter.png",
-			"dialogs/keyboard/keypad_cursor_reset.png",
-			"dialogs/keyboard/keypad_cursor_space.png",
-			"dialogs/keyboard/keypad_regular.png"
-    	]
-    },
     {
-		"name": "dialogs-and-menus-testing",
+		"name": "dialog-and-menus-testing",
 		"contents": [
-			"collages/map_level_ui_static.png"
+			"collage/map_level_ui_static.png"
     	]
     },
     {

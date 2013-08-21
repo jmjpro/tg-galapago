@@ -7,7 +7,7 @@
 	<script src="ext/lodash.min.js"></script>
 	<script src="ext/gal.js"></script>
 	<script src="ext/i18next-1.6.3.min.js"></script>
-	<script src="../SDK/TGH5.min.js" type="text/javascript"></script>
+	<script src="../sdk/tgh5.min.js" type="text/javascript"></script>
 	<script src="js/loadingScreen.js"></script>
 	<script src="js/dialogMenu.js"></script>
 	<script src="js/dialogHelp.js"></script>
@@ -39,12 +39,12 @@
 		this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 		this.registerEvent();
 		this.gal.init(function() {
-			LoadingScreen.gal.download('dialogs-and-menus-testing');
+			LoadingScreen.gal.download('dialog-and-menus-testing');
 		});
 	};
 
 	LoadingScreen.registerEvent = function() {
-		LoadingScreen.gal.onLoaded('dialogs-and-menus-testing', function(result) {
+		LoadingScreen.gal.onLoaded('dialog-and-menus-testing', function(result) {
 			if (result.success) {
 				var mapScreen = new MapScreen();
 				mapScreen.registerEventHandlers();
@@ -96,13 +96,13 @@
 		z-index: -1;
 		width: 100%;
 		height: 100%;
-		background: url('res/img/background/background_map_screen.jpg') no-repeat top left;
+		background: url('res/img/background/map.jpg') no-repeat top left;
 	}
 	</style>
 </head>
 <body onLoad="loadGame()" style="text-align: center; ">
 <div id="demo-nav">
-<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create', 'keypad_cursor_letter');">Create Profile</a> |
+<a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-profile-create', 'keypad-cursor-letter');">Create Profile</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
 <a href="#" onclick="dialogMenu = new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
@@ -123,11 +123,11 @@
 <div id="test-layer"></div>
 
 <ul id="map-nav">
-	<li><div class="vertical-align-shiv"><div id="button_play_map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button_start_map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button_reset_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button_menu_map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button_quit_map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
+	<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
+	<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
+	<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
+	<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
+	<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
 </ul>
 
 <div id="dialog-profile-create" class="overlay2">
@@ -158,7 +158,7 @@
 			<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
 			<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
 			<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
-			<li>Game Tips<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialogs/arrow_left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialogs/arrow_right.png" class="game-option-arrow" width="37" height="27"></div></li>
+			<li>Game Tips<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialog/arrow-left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialog/arrow-right.png" class="game-option-arrow" width="37" height="27"></div></li>
 		</ul>
 	</div>
 	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -333,7 +333,7 @@
 <div id="dialog-profile-create-init" class="overlay2">
 	<div class="dialog-title" data-i18n="Dialog Profile Create Initial.Title">Please enter your name</div>
 	<div class="dialog-content">
-		<img src="res/img/dialogs/Profile name entering from initial state.jpg" width="266" height="279"/>
+		<img src="res/img/dialog/Profile name entering from initial state.jpg" width="266" height="279"/>
 		<div id="keypad"></div>
 		<ul class="vertical-button-nav">
 			<li id="option-close" data-i18n="Dialog Profile Create Initial.Close" class="button-medium button-medium-hilight">Close</li>
@@ -345,7 +345,7 @@
 <div id="dialog-profile-list" class="overlay2">
 	<div class="dialog-title" data-i18n="Dialog Profile List.Title">Players</div>
 	<div class="dialog-content">
-		<img src="res/img/dialogs/Profile_initialState.jpg" width="266" height="279"/>
+		<img src="res/img/dialog/Profile-initialState.jpg" width="266" height="279"/>
 		<ul class="vertical-button-nav">
 			<li id="option-save" data-i18n="Dialog Profile List.Save" class="button-huge button-huge-hilight">Save changes and play<br/>with active player</li>
 		</ul>

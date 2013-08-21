@@ -1,21 +1,21 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
 
 MainMenuScreen.IMAGE_MAP = {
-	"#screen-main-menu" : { fileName: "background_main_menu.jpg" }, 
-	"#button-change-player" : { fileName: "main_menu_button_change_player_regular.png", width: "611", height: "121" },
-	"#button-timed" : { fileName: "main_menu_button_timed_regular.png", width: "467", height: "329" },
-	"#button-relaxed" : { fileName: "main_menu_button_relaxed_regular.png", width: "467", height: "329" },
-	"#button-how-to-play" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
-	"#button-top-scores" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
-	"#button-set-language" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" },
-	"#button-quit" : { fileName: "main_menu_button_options_regular.png", width: "331", height: "116" }
+	"#screen-main-menu" : "main-menu.jpg",
+	"#button-change-player" : "button-change-player-regular.png",
+	"#button-timed" : "button-timed-regular.png",
+	"#button-relaxed" : "button-relaxed-regular.png",
+	"#button-how-to-play" : "button-options-regular.png",
+	"#button-top-scores" : "button-options-regular.png",
+	"#button-set-language" : "button-options-regular.png",
+	"#button-quit" : "button-options-regular.png"
 };
 
 MainMenuScreen.HILIGHT_IMAGE_MAP = {
-	"main_menu_button_change_player_regular.png" : "main_menu_button_change_player_selected.png",
-	"main_menu_button_options_regular.png" : "main_menu_button_options_selected.png",
-	"main_menu_button_relaxed_regular.png" : "main_menu_button_relaxed_selected.png",
-	"main_menu_button_timed_regular.png" : "main_menu_button_timed_selected.png"
+	"button-change-player-regular.png" : "change-player-selected.png",
+	"button-options-regular.png" : "button-options-selected.png",
+	"button-relaxed-regular.png" : "button-relaxed-selected.png",
+	"button-timed-regular.png" : "button-timed-selected.png"
 };
 
 /* navigation after IFA exhibition
@@ -63,52 +63,27 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 MainMenuScreen.prototype.addMouseListener = function(){
 	var mainMenuScreen = this;
 
-	$('#button-timed')[0].onclick = function (evt){ 
-										mainMenuScreen.setNavItem($('#button-timed')); 
-										mainMenuScreen.selectHandler();
-										evt.preventDefault();evt.stopPropagation();
-									}
-	$('#button-relaxed')[0].onclick = function (evt){ 
-										mainMenuScreen.setNavItem($('#button-relaxed')); 
-										mainMenuScreen.selectHandler();
-										evt.preventDefault();evt.stopPropagation();
-									}				
-	$('#button-how-to-play')[0].onclick = function (evt){ 
-											mainMenuScreen.setNavItem($('#button-how-to-play')); 
-											mainMenuScreen.selectHandler();
-											evt.preventDefault();evt.stopPropagation();
-										}
-	/* jj: disabled until after IFA exhibition
-	$('#button-top-scores')[0].onclick = function (evt){ 
-												mainMenuScreen.setNavItem($('#button-top-scores')); 
-												mainMenuScreen.selectHandler();
-												evt.preventDefault();evt.stopPropagation();
-											}
-	$('#button-set-language')[0].onclick = function (evt){ 
-													mainMenuScreen.setNavItem($('#button-set-language')); 
-													mainMenuScreen.selectHandler();
-													evt.preventDefault();evt.stopPropagation();
-												}
-	*/
-	$('#button-quit')[0].onclick = function (evt){ 
-													mainMenuScreen.setNavItem($('#button-quit')); 
-													mainMenuScreen.selectHandler();
-													evt.preventDefault();evt.stopPropagation();
-												}
-	this.registerMouseOverEvent('button-timed');
-	this.registerMouseOverEvent('button-relaxed');
-	this.registerMouseOverEvent('button-how-to-play');
-	/* jj: disabled until after IFA event
-	this.registerMouseOverEvent('button-top-scores');
-	this.registerMouseOverEvent('button-set-language');
-	*/
-	this.registerMouseOverEvent('button-quit');
+	_.each( _.keys(MainMenuScreen.BUTTON_NAV_MAP), function( buttonId ) {
+		mainMenuScreen.registerOnClickEvent(buttonId);
+		mainMenuScreen.registerMouseOverEvent(buttonId);
+	});
+
 } //MainMenuScreen.prototype.addMouseListener()
+
+MainMenuScreen.prototype.registerOnClickEvent = function(id){
+	var mainMenuScreen = this;
+	$('#'+id)[0].onclick = function (evt){
+				mainMenuScreen.setNavItem($('#'+id));
+				mainMenuScreen.selectHandler();
+	}
+}
 
 MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 	var mainMenuScreen = this;
 	$('#'+id)[0].onmouseover = function (evt){
 				mainMenuScreen.setNavItem($('#'+id));
+				evt.preventDefault();
+				evt.stopPropagation();
 	}
 }
 
@@ -123,13 +98,10 @@ MainMenuScreen.prototype.setImages = function() {
 	mainMenuScreen = this;
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
 		galPrefix = selector === '#screen-main-menu' ? 'background/' : MainMenuScreen.GAL_PREFIX;
-		galFilePath = galPrefix + MainMenuScreen.IMAGE_MAP[selector].fileName;
-		console.debug( 'selector: ' + selector + '; galFilePath: ' + galFilePath );
+		galFilePath = galPrefix + MainMenuScreen.IMAGE_MAP[selector];
 		image = LoadingScreen.gal.get(galFilePath);
 		if( image ) {
-			$(selector).css('background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
-			$(selector).css('width', MainMenuScreen.IMAGE_MAP[selector].width + 'px');
-			$(selector).css('height', MainMenuScreen.IMAGE_MAP[selector].height + 'px');
+			$(selector).css( 'background-image','url(' + image.src + ')');
 		}
 	});
 }; //MainMenuScreen.prototype.setImages()
@@ -193,7 +165,7 @@ MainMenuScreen.prototype.show = function() {
 	this.registerEventHandlers();
 	this.mainMenuDOM.show();
 	this.callingScreen && this.callingScreen.hide();
-	sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
+	//sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
@@ -272,20 +244,17 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
 	var galFilePath;
-	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector].fileName;
-	//navItem.css( 'background-image', 'url(' + LoadingScreen.gal.getAsDataUrl(galFilePath) + ')' );
+	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
 	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
 	var galFilePath, galHilightFilePath, hilightedImage;
-	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector].fileName;
+	galFilePath = MainMenuScreen.IMAGE_MAP[navItem.selector];
 	galHilightFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.HILIGHT_IMAGE_MAP[galFilePath];
 	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
 	if( hilightedImage ) {
-		navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galHilightFilePath).src + ')' );
-		navItem.css('width', MainMenuScreen.IMAGE_MAP[navItem.selector].width + 'px');
-		navItem.css('height', MainMenuScreen.IMAGE_MAP[navItem.selector].height + 'px');
+		navItem.css( 'background-image', 'url(' + hilightedImage.src + ')' );
 	}
 };
 

@@ -20,21 +20,19 @@ Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
 Galapago.gameImageNames = [
-	'PowerUps_Swap_Pressed',
-	'PowerUps_Swap_Activated',
-	'PowerUps_Shuffle_Disabled',
-	'PowerUps_Shuffle_Rollover',
-	'PowerUps_Shuffle_Pressed',
-	'PowerUps_Shuffle_Activated',
-	'PowerUps_Holder',
-	'tile_2',
-	'tile_1',
-	'tile_hilight',
-	'game_button_regular',
-	'game_button_hilight',
+	'flame_disabled',
+	'flame_fill',
+	'swap_disabled',
+	'swap_fill',
+	'shuffle_disabled',
+	'shuffle_fill',
+	'powerups_holder',
+	'tile_active',
+	'tile_regular',
+	'tile_selected',
 	'item_collected_mark',
-	'Bracket_Left',
-	'Bracket_Right'
+	'bracket_left',
+	'bracket-right'
 ];
 Galapago.dangerBarImageNames = [
 	'danger_bar',
@@ -46,6 +44,7 @@ Galapago.dangerBarImageNames = [
 	'danger_bar_fill02'
 ];
 Galapago.LAYER_BACKGROUND = 'layer-background';
+Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
 /* ym: this class shouldn't be instantiated */
 function Galapago() {
@@ -152,34 +151,45 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId) {
-	var theme;
+	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
-	console.log( 'theme: ' + theme + '_' + this.level.bgSubTheme );
-	
-	LoadingScreen.gal.onLoaded('board-common', function(result) {
-			if (result.success) {
-				LoadingScreen.gal.clearOnLoaded('board-common');
-				console.debug('board-common resource bundle loaded');
-				LoadingScreen.gal.download(theme);
-			}
-		});
+	subTheme = this.level.bgSubTheme;
+	backgroundBundle = '' + theme + '-' + subTheme;
+	themeBundle = theme + '-common';
+	console.log( 'theme: ' + theme + '_' + subTheme );
 
+	LoadingScreen.gal.onLoaded( backgroundBundle, function(result) {
+		if (result.success) {
+			LoadingScreen.gal.clearOnLoaded( backgroundBundle );
+			console.debug( backgroundBundle + ' resource bundle loaded' );
+		}
+	});
+
+	LoadingScreen.gal.onLoaded( Galapago.RESOURCE_BUNDLE_BOARD_COMMON, function(result) {
+		if (result.success) {
+			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
+		}
+	});
 	
-	LoadingScreen.gal.onLoaded(theme, function(result) {
+	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
 		if (result.success) {
 			LoadingScreen.gal.clearOnLoaded(theme);
-			console.debug('theme ' + theme + ' resource bundle loaded');
+			console.debug(themeBundle + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
 			Galapago.level.levelAnimation.initSparkles();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
-	Level.registerEventHandlers();
+			Level.registerEventHandlers();
 		}
 	});
-	LoadingScreen.gal.download('board-common');
+
+	LoadingScreen.gal.download(backgroundBundle);
+	LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+	LoadingScreen.gal.download(themeBundle);
 	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
 	console.debug( 'exiting Galapago.setLevel()' );
 };
@@ -254,7 +264,7 @@ function LevelMap(level) {
 
 LevelMap.prototype.display = function() {
 	var backgroundImage;
-	backgroundImage = LoadingScreen.gal.get('background/background_map_screen.jpg');
+	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
 	if( backgroundImage ) {
 		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
@@ -347,10 +357,10 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock;
-	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_stars_silver.png');
-	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_stars_gold.png');
-	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green_v.png');
-	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_lock.png');
+	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-silver.png');
+	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-gold.png');
+	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green-v.png');
+	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -545,13 +555,13 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 }; //LevelMap.prototype.cleanupAnimationAndSound()
 
 LevelMap.prototype.handleUpArrow = function() {
-	if(this.hotspotLevel.neighbors.north.isUnlocked) {
+	if(this.hotspotLevel.neighbors.north && this.hotspotLevel.neighbors.north.isUnlocked) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.north);
 	}
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
-	if(this.hotspotLevel.neighbors.east.isUnlocked) {
+	if(this.hotspotLevel.neighbors.east && this.hotspotLevel.neighbors.east.isUnlocked) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.east);
 	}
 }; //LevelMap.prototype.handleRightArrow()
@@ -560,7 +570,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	var mapScreen, mapNav, level;
 	level = this.hotspotLevel.neighbors.south;
 	if( level && level.mapHotspotRegion.length > 2 ) {
-		if(this.hotspotLevel.neighbors.south.isUnlocked){
+		if(this.hotspotLevel.neighbors.south && this.hotspotLevel.neighbors.south.isUnlocked){
 			this.setHotspotLevel(level);
 		}
 	}
@@ -577,7 +587,7 @@ LevelMap.prototype.handleDownArrow = function() {
 }; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
-	if(this.hotspotLevel.neighbors.west.isUnlocked){
+	if(this.hotspotLevel.neighbors.west && this.hotspotLevel.neighbors.west.isUnlocked){
 		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
 	}
 }; //LevelMap.prototype.handleLeftArrow()
@@ -759,7 +769,7 @@ MapCell.prototype.toString = function() {
 /* end class MapCell */
 
 /* begin class Level */
-Level.BLOB_IMAGE_EXTENSION = 'png';
+Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
@@ -874,7 +884,7 @@ Level.prototype.setBoard = function(board) {
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
 	goldImagePaths = [];
-	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
 
@@ -901,15 +911,15 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
- 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_beach_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+ 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-beach-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_forest_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-forest-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
 				break;
 			case 'cave':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_cave_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-cave-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
 		}
 		if(!('superFriends'  in Galapago.creatureImages)){
@@ -1222,49 +1232,61 @@ Level.prototype.unregisterEventHandlers = function() {
 Level.prototype.styleCanvas = function() {
 	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
 	console.debug('entering Level.prototype.styleCanvas()');
+	console.debug('styling background canvas');
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
+	console.debug( 'canvasBackground: ' + canvasBackground.selector );
 	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
-	resourcePath = 'background/background_' + themeComplete + '.jpg';
+	resourcePath = 'background/' + themeComplete + '.jpg';
 	backgroundImage = LoadingScreen.gal.get(resourcePath);
 	if( backgroundImage ) {
 		console.debug('setting background to ' + resourcePath);
 		canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
 	}
 	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
+	/*
+	console.debug('before changing canvas width and height');
 	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
 	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
+	console.debug('after changing canvas width and height');
 	canvasBackground.css('left', '0px');
 	canvasBackground.css('top', '0px');
+	*/
 	this.layerBackground = canvasBackground[0].getContext('2d');
+	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
 		layer.height = Board.GRID_HEIGHT;
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
+	console.debug('styling bonus frenzy canvas');
 	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
 	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
 	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
 	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
 	canvasBonusFrenzy.css('top', '0px');
 
+	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
 	canvasScore[0].width = Score.MAX_WIDTH;
 	canvasScore[0].height = Score.MAX_HEIGHT;
 	canvasScore.css('left', Score.X + 'px');
 	canvasScore.css('top', Score.Y + 'px');
 
+	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
 	canvasGameAnimation[0].width = Board.GRID_WIDTH;
 	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
 	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
-	console.debug('exiting Level.prototype.styleCanvas()');
+
+	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
 	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
 	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
 	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
 	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
+	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1412,8 +1434,8 @@ Board.prototype.displayLevelName = function() {
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	menuButtonImage = this.blobCollection.game_button_regular;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	menuButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
+	gameButtonHilight = LoadingScreen.gal.get('screen-map/button-hilight.png');
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
@@ -1432,8 +1454,8 @@ Board.prototype.displayMenuButton = function(isActive) {
 Board.prototype.displayQuitButton = function(isActive) {
 	var textColor, layer, quitButtonImage, gameButtonHilight;
 	layer = this.backgroundLayer;
-	quitButtonImage = this.blobCollection.game_button_regular;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	quitButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
+	gameButtonHilight = LoadingScreen.gal.get('screen-map/button-hilight.png');
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
 	
@@ -2627,7 +2649,7 @@ Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			//sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
@@ -3285,7 +3307,7 @@ Tile.prototype.setSelectedAsync = function() {
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_2, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3294,7 +3316,7 @@ Tile.prototype.setSelectedAsync = function() {
 
 Tile.prototype.setUnselected = function() {
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
 
@@ -3319,7 +3341,7 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	offset = 1;
 	width = Board.TILE_WIDTH * offset;
 	height = Board.TILE_HEIGHT * offset;
-	layer.drawImage( this.board.level.gameImages.tile_1, x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
@@ -3331,7 +3353,7 @@ Tile.prototype.drawHilight = function() {
 	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
 	width = Board.TILE_WIDTH/* + 2 * offset*/;
 	height = Board.TILE_HEIGHT/* + 2 * offset*/;
-	layer.drawImage( this.board.level.gameImages.tile_hilight, x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_selected, x, y, width, height );
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.eraseHilight = function() {	

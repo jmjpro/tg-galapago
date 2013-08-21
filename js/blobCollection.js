@@ -62,14 +62,14 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 	x = 0;
 	layer = this.layer;
 	this.canvas[0].width = (BlobCollection.ITEM_WIDTH * numberOfImages) + (BlobCollection.ITEM_SPACE * (numberOfImages-1));
-	this.canvas[0].height = BlobCollection.COUNT_HEIGHT + this.Bracket_Right.height;
+	this.canvas[0].height = BlobCollection.COUNT_HEIGHT + this.bracket-right.height;
 	left = (LoadingScreen.STAGE_WIDTH / 2) - (this.canvas[0].width / 2);
 	this.canvas.css('left', left + 'px');
 	this.canvas.css('top', BlobCollection.COLLECTION_Y + 'px');
 
 	//x += BlobCollection.LEFT_OFFSET;
 	if(!skipDrawingImage){
-		layer.drawImage(this.Bracket_Left, 0, BlobCollection.COUNT_HEIGHT, this.Bracket_Left.width, this.Bracket_Left.height);
+		layer.drawImage(this.bracket_Left, 0, BlobCollection.COUNT_HEIGHT, this.bracket_left.width, this.bracket_left.height);
 	}
 	for(key in this.blobCollection){
 		image = this.blobCollection[key].image;
@@ -96,7 +96,7 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 	}
 	x += BlobCollection.ITEM_WIDTH + BlobCollection.ITEM_SPACE;
 	if(!skipDrawingImage){
-		layer.drawImage(this.Bracket_Right, x, BlobCollection.COUNT_HEIGHT, this.Bracket_Right.width, this.Bracket_Right.height);
+		layer.drawImage(this.bracket-right, x, BlobCollection.COUNT_HEIGHT, this.bracket-right.width, this.bracket-right.height);
 	}
 };
 

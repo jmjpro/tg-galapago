@@ -6,6 +6,9 @@ LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
 LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
+LevelAnimation.ROLLOVER_SUFFIX = '_rollover_strip';
+LevelAnimation.JUMP_SUFFIX = '_jump_strip';
+
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [46, 0], id: '2'}, 
@@ -352,13 +355,15 @@ LevelAnimation.prototype.stopBobCervantes = function(imageArray) {
 }
 
 LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
-	var path, creatureTypeIt, image, creatureImagePaths, creatureType;
+	var path, galPath, creatureTypeIt, image, creatureImagePaths, creatureType;
 	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
 			creatureType = creatureTypes[creatureTypeIt];
-			image =  LoadingScreen.gal.get(path + creatureType + '_rollover.' + Level.BLOB_IMAGE_EXTENSION);
-			this[creatureType + '_rollover'] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			image = LoadingScreen.gal.get(path + creatureType + '_jumps.' + Level.BLOB_IMAGE_EXTENSION);
+			galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + Level.BLOB_IMAGE_EXTENSION;
+			image =  LoadingScreen.gal.get(galPath);
+			this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
+			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + Level.BLOB_IMAGE_EXTENSION;
+			image = LoadingScreen.gal.get(galPath);
 			this[creatureType + '_jumps'] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
@@ -409,7 +414,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	if(!tileActive.blob){
 		return;
 	}
-	imageId = tileActive.blob.image.id.replace('_1','') + '_rollover';
+	imageId = tileActive.blob.image.id.replace('_1','') + LevelAnimation.ROLLOVER_SUFFIX;
 	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
 		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -903,15 +908,31 @@ RolloverAnimation.prototype.stop = function(){
 };
 
 RolloverAnimation.prototype.animate = function(){
-	var image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
-	this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
-	this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
-	this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
-	if(this.tileMarkImageSpriteSheet){
-		image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
-		this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-		this.tileMarkSpriteId++;
-		this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix.length;
+	var image;
+	if( this.rolloverImageSpriteSheet ) {
+		image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
+		if( image ) {
+			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
+			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
+			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
+			if(this.tileMarkImageSpriteSheet){
+				image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
+				if( image ) {
+					this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					this.tileMarkSpriteId++;
+					this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix.length;				
+				}
+				else {
+					console.error( 'unable to load tile mark animation' );
+				}
+			}
+		}
+		else {
+			console.error( 'unable to load rollover sprite ' + this.rolloverSpriteId );
+		}
+	}
+	else {
+		console.error( 'unable to rollover image sprite sheet' );
 	}
 };
 

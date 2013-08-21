@@ -227,7 +227,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
-		sdkApi.reportPageView(sdkReportingPage);
+		//sdkApi.reportPageView(sdkReportingPage);
 	}
 	if( callback ) {
 		this.callback = callback;
