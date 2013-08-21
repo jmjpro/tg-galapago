@@ -79,13 +79,24 @@ Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 	 this.update();
 }
 
-Powerup.prototype.addListner = function(){
+Powerup.prototype.addListner = function(arrowKey){
    var powerup = this;
    //this.canvas.onfocus= function(){
        //console.log('on focus called');
-	   powerup.boardKeyHandler = window.onkeydown;
-	   powerup.board.isPowerUpFocused = true;
-	   window.onkeydown=null;
+	   	powerup.boardKeyHandler = window.onkeydown;
+	  	powerup.board.isPowerUpFocused = true;
+	   	window.onkeydown=null;
+	   	if(arrowKey){
+	   		this.currentFocus = -1;
+			switch(arrowKey) {
+				case "up":
+				    powerup.handleUp();  
+					break; 
+				case "down":
+					powerup.handleDown();  
+					break;
+			}
+	   }
 	   powerup.focus();
 	   powerup.focusOn= 1;
 	   powerup.registerEvents();
@@ -95,26 +106,28 @@ Powerup.prototype.addListner = function(){
 Powerup.prototype.registerEvents=function(){
    var powerup = this;
    window.onkeydown = function(e) {
-		switch(e.keyCode) { 
+		switch(e.keyCode) {
+			case 37: // left arrow
+			    powerup.removeNavigation(e);  
+				break; 
 			// User pressed "up" arrow
 			case 38:
-			    powerup.handleUp();
-				powerup.focus();
+			    if(powerup.handleUp()){
+					powerup.focus();
+				}else{
+					powerup.removeNavigation(e);
+				}
 			    break;
 			case 39: // right arrow
-			      powerup.update();
-				  powerup.currentFocus=0;
-				  powerup.nextFocus=0;
-				  window.onkeydown=null;
-				  powerup.focusOn= 0;
-				  powerup.board.isPowerUpFocused = false;
-				  powerup.canvas.onfocus=null;
-			      window.onkeydown = powerup.boardKeyHandler;
+			    powerup.removeNavigation(e);  
 				break;				
 			// User pressed "down" arrow
 			case 40:
-			    powerup.handleDown();
-				powerup.focus();
+			    if(powerup.handleDown()){
+					powerup.focus();
+				}else{
+					powerup.removeNavigation(e);
+				}
 			    break;
 			// User pressed "enter"
 			case 13:
@@ -128,6 +141,18 @@ Powerup.prototype.registerEvents=function(){
 			      break;
 		}
 	};   
+}
+
+Powerup.prototype.removeNavigation = function(e){
+	this.update();
+	this.currentFocus=0;
+	this.nextFocus=0;
+	window.onkeydown=null;
+	this.focusOn= 0;
+	this.board.isPowerUpFocused = false;
+	this.canvas.onfocus=null;
+	window.onkeydown = this.boardKeyHandler;
+	this.boardKeyHandler(e);
 }
 
 Powerup.prototype.powerUsed = function(){
@@ -169,47 +194,71 @@ Powerup.prototype.handleSelect = function(){
 
 Powerup.prototype.handleUp=function(){
     this.nextFocus=0;
- if(this.currentFocus == Powerup.FLIPFLOP_SELECTED && this.shufflerPowerAchieved){
-	this.nextFocus = Powerup.SHUFFLER_SELECTED;
- }else if(this.currentFocus == Powerup.FLIPFLOP_SELECTED && this.firePowerAchieved){
-    this.nextFocus = Powerup.FIRE_SELECTED;
- }
- 
-  if(this.currentFocus == Powerup.FIRE_SELECTED && this.flipflopPowerAchieved){
-	this.nextFocus = Powerup.FLIPFLOP_SELECTED;
- }else if(this.currentFocus == Powerup.FIRE_SELECTED && this.shufflerPowerAchieved){
-    this.nextFocus = Powerup.SHUFFLER_SELECTED;
- }
-
-  if(this.currentFocus == Powerup.SHUFFLER_SELECTED && this.firePowerAchieved){
-	this.nextFocus = Powerup.FIRE_SELECTED;
- }else if(this.currentFocus == Powerup.SHUFFLER_SELECTED && this.flipflopPowerAchieved){
-    this.nextFocus = Powerup.FLIPFLOP_SELECTED;
- } 
- 
+    if(this.currentFocus == -1){
+    	if(this.shufflerPowerAchieved){
+			this.nextFocus = Powerup.SHUFFLER_SELECTED;
+		}else if(this.firePowerAchieved){
+			this.nextFocus = Powerup.FIRE_SELECTED;
+		}else if(this.flipflopPowerAchieved){
+    		this.nextFocus = Powerup.FLIPFLOP_SELECTED;
+    	}
+    	return true;
+    }
+ 	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){
+ 		return false;
+ 	}
+ 	if(this.currentFocus == Powerup.FIRE_SELECTED){
+ 		if(this.flipflopPowerAchieved){
+			this.nextFocus = Powerup.FLIPFLOP_SELECTED;
+		}else{
+			return false;
+		}
+	}
+	if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
+		if(this.firePowerAchieved){
+			this.nextFocus = Powerup.FIRE_SELECTED;
+		}else if(this.flipflopPowerAchieved){
+    		this.nextFocus = Powerup.FLIPFLOP_SELECTED;
+    	}else{
+    		return false;
+    	}
+	}
+	return true;
 }
 
 
 Powerup.prototype.handleDown=function(){
-   this.nextFocus=0;
- if(this.currentFocus == Powerup.FLIPFLOP_SELECTED && this.firePowerAchieved){
-    this.nextFocus = Powerup.FIRE_SELECTED;
- }else if(this.currentFocus == Powerup.FLIPFLOP_SELECTED && this.shufflerPowerAchieved){
-	this.nextFocus = Powerup.SHUFFLER_SELECTED;
- }
- 
- if(this.currentFocus == Powerup.FIRE_SELECTED && this.shufflerPowerAchieved){
-    this.nextFocus = Powerup.SHUFFLER_SELECTED;
- }else if(this.currentFocus == Powerup.FIRE_SELECTED && this.flipflopPowerAchieved){
-	this.nextFocus = Powerup.FLIPFLOP_SELECTED;
- }
-
- if(this.currentFocus == Powerup.SHUFFLER_SELECTED && this.flipflopPowerAchieved){
-    this.nextFocus = Powerup.FLIPFLOP_SELECTED;
- } else if(this.currentFocus == Powerup.SHUFFLER_SELECTED && this.firePowerAchieved){
-	this.nextFocus = Powerup.FIRE_SELECTED;
- }
- 
+	this.nextFocus=0;
+	if(this.currentFocus == -1){
+		if(this.flipflopPowerAchieved){
+    		this.nextFocus = Powerup.FLIPFLOP_SELECTED;
+    	}else if(this.firePowerAchieved){
+			this.nextFocus = Powerup.FIRE_SELECTED;
+		}else if(this.shufflerPowerAchieved){
+			this.nextFocus = Powerup.SHUFFLER_SELECTED;
+		} 
+    	return true;
+    }
+	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){ 
+		if(this.firePowerAchieved){
+			this.nextFocus = Powerup.FIRE_SELECTED;
+		}else if(this.shufflerPowerAchieved){
+			this.nextFocus = Powerup.SHUFFLER_SELECTED;
+		}else{
+			return false;
+		}
+	}
+ 	if(this.currentFocus == Powerup.FIRE_SELECTED){
+ 		if(this.shufflerPowerAchieved){
+    		this.nextFocus = Powerup.SHUFFLER_SELECTED;
+    	}else{
+			return false;
+		}	
+	}
+	if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
+ 		return false;
+ 	}
+	return true;
 }
 
 

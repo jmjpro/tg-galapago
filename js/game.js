@@ -1302,6 +1302,7 @@ Board.GRID_HEIGHT = Board.MAX_ROWS * Board.TILE_HEIGHT;
 Board.CREATURE_FLYOVER_STEP = 20;
 Board.ANGULAR_SPEED = Math.PI * 2;
 Board.HOTSPOT_MENU = 'hotspot-menu';
+Board.HOTSPOT_POWERUP = 'hotspot-powerup';
 Board.HOTSPOT_QUIT = 'hotspot-quit';
 Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
@@ -2663,32 +2664,46 @@ Board.prototype.handleRightArrow = function() {
 	    this.initialSwapForTripletInfo=null ;
 		this.level.bubbleTip.clearBubbleTip();
 	}
-	col = board.tileActive.coordinates[0];
+	if(this.hotspot){
+		col = board.creatureTileMatrix.length - 1;
+	}else{
+		col = board.tileActive.coordinates[0];
+	}
 	row = board.tileActive.coordinates[1];
 	do{
 		col++;
 		if(col==board.creatureTileMatrix.length){
-			break;
+			if(this.hotspot){	
+				col = 0;
+			}else{
+				tileRight = null;
+				break;
+			}
 		}
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
-	if( tileRight && (!this.hotspot) && (!this.navigationLock)) {
+	if( tileRight && !this.navigationLock) {
+		if(board.hotspot){
+			board.displayMenuButton(false);
+			board.displayQuitButton(false);
+			board.hotspot = null;
+		}
 		board.navigationLock = true;
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
 		board.navigationLock = false;
 		return this; //chainable;
 		}).done();
-	}else { // move to powerup if on the rightmost 
+	}else { // move to powerup if on the rightmost
+		board.tileActive.setInactiveAsync(); 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			this.powerUp.addListner();
+			this.hotspot = Board.HOTSPOT_POWERUP;
 		}else{
-			board.tileActive.setInactiveAsync();
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
-			this.hotspot = Board.HOTSPOT_MENU;
-	}
-	
+			board.hotspot = Board.HOTSPOT_MENU;
+		}
 	}
 	return this; //chainable
 }; //Board.prototype.handleRightArrow
@@ -2701,16 +2716,30 @@ Board.prototype.handleLeftArrow = function() {
 	    this.initialSwapForTripletInfo=null ;
 		this.level.bubbleTip.clearBubbleTip();
 	}
-	col = board.tileActive.coordinates[0];
+	if(this.hotspot){
+		col = 0;
+	}else{
+		col = board.tileActive.coordinates[0];
+	}
 	row = board.tileActive.coordinates[1];
 	do{
 		col--;
 		if(col<0){
-			break;
+			if(this.hotspot){
+				col = board.creatureTileMatrix.length - 1;
+			}else{
+				tileLeft = null;
+				break;
+			}
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
-	if( tileLeft && (!this.hotspot) && (!this.navigationLock)) {
+	if( tileLeft && !board.navigationLock) {
+		if(board.hotspot){
+			board.displayMenuButton(false);
+			board.displayQuitButton(false);
+			board.hotspot = null;
+		}
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
@@ -2718,11 +2747,17 @@ Board.prototype.handleLeftArrow = function() {
 		return this; //chainable
 		}).done();
 	} else {
+		board.tileActive.setInactiveAsync();
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
 			this.powerUp.addListner();
+			this.hotspot = Board.HOTSPOT_POWERUP;
 			//this.powerUp.canvas.focus();
+		}else{
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		//board.displayMenuButton(true);
 		//this.hotspot = Board.HOTSPOT_MENU;
@@ -2738,35 +2773,45 @@ Board.prototype.handleDownArrow = function() {
 	    this.initialSwapForTripletInfo=null ;
 		this.level.bubbleTip.clearBubbleTip();
 	}
-	col = board.tileActive.coordinates[0];
-	row = board.tileActive.coordinates[1];
-	do{
-		row++;
-		if(row==board.creatureTileMatrix[col].length){
-			break;
+	if(!this.hotspot){
+		col = board.tileActive.coordinates[0];
+		row = board.tileActive.coordinates[1];
+		do{
+			row++;
+			if(row==board.creatureTileMatrix[col].length){
+				row = 0;
+			}
+			tileDown = board.creatureTileMatrix[col][row];
+		}while(tileDown == null)
+		if( tileDown && !board.navigationLock) {
+			board.navigationLock=true;
+			board.tileActive.setInactiveAsync().then(function() {
+			board.setActiveTile(tileDown);
+			board.navigationLock=false;
+			return this; //chainable
+			}).done();
 		}
-		tileDown = board.creatureTileMatrix[col][row];
-	}while(tileDown == null)
-	if( tileDown && (!this.hotspot) && (!this.navigationLock)) {
-		board.navigationLock=true;
-		board.tileActive.setInactiveAsync().then(function() {
-		board.setActiveTile(tileDown);
-		board.navigationLock=false;
-		return this; //chainable
-		}).done();
-	}else if(this.hotspot != Board.HOTSPOT_MENU && (!this.navigationLock) ){
-		board.navigationLock=true;
-		board.tileActive.setInactiveAsync();
-		board.displayMenuButton(true);
-		board.displayQuitButton(false);
-		this.hotspot = Board.HOTSPOT_MENU;
-		board.navigationLock=false;
-	}else if(!this.navigationLock){
-		board.navigationLock=true;
-		board.displayMenuButton(false);
-		board.displayQuitButton(true);
-		this.hotspot = Board.HOTSPOT_QUIT;
-		board.navigationLock=false;
+	}else{
+		if(this.hotspot == Board.HOTSPOT_POWERUP){
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			board.hotspot = Board.HOTSPOT_MENU;	
+		}else if(this.hotspot == Board.HOTSPOT_MENU) {
+			board.displayMenuButton(false);
+			board.displayQuitButton(true);
+			this.hotspot = Board.HOTSPOT_QUIT;
+		}else if(this.hotspot == Board.HOTSPOT_QUIT){
+			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
+				this.powerUp.addListner("down");
+				this.hotspot = Board.HOTSPOT_POWERUP;
+				this.displayMenuButton(false);
+				this.displayQuitButton(false);
+			}else{
+				board.displayMenuButton(true);
+				board.displayQuitButton(false);
+				this.hotspot = Board.HOTSPOT_MENU;
+			}
+		}
 	}
 	return this; //chainable
 }; //Board.prototype.handleDownArrow
@@ -2779,33 +2824,44 @@ Board.prototype.handleUpArrow = function() {
 	    this.initialSwapForTripletInfo=null ;
 		this.level.bubbleTip.clearBubbleTip();
 	}
-	if(this.hotspot == Board.HOTSPOT_QUIT){
-		board.displayMenuButton(true);
-		board.displayQuitButton(false);
-		this.hotspot = Board.HOTSPOT_MENU;	
-	}else{
-	    if(this.hotspot == Board.HOTSPOT_MENU) {
-		  board.displayMenuButton(false);
-		  this.hotspot=null;
-		  board.setActiveTile(board.tileActive);
-		  return;
-		}
+	if(!this.hotspot){
 		col = board.tileActive.coordinates[0];
 		row = board.tileActive.coordinates[1];
 		do{
 			row--;
 			if(row<0){
-				break;
+				row = board.creatureTileMatrix[col].length - 1;
 			}
 			tileUp = board.creatureTileMatrix[col][row];
 		}while(tileUp == null)
-		if( tileUp && (!this.navigationLock)) {
+		if( tileUp) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
 			board.setActiveTile(tileUp);
-			board.navigationLock=false;;
+			board.navigationLock=false;
 			return this; //chainable
 			}).done();
+		}
+	}else{
+		if(this.hotspot == Board.HOTSPOT_QUIT) {
+			board.displayMenuButton(true);
+			board.displayQuitButton(false);
+			this.hotspot = Board.HOTSPOT_MENU;
+		}else if(this.hotspot == Board.HOTSPOT_MENU){
+			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
+				this.powerUp.addListner("up");
+				this.hotspot = Board.HOTSPOT_POWERUP;
+				board.displayMenuButton(false);
+				board.displayQuitButton(false);
+			}else{
+				board.displayMenuButton(false);
+				board.displayQuitButton(true);
+				this.hotspot = Board.HOTSPOT_QUIT;
+			}
+		}else if(this.hotspot == Board.HOTSPOT_POWERUP){
+			board.displayMenuButton(false);
+			board.displayQuitButton(true);
+			board.hotspot = Board.HOTSPOT_QUIT;	
 		}
 	}
 	return this; //chainable
