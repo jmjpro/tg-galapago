@@ -20,13 +20,6 @@ Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
 Galapago.gameImageNames = [
-	'flame-disabled',
-	'flame-fill',
-	'swap-disabled',
-	'swap-fill',
-	'shuffle-disabled',
-	'shuffle-fill',
-	'powerups-holder',
 	'tile-active',
 	'tile-regular',
 	'tile-selected',
@@ -182,7 +175,6 @@ Galapago.setLevel = function(levelId) {
 			LoadingScreen.gal.clearOnLoaded(theme);
 			console.debug(themeBundle + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
-			Galapago.level.levelAnimation.initSparkles();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
 			Level.registerEventHandlers();

@@ -51,7 +51,7 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/map-board-2.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 19, 284], 'id': 'screen-game/powerups-holder.png'},
+			{'cell': [0, 0, 19, 284], 'id': 'screen-game/powerups_holder.png'},
 			{'cell': [19, 0, 38, 26], 'id': 'screen-map/next-level-arrow-down.png'},
 			{'cell': [19, 26, 38, 24], 'id': 'screen-map/next-level-arrow-left-down.png'},
 			{'cell': [19, 50, 38, 24], 'id': 'screen-map/next-level-arrow-right-down.png'},
@@ -60,8 +60,8 @@ ImageCollage.COLLAGE_ARRAY = [
 			{'cell': [19, 122, 34, 25], 'id': 'screen-map/next-level-arrow-left.png'},
 			{'cell': [19, 147, 34, 25], 'id': 'screen-map/next-level-arrow-right.png'},
 			{'cell': [19, 172, 27, 22], 'id': 'screen-map/next-level-arrow-up.png'},
-			{'cell': [57, 0, 56, 56], 'id': 'screen-game/tile-selected.png'},
-			{'cell': [57, 56, 52, 52], 'id': 'screen-game/tile-active.png'},
+			{'cell': [57, 0, 56, 56], 'id': 'screen-game/tile-active.png'},
+			{'cell': [57, 56, 52, 52], 'id': 'screen-game/tile-selected.png'},
 			{'cell': [108, 108, 46, 46], 'id': 'screen-game/tile-regular.png'},
 			{'cell': [0, 0, 0, 0], 'id': 'screen-game/item-collected-mark.png'}
 		]
@@ -83,12 +83,12 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-powerup.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 35, 35], 'id': 'screen-game/flame-disabled.png'},
-			{'cell': [0, 35, 19, 19], 'id': 'screen-game/flame-fill.png'},
-			{'cell': [35, 0, 35, 35], 'id': 'screen-game/swap-disabled.png'},
-			{'cell': [19, 35, 19, 19], 'id': 'screen-game/swap-fill.png'},
-			{'cell': [70, 0, 70, 71], 'id': 'screen-game/shuffle-disabled.png'},
-			{'cell': [70, 0, 35, 35], 'id': 'screen-game/shuffle-fill.png'}
+			{'cell': [0, 0, 35, 35], 'id': 'screen-game/flame_disabled.png'},
+			{'cell': [0, 35, 19, 19], 'id': 'screen-game/flame_fill.png'},
+			{'cell': [35, 0, 35, 35], 'id': 'screen-game/swap_disabled.png'},
+			{'cell': [19, 35, 19, 19], 'id': 'screen-game/swap_fill.png'},
+			{'cell': [70, 0, 35, 35], 'id': 'screen-game/shuffle_disabled.png'},
+			{'cell': [38, 35, 19, 19], 'id': 'screen-game/shuffle_fill.png'}
 		]
 	},
 	{
@@ -135,9 +135,9 @@ ImageCollage.COLLAGE_ARRAY = [
 		'collageId': 'collage/game-beach-rollover-strips.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 460, 46], 'id': 'creatures/beach/blue-crab-rollover-strip.png'},
-			{'cell': [0, 0, 460, 46], 'id': 'creatures/beach/green-turtle-rollover-strip.png'},
-			{'cell': [0, 46, 460, 46], 'id': 'creatures/beach/pink-frog-rollover-strip.png'},
-			{'cell': [0, 92, 460, 46], 'id': 'creatures/beach/red-starfish-rollover-strip.png'},
+			{'cell': [0, 46, 460, 46], 'id': 'creatures/beach/green-turtle-rollover-strip.png'},
+			{'cell': [0, 92, 460, 46], 'id': 'creatures/beach/pink-frog-rollover-strip.png'},
+			{'cell': [0, 138, 460, 46], 'id': 'creatures/beach/red-starfish-rollover-strip.png'},
 			{'cell': [0, 184, 460, 46], 'id': 'creatures/beach/teal-blob-rollover-strip.png'},
 			{'cell': [0, 230, 460, 46], 'id': 'creatures/beach/violet-crab-rollover-strip.png'},
 			{'cell': [0, 276, 460, 46], 'id': 'creatures/beach/yellow-fish-rollover-strip.png'}
