@@ -28,7 +28,7 @@ BlobCollection.prototype.initImages= function(imageArray) {
 	blobCollection = this;
 	for( i in imageArray ) {
 		image = imageArray[i];
-		blobCollection[image.id.replace( '-', '_' )] = image;
+		blobCollection[replaceAll( image.id, '-', '_' )] = image;
 	};
 };
 

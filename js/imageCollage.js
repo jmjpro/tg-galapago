@@ -98,6 +98,13 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
+		'collageId': 'collage/heads-eyes-strip.png',
+		'imageCoordinateArray': [
+			{'cell': [0, 0, 552, 21], 'id': 'screen-game/heads-right-eyes-strip.png'},
+			{'cell': [0, 21, 481, 42], 'id': 'screen-game/heads-left-eyes-strip.png'}
+		]
+	},
+	{
 		'collageId': 'collage/level-ui-animated.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 1029, 149], 'id': 'screen-game/Powerup-active-strip.png'},

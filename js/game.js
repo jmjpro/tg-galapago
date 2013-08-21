@@ -870,7 +870,7 @@ Level.prototype.initImages = function(imageArray) {
 		if(image.id.indexOf('.')!=-1){
 			image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
 		}
-		level.gameImages[image.id.replace('-', '_')] = image;
+		level.gameImages[replaceAll( image.id, '-', '_' )] = image;
 		
 	});
 }; //Level.prototype.initImages
@@ -1957,7 +1957,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			//alert('power up cliecked'+ x +"  "+ y);
 			if(!board.isPowerUpFocused){
 				//alert('adddinggg');
-				board.powerUp.addListner();
+				board.powerUp.addListener();
 				board.isPowerUpFocused = true;
 			}
 			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
@@ -2715,7 +2715,7 @@ Board.prototype.handleRightArrow = function() {
 		}).done();
 	}else { // move to powerup if on the rightmost 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
-			this.powerUp.addListner();
+			this.powerUp.addListener();
 		}else{
 			board.tileActive.setInactiveAsync();
 			board.displayMenuButton(true);
@@ -2755,7 +2755,7 @@ Board.prototype.handleLeftArrow = function() {
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
-			this.powerUp.addListner();
+			this.powerUp.addListener();
 			//this.powerUp.canvas.focus();
 		}
 		//board.displayMenuButton(true);
@@ -3684,7 +3684,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 
 	_.each(imageArray, function(image) {
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
-		dangerBar[imageId.replace( '-', '_' )] = image;
+		dangerBar[replaceAll( imageId, '-', '_' )] = image;
 	});
 }; //DangerBar.prototype.initImages
 
@@ -3692,7 +3692,7 @@ DangerBar.prototype.drawImages = function() {
 	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	this.layer.drawImage( this.danger_bar_fill01, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3743,8 +3743,8 @@ DangerBar.prototype.resume = function() {
 DangerBar.prototype.update = function(sender) {
 	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
 	dangerBar = Galapago.level.dangerBar;
-	fillNormal = dangerBar.danger_bar_fill01;
-	fillDanger = dangerBar.danger_bar_fill02;
+	fillNormal = dangerBar.danger_bar_fill_1;
+	fillDanger = dangerBar.danger_bar_fill_2;
 	bottomCapNormal = dangerBar.danger_bar_cap_bottom01;
 	bottomCapDanger = dangerBar.danger_bar_cap_bottom02;
 	dangerBar.timeRemainingMs -= DangerBar.REFRESH_INTERVAL_SEC * 1000;
@@ -3987,4 +3987,8 @@ function PauseableInterval(func, delay , sender){
 		   return true;
 		return false;
      }	 
-} //function 
+} //function PauseableInterval()
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(find, 'g'), replace);
+} //function replaceAll()
