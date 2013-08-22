@@ -1,4 +1,5 @@
 MainMenuScreen.GAL_PREFIX = 'main-menu/';
+MainMenuScreen.DIALOG_PREFIX = 'background/';
 
 MainMenuScreen.IMAGE_MAP = {
 	"#screen-main-menu" : "main-menu.jpg",
@@ -140,7 +141,8 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help);
+			$('#dialog-help').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
@@ -155,7 +157,8 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight');
+			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
 	}
 }; //MainMenuScreen.prototype.selectHandler()
