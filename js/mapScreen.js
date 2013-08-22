@@ -6,7 +6,7 @@ function MapScreen() {
 	this.setImages();
 	mapNav = $('#map-nav');
 	this.currentNavItem = mapNav.children('li:nth-child(1)');
-	galFilePathCursor = MapScreen.GAL_PREFIX + 'button-hilight.png';
+	galFilePathCursor = MapScreen.GAL_PREFIX + 'button-cursor.png';
 	this.cursor = LoadingScreen.gal.get(galFilePathCursor);
 	this.cursor.id = 'map-nav-cursor';
 }

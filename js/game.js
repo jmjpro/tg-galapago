@@ -1,11 +1,11 @@
 ﻿Galapago.CREATURE_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'},{cell: [138, 0], id: 'b4'}],
-[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'},{cell: [138, 46], id: 'g4'}],
-[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'},{cell: [138, 92], id: 'p4'}],
-[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'},{cell: [138, 138], id: 'r4'}],
-[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'},{cell: [138, 184], id: 't4'}],
-[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'},{cell: [138, 230], id: 'v4'}],
-[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'},{cell: [138, 276], id: 'y4'}]
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'}],
+[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'}],
+[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'}],
+[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
+[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'}],
+[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'}]
 ];
 
 /* begin class Galapago */
@@ -150,9 +150,9 @@ Galapago.setLevel = function(levelId) {
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
 	subTheme = this.level.bgSubTheme;
-	backgroundBundle = '' + theme + '-' + subTheme;
+	backgroundBundle = theme + '-' + subTheme;
 	themeBundle = theme + '-common';
-	console.log( 'theme: ' + theme + '_' + subTheme );
+	console.log( 'backgroundBundle: ' + backgroundBundle );
 
 	LoadingScreen.gal.onLoaded( backgroundBundle, function(result) {
 		if (result.success) {
@@ -774,11 +774,12 @@ Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red
 Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
+Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
-Level.MENU_BUTTON_WIDTH = 100;
-Level.MENU_BUTTON_HEIGHT = 35;
+Level.BUTTON_WIDTH = 116;
+Level.BUTTON_HEIGHT = 42;
 Level.POWER_UP_SCORE =0;
 
 function Level(id) {
@@ -937,18 +938,12 @@ Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatu
 }; //Level.prototype.loadImageSprites()
 
 Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
-	var images={};
-	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=creatureSpriteSheet.spriteMatrix[x].length - 1; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
-			var image = creatureSpriteSheet.getSpriteNew([y,x]);
-			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
-			var sfType = _.filter(Level.SUPER_FRIENDS, function(sfType) {
-				return sfType.startsWith(id[0]);
-			})[0];
-			image.id = sfType; 
-			images[image.id] = image;
-		}
-	}
+	var images, galImagePath
+	images={};
+	_.each( Level.COLORS, function(color) {
+		galImagePath = Galapago.GAME_SCREEN_GAL_PREFIX + 'superfriends/' + color + Galapago.IMAGE_PATH_SUFFIX;
+		images[color[0]] = LoadingScreen.gal.get( galImagePath );
+	});
 	return images;
 }; //Level.prototype.loadSuperFriends()
 
@@ -1422,19 +1417,19 @@ Board.prototype.displayLevelName = function() {
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage, gameButtonHilight;
+	var textColor, layer, menuButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
 	menuButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
-	gameButtonHilight = LoadingScreen.gal.get('screen-map/button-hilight.png');
+	gameButtonCursor = LoadingScreen.gal.get('screen-map/button-cursor.png');
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
-		layer.drawImage(gameButtonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, gameButtonHilight.width, gameButtonHilight.height);
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	layer.font = '17px JungleFever';
 	layer.fillStyle = 'rgb(107,45,0)';
@@ -1442,22 +1437,22 @@ Board.prototype.displayMenuButton = function(isActive) {
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage, gameButtonHilight;
+	var textColor, layer, quitButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
 	quitButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
-	gameButtonHilight = LoadingScreen.gal.get('screen-map/button-hilight.png');
+	gameButtonCursor = LoadingScreen.gal.get('screen-map/button-cursor.png');
 	var quitImageX = Level.MENU_BUTTON_X;
-	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
+	var quitImageY = (Level.MENU_BUTTON_Y + Level.BUTTON_HEIGHT +10);
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
-		layer.drawImage(gameButtonHilight, quitImageX - 1, quitImageY - 1, gameButtonHilight.width, gameButtonHilight.height);
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, gameButtonCursor.width, gameButtonCursor.height);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(quitImageX - 1, quitImageY - 1, quitButtonImage.width + 2, quitButtonImage.height + 2);
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+		layer.clearRect(quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	layer.font = '17px JungleFever';
 	layer.fillStyle = 'rgb(107,45,0)';
@@ -1994,7 +1989,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
@@ -2069,7 +2064,7 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	}
 	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
 	var quitButtonImage = board.blobCollection.button_quit;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;

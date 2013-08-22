@@ -91,14 +91,14 @@ GAL.prototype.download = function(bundleName) {
       if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
         var url = that.manifest.assetRootAudio + key;
         var audio = new Audio();
-        audio.addEventListener('canplaythrough', function() {
+        audio.onload = function() {
           that.lookupTable[key] = audio;
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
             total: bundle.length
           });
           loop(index + 1);
-        },false);
+        };
         audio.src = url;
         audio.id = key;
       }else{
@@ -115,7 +115,7 @@ GAL.prototype.download = function(bundleName) {
             total: bundle.length
           });
           loop(index + 1);
-        }
+        };
         image.src = url;
         image.id = key;
       }
@@ -244,13 +244,9 @@ GAL.prototype.online = function() {
 function fetchJSON_(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
-  xhr.addEventListener('load', function(e) {
-    if (this.status == 200) {
-      callback(JSON.parse(xhr.responseText));
-    } else {
-      throw "Unable to load manifest.";
-    }
-  });
+  xhr.onload = function(e) {
+    callback(JSON.parse(xhr.responseText));
+  };
   xhr.send();
 }
  

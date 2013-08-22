@@ -241,20 +241,36 @@ LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
 [{cell: [0, 180], id: '7'}]
 ];
 
-LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX = [[
+LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'},
-{cell: [202, 0], id: '2'},  
-{cell: [404, 0], id: '3'}, 
-{cell: [606, 0], id: '4'},  
-{cell: [808, 0], id: '5'},
-{cell: [1010, 0], id: '6'},   
-{cell: [1212, 0], id: '7'},   
-{cell: [1414, 0], id: '8'},   
-{cell: [1616, 0], id: '9'},   
-{cell: [1818, 0], id: '10'},   
-{cell: [2020, 0], id: '11'},   
-{cell: [2222, 0], id: '12'}
+{cell: [46, 0], id: '2'},  
+{cell: [92, 0], id: '3'}, 
+{cell: [138, 0], id: '4'},  
+{cell: [184, 0], id: '5'},
+{cell: [230, 0], id: '6'},   
+{cell: [276, 0], id: '7'},   
+{cell: [322, 0], id: '8'},   
+{cell: [368, 0], id: '9'},   
+{cell: [414, 0], id: '10'},   
+{cell: [460, 0], id: '11'},   
+{cell: [506, 0], id: '12'}
 ]];
+
+LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [37, 0], id: '2'},
+{cell: [74, 0], id: '3'}, 
+{cell: [111, 0], id: '4'},  
+{cell: [148, 0], id: '5'},
+{cell: [185, 0], id: '6'},   
+{cell: [222, 0], id: '7'},   
+{cell: [259, 0], id: '8'},   
+{cell: [296, 0], id: '9'},   
+{cell: [333, 0], id: '10'},   
+{cell: [370, 0], id: '11'},   
+{cell: [407, 0], id: '12'}
+]];
+
 
 LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'},
@@ -328,8 +344,8 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	canvasBC.css('top', '0px');
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	layer.drawImage(img, 0, 0);
-	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-left-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
-	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-right-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX);
+	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-left-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX);
+	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-right-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX);
 	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-mouth-strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
 	imgLeftHeadEyes = bcLeftHeadImageSpriteSheet.getSpriteNew([0,0]);
 	imgLeftHeadEyes.onload =function() {
@@ -1209,9 +1225,11 @@ function BobCervantesAnimation(layer, bcLeftHeadImageSpriteSheet, bcRightHeadIma
 
 BobCervantesAnimation.prototype.init = function(bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet){
 	var image, imgCnt;
-	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_EYES_SPRITE_MATRIX[0].length; imgCnt++){
+	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX[0].length; imgCnt++){
 		image = bcLeftHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
 		this.bcLeftHeadImageArray.push(image);
+	}
+	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX[0].length; imgCnt++){
 		image = bcRightHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
 		this.bcRightHeadImageArray.push(image);
 	}
