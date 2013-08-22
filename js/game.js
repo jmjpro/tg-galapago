@@ -25,7 +25,9 @@ Galapago.gameImageNames = [
 	'tile-selected',
 	'item-collected-mark',
 	'bracket-left',
-	'bracket-right'
+	'bracket-right',
+	'button-regular',
+	'button-cursor',
 ];
 Galapago.dangerBarImageNames = [
 	'danger-bar',
@@ -108,7 +110,12 @@ Galapago.buildGameImagePaths = function() {
 	var gameImagePaths;
 	gameImagePaths = [];
 	_.each( Galapago.gameImageNames, function(imageName) {
-		gameImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		if( imageName.startsWith( 'button-' ) ) {
+			gameImagePaths.push(MapScreen.GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		}
+		else {
+			gameImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		}
 	});
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
@@ -861,7 +868,12 @@ Level.prototype.initImages = function(imageArray) {
 
 	_.each(imageArray, function(image) {
 		if(image.id.indexOf('.')!=-1){
-			image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+			if( image.id.startsWith( MapScreen.GAL_PREFIX ) ) {
+				image.id  = image.id.substring( MapScreen.GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+			}
+			else {
+				image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+			}
 		}
 		level.gameImages[replaceAll( image.id, '-', '_' )] = image;
 		
@@ -1268,9 +1280,9 @@ Level.prototype.styleCanvas = function() {
 	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
 	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
-	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
+	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_HEIGHT;
 	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
+	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) + 'px');
 	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()
 
@@ -1332,6 +1344,9 @@ Board.LEVEL_NAME_MAX_HEIGHT = 30;
 Board.LEVEL_NAME_FONT_SIZE = '30px';
 Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
 Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
+Board.BUTTON_FONT_SIZE = '17px';
+Board.BUTTON_FONT_NAME = 'JungleFever';
+Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
@@ -1419,8 +1434,8 @@ Board.prototype.displayLevelName = function() {
 Board.prototype.displayMenuButton = function(isActive) {
 	var textColor, layer, menuButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
-	menuButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
-	gameButtonCursor = LoadingScreen.gal.get('screen-map/button-cursor.png');
+	menuButtonImage = this.level.gameImages.button_regular;
+	gameButtonCursor = this.level.gameImages.button_cursor;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
@@ -1431,31 +1446,31 @@ Board.prototype.displayMenuButton = function(isActive) {
 		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
 		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
-	layer.font = '17px JungleFever';
-	layer.fillStyle = 'rgb(107,45,0)';
+	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
+	layer.fillStyle = Board.BUTTON_FONT_COLOR;
 	layer.fillText('MENU', Level.MENU_BUTTON_X+33, Level.MENU_BUTTON_Y+10);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
 	var textColor, layer, quitButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
-	quitButtonImage = LoadingScreen.gal.get('screen-map/button-regular.png');
-	gameButtonCursor = LoadingScreen.gal.get('screen-map/button-cursor.png');
+	quitButtonImage = this.level.gameImages.button_regular;
+	gameButtonCursor = this.level.gameImages.button_cursor;
 	var quitImageX = Level.MENU_BUTTON_X;
 	var quitImageY = (Level.MENU_BUTTON_Y + Level.BUTTON_HEIGHT +10);
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, gameButtonCursor.width, gameButtonCursor.height);
+		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
 		layer.clearRect(quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
 		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
-	layer.font = '17px JungleFever';
-	layer.fillStyle = 'rgb(107,45,0)';
+	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
+	layer.fillStyle = Board.BUTTON_FONT_COLOR;
 	layer.fillText('QUIT', Level.MENU_BUTTON_X+35, quitImageY+10);
 }; //Board.protoype.displayMenuButton()
 
@@ -1980,10 +1995,10 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 		}
 	}
 	
-	if(board.blobCollection && board.blobCollection.button_menu){
-		var menuButtonImage = board.blobCollection.button_menu;
+	if(board.blobCollection && board.blobCollection.button_regular){
+		var menuButtonImage = board.blobCollection.button_regular;
 		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_quit;
+		var quitButtonImage = board.blobCollection.button_regular;
 		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
@@ -2055,7 +2070,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 
 Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	var board = this;
-	var menuButtonImage = board.blobCollection.button_menu;
+	var menuButtonImage = board.blobCollection.button_regular;
 	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
@@ -2063,7 +2078,7 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 			board.handleKeyboardSelect();
 	}
 	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-	var quitButtonImage = board.blobCollection.button_quit;
+	var quitButtonImage = board.blobCollection.button_regular;
 	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
@@ -3635,6 +3650,7 @@ DangerBar.FILL_ADJUSTMENT_TOP = 33;
 DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.LEFT = 1064;
 DangerBar.FILL_WIDTH = 15;
+DangerBar.IMAGE_MAGNIFICATION = 2;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
@@ -3670,8 +3686,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 	dangerBar = this;
 
 	_.each(imageArray, function(image) {
-		image.width *= 2;
-		image.height *= 2;
+		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
 		dangerBar[replaceAll( imageId, '-', '_' )] = image;
 	});

@@ -39,11 +39,14 @@ LoadingScreen.init = function() {
 };
 
 LoadingScreen.registerEvent = function(){
-	var LoadingScreen = this;
+	var backgroundImage;
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
 			console.debug('screen-loading resource bundle loaded');
-			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('background/loading.jpg').src + ')' );
+			backgroundImage = LoadingScreen.gal.get('background/loading.jpg');
+			if( backgroundImage ) {
+				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+			}
 			LoadingScreen.gal.download('common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}

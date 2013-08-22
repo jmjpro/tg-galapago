@@ -87,8 +87,12 @@ GAL.prototype.download = function(bundleName) {
       // Get the full url to the asset.
       var audioExts = that.manifest.audioExts;
       var collageDirectory = that.manifest.collageDirectory;
+      var ignorePrefix = that.manifest.ignorePrefix;
       var keyArray = key.split(".");
-      if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
+      if( key.startsWith( ignorePrefix ) ) {
+        loop(index + 1);
+      }
+      else if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
         var url = that.manifest.assetRootAudio + key;
         var audio = new Audio();
         audio.onload = function() {
