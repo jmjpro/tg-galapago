@@ -24,6 +24,9 @@ Powerup.LAYER_HEIGHT = 280;
 Powerup.GAME_IMAGE_DIRECTORY = 'screen-game/';
 Powerup.IMAGE_PATH_SUFFIX = '.png';
 Powerup.IMAGE_MAGNIFICATION = 2;
+Powerup.LEFT_ADJUSTMENT = 15;
+Powerup.TOP_ADJUSTMENT = 10;
+
 
 Powerup.gameImageNames = [
 	'flame-fill',
@@ -398,18 +401,23 @@ Powerup.prototype.initImages = function() {
 		image = CanvasUtil.magnifyImage( image, Powerup.IMAGE_MAGNIFICATION );
 		powerup[replaceAll( imageName, '-', '_' )] = image;
 	});
+	console.log('test');
 }; //DangerBar.prototype.initImages
 
 Powerup.prototype.drawFlipFlop = function(state) {
     //this.layer.clearRect( 0, Powerup.FLIPFLOP_TOP, this.swap_disabled.width, this.swap_disabled.height );
-	this.layer.drawImage( this.swap_disabled, 0, Powerup.FLIPFLOP_TOP );
-	if(state == Powerup.POWER_ACTIVATED){
-		this.layer.drawImage( this.swap_fill, 0, Powerup.FLIPFLOP_TOP );
-	}else if(state == Powerup.POWER_ROLLOVER){
+	this.layer.drawImage( this.swap_disabled, 0, Powerup.FLIPFLOP_TOP, this.swap_disabled.width,this.swap_disabled.height  );
+	if(state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+		if(state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+			this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+			this.layer.strokeRect(0, Powerup.FLIPFLOP_TOP, this.swap_disabled.width, this.swap_disabled.height);
+		}
+		this.layer.drawImage( this.swap_fill, 0+Powerup.LEFT_ADJUSTMENT, Powerup.FLIPFLOP_TOP +Powerup.TOP_ADJUSTMENT , this.swap_fill.width , this.swap_fill.height);
+	}/*else if(state == Powerup.POWER_ROLLOVER){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.FLIPFLOP_TOP, this.swap_disabled.width, this.swap_disabled.height);	
 		this.layer.drawImage( this.swap_rollover, 0, Powerup.FLIPFLOP_TOP );
-	}/*else if(state == Powerup.POWER_PRESSED){
+	}else if(state == Powerup.POWER_PRESSED){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.FLIPFLOP_TOP, this.swap_disabled.width, this.swap_disabled.height);	
 	    this.layer.drawImage( this.swap_pressed, 0, Powerup.FLIPFLOP_TOP );
@@ -418,14 +426,18 @@ Powerup.prototype.drawFlipFlop = function(state) {
 
 Powerup.prototype.drawFire = function(state) {
     //this.layer.clearRect(0, Powerup.FIRE_TOP, this.flame_disabled.width, this.flame_disabled.height);
-	this.layer.drawImage( this.flame_disabled, 0, Powerup.FIRE_TOP );
-	if(state == Powerup.POWER_ACTIVATED){
-		this.layer.drawImage( this.flame_fill, 0, Powerup.FIRE_TOP );
-	}else if(state == Powerup.POWER_ROLLOVER){
+	this.layer.drawImage( this.flame_disabled, 0, Powerup.FIRE_TOP , this.flame_disabled.width ,this.flame_disabled.height);
+	if(state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+		if(state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+			this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+			this.layer.strokeRect(0, Powerup.FIRE_TOP, this.flame_disabled.width, this.flame_disabled.height);
+		}	
+		this.layer.drawImage( this.flame_fill, 0+Powerup.LEFT_ADJUSTMENT, Powerup.FIRE_TOP+Powerup.TOP_ADJUSTMENT , this.flame_fill.width , this.flame_fill.height);
+	}/*else if(state == Powerup.POWER_ROLLOVER){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.FIRE_TOP, this.flame_disabled.width, this.flame_disabled.height);		
 		this.layer.drawImage( this.PowerUps_Flame_Rollover, 0, Powerup.FIRE_TOP );
-	}/*else if(state == Powerup.POWER_PRESSED){
+	}else if(state == Powerup.POWER_PRESSED){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.FIRE_TOP, this.flame_disabled.width, this.flame_disabled.height);			
 	    this.layer.drawImage( this.flame_pressed, 0, Powerup.FIRE_TOP );
@@ -434,14 +446,18 @@ Powerup.prototype.drawFire = function(state) {
 
 Powerup.prototype.drawShuffler = function(state) {
     //this.layer.clearRect(0, Powerup.SHUFFLER_TOP, this.shuffle_disabled.width, this.shuffle_disabled.height);			
-	this.layer.drawImage( this.shuffle_disabled, 0, Powerup.SHUFFLER_TOP );
-	if(state == Powerup.POWER_ACTIVATED){
-		this.layer.drawImage( this.shuffle_fill, 0, Powerup.SHUFFLER_TOP );
-	}else if(state == Powerup.POWER_ROLLOVER){
+	this.layer.drawImage( this.shuffle_disabled, 0, Powerup.SHUFFLER_TOP , this.shuffle_disabled.width, this.shuffle_disabled.height);
+	if(state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+		if(state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED){
+			this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
+			this.layer.strokeRect(0, Powerup.SHUFFLER_TOP, this.shuffle_disabled.width, this.shuffle_disabled.height);
+		}	
+		this.layer.drawImage( this.shuffle_fill, 0 +Powerup.LEFT_ADJUSTMENT, Powerup.SHUFFLER_TOP +Powerup.TOP_ADJUSTMENT , this.shuffle_fill.width, this.shuffle_fill.height );
+	}/*else if(state == Powerup.POWER_ROLLOVER){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.SHUFFLER_TOP, this.shuffle_disabled.width, this.shuffle_disabled.height);			
 		this.layer.drawImage( this.shuffle_rollover, 0, Powerup.SHUFFLER_TOP );
-	}/*else if(state == Powerup.POWER_PRESSED){
+	}else if(state == Powerup.POWER_PRESSED){
 		this.layer.strokeStyle = Powerup.POWER_COLOR_ACTIVE;
 		this.layer.strokeRect(0, Powerup.SHUFFLER_TOP, this.shuffle_disabled.width, this.shuffle_disabled.height);				
 	    this.layer.drawImage( this.shuffle_pressed, 0, Powerup.SHUFFLER_TOP );
@@ -465,7 +481,6 @@ Powerup.prototype.update = function() {
 	this.layer.clearRect( 0, 0, Powerup.LAYER_WIDTH , Powerup.LAYER_HEIGHT );
 
 	this.layer.drawImage( this.powerups_holder, 0, 0 );
-	
 	//top += Powerup.MARGIN * 3;
 	if(this.flipflopPowerAchieved){
 		this.drawFlipFlop(Powerup.POWER_ACTIVATED);
