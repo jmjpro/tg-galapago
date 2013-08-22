@@ -56,13 +56,15 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			window.dialog =new DialogMenu(mainCanvasId, board, 'dialog-new-game', 'button-huge-hilight');
+			$('#dialog-new-game').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			new DialogMenu(mainCanvasId, board, 'dialog-new-game', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			window.dialog = new DialogMenu(mainCanvasId, board, 'dialog-help', 'button-medium-hilight', TGH5.Reporting.Page.Help, updateScrollDivPages);
+			$('#dialog-help').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			 new DialogHelp(mainCanvasId, board, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular' ,TGH5.Reporting.Page.Help);
 			break;
 		case 'option-options' :
 			this.hide();

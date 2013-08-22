@@ -426,7 +426,7 @@ span#final-score {
 }
 
 #dialog-new-game {
-	background: url('../res/img/background/dialog-regular.png') no-repeat left top;
+	background:  no-repeat left top;
 	background-size: 100%;
 	width: 717px;
 	height: 590px;
