@@ -72,15 +72,15 @@ ImageCollage.COLLAGE_ARRAY = [
 			{'cell': [19, 172, 27, 22], 'id': 'screen-map/next-level-arrow-up.png'},
 			{'cell': [57, 0, 56, 56], 'id': 'screen-game/tile-active.png'},
 			{'cell': [57, 56, 52, 52], 'id': 'screen-game/tile-selected.png'},
-			{'cell': [108, 108, 46, 46], 'id': 'screen-game/tile-regular.png'},
-			{'cell': [0, 0, 0, 0], 'id': 'screen-game/item-collected-mark.png'}
+			{'cell': [57, 108, 46, 46], 'id': 'screen-game/tile-regular.png'},
+			{'cell': [57, 154, 41, 33], 'id': 'screen-game/item-collected-mark.png'}
 		]
 	},
 	{
 		'collageId': 'collage/map-board-buttons.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 150, 55], 'id': 'screen-map/button-regular.png'},
-			{'cell': [150, 0, 150, 55], 'id': 'screen-map/button-hilight.png'}
+			{'cell': [150, 0, 150, 55], 'id': 'screen-map/button-cursor.png'}
 		]
 	},
 	{
@@ -111,7 +111,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		'collageId': 'collage/heads-eyes-strip.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 552, 21], 'id': 'screen-game/heads-right-eyes-strip.png'},
-			{'cell': [0, 21, 481, 42], 'id': 'screen-game/heads-left-eyes-strip.png'}
+			{'cell': [0, 21, 481, 21], 'id': 'screen-game/heads-left-eyes-strip.png'}
 		]
 	},
 	{
@@ -138,14 +138,13 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-beach-jump-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 644, 92], 'id': 'creatures/beach/blue-crab-jump-strip.png'},
-			{'cell': [0, 92, 644, 92], 'id': 'creatures/beach/green-turtle-jump-strip.png'},
-			{'cell': [0, 184, 644, 92], 'id': 'creatures/beach/pink-frog-jump-strip.png'},
-			{'cell': [0, 276, 644, 92], 'id': 'creatures/beach/red-starfish-jump-strip.png'},
-			{'cell': [0, 368, 644, 92], 'id': 'creatures/beach/teal-blob-jump-strip.png'},
-			{'cell': [0, 460, 644, 92], 'id': 'creatures/beach/violet-crab-jump-strip.png'},
-			{'cell': [0, 552, 644, 92], 'id': 'creatures/beach/yellow-fish-jump-strip.png'},
-			{'cell': [0, 644, 460, 46], 'id': 'creatures/beach/blue-crab-rollover-strip.png'}
+			{'cell': [0, 0, 476, 92], 'id': 'creatures/beach/blue-crab-jump-strip.png'},
+			{'cell': [0, 92, 476, 92], 'id': 'creatures/beach/green-turtle-jump-strip.png'},
+			{'cell': [0, 184, 476, 92], 'id': 'creatures/beach/pink-frog-jump-strip.png'},
+			{'cell': [0, 276, 476, 92], 'id': 'creatures/beach/red-starfish-jump-strip.png'},
+			{'cell': [0, 368, 476, 92], 'id': 'creatures/beach/teal-blob-jump-strip.png'},
+			{'cell': [0, 460, 476, 92], 'id': 'creatures/beach/violet-crab-jump-strip.png'},
+			{'cell': [0, 552, 476, 92], 'id': 'creatures/beach/yellow-fish-jump-strip.png'},
 		]
 	},
 	{
@@ -163,13 +162,13 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-forest-jump-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 644, 92], 'id': 'creatures/forest/blue-beetle-jump-strip.png'},
-			{'cell': [0, 92, 644, 92], 'id': 'creatures/forest/green-butterfly-jump-strip.png'},
-			{'cell': [0, 184, 644, 92], 'id': 'creatures/forest/pink-lizard-jump-strip.png'},
-			{'cell': [0, 276, 644, 92], 'id': 'creatures/forest/red-beetle-jump-strip.png'},
-			{'cell': [0, 368, 644, 92], 'id': 'creatures/forest/teal-bug-jump-strip.png'},
-			{'cell': [0, 460, 644, 92], 'id': 'creatures/forest/violet-moth-jump-strip.png'},
-			{'cell': [0, 552, 644, 92], 'id': 'creatures/forest/yellow-frog-jump-strip.png'}
+			{'cell': [0, 0, 476, 92], 'id': 'creatures/forest/blue-beetle-jump-strip.png'},
+			{'cell': [0, 92, 476, 92], 'id': 'creatures/forest/green-butterfly-jump-strip.png'},
+			{'cell': [0, 184, 476, 92], 'id': 'creatures/forest/pink-lizard-jump-strip.png'},
+			{'cell': [0, 276, 476, 92], 'id': 'creatures/forest/red-beetle-jump-strip.png'},
+			{'cell': [0, 368, 476, 92], 'id': 'creatures/forest/teal-bug-jump-strip.png'},
+			{'cell': [0, 460, 476, 92], 'id': 'creatures/forest/violet-moth-jump-strip.png'},
+			{'cell': [0, 552, 476, 92], 'id': 'creatures/forest/yellow-frog-jump-strip.png'}
 		]
 	},
 	{
@@ -187,13 +186,13 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-cave-rollover-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 644, 92], 'id': 'creatures/cave/blue-crystal-jump-strip.png'},
-			{'cell': [0, 92, 644, 92], 'id': 'creatures/cave/green-frog-jump-strip.png'},
-			{'cell': [0, 184, 644, 92], 'id': 'creatures/cave/pink-spike-jump-strip.png'},
-			{'cell': [0, 276, 644, 92], 'id': 'creatures/cave/red-beetle-jump-strip.png'},
-			{'cell': [0, 368, 644, 92], 'id': 'creatures/cave/teal-flyer-jump-strip.png'},
-			{'cell': [0, 460, 644, 92], 'id': 'creatures/cave/violet-lizard-jump-strip.png'},
-			{'cell': [0, 552, 644, 92], 'id': 'creatures/cave/yellow-bug-jump-strip.png'}
+			{'cell': [0, 0, 476, 92], 'id': 'creatures/cave/blue-crystal-jump-strip.png'},
+			{'cell': [0, 92, 476, 92], 'id': 'creatures/cave/green-frog-jump-strip.png'},
+			{'cell': [0, 184, 476, 92], 'id': 'creatures/cave/pink-spike-jump-strip.png'},
+			{'cell': [0, 276, 476, 92], 'id': 'creatures/cave/red-beetle-jump-strip.png'},
+			{'cell': [0, 368, 476, 92], 'id': 'creatures/cave/teal-flyer-jump-strip.png'},
+			{'cell': [0, 460, 476, 92], 'id': 'creatures/cave/violet-lizard-jump-strip.png'},
+			{'cell': [0, 552, 476, 92], 'id': 'creatures/cave/yellow-bug-jump-strip.png'}
 		]
 	},
 	{
@@ -206,6 +205,18 @@ ImageCollage.COLLAGE_ARRAY = [
 			{'cell': [0, 184, 460, 46], 'id': 'creatures/cave/teal-flyer-rollover-strip.png'},
 			{'cell': [0, 230, 460, 46], 'id': 'creatures/cave/violet-lizard-rollover-strip.png'},
 			{'cell': [0, 276, 460, 46], 'id': 'creatures/cave/yellow-bug-rollover-strip.png'}
+		]
+	},
+	{
+		'collageId': 'collage/superfriends.png',
+		'imageCoordinateArray': [
+			{'cell': [0, 0, 46, 46], 'id': 'screen-game/superfriends/blue.png'},
+			{'cell': [0, 46, 46, 46], 'id': 'screen-game/superfriends/green.png'},
+			{'cell': [0, 92, 46, 46], 'id': 'screen-game/superfriends/pink.png'},
+			{'cell': [0, 138, 46, 46], 'id': 'screen-game/superfriends/red.png'},
+			{'cell': [0, 184, 46, 46], 'id': 'screen-game/superfriends/teal.png'},
+			{'cell': [0, 230, 46, 46], 'id': 'screen-game/superfriends/violet.png'},
+			{'cell': [0, 276, 46, 46], 'id': 'screen-game/superfriends/yellow.png'}
 		]
 	}
 ];

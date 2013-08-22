@@ -441,7 +441,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 			 * @public
 			 * @type {number}
 			 */
-			this.rows = 20;
+			this.rows = 2;
 
 			/**
 			 * @public
@@ -630,6 +630,10 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 				originalFunction, prototype;
 
 			originalFunction = owner[functionName];
+			if(typeof originalFunction === 'undefined') {
+				return;
+			}
+
 			prototype = originalFunction.prototype;
 
 			// exclude already added functions
@@ -638,6 +642,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 
 				if (profilePrototype) {
 					this.profileObject(name + ".prototype", prototype);
+					this.profileObject(name, originalFunction);
 				}
 			}
 		},
@@ -784,8 +789,8 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 
 			var elLogText = document.createElement('textarea');
 			elLogText.id = widgetId + ".logText";
-			elLogText.rows = 10;
-			elLogText.columns = 100;
+			elLogText.rows = 127;
+			elLogText.cols = 120;
 			elLogText.disabled = true;
 			elLogText.readonly = true;
 			elLogText.style.fontSize = '16px';
@@ -842,7 +847,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 
 				el = document.getElementById(widgetId + ".logText");
 				el.innerHTML = profilerErrorLogText;
-
+				el.scrollTop = el.scrollHeight;
 			}, updateInterval);
 		},
 
@@ -880,7 +885,14 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 				try {
 					result = originalFunction.apply(this, arguments);
 				} catch(e) {
-					profilerErrorLogText += "[" + start + "] " + e + "\n" ; //printStackTrace().join("\n");
+					var s = printStackTrace();
+					/*for(var i = s.length - 1; i >= 0; i--) {
+						if(s[i].indexOf('profiler.js') >= 0) {
+							s.splice(i, 1);
+						}
+					} */
+					profilerErrorLogText += e + "\n" + /*"[" + start + "] " + e + "\n" + */s.join("\n") + "\n";
+					throw e;
 				}
 
 				stop = Date.now();
@@ -930,6 +942,21 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 
 	});
 
+	window.onerror = function(msg, url, line) {
+		// You can view the information in an alert to see things working
+		// like so:
+		//alert("Error: " + msg + "\nurl: " + url + "\nline #: " + line);
+		profilerErrorLogText += "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "\n";
+
+		// TODO: Report this error via ajax so you can keep track
+		//       of what pages have JS issues
+
+		var suppressErrorAlert = true;
+		// If you return true, then error alerts (like in older versions of
+		// Internet Explorer) will be suppressed.
+		return suppressErrorAlert;
+	};
+
 	/**
 	 * @public
 	 * @type {Profiler}
@@ -942,12 +969,12 @@ TGModuleLoader.resolve();
 
 (function() {
 	var p = ns.frameWork.debug.profiler;
-
-	p.profileObject('Galapago', Galapago, true);
-	p.profileObject('LevelMap', LevelMap, true);
-	p.profileObject('MatrixUtil', MatrixUtil, true);
-	p.profileObject('ArrayUtil', ArrayUtil, true);
-	p.profileObject('MatchFinder', MatchFinder, true);
+	//p.profileObject('window', window, true);
+	p.profileFunction('Galapago', window, true);
+	p.profileFunction('LevelMap', window, true);
+	p.profileFunction('MatrixUtil', window, true);
+	p.profileFunction('ArrayUtil', window, true);
+	p.profileFunction('MatchFinder', window, true);
 
 	p.profileFunction('BlobCollection', window, true);
 	p.profileFunction('BonusFrenzy', window, true);
@@ -972,15 +999,22 @@ TGModuleLoader.resolve();
 	p.profileFunction('TilesMovedEventProcessorResult', window, true);
 
 	p.profileFunction('loadGame', window, true);
+	//p.profileFunction('TGH5', TGH5, true);
+	p.profileFunction('GameAssetLoader', window, true);
+	p.profileFunction('LoadingScreen', window, true);
+	p.profileFunction('i18n', window, true);
+
+
 	//p.profileObject("GameAssetLoader", window.GameAssetLoader, true);
 	/*document.addEventListener('DOMContentLoaded', function() {
 		p.attachWidget(500);
 	});*/
 
-	//window.onload = function() {
-	setTimeout(function() {
-		p.attachWidget(500);
-	}, 2000);
+	window.addEventListener("load", function() {
+		setTimeout(function() {
+			p.attachWidget(500);
+		}, 50);
+	}, true);
 	//};
 
 
