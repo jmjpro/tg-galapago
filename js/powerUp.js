@@ -16,13 +16,15 @@ Powerup.POWER_ACTIVATED = 1;
 Powerup.POWER_ROLLOVER= 2;
 Powerup.POWER_PRESSED= 3;
 
-Powerup.POWER_ICON_HEIGHT= 40;
+Powerup.POWER_ICON_HEIGHT= 38;
 Powerup.POWER_UP_WIDTH= 70;
 Powerup.POWER_UP_HEIGHT = 280;
 Powerup.LAYER_WIDTH = 70;
 Powerup.LAYER_HEIGHT = 280;
 Powerup.GAME_IMAGE_DIRECTORY = 'screen-game/';
 Powerup.IMAGE_PATH_SUFFIX = '.png';
+Powerup.IMAGE_MAGNIFICATION = 2;
+
 Powerup.gameImageNames = [
 	'flame-fill',
 	'flame-disabled',
@@ -393,8 +395,7 @@ Powerup.prototype.initImages = function() {
 	powerup = this;
 	_.each(Powerup.gameImageNames, function(imageName) {
 		image = LoadingScreen.gal.get(Powerup.GAME_IMAGE_DIRECTORY + imageName + Powerup.IMAGE_PATH_SUFFIX);
-		image.width *= 2;
-		image.height *= 2;
+		image = CanvasUtil.magnifyImage( image, Powerup.IMAGE_MAGNIFICATION );
 		powerup[replaceAll( imageName, '-', '_' )] = image;
 	});
 }; //DangerBar.prototype.initImages

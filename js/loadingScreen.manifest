@@ -3,6 +3,7 @@
 	"assetRootAudio": "res/audio/",
 	"collageDirectory" : "collage",
 	"audioExts": "mp3",
+	"ignorePrefix": "IGNORE/",
 	"bundles": [
 	{
 		"name": "screen-loading",

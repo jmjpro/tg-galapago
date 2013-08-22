@@ -8,7 +8,6 @@ function MapScreen() {
 	this.currentNavItem = mapNav.children('li:nth-child(1)');
 	galFilePathCursor = MapScreen.GAL_PREFIX + 'button-cursor.png';
 	this.cursor = LoadingScreen.gal.get(galFilePathCursor);
-	this.cursor.id = 'map-nav-cursor';
 }
 
 MapScreen.prototype.setImages = function() {
