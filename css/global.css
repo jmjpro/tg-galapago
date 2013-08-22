@@ -168,7 +168,7 @@ div.nav-button {
 }
 
 #dialog-quit {
-	background: url('../res/img/background/dialog-regular.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular.png') no-repeat left top;*/
 	background-size: 100%;
 	width: 717px;
 	height: 590px;
@@ -197,7 +197,7 @@ div.dialog-title {
 }
 
 #dialog-game-menu {
-	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background:  no-repeat left top;
 	background-size: 100%;
 	width: 717px;
 	height: 690px;
@@ -214,7 +214,7 @@ div.dialog-title {
 }
 
 #dialog-level-won {
-	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background:  no-repeat left top;
 	background-size: 100%;
 	width: 717px;
 	height: 626px;
@@ -250,7 +250,7 @@ div.dialog-title {
 
 
 .button-huge {
-	background: url('../res/img/dialog/button-huge-regular.png') no-repeat left top;
+	background: no-repeat left top;
 	background-size: 100%;
 	width: 388px;
 	height: 94px;
@@ -260,7 +260,7 @@ div.dialog-title {
 }
 
 .button-huge-hilight {
-	background-image: url('../res/img/dialog/button-huge-highlight.png');
+	/*background-image: url('../res/img/dialog/button-huge-highlight.png');*/
 }
 
 .button-big {
@@ -277,7 +277,7 @@ div.dialog-title {
 }
 
 .button-medium {
-	background: url('../res/img/dialog/button-medium-regular.png') no-repeat left top;
+	background:  no-repeat left top;
 	background-size: 100%;
 	width: 190px;
 	height: 81px;
@@ -287,7 +287,7 @@ div.dialog-title {
 }
 
 .button-medium-hilight {
-	background-image: url('../res/img/dialog/button-medium-highlight.png');
+	/*background-image: url('../res/img/dialog/button-medium-highlight.png');*/
 }
 
 .button-small {
@@ -336,7 +336,7 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-game-over {
-	background: url('../res/img/background/dialog-small.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-small.png') no-repeat left top;*/
 	background-size: 100%;
 	width: 717px;
 	height: 247px;
@@ -382,7 +382,7 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-time-out {
-	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background:  no-repeat left top;
 	background-size: 100%;
 	width: 717px;
 	height: 626px;
@@ -538,7 +538,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-reset-game {
-	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;*/
 	background-size: 100%;
 	width: 717px;
 	height: 626px;
@@ -551,7 +551,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-help {
-	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;*/
 	background-size: 100%;
 	width: 717px;
 	height: 626px;

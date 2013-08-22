@@ -2314,7 +2314,8 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		window.dialog = new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
+		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
 		this.showGoldAndCreatures();
 	}
 } //Board.prototype.setComplete()
@@ -2596,9 +2597,11 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
-			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
+			 new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight' ,'button-medium-hilight' ,'button_medium_regular' );
 	}else{
-			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			 new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
 	}
 } //Board.prototype.dangerBarEmptied
 
@@ -2654,7 +2657,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
+			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
@@ -2662,7 +2666,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			window.dialog = new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
+			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
 		    break;
 		case null:
 		default:

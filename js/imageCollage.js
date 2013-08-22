@@ -22,7 +22,17 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/dialog-buttons.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy.png'},
+			{'cell': [0,0,358,60], 'id': 'dialog/button_large_narrow_regular.png'},
+			{'cell': [0,29,388,90], 'id': 'dialog/button_large_narrow_highlighted.png'},
+			{'cell': [0,75,175,40], 'id': 'dialog/button-huge.png'},
+			{'cell': [10,128,175,40], 'id': 'dialog/button-huge-hilight.png'},
+			{'cell': [0,172,78,24], 'id': 'dialog/button_medium_regular.png'},
+			{'cell': [0,201,78,22], 'id': 'dialog/button_medium_disabled.png'},
+			{'cell': [11,238,78,22], 'id': 'dialog/button-medium-hilight.png'},
+			{'cell': [0,269,164,85], 'id': 'dialog/button_game_menu_regular.png'},
+			{'cell': [0,312,190,110], 'id': 'dialog/button_game_menu_highlighted.png'},
+			{'cell': [0,367,98,61], 'id': 'dialog/button_small_regular.png'},
+			{'cell': [0,397,128,87], 'id': 'dialog/button_small_highlighted.png'}
 		]
 	},
 	{

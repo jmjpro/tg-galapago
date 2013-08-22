@@ -18,6 +18,9 @@
 		"name": "common",
 		"contents": [
 			"background/main-menu.jpg",
+			"background/dialog-regular.png",
+			"background/dialog-regular-no-title.png",
+			"background/dialog-small.png",
 			"collage/main-menu.png",
 			"collage/arrows.png",
 			"collage/dialog-buttons.png",
