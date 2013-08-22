@@ -113,6 +113,8 @@ GAL.prototype.download = function(bundleName) {
           that.lookupTable[key] = image;
           if(key.indexOf(collageDirectory) > -1){
             GAL.loadCollageImages(that, key);
+            // don't double-cache the original image collage along with the cut-up images
+            that.lookupTable[key] = null;
           }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
