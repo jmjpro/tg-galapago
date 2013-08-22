@@ -10,7 +10,7 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 			//dialogHelp.callback.call();
 			this.scrollDiv[0].scrollByPages(1);
 			break;
-		case 'option-close' :
+		case 'option-help-close' :
 			this.hide();
 			break;
 	}
