@@ -8,6 +8,16 @@
 [{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'}]
 ];
 
+Galapago.SUPER_FRIENDS_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b4'}],
+[{cell: [0, 46], id: 'g4'}],
+[{cell: [0, 92], id: 'p4'}],
+[{cell: [0, 138], id: 'r4'}],
+[{cell: [0, 184], id: 't4'}],
+[{cell: [0, 230], id: 'v4'}],
+[{cell: [0, 276], id: 'y4'}]
+];
+
 /* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
@@ -927,7 +937,8 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
 		}
 		if(!('superFriends'  in Galapago.creatureImages)){
-			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(creatureSpriteSheet);
+			var superFriendsSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/superfriends.png"),Galapago.SUPER_FRIENDS_SPRITE_MATRIX);
+			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(superFriendsSpriteSheet);
 		}
 	}
 	return Galapago.creatureImages[bgTheme];
@@ -936,7 +947,7 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
 	var images={};
 	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length - 1;y++){
+		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
 			var image = creatureSpriteSheet.getSpriteNew([y,x]);
 			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
 			var creatureType = _.filter(creatureTypes, function(creatureType) {
@@ -950,12 +961,16 @@ Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatu
 }; //Level.prototype.loadImageSprites()
 
 Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
-	var images, galImagePath
-	images={};
-	_.each( Level.COLORS, function(color) {
-		galImagePath = Galapago.GAME_SCREEN_GAL_PREFIX + 'superfriends/' + color + Galapago.IMAGE_PATH_SUFFIX;
-		images[color[0]] = LoadingScreen.gal.get( galImagePath );
-	});
+	var images={};
+	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
+		var image = creatureSpriteSheet.getSpriteNew([0,x]);
+		var id = creatureSpriteSheet.spriteMatrix[x][0].id;
+		var sfType = _.filter(Level.SUPER_FRIENDS, function(sfType) {
+			return sfType.startsWith(id[0]);
+		})[0];
+		image.id = sfType; 
+		images[image.id] = image;
+	}
 	return images;
 }; //Level.prototype.loadSuperFriends()
 
@@ -1279,10 +1294,12 @@ Level.prototype.styleCanvas = function() {
 
 	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
-	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
-	canvasGameLightning[0].height = LevelAnimation.LIGHTNING_IMAGE_HEIGHT;
 	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	canvasGameLightning.css('top', (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) + 'px');
+	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
+    canvasGameLightning.css('top', top + 'px');  
+    canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
+    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;  
+
 	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()
 
@@ -2155,7 +2172,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			board.collectionModified = true;
 		}
 		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
-			board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
+			//board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
