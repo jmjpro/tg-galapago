@@ -352,17 +352,17 @@ Powerup.prototype.animatePowerStatus = function(){
     //if(percentScoreGain > .70){
 	//	return;
 	//}
-    var clipHeight = (Powerup.POWER_ICON_HEIGHT*percentScoreGain);
+    var clipHeight = ((Powerup.POWER_ICON_HEIGHT/2)*percentScoreGain);
 	console.log("clipHeight : "+clipHeight);
-    var newHeight=  (Powerup.POWER_ICON_HEIGHT - clipHeight);
+    var newHeight=  ((Powerup.POWER_ICON_HEIGHT/2) - clipHeight);
 	console.log('newHeight : ' +newHeight);
 
 	if(!this.flipflopPowerAchieved){
-		this.layer.drawImage( this.swap_fill ,0, 10+newHeight, this.swap_fill.width , clipHeight, 0, (Powerup.FLIPFLOP_TOP +Powerup.POWER_ICON_HEIGHT+10 - clipHeight) ,this.swap_fill.width,clipHeight );
+		this.layer.drawImage( this.swap_fill ,0, newHeight, this.swap_fill.width/2 , clipHeight, 15, (Powerup.FLIPFLOP_TOP +Powerup.POWER_ICON_HEIGHT+10 - (clipHeight*2)) ,this.swap_fill.width,clipHeight*2 );
 	}else if(!this.firePowerAchieved){
-		this.layer.drawImage( this.flame_fill ,0, 10+newHeight, this.flame_fill.width , clipHeight, 0, (Powerup.FIRE_TOP +Powerup.POWER_ICON_HEIGHT +10 - clipHeight) ,this.flame_fill.width,clipHeight );
+		this.layer.drawImage( this.flame_fill ,0, newHeight, this.flame_fill.width/2 , clipHeight, 15, (Powerup.FIRE_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.flame_fill.width,clipHeight*2 );
 	}else if(!this.shufflerPowerAchieved){
-		this.layer.drawImage( this.shuffle_fill ,0, 10+newHeight, this.shuffle_fill.width , clipHeight, 0, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - clipHeight) ,this.shuffle_fill.width,clipHeight );
+		this.layer.drawImage( this.shuffle_fill ,0, newHeight, this.shuffle_fill.width/2 , clipHeight, 15, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.shuffle_fill.width,clipHeight*2 );
 	}
 };
 
