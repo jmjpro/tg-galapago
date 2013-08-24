@@ -87,18 +87,22 @@ GAL.prototype.download = function(bundleName) {
       // Get the full url to the asset.
       var audioExts = that.manifest.audioExts;
       var collageDirectory = that.manifest.collageDirectory;
+      var ignorePrefix = that.manifest.ignorePrefix;
       var keyArray = key.split(".");
-      if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
+      if( key.startsWith( ignorePrefix ) ) {
+        loop(index + 1);
+      }
+      else if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
         var url = that.manifest.assetRootAudio + key;
         var audio = new Audio();
-        audio.addEventListener('canplaythrough', function() {
+        audio.onload = function() {
           that.lookupTable[key] = audio;
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
             total: bundle.length
           });
           loop(index + 1);
-        },false);
+        };
         audio.src = url;
         audio.id = key;
       }else{
@@ -109,13 +113,15 @@ GAL.prototype.download = function(bundleName) {
           that.lookupTable[key] = image;
           if(key.indexOf(collageDirectory) > -1){
             GAL.loadCollageImages(that, key);
+            // don't double-cache the original image collage along with the cut-up images
+            that.lookupTable[key] = null;
           }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
             total: bundle.length
           });
           loop(index + 1);
-        }
+        };
         image.src = url;
         image.id = key;
       }
@@ -244,13 +250,9 @@ GAL.prototype.online = function() {
 function fetchJSON_(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
-  xhr.addEventListener('load', function(e) {
-    if (this.status == 200) {
-      callback(JSON.parse(xhr.responseText));
-    } else {
-      throw "Unable to load manifest.";
-    }
-  });
+  xhr.onload = function(e) {
+    callback(JSON.parse(xhr.responseText));
+  };
   xhr.send();
 }
  

@@ -1,4 +1,7 @@
 function SpriteSheet(image, spriteMatrix) {
+	if( !image ) {
+		console.error( 'SpriteSheet constructor called without an image' );
+	}
 	this.image = image;
 	this.spriteMatrix = spriteMatrix;
 	var tempCanvas = document.createElement('canvas');

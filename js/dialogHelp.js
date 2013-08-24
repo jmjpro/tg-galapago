@@ -10,14 +10,14 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 			//dialogHelp.callback.call();
 			this.scrollDiv[0].scrollByPages(1);
 			break;
-		case 'option-close' :
+		case 'option-help-close' :
 			this.hide();
 			break;
 	}
 };
 /* end DialogHelp.SELECT_HANDLERS[] */
 
-function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass, sdkReportingPage, callback) {
+function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass , hilightImageName , regularImageName, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
 	this.mouseClickHandler = window.onclick;
@@ -29,7 +29,16 @@ function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.scrollDiv = $('#help-text-scroll');
 	this.dialogNav = this.dialogHelpDOM.find('ul');
 	this.hilightClass = hilightClass;
+	this.hilightImageName = hilightImageName;
+	this.regularImageName = regularImageName;
+	var menuButtonSize = this.dialogNav.children().length;
+	for(var i =0 ; i< menuButtonSize ; i++){
+		var liElement = (this.dialogNav.children()[i]);
+		$('#'+liElement.id).css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+regularImageName+'.png').src + ')');
+	}
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
+	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.hilightImageName+'.png').src + ')');
+
 	this.initialNavItem = this.currentNavItem;
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
@@ -37,7 +46,7 @@ function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass, sdkR
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
-		sdkApi.reportPageView(sdkReportingPage);
+		//sdkApi.reportPageView(sdkReportingPage);
 	}
 	this.updateScrollDivPages();
 	/*
@@ -69,8 +78,11 @@ DialogHelp.prototype.hide = function() {
 
 DialogHelp.prototype.setNavItem = function(item) {
 	this.currentNavItem.removeClass(this.hilightClass); // remove hilight from old item
+	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.regularImageName+'.png').src + ')');
 	this.currentNavItem = item;
 	this.currentNavItem.addClass(this.hilightClass); // add hilight to new item
+	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.hilightImageName+'.png').src + ')');
+
 }; //DialogHelp.prototype.setNavItem()
 
 DialogHelp.prototype.registerMouseHandlers = function() {

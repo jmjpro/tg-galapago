@@ -1,22 +1,21 @@
 "use strict";
 
-LoadingScreen.STAGE_WIDTH = 1280;
+LoadingScreen.STAGE_WIDTH = 1279;
 LoadingScreen.STAGE_HEIGHT = 720;
 LoadingScreen.BACKGROUND_PATH_PREFIX = 'res/img/screen-loading/';
 LoadingScreen.BACKGROUND_PATH_SUFFIX = '.jpg)';
 LoadingScreen.DIALOG_IDS = ['option-continue-playing', 'option-main-menu', 'option-new-game', 'option-how-to-play', 'option-options', 'dialog-title', 'dialog-leaderboards'];
 
 LoadingScreen.mapScreenImageNames = {
-	button_cursor_map: "button_cursor_map.png",
-	button_menu_map: "button_menu_map.png",
-	button_play_map: "button_play_map.png",
-	button_quit_map: "button_quit_map.png",
-	button_reset_map: "button_reset_map.png",
-	button_start_map: "button_start_map.png",
-	green_v:"green_v.png",
-	level_stars_gold:"level_stars_gold.png",
-	level_stars_silver:"level_stars_silver.png",
-	level_lock:"level_lock.png",
+	'button-menu-map' : 'button-menu-map.png',
+	'button-play-map' : 'button-play-map.png',
+	'button-quit-map' : 'button-quit-map.png',
+	'button-reset-map' : 'button-reset-map.png',
+	'button-start-map' : 'button-start-map.png',
+	'green_v' : 'green_v.png',
+	'level_stars_gold' : 'level_stars_gold.png',
+	'level_stars_silver' : 'level_stars_silver.png',
+	'level_lock' : 'level_lock.png'
 };
 
 LoadingScreen.PROGRESS_BAR_IMAGE_DIRECTORY='res/img/screen-loading/';
@@ -26,7 +25,7 @@ function LoadingScreen() {
 }
 
 LoadingScreen.init = function() {
-	sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
+	//sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
 	LoadingScreen.localization();
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.screenDiv = $('#screen-loading');
@@ -40,13 +39,15 @@ LoadingScreen.init = function() {
 };
 
 LoadingScreen.registerEvent = function(){
-	var LoadingScreen = this;
+	var backgroundImage;
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
 			console.debug('screen-loading resource bundle loaded');
-			LoadingScreen.screenDiv.css( 'background-image','url(' + LoadingScreen.gal.get('background/background-loading.jpg').src + ')' );
+			backgroundImage = LoadingScreen.gal.get('background/loading.jpg');
+			if( backgroundImage ) {
+				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+			}
 			LoadingScreen.gal.download('common');
-			LoadingScreen.gal.download('board-common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});
@@ -58,6 +59,10 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('common resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
+			//LoadingScreen.gal.download('board-common');
+			//LoadingScreen.gal.download('beach-common');
+			//LoadingScreen.gal.download('forest-common');
+			//LoadingScreen.gal.download('cave-common');
 		}
 	});
 };
@@ -121,8 +126,8 @@ ProgressBar.prototype.drawImages = function() {
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width, this.loadingProgressBarLeftCap.height);
 }; //DangerBar.prototype.drawImages()
 
-ProgressBar.prototype.progress = function(percentdownload) {
-	var newWidth=  ProgressBar.WIDTH * percentdownload;
+ProgressBar.prototype.progress = function(percentDownloaded) {
+	var newWidth=  ProgressBar.WIDTH * percentDownloaded;
 	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, newWidth,this.loadingProgressBarFill.height);
@@ -156,6 +161,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 			}
 		}
 	};
+
 	progressBar.canvas.onkeydown = function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter

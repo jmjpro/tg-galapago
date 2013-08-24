@@ -1,11 +1,21 @@
 ﻿Galapago.CREATURE_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'},{cell: [138, 0], id: 'b4'}],
-[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'},{cell: [138, 46], id: 'g4'}],
-[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'},{cell: [138, 92], id: 'p4'}],
-[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'},{cell: [138, 138], id: 'r4'}],
-[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'},{cell: [138, 184], id: 't4'}],
-[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'},{cell: [138, 230], id: 'v4'}],
-[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'},{cell: [138, 276], id: 'y4'}]
+[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
+[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'}],
+[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'}],
+[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'}],
+[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
+[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'}],
+[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'}]
+];
+
+Galapago.SUPER_FRIENDS_SPRITE_MATRIX=[
+[{cell: [0, 0], id: 'b4'}],
+[{cell: [0, 46], id: 'g4'}],
+[{cell: [0, 92], id: 'p4'}],
+[{cell: [0, 138], id: 'r4'}],
+[{cell: [0, 184], id: 't4'}],
+[{cell: [0, 230], id: 'v4'}],
+[{cell: [0, 276], id: 'y4'}]
 ];
 
 /* begin class Galapago */
@@ -20,32 +30,26 @@ Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
 Galapago.gameImageNames = [
-	'PowerUps_Swap_Pressed',
-	'PowerUps_Swap_Activated',
-	'PowerUps_Shuffle_Disabled',
-	'PowerUps_Shuffle_Rollover',
-	'PowerUps_Shuffle_Pressed',
-	'PowerUps_Shuffle_Activated',
-	'PowerUps_Holder',
-	'tile_2',
-	'tile_1',
-	'tile_hilight',
-	'game_button_regular',
-	'game_button_hilight',
-	'item_collected_mark',
-	'Bracket_Left',
-	'Bracket_Right'
+	'tile-active',
+	'tile-regular',
+	'tile-selected',
+	'item-collected-mark',
+	'bracket-left',
+	'bracket-right',
+	'button-regular',
+	'button-cursor',
 ];
 Galapago.dangerBarImageNames = [
-	'danger_bar',
+	'danger-bar',
 	/*'danger_bar_cap_bottom01',
 	'danger_bar_cap_bottom02',
 	'danger_bar_cap_top01',
 	'danger_bar_cap_top02',*/
-	'danger_bar_fill01',
-	'danger_bar_fill02'
+	'danger-bar-fill-1',
+	'danger-bar-fill-2'
 ];
 Galapago.LAYER_BACKGROUND = 'layer-background';
+Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
 /* ym: this class shouldn't be instantiated */
 function Galapago() {
@@ -116,7 +120,12 @@ Galapago.buildGameImagePaths = function() {
 	var gameImagePaths;
 	gameImagePaths = [];
 	_.each( Galapago.gameImageNames, function(imageName) {
+		if( imageName.startsWith( 'button-' ) ) {
+			gameImagePaths.push(MapScreen.GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		}
+		else {
 		gameImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
+		}
 	});
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
@@ -152,34 +161,46 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId) {
-	var theme;
+	var theme, subTheme, backgroundBundle, themeBundle;
+	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
 	console.log( 'levelName: ' + this.level.id );
 	theme = this.level.bgTheme;
-	console.log( 'theme: ' + theme + '_' + this.level.bgSubTheme );
-	
-	LoadingScreen.gal.onLoaded('board-common', function(result) {
+	subTheme = this.level.bgSubTheme;
+	backgroundBundle = theme + '-' + subTheme;
+	themeBundle = theme + '-common';
+	console.log( 'backgroundBundle: ' + backgroundBundle );
+
+	LoadingScreen.gal.onLoaded( backgroundBundle, function(result) {
 			if (result.success) {
-				LoadingScreen.gal.clearOnLoaded('board-common');
-				console.debug('board-common resource bundle loaded');
-				LoadingScreen.gal.download(theme);
+			LoadingScreen.gal.clearOnLoaded( backgroundBundle );
+			console.debug( backgroundBundle + ' resource bundle loaded' );
+			LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 			}
 		});
 
-	
-	LoadingScreen.gal.onLoaded(theme, function(result) {
+	LoadingScreen.gal.onLoaded( Galapago.RESOURCE_BUNDLE_BOARD_COMMON, function(result) {
 		if (result.success) {
-			LoadingScreen.gal.clearOnLoaded(theme);
-			console.debug('theme ' + theme + ' resource bundle loaded');
+			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
+			LoadingScreen.gal.download(themeBundle);
+		}
+	});
+	
+	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
+		if (result.success) {
+			//LoadingScreen.gal.clearOnLoaded(theme);
+			LoadingScreen.gal.clearOnLoaded(themeBundle);
+			console.debug(themeBundle + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
-			Galapago.level.levelAnimation.initSparkles();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
 	Level.registerEventHandlers();
 		}
 	});
-	LoadingScreen.gal.download('board-common');
-	//document.location.href = FileUtil.stripFileName(document.URL) + 'index.html?level=' + level;
+
+	LoadingScreen.gal.download(backgroundBundle);
+	console.debug( 'exiting Galapago.setLevel()' );
 };
 
 
@@ -237,6 +258,7 @@ function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
+	this.animationCanvas = $('#' + 'layer-map-animation')[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	this.layer = this.canvas.getContext('2d');
 	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
@@ -251,12 +273,13 @@ function LevelMap(level) {
 
 LevelMap.prototype.display = function() {
 	var backgroundImage;
-	backgroundImage = LoadingScreen.gal.get('background/background_map_screen.jpg');
+	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
 	if( backgroundImage ) {
 		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
 	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
+	/*
 	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
@@ -273,8 +296,9 @@ LevelMap.prototype.display = function() {
 	if(!Level.isComplete("1")){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
-	this.drawHotspots();
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	*/
+	this.drawHotspots();
 	this.registerEventHandlers();
 	Galapago.audioPlayer.playVolcanoLoop();
 }; //LevelMap.prototype.display()
@@ -320,16 +344,14 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
     var st=new SpriteSheet(image,spriteMatrix);
 	var xIndex =0;
 	var that=this;
-	var animationCanvas = $('#' + 'layer-map-animation')[0];
 	var imageData=st.getSpriteData([xIndex,0]);
 	//animationCanvas.style.zIndex = 9;
-	animationCanvas.onclick = function(evt) {
+	this.animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
-	animationCanvas.width = imageData.width;
-	animationCanvas.height = imageData.height;
-	this.animationCanvas = animationCanvas;
-	this.animationLayer =  animationCanvas.getContext('2d');	
+	this.animationCanvas.width = imageData.width;
+	this.animationCanvas.height = imageData.height;
+	this.animationLayer =  this.animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
 	    that.animationLayer.clearRect(0,0,imageData.width,imageData.height);			
@@ -344,10 +366,10 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 
 LevelMap.prototype.updateLevelStatus = function() {
 	var text, spriteSheet, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock;
-	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_stars_silver.png');
-	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_stars_gold.png');
-	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green_v.png');
-	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level_lock.png');
+	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-silver.png');
+	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-gold.png');
+	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green-v.png');
+	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
 	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
 	this.layer.font = LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
@@ -542,13 +564,13 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 }; //LevelMap.prototype.cleanupAnimationAndSound()
 
 LevelMap.prototype.handleUpArrow = function() {
-	if(this.hotspotLevel.neighbors.north.isUnlocked) {
+	if(this.hotspotLevel.neighbors.north && this.hotspotLevel.neighbors.north.isUnlocked) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.north);
 	}
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
-	if(this.hotspotLevel.neighbors.east.isUnlocked) {
+	if(this.hotspotLevel.neighbors.east && this.hotspotLevel.neighbors.east.isUnlocked) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.east);
 	}
 }; //LevelMap.prototype.handleRightArrow()
@@ -557,7 +579,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	var mapScreen, mapNav, level;
 	level = this.hotspotLevel.neighbors.south;
 	if( level && level.mapHotspotRegion.length > 2 ) {
-		if(this.hotspotLevel.neighbors.south.isUnlocked){
+		if(this.hotspotLevel.neighbors.south && this.hotspotLevel.neighbors.south.isUnlocked){
 			this.setHotspotLevel(level);
 		}
 	}
@@ -574,7 +596,7 @@ LevelMap.prototype.handleDownArrow = function() {
 }; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
-	if(this.hotspotLevel.neighbors.west.isUnlocked){
+	if(this.hotspotLevel.neighbors.west && this.hotspotLevel.neighbors.west.isUnlocked){
 		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
 	}
 }; //LevelMap.prototype.handleLeftArrow()
@@ -756,7 +778,7 @@ MapCell.prototype.toString = function() {
 /* end class MapCell */
 
 /* begin class Level */
-Level.BLOB_IMAGE_EXTENSION = 'png';
+Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
@@ -766,15 +788,16 @@ Level.LAYER_SCORE = 'layer-score';
 Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
 Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
 Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
-Level.BG_THEME_BEACH_CREATURES = ["blue_crab", "green_turtle", "pink_frog", "red_starfish", "teal_blob", "violet_crab", "yellow_fish"];
-Level.BG_THEME_FOREST_CREATURES = ["blue_beetle", "green_butterfly", "pink_lizard", "red_beetle", "teal_bug", "violet_moth", "yellow_frog"];
-Level.BG_THEME_CAVE_CREATURES = ["blue_crystal", "green_frog", "pink_spike", "red_beetle", "teal_flyer", "violet_lizard", "yellow_bug"];
-Level.SUPER_FRIENDS = ["blue_friend", "green_friend", "pink_friend", "red_friend", "teal_friend", "violet_friend", "yellow_friend"];
+Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
+Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
+Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
+Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
+Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
-Level.MENU_BUTTON_WIDTH = 100;
-Level.MENU_BUTTON_HEIGHT = 35;
+Level.BUTTON_WIDTH = 116;
+Level.BUTTON_HEIGHT = 42;
 Level.POWER_UP_SCORE =0;
 
 function Level(id) {
@@ -803,7 +826,7 @@ function Level(id) {
 
 Level.prototype.getGold = function() {
 	var gold;
-	gold = new Gold(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1.png'));
+	gold = new Gold(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'));
 	return gold;
 };
 
@@ -856,9 +879,14 @@ Level.prototype.initImages = function(imageArray) {
 
 	_.each(imageArray, function(image) {
 		if(image.id.indexOf('.')!=-1){
+			if( image.id.startsWith( MapScreen.GAL_PREFIX ) ) {
+				image.id  = image.id.substring( MapScreen.GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
+			}
+			else {
 			image.id  = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
 		}
-		level.gameImages[image.id] = image;
+		}
+		level.gameImages[replaceAll( image.id, '-', '_' )] = image;
 		
 	});
 }; //Level.prototype.initImages
@@ -871,7 +899,7 @@ Level.prototype.setBoard = function(board) {
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
 	goldImagePaths = [];
-	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + '.' + Level.BLOB_IMAGE_EXTENSION;
+	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
 
@@ -898,19 +926,20 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
- 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_beach_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+ 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-beach-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_forest_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-forest-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
 				break;
 			case 'cave':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("creatures/on_board_cave_static.png"),Galapago.CREATURE_SPRITE_MATRIX);
+				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-cave-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
 		}
 		if(!('superFriends'  in Galapago.creatureImages)){
-			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(creatureSpriteSheet);
+			var superFriendsSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/superfriends.png"),Galapago.SUPER_FRIENDS_SPRITE_MATRIX);
+			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(superFriendsSpriteSheet);
 		}
 	}
 	return Galapago.creatureImages[bgTheme];
@@ -919,7 +948,7 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
 	var images={};
 	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length - 1;y++){
+		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
 			var image = creatureSpriteSheet.getSpriteNew([y,x]);
 			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
 			var creatureType = _.filter(creatureTypes, function(creatureType) {
@@ -935,16 +964,14 @@ Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatu
 Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
 	var images={};
 	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=creatureSpriteSheet.spriteMatrix[x].length - 1; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
-			var image = creatureSpriteSheet.getSpriteNew([y,x]);
-			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
+		var image = creatureSpriteSheet.getSpriteNew([0,x]);
+		var id = creatureSpriteSheet.spriteMatrix[x][0].id;
 			var sfType = _.filter(Level.SUPER_FRIENDS, function(sfType) {
 				return sfType.startsWith(id[0]);
 			})[0];
 			image.id = sfType; 
 			images[image.id] = image;
 		}
-	}
 	return images;
 }; //Level.prototype.loadSuperFriends()
 
@@ -983,11 +1010,13 @@ Level.prototype.loadImages = function() {
 
 Level.prototype.display = function() {
 	var level, timedMode;
+	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
 	level.styleCanvas();
 	level.board.drawScore();
 	$('#screen-game').show();
+	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
 		level.board.init( level.levelConfig.blobPositions );
@@ -1024,10 +1053,12 @@ Level.prototype.display = function() {
 		level.board.display();
 		level.board.setActiveTile();
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
+		console.debug( 'exiting Level.prototype.display()');
 		return level; //chainable
 		});
 	}
 	else {
+		console.debug( 'exiting Level.prototype.display()');
 		return level; //chainable
 	}
 }; //Level.prototype.display()
@@ -1213,49 +1244,64 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, canvasScore, canvasGameAnimation;
+	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	console.debug('entering Level.prototype.styleCanvas()');
+	console.debug('styling background canvas');
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
-	themeComplete = this.bgTheme + '_' + this.bgSubTheme;
-	resourcePath = 'background/background_' + themeComplete + '.jpg';
+	console.debug( 'canvasBackground: ' + canvasBackground.selector );
+	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
+	resourcePath = 'background/' + themeComplete + '.jpg';
+	backgroundImage = LoadingScreen.gal.get(resourcePath);
+	if( backgroundImage ) {
 	console.debug('setting background to ' + resourcePath);
 	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
-	//canvas.style.background = 'url(' + Galapago.BACKGROUND_PATH_PREFIX + this.bgTheme + '_' + this.bgSubTheme + Galapago.BACKGROUND_PATH_SUFFIX;
+	}
+	/*
+	console.debug('before changing canvas width and height');
 	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
 	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
+	console.debug('after changing canvas width and height');
+	*/
 	canvasBackground.css('left', '0px');
 	canvasBackground.css('top', '0px');
 	this.layerBackground = canvasBackground[0].getContext('2d');
+	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
 		layer.height = Board.GRID_HEIGHT;
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
+	console.debug('styling bonus frenzy canvas');
 	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
 	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
 	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
 	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
 	canvasBonusFrenzy.css('top', '0px');
 
+	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
 	canvasScore[0].width = Score.MAX_WIDTH;
 	canvasScore[0].height = Score.MAX_HEIGHT;
 	canvasScore.css('left', Score.X + 'px');
 	canvasScore.css('top', Score.Y + 'px');
 
+	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
 	canvasGameAnimation[0].width = Board.GRID_WIDTH;
 	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
 	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
 
+	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
 	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);
-	canvasGameLightning.css('top', top + 'px');
-	canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;
-	canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;
-	
+	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
+    canvasGameLightning.css('top', top + 'px');  
+    canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
+    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;  
+
+	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1317,6 +1363,9 @@ Board.LEVEL_NAME_MAX_HEIGHT = 30;
 Board.LEVEL_NAME_FONT_SIZE = '30px';
 Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
 Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
+Board.BUTTON_FONT_SIZE = '17px';
+Board.BUTTON_FONT_NAME = 'JungleFever';
+Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
@@ -1402,45 +1451,45 @@ Board.prototype.displayLevelName = function() {
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage, gameButtonHilight;
+	var textColor, layer, menuButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
-	menuButtonImage = this.blobCollection.game_button_regular;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	menuButtonImage = this.level.gameImages.button_regular;
+	gameButtonCursor = this.level.gameImages.button_cursor;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
-		layer.drawImage(gameButtonHilight, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, gameButtonHilight.width, gameButtonHilight.height);
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, menuButtonImage.width + 2, menuButtonImage.height + 2);
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, menuButtonImage.width, menuButtonImage.height);
+		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
+		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
-	layer.font = '17px JungleFever';
-	layer.fillStyle = 'rgb(107,45,0)';
+	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
+	layer.fillStyle = Board.BUTTON_FONT_COLOR;
 	layer.fillText('MENU', Level.MENU_BUTTON_X+33, Level.MENU_BUTTON_Y+10);
 }; //Board.protoype.displayMenuButton()
 
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage, gameButtonHilight;
+	var textColor, layer, quitButtonImage, gameButtonCursor;
 	layer = this.backgroundLayer;
-	quitButtonImage = this.blobCollection.game_button_regular;
-	gameButtonHilight = this.blobCollection.game_button_hilight;
+	quitButtonImage = this.level.gameImages.button_regular;
+	gameButtonCursor = this.level.gameImages.button_cursor;
 	var quitImageX = Level.MENU_BUTTON_X;
-	var quitImageY = (Level.MENU_BUTTON_Y + quitButtonImage.height +10);
+	var quitImageY = (Level.MENU_BUTTON_Y + Level.BUTTON_HEIGHT +10);
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
-		layer.drawImage(gameButtonHilight, quitImageX - 1, quitImageY - 1, gameButtonHilight.width, gameButtonHilight.height);
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(quitImageX - 1, quitImageY - 1, quitButtonImage.width + 2, quitButtonImage.height + 2);
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, quitButtonImage.width, quitButtonImage.height);
+		layer.clearRect(quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
+		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
 	}
-	layer.font = '17px JungleFever';
-	layer.fillStyle = 'rgb(107,45,0)';
+	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
+	layer.fillStyle = Board.BUTTON_FONT_COLOR;
 	layer.fillText('QUIT', Level.MENU_BUTTON_X+35, quitImageY+10);
 }; //Board.protoype.displayMenuButton()
 
@@ -1617,6 +1666,7 @@ Board.prototype.init = function(tilePositions) {
 
 Board.prototype.build = function(tilePositions) {
 	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup, key, tile;
+	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
     restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	if(restoreLookupString != undefined){
@@ -1706,6 +1756,7 @@ Board.prototype.build = function(tilePositions) {
 		}
 	}
 	console.debug('generated ' + this.creatureCounter + ' creatures to get ' + colIt * rowIt + ' creatures with no triplets');
+	console.debug( 'exiting Board.prototype.build()' );
 	return;
 }; //Board.prototype.build
 
@@ -1927,7 +1978,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			//alert('power up cliecked'+ x +"  "+ y);
 			if(!board.isPowerUpFocused){
 				//alert('adddinggg');
-				board.powerUp.addListner();
+				board.powerUp.addListener();
 				board.isPowerUpFocused = true;
 			}
 			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
@@ -1963,16 +2014,16 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 		}
 	}
 	
-	if(board.blobCollection && board.blobCollection.button_menu){
-		var menuButtonImage = board.blobCollection.button_menu;
+	if(board.blobCollection && board.blobCollection.button_regular){
+		var menuButtonImage = board.blobCollection.button_regular;
 		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_quit;
+		var quitButtonImage = board.blobCollection.button_regular;
 		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
@@ -2038,7 +2089,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 
 Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	var board = this;
-	var menuButtonImage = board.blobCollection.button_menu;
+	var menuButtonImage = board.blobCollection.button_regular;
 	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
@@ -2046,8 +2097,8 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 			board.handleKeyboardSelect();
 	}
 	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-	var quitButtonImage = board.blobCollection.button_quit;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+quitButtonImage.width) && y>quitButtonY && y< (quitButtonY+quitButtonImage.height)){
+	var quitButtonImage = board.blobCollection.button_regular;
+	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;
@@ -2123,6 +2174,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			board.collectionModified = true;
 		}
 		if(tilesMovedEventProcessorResult.totalTilesAffectedByLightning.length > 0 ) {
+			//board.animateLightningStrikeAsync(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			board.clearTiles(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			tileSetsToBeRemoved.push(tilesMovedEventProcessorResult.totalTilesAffectedByLightning);
 			validMatchWithCollection = true;
@@ -2281,7 +2333,8 @@ Board.prototype.setComplete = function() {
 		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
-		window.dialog = new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight');
+		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
 		this.showGoldAndCreatures();
 	}
 } //Board.prototype.setComplete()
@@ -2563,9 +2616,11 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
-			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight');
+			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
+			 new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight' ,'button-medium-hilight' ,'button_medium_regular' );
 	}else{
-			window.dialog = new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight');
+			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			 new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
 	}
 } //Board.prototype.dangerBarEmptied
 
@@ -2616,12 +2671,13 @@ Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			//sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight');
+			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
@@ -2629,7 +2685,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			window.dialog = new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight');
+			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
 		    break;
 		case null:
 		default:
@@ -2699,7 +2756,7 @@ Board.prototype.handleRightArrow = function() {
 	}else { // move to powerup if on the rightmost
 		board.tileActive.setInactiveAsync(); 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
-			this.powerUp.addListner();
+			this.powerUp.addListener();
 			this.hotspot = Board.HOTSPOT_POWERUP;
 		}else{
 			board.displayMenuButton(true);
@@ -2753,7 +2810,7 @@ Board.prototype.handleLeftArrow = function() {
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
-			this.powerUp.addListner();
+			this.powerUp.addListener();
 			this.hotspot = Board.HOTSPOT_POWERUP;
 			//this.powerUp.canvas.focus();
 		}else{
@@ -2804,7 +2861,7 @@ Board.prototype.handleDownArrow = function() {
 			this.hotspot = Board.HOTSPOT_QUIT;
 		}else if(this.hotspot == Board.HOTSPOT_QUIT){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
-				this.powerUp.addListner("down");
+				this.powerUp.addListener("down");
 				this.hotspot = Board.HOTSPOT_POWERUP;
 				this.displayMenuButton(false);
 				this.displayQuitButton(false);
@@ -2851,7 +2908,7 @@ Board.prototype.handleUpArrow = function() {
 			this.hotspot = Board.HOTSPOT_MENU;
 		}else if(this.hotspot == Board.HOTSPOT_MENU){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
-				this.powerUp.addListner("up");
+				this.powerUp.addListener("up");
 				this.hotspot = Board.HOTSPOT_POWERUP;
 				board.displayMenuButton(false);
 				board.displayQuitButton(false);
@@ -3329,7 +3386,7 @@ Tile.prototype.setSelectedAsync = function() {
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_2, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3338,7 +3395,7 @@ Tile.prototype.setSelectedAsync = function() {
 
 Tile.prototype.setUnselected = function() {
 	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_1, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
 
@@ -3363,7 +3420,7 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	offset = 1;
 	width = Board.TILE_WIDTH * offset;
 	height = Board.TILE_HEIGHT * offset;
-	layer.drawImage( this.board.level.gameImages.tile_1, x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
@@ -3375,7 +3432,7 @@ Tile.prototype.drawHilight = function() {
 	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
 	width = Board.TILE_WIDTH/* + 2 * offset*/;
 	height = Board.TILE_HEIGHT/* + 2 * offset*/;
-	layer.drawImage( this.board.level.gameImages.tile_hilight, x, y, width, height );
+	layer.drawImage( this.board.level.gameImages.tile_selected, x, y, width, height );
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.eraseHilight = function() {	
@@ -3672,13 +3729,14 @@ DangerBar.FILL_ADJUSTMENT_TOP = 33;
 DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.LEFT = 1064;
 DangerBar.FILL_WIDTH = 15;
+DangerBar.IMAGE_MAGNIFICATION = 2;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
 function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
 	this.initImages(imageArray);
-	this.canvas = $('#layer-danger-bar'); 
+	this.canvas = $('#layer-danger-bar');
 	this.canvas[0].width = this.danger_bar.width;
 	this.canvas[0].height = this.danger_bar.height;
 	this.canvas.css( 'left', DangerBar.LEFT + 'px' );
@@ -3707,8 +3765,9 @@ DangerBar.prototype.initImages = function(imageArray) {
 	dangerBar = this;
 
 	_.each(imageArray, function(image) {
+		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
-		dangerBar[imageId] = image;
+		dangerBar[replaceAll( imageId, '-', '_' )] = image;
 	});
 }; //DangerBar.prototype.initImages
 
@@ -3716,7 +3775,7 @@ DangerBar.prototype.drawImages = function() {
 	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	this.layer.drawImage( this.danger_bar_fill01, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3767,8 +3826,8 @@ DangerBar.prototype.resume = function() {
 DangerBar.prototype.update = function(sender) {
 	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
 	dangerBar = Galapago.level.dangerBar;
-	fillNormal = dangerBar.danger_bar_fill01;
-	fillDanger = dangerBar.danger_bar_fill02;
+	fillNormal = dangerBar.danger_bar_fill_1;
+	fillDanger = dangerBar.danger_bar_fill_2;
 	bottomCapNormal = dangerBar.danger_bar_cap_bottom01;
 	bottomCapDanger = dangerBar.danger_bar_cap_bottom02;
 	dangerBar.timeRemainingMs -= DangerBar.REFRESH_INTERVAL_SEC * 1000;
@@ -4011,4 +4070,8 @@ function PauseableInterval(func, delay , sender){
 		   return true;
 		return false;
      }	 
-} //function 
+} //function PauseableInterval()
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(find, 'g'), replace);
+} //function replaceAll()

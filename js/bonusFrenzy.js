@@ -21,7 +21,8 @@ function BonusFrenzy(board) {
 
 	this.randomCreatureMap = null;
 	this.score = 0;
-	this.tile_hilight = Galapago.level.gameImages.tile_hilight;
+	this.tile_hilight = LoadingScreen.gal.get('screen-game/tile-selected.png');
+	
 	this.drawBoard(board);
 	this.registerEvents();
 	this.startMoving();

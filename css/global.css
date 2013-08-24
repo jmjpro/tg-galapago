@@ -30,8 +30,11 @@ html, body {
 
 /* disable visual effects on focused elements;
 see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsing/ */
-* {
-  outline: 0px solid rgba(0,0,0,0.0);
+*:focus {
+  outline: 0px solid rgba(0, 0, 0, 0);
+}
+*:hover {
+  outline: 0px solid rgba(0, 0, 0, 0);
 }
 
 #nav {
@@ -44,7 +47,7 @@ canvas {
 
 .canvas-fullscreen {
 	border: 0px solid #d3d3d3;
-	width: 1280px;
+	width: 1279px;
 	height: 720px;
 	background-repeat: no-repeat;
 	background-position: top left;
@@ -56,7 +59,7 @@ canvas {
 	font-size: 13px;
 	color: rgb(255,255,255);
 	position: absolute;
-	width: 1280px; /* with less this could be a variable shared with galapago.width */
+	width: 1279px; /* with less this could be a variable shared with galapago.width */
 	top: 635px;
 	text-align: center;
 }
@@ -165,11 +168,12 @@ div.nav-button {
 }
 
 #dialog-quit {
-	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular.png') no-repeat left top;*/
+	background-size: 100%;
 	width: 717px;
 	height: 590px;
 	/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
-	left: 282px; /*(1280-717/2)*/
+	left: 281px; /*(1279-717/2)*/
 	top: 65px; /*(720-590/2)*/
 
 }
@@ -193,10 +197,11 @@ div.dialog-title {
 }
 
 #dialog-game-menu {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background:  no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 690px;
-	left: 282px; /*(1280-717/2)*/
+	left: 281px; /*(1279-717/2)*/
 	top: 15px; /*(720-690/2)*/
 }
 
@@ -209,7 +214,8 @@ div.dialog-title {
 }
 
 #dialog-level-won {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background:  no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -244,7 +250,8 @@ div.dialog-title {
 
 
 .button-huge {
-	background: url('../res/img/dialogs/button_huge_regular.png') no-repeat left top;
+	background: no-repeat left top;
+	background-size: 100%;
 	width: 388px;
 	height: 94px;
 	vertical-align: middle;
@@ -253,11 +260,12 @@ div.dialog-title {
 }
 
 .button-huge-hilight {
-	background-image: url('../res/img/dialogs/button_huge_highlight.png');
+	/*background-image: url('../res/img/dialog/button-huge-highlight.png');*/
 }
 
 .button-big {
-	background: url('../res/img/dialogs/button_big_regular.png') no-repeat left top;
+	background: url('../res/img/dialog/button-big-regular.png') no-repeat left top;
+	background-size: 100%;
 	width: 388px;
 	height: 90px;
 	vertical-align: middle;
@@ -265,11 +273,12 @@ div.dialog-title {
 }
 
 .button-big-hilight {
-	background-image: url('../res/img/dialogs/button_big_highlight.png');
+	background-image: url('../res/img/dialog/button-big-highlight.png');
 }
 
 .button-medium {
-	background: url('../res/img/dialogs/button_medium_regular.png') no-repeat left top;
+	background:  no-repeat left top;
+	background-size: 100%;
 	width: 190px;
 	height: 81px;
 	vertical-align: middle;
@@ -278,11 +287,12 @@ div.dialog-title {
 }
 
 .button-medium-hilight {
-	background-image: url('../res/img/dialogs/button_medium_highlight.png');
+	/*background-image: url('../res/img/dialog/button-medium-highlight.png');*/
 }
 
 .button-small {
-	background: url('../res/img/dialogs/button_small_regular.png') no-repeat left top;
+	background: url('../res/img/dialog/button-small-regular.png') no-repeat left top;
+	background-size: 100%;
 	width: 140px;
 	height: 102px;
 	vertical-align: middle;
@@ -290,7 +300,8 @@ div.dialog-title {
 }
 
 .button-regular {
-	background: url('../res/img/dialogs/button_gameMenu_regular.png') no-repeat left top;
+	background: url('../res/img/dialog/button-gameMenu-regular.png') no-repeat left top;
+	background-size: 100%;
 	width: 184px;
 	height: 108px;
 	vertical-align: middle;
@@ -304,11 +315,13 @@ div.dialog-title {
 }
 
 .button-regular-hilight {
-	background: url('../res/img/dialogs/button_gameMenu_hilight.png') no-repeat left top;
+	background: url('../res/img/dialog/button-gameMenu-hilight.png') no-repeat left top;
+	background-size: 100%;
 }
 
 .button-small-hilight {
-	background-image: url('../res/img/dialogs/button_small_highlight.png');
+	background-image: url('../res/img/dialog/button-small-highlight.png');
+	background-size: 100%;
 }
 
 ul.vertical-button-nav {
@@ -323,18 +336,20 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-game-over {
-	background: url('../res/img/dialogs/bg_small.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-small.png') no-repeat left top;*/
+	background-size: 100%;
 	width: 717px;
 	height: 247px;
-	left: 282px; /*(1280-717/2)*/
+	left: 281px; /*(1279-717/2)*/
 	top: 236px; /*(720-247/2)*/
 }
 
 #dialog-leaderboards {
-	background: url('../res/img/dialogs/bg_large.png') no-repeat left top;
+	background: url('../res/img/background/dialog-large.png') no-repeat left top;
+	background-size: 100%;
 	width: 1081px;
 	height: 625px;
-	left: 100px; /*(1280-1081/2)*/
+	left: 99px; /*(1279-1081/2)*/
 	top: 48px; /*(720-625/2)*/
 }
 
@@ -344,11 +359,11 @@ ul.vertical-button-nav > li {
 
 #dialog-leaderboards div.dialog-content table {
 	display: inline-block;
+	background: url('../res/img/dialog/drop-down-menu.png') no-repeat left top;
+	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
 	font-size: 24px;
 	color: rgb(13,97,132);
 	text-align: center;
-	background: url('../res/img/dialogs/drop_down_menu.png') no-repeat left top;
-	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
 	margin-top: 50px;
 	padding-bottom: 15px;
 }
@@ -367,7 +382,8 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-time-out {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background:  no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -379,7 +395,8 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-you-won {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -399,7 +416,8 @@ span#final-score {
 }
 
 #dialog-loading {
-	background: url('../res/img/dialogs/bg_small_noTitle.png') no-repeat left top;
+	background: url('../res/img/background/dialog-small-no-title.png') no-repeat left top;
+	background-size: 100%;
 	width: 543px;
 	height: 268px;
 	left: 368px;
@@ -408,16 +426,18 @@ span#final-score {
 }
 
 #dialog-new-game {
-	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
+	background:  no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 590px;
-	left: 282px; /*(1280-717/2)*/
+	left: 281px; /*(1279-717/2)*/
 	top: 65px; /*(720-590/2)*/
 	font-size: 27px;
 }
 
 #dialog-game-options {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -425,10 +445,11 @@ span#final-score {
 }
 
 #dialog-profile-delete {
-	background: url('../res/img/dialogs/bg_regular.png') no-repeat left top;
+	background: url('../res/img/background/dialog-regular.png') no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 590px;
-	left: 282px; /*(1280-717/2)*/
+	left: 281px; /*(1279-717/2)*/
 	top: 65px; /*(720-590/2)*/
 }
 
@@ -438,7 +459,8 @@ span#final-score {
 }
 
 #dialog-profile-create {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -457,14 +479,16 @@ span#final-score {
 }
 
 .profile-name {
-	background: url('../res/img/dialogs/profiles_name_area.png') no-repeat left top;
+	background: url('../res/img/dialog/profiles-name-area.png') no-repeat left top;
+	background-size: 100%;
 	width: 280px;
 	height: 48px;
 	border: none;
 }
 
 #keypad {
-	background: url('../res/img/dialogs/keyboard/keypad_regular.png') no-repeat left top;
+	background: url('../res/img/dialog/keyboard/keypad-regular.png') no-repeat left top;
+	background-size: 100%;
 	width: 376px;
 	height: 238px;
 }
@@ -472,7 +496,8 @@ span#final-score {
 ul.galapago-drop-down {
 	list-style-type: none;
 	text-align: left;
-	background: url('../res/img/dialogs/drop_down_menu.png') no-repeat left top;
+	background: url('../res/img/dialog/drop-down-menu.png') no-repeat left top;
+	background-size: 100%;
 	width: 326px;
 	height: 177px;
 	padding: 10px 0px 0px 20px;
@@ -486,15 +511,17 @@ ul.galapago-drop-down {
 
 #dialog-profile-create-init
  {
-	background: url('../res/img/dialogs/bg_large.png') no-repeat left top;
+	background: url('../res/img/background/dialog-large.png') no-repeat left top;
+	background-size: 100%;
 	width: 1081px;
 	height: 625px;
-	left: 100px; /*(1280-1081/2)*/
+	left: 99px; /*(1279-1081/2)*/
 	top: 48px; /*(720-625/2)*/
 }
 
 #dialog-profile-list {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -511,7 +538,8 @@ ul.galapago-drop-down {
 }
 
 #dialog-reset-game {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;*/
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -523,7 +551,8 @@ ul.galapago-drop-down {
 }
 
 #dialog-help {
-	background: url('../res/img/dialogs/bg_regular_noTitle.png') no-repeat left top;
+	/*background: url('../res/img/background/dialog-regular-no-title.png') no-repeat left top;*/
+	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;

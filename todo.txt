@@ -1,7 +1,7 @@
 - re-enable mouse support
 - make dialog boxes full screen with high z-index in a transparent layer as per the SDK in order to remove ability to focus on things behind the dialog box:
-<div style="width:1680px;height:559px;background-color:#FFF;position:absolute;top:0;left:0;z-index:987;"><iframe width="1680px" height="559px" id="iframe0.23153966083191335" src="file:///C:/Users/yehoshua/Documents/clients/transgaming/galapago/sdk/media/promo/kula-blox.html" style="pointer-events: none;"></iframe></div>
-<div style="width:1680px;height:559px;background-color:rgba(255,0,0,0);position:absolute;top:0;left:0;z-index:988;"></div>
+<div style="width:1680px;height:559px;color:#FFF;position:absolute;top:0;left:0;z-index:987;"><iframe width="1680px" height="559px" id="iframe0.23153966083191335" src="file:///C:/Users/yehoshua/Documents/clients/transgaming/galapago/sdk/media/promo/kula-blox.html" style="pointer-events: none;"></iframe></div>
+<div style="width:1680px;height:559px;color:rgba(255,0,0,0);position:absolute;top:0;left:0;z-index:988;"></div>
 - minimize canvas size for danger bar
 - minimize canvas for grid
 - separate canvas for powerups
