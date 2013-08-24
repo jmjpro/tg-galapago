@@ -23,20 +23,54 @@ LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  ]];
 
 LevelAnimation.JUMP_SPRITE_MATRIX = [[
- {cell: [23, 0], id: '1'}, 
- {cell: [69, 0], id: '2'}, 
- {cell: [115, 0], id: '3'}, 
- {cell: [161, 0], id: '4'}, 
- {cell: [207, 0], id: '5'}, 
- {cell: [253, 0], id: '6'},
- {cell: [299, 0], id: '7'}, 
- {cell: [345, 0], id: '8'}, 
- {cell: [391, 0], id: '9'}, 
- {cell: [437, 0], id: '10'}, 
- {cell: [483, 0], id: '11'}, 
- {cell: [529, 0], id: '12'}, 
- {cell: [576, 0], id: '13'}, 
- {cell: [621, 0], id: '14'}
+ {cell: [11, 0], id: '1'}, 
+ {cell: [57, 0], id: '2'}, 
+ {cell: [79, 0], id: '3'}, 
+ {cell: [125, 0], id: '4'}, 
+ {cell: [147, 0], id: '5'}, 
+ {cell: [193, 0], id: '6'},
+ {cell: [215, 0], id: '7'}, 
+ {cell: [261, 0], id: '8'}, 
+ {cell: [283, 0], id: '9'}, 
+ {cell: [329, 0], id: '10'}, 
+ {cell: [351, 0], id: '11'}, 
+ {cell: [397, 0], id: '12'}, 
+ {cell: [419, 0], id: '13'}, 
+ {cell: [465, 0], id: '14'}
+]];
+
+LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
+ {cell: [3, 0], id: '1'}, 
+ {cell: [49, 0], id: '2'}, 
+ {cell: [55, 0], id: '3'}, 
+ {cell: [101, 0], id: '4'}, 
+ {cell: [107, 0], id: '5'}, 
+ {cell: [153, 0], id: '6'},
+ {cell: [159, 0], id: '7'}, 
+ {cell: [205, 0], id: '8'}, 
+ {cell: [211, 0], id: '9'}, 
+ {cell: [257, 0], id: '10'}, 
+ {cell: [263, 0], id: '11'}, 
+ {cell: [309, 0], id: '12'}, 
+ {cell: [315, 0], id: '13'}, 
+ {cell: [361, 0], id: '14'}
+]];
+
+LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
+ {cell: [12, 0], id: '1'}, 
+ {cell: [58, 0], id: '2'}, 
+ {cell: [82, 0], id: '3'}, 
+ {cell: [128, 0], id: '4'}, 
+ {cell: [152, 0], id: '5'}, 
+ {cell: [198, 0], id: '6'},
+ {cell: [222, 0], id: '7'}, 
+ {cell: [268, 0], id: '8'}, 
+ {cell: [292, 0], id: '9'}, 
+ {cell: [338, 0], id: '10'}, 
+ {cell: [362, 0], id: '11'}, 
+ {cell: [408, 0], id: '12'}, 
+ {cell: [432, 0], id: '13'}, 
+ {cell: [478, 0], id: '14'}
 ]];
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
@@ -390,7 +424,17 @@ LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
 			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
 			image = LoadingScreen.gal.get(galPath);
 			if( image ) {
-				this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
+				switch( bgTheme ) {
+					case 'beach':
+						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
+						break;
+					case 'forest':
+						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.FOREST_JUMP_SPRITE_MATRIX);
+						break;
+					case 'cave':
+						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.CAVE_JUMP_SPRITE_MATRIX);
+						break;
+				}
 			}
 			else {
 				console.error( 'unable to load image ' + galPath);
@@ -506,9 +550,9 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			width=92; 
 			height=46;
 		}
-		var imageId = tileDown.blob.image.id.replace('_1','') + '_jumps';
+		var imageId = tileDown.blob.image.id.replace('_1','') + LevelAnimation.JUMP_SUFFIX;
 		var rolloverImageSpriteSheet = this[imageId];
-		imageId = tileUp.blob.image.id.replace('_1','') + '_jumps';
+		imageId = tileUp.blob.image.id.replace('_1','') + LevelAnimation.JUMP_SUFFIX;
 		var rolloverImageSpriteSheet1 = this[imageId];
 		var x = tileUp.getXCoord();
 		var y = tileUp.getYCoord();
