@@ -352,6 +352,8 @@ LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 LevelAnimation.sparklesImages = [];
 LevelAnimation.starImages = [];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
+LevelAnimation.bobCervantesAnimation = null;
+	
 function LevelAnimation(layer){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
@@ -361,7 +363,6 @@ function LevelAnimation(layer){
 	this.gameStartArrowAnimation = null;
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
-	this.bobCervantesAnimation = null;
 	this.sparklesAnimation = null;
 	this.initSparkles();
 	this.initStars();
@@ -369,6 +370,9 @@ function LevelAnimation(layer){
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
+	if(LevelAnimation.bobCervantesAnimation){
+		return;
+	}
 	var headsBase, canvasBC, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
 	headsBase = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-base.png");
 	headsBase = CanvasUtil.magnifyImage( headsBase, 2);
@@ -397,15 +401,15 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 		CanvasUtil.magnifyImage( imgRightHeadMouth, 2 );
 		layer.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width, imgRightHeadMouth.height);
 	}
-	this.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
+	LevelAnimation.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
 }
 
 LevelAnimation.prototype.animateBobCervantes = function(imageArray) {
-	this.bobCervantesAnimation.start();
+	LevelAnimation.bobCervantesAnimation.start();
 }
 
 LevelAnimation.prototype.stopBobCervantes = function(imageArray) {
-	this.bobCervantesAnimation.stop();
+	LevelAnimation.bobCervantesAnimation.stop();
 }
 
 LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
@@ -937,9 +941,8 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
 	}
-	if(this.bobCervantesAnimation){
-		this.bobCervantesAnimation.stop();
-		this.bobCervantesAnimation = null;
+	if(LevelAnimation.bobCervantesAnimation){
+		LevelAnimation.bobCervantesAnimation.stop();
 	}
 };
 

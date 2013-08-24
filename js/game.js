@@ -189,7 +189,8 @@ Galapago.setLevel = function(levelId) {
 	
 	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
 		if (result.success) {
-			LoadingScreen.gal.clearOnLoaded(theme);
+			//LoadingScreen.gal.clearOnLoaded(theme);
+			LoadingScreen.gal.clearOnLoaded(themeBundle);
 			console.debug(themeBundle + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
