@@ -86,7 +86,6 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 
 Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
-	Galapago.isBypassLevelLocking = QueryString.isBypassLevelLocking === 'true' ? true : false;
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
 	//Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
@@ -95,7 +94,6 @@ Galapago.init = function(isTimedMode) {
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
 	console.log( 'Galapago.isTimedMode: ' + Galapago.isTimedMode );
-	console.log( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
 	console.log( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
 		levelTemp = new Level(levelIt + 1);
@@ -478,14 +476,6 @@ LevelMap.prototype.registerEventHandlers = function() {
 				evt.preventDefault();
 				Galapago.mapScreen.toMainMenuScreen(levelMap);
 				break;
-			case 48: // numeric 0
-				Galapago.isBypassLevelLocking = true;
-				console.debug( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
-				break;
-			case 49: // numeric 1
-				Galapago.isBypassLevelLocking = false;
-				console.debug( 'Galapago.isBypassLevelLocking: ' + Galapago.isBypassLevelLocking );
-				break;
 			case 50: // numeric 2
 				Galapago.audioPlayer.disable();
 				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
@@ -525,10 +515,10 @@ LevelMap.prototype.handleSelect = function(evt) {
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
 			this.setHotspotLevel(level);
-			if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
+			if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
 				window.onclick = null;
 				window.onmousemove = null;
-			this.handleKeyboardSelect();
+				this.handleKeyboardSelect();
 			}
 			break;
 		}
@@ -539,7 +529,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 }; //LevelMap.prototype.handleSelect()
 
 LevelMap.prototype.handleKeyboardSelect = function() {
-	if( Galapago.isBypassLevelLocking || this.hotspotLevel.isUnlocked ) {
+	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
 	    this.cleanup();
 		//$( 'ul#map-nav' ).css( 'display', 'none' );
 		Galapago.setLevel(this.hotspotLevel.id);
@@ -564,13 +554,13 @@ LevelMap.prototype.cleanupAnimationAndSound = function() {
 }; //LevelMap.prototype.cleanupAnimationAndSound()
 
 LevelMap.prototype.handleUpArrow = function() {
-	if(this.hotspotLevel.neighbors.north && this.hotspotLevel.neighbors.north.isUnlocked) {
+	if(this.hotspotLevel.neighbors.north && (QueryString.cheat || this.hotspotLevel.neighbors.north.isUnlocked)) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.north);
 	}
 }; //LevelMap.prototype.handleUpArrow()
 
 LevelMap.prototype.handleRightArrow = function() {
-	if(this.hotspotLevel.neighbors.east && this.hotspotLevel.neighbors.east.isUnlocked) {
+	if(this.hotspotLevel.neighbors.east && (QueryString.cheat || this.hotspotLevel.neighbors.east.isUnlocked)) {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.east);
 	}
 }; //LevelMap.prototype.handleRightArrow()
@@ -579,7 +569,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	var mapScreen, mapNav, level;
 	level = this.hotspotLevel.neighbors.south;
 	if( level && level.mapHotspotRegion.length > 2 ) {
-		if(this.hotspotLevel.neighbors.south && this.hotspotLevel.neighbors.south.isUnlocked){
+		if(this.hotspotLevel.neighbors.south && (QueryString.cheat || this.hotspotLevel.neighbors.south.isUnlocked)) {
 			this.setHotspotLevel(level);
 		}
 	}
@@ -596,7 +586,7 @@ LevelMap.prototype.handleDownArrow = function() {
 }; //LevelMap.prototype.handleDownArrow()
 
 LevelMap.prototype.handleLeftArrow = function() {
-	if(this.hotspotLevel.neighbors.west && this.hotspotLevel.neighbors.west.isUnlocked){
+	if(this.hotspotLevel.neighbors.west && (QueryString.cheat || this.hotspotLevel.neighbors.west.isUnlocked)){
 		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
 	}
 }; //LevelMap.prototype.handleLeftArrow()
