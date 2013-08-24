@@ -799,6 +799,7 @@ Level.MENU_BUTTON_Y = 600;
 Level.BUTTON_WIDTH = 116;
 Level.BUTTON_HEIGHT = 42;
 Level.POWER_UP_SCORE =0;
+Level.SUPER_FRIEND_SUFFIX = '-friend';
 
 function Level(id) {
 	this.id = id;
@@ -854,7 +855,7 @@ Level.prototype.getSuperFriendByColorId = function(colorId) {
 		return sfIt.startsWith(colorId);
 	})[0];
 	sfImage = this.superFriendImages[sfType];
-	sf = new SuperFriend(sfImage, sfType.replace('_friend',''));
+	sf = new SuperFriend(sfImage, sfType.replace(Level.SUPER_FRIEND_SUFFIX,''));
 	return sf;
 }; //Level.prototype.getCreatureByColorId
 
