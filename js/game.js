@@ -1102,9 +1102,9 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
-	if(this.levelAnimation.powerAchievedAnimation){
+	if(this.levelAnimation.powerAchievedAnimationList){
 		this.levelAnimation.stopAllPowerAchieved();
-		this.levelAnimation.powerAchievedAnimation = null;
+		this.levelAnimation.powerAchievedAnimationList = null;
 	}
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();

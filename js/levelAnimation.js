@@ -236,12 +236,22 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 
 LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
-{cell: [97, 0], id: '2'}, 
-{cell: [194, 0], id: '3'}, 
-{cell: [291, 0], id: '4'}, 
-{cell: [388, 0], id: '5'}, 
-{cell: [485, 0], id: '6'}, 
-{cell: [582, 0], id: '7'}
+{cell: [49, 0], id: '2'}, 
+{cell: [98, 0], id: '3'}, 
+{cell: [147, 0], id: '4'}, 
+{cell: [196, 0], id: '5'}, 
+{cell: [145, 0], id: '6'}, 
+{cell: [194, 0], id: '7'}
+]];
+
+LevelAnimation.POWER_ACTIVATED_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'}, 
+{cell: [74, 0], id: '2'}, 
+{cell: [148, 0], id: '3'}, 
+{cell: [222, 0], id: '4'}, 
+{cell: [296, 0], id: '5'}, 
+{cell: [370, 0], id: '6'}, 
+{cell: [444, 0], id: '7'}
 ]];
 
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
@@ -696,7 +706,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 		if(levelAnimation.gameStartArrowAnimation){
 			levelAnimation.gameStartArrowAnimation.stop();
 		}
-		var gameStartArrowAnimation = new GameStartArrowAnimation(coordinates, gameStartArrowImageSpriteSheet,layer,animateGameStartArrow);		
+		var gameStartArrowAnimation = new GameSaticAnimation(coordinates, gameStartArrowImageSpriteSheet,layer);		
 		gameStartArrowAnimation.start();
 		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
 	}
@@ -715,15 +725,15 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
 	var  image, powerAchievedImageSpriteSheet;
-	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "Powerup_ready_strip.png");
+	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "powerup-gained-strip.png");
 	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
-	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
+	powerAchievedAnimation = new GameSaticAnimation(coordinates, powerAchievedImageSpriteSheet,layer);	
 	function animatePowerAchieved(){
 		powerAchievedAnimation.start();
-		if(!levelAnimation.powerAchievedAnimation){
-			levelAnimation.powerAchievedAnimation = new Array();
+		if(!levelAnimation.powerAchievedAnimationList){
+			levelAnimation.powerAchievedAnimationList = new Array();
 		}
-		levelAnimation.powerAchievedAnimation.push(powerAchievedAnimation);
+		levelAnimation.powerAchievedAnimationList.push(powerAchievedAnimation);
 	}
 	animatePowerAchieved();
 	return  powerAchievedAnimation;
@@ -731,23 +741,44 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 }
 
 LevelAnimation.prototype.stopPowerAchieved = function(powerAchievedAnimation){
-	if(this.powerAchievedAnimation){
-			var index = this.powerAchievedAnimation.indexOf(powerAchievedAnimation)
-			this.powerAchievedAnimation[index].stop();
+	if(this.powerAchievedAnimationList){
+			var index = this.powerAchievedAnimationList.indexOf(powerAchievedAnimation)
+			this.powerAchievedAnimationList[index].stop();
 			//this.powerAchievedAnimation[index] = null;
-			this.powerAchievedAnimation.splice( index, 1 );
+			this.powerAchievedAnimationList.splice( index, 1 );
 	}
 }
 
 LevelAnimation.prototype.stopAllPowerAchieved = function(){
-	if(this.powerAchievedAnimation){
-			for (var i=0; i < this.powerAchievedAnimation.length; i++){
-				this.powerAchievedAnimation[i].stop();
+	if(this.powerAchievedAnimationList){
+			for (var i=0; i < this.powerAchievedAnimationList.length; i++){
+				this.powerAchievedAnimationList[i].stop();
 			}
 	}
 }
 ////
+LevelAnimation.prototype.animatePowerActivated = function(layer ,coordinates){
+	var levelAnimation = this;
+	var powerActivatedAnimation;
+	var  image, powerActivatedImageSpriteSheet;
+	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "powerup-activated-strip.png");
+	powerActivatedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACTIVATED_SPRITE_MATRIX); 
+	powerActivatedAnimation = new GameSaticAnimation(coordinates, powerActivatedImageSpriteSheet,layer);	
+	function animatePowerActivated(){
+		powerActivatedAnimation.start();
+		levelAnimation.powerActivatedAnimation = powerActivatedAnimation;
+	}
+	animatePowerActivated();
+}
 
+LevelAnimation.prototype.stopPowerActivated = function(){
+	if(this.powerActivatedAnimation){
+			this.powerActivatedAnimation.stop();
+			this.powerActivatedAnimation=null;
+	}
+}
+
+//>>
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
 	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
@@ -944,6 +975,11 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	if(LevelAnimation.bobCervantesAnimation){
 		LevelAnimation.bobCervantesAnimation.stop();
 	}
+	if(this.powerActivatedAnimation){
+		this.powerActivatedAnimation.stop();
+		this.powerActivatedAnimation = null;
+	}
+	
 };
 
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
@@ -1087,25 +1123,24 @@ BombAnimation.prototype.animate = function(){
 
 //
 
-GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
-function GameStartArrowAnimation(coordinates, imageSpriteSheet, layer ,callback){
+GameSaticAnimation.ROLLOVER_TIME_INTERVAL=100;
+function GameSaticAnimation(coordinates, imageSpriteSheet, layer ){
 	this.imageSpriteSheet = imageSpriteSheet;
 	this.interval = null;
 	this.spriteId = 0;
 	this.coordinates = coordinates;
 	this.layer = layer;
-	this.callback = callback;
 }
 
-GameStartArrowAnimation.prototype.start = function(){
+GameSaticAnimation.prototype.start = function(){
 	this.spriteId = 0;
 	var animation = this;
 	this.interval = setInterval(function(){
 		animation.animate();},
-		GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL);
+		GameSaticAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
-GameStartArrowAnimation.prototype.stop = function(){
+GameSaticAnimation.prototype.stop = function(){
 	if(this.interval){
 		clearInterval(this.interval);
 		var animation = this;
@@ -1113,7 +1148,7 @@ GameStartArrowAnimation.prototype.stop = function(){
 	}
 };
 
-GameStartArrowAnimation.prototype.animate = function(){
+GameSaticAnimation.prototype.animate = function(){
 	var image = this.imageSpriteSheet.getSprite([this.spriteId, 0]);
 	this.imageHeight = image.height;
 	this.imageWidth = image.width;
