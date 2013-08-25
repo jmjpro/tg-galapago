@@ -265,13 +265,23 @@ ImageCollage.prototype.getImages = function (){
 }; //ImageCollage.prototype.getImages()
 
 ImageCollage.loadByName = function (collageId){
-	var imageCollage, collageDescriptor;
+	var collageDescriptor;
 	/*console.debug( 'collageId: ' + collageId );*/
+	collageDescriptor = ImageCollage.findDescriptorByName(collageId);
+	return new ImageCollage(collageDescriptor);
+}; //ImageCollage.loadByName()
+
+ImageCollage.findDescriptorByName = function (collageId){
+	var collageDescriptor;
 	collageDescriptor = _.find( ImageCollage.COLLAGE_ARRAY, function( collageDescriptor ){
 		if( collageDescriptor.collageId === collageId ){
 			return collageDescriptor;
 		}
 	});
-	imageCollage = new ImageCollage(collageDescriptor);
-	return imageCollage;
-}; //ImageCollage.loadByName()
+	if( collageDescriptor ) {
+		return collageDescriptor;
+	}
+	else {
+		console.error( 'unable to find collage ' + collageId );
+	}
+}; //ImageCollage.findDescriptorByName()

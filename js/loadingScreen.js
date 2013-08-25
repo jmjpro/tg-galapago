@@ -47,22 +47,18 @@ LoadingScreen.registerEvent = function(){
 			if( backgroundImage ) {
 				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 			}
-			LoadingScreen.gal.download('common');
+			LoadingScreen.gal.download('screen-main-menu');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});
-	this.gal.onProgress("common", function(progress) {
+	this.gal.onProgress("screen-main-menu", function(progress) {
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
 	});
-	this.gal.onLoaded('common', function(result) {
+	this.gal.onLoaded('screen-main-menu', function(result) {
 		if (result.success) {
-			console.debug('common resource bundle loaded');
+			console.debug('screen-main-menu resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
-			//LoadingScreen.gal.download('board-common');
-			//LoadingScreen.gal.download('beach-common');
-			//LoadingScreen.gal.download('forest-common');
-			//LoadingScreen.gal.download('cave-common');
 		}
 	});
 };
@@ -76,6 +72,10 @@ LoadingScreen.hide = function(evt) {
 	}
 	this.screenDiv.hide();
 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+	LoadingScreen.gal.release( "background/loading.jpg" );
+	LoadingScreen.gal.release( "screen-loading/loading-progress-bar.png" );
+	LoadingScreen.gal.release( "screen-loading/loading-progress-bar-fill.png" );
+	LoadingScreen.gal.release( "screen-loading/loading-progress-bar-left-cap.png" );
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){

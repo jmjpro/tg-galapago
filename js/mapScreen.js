@@ -11,11 +11,13 @@ function MapScreen() {
 }
 
 MapScreen.prototype.setImages = function() {
-	var galFilePath;
+	var galFilePath, navButtonImage;
 	_.each( MapScreen.NAV_BUTTON_IDS, function( navButtonId ) {
 		galFilePath =  MapScreen.GAL_PREFIX + 'button-regular.png';
-		console.debug( '#' + navButtonId + " : " + galFilePath);
-		$('#' + navButtonId).css( 'background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+		navButtonImage = LoadingScreen.gal.get(galFilePath);
+		if( navButtonImage ) {
+			$('#' + navButtonId).css( 'background-image','url(' + navButtonImage.src + ')');
+		}
 	});
 }
 

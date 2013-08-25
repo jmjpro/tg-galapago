@@ -15,7 +15,7 @@
 		]
 	},
 	{
-		"name": "common",
+		"name": "screen-main-menu",
 		"contents": [
 			"background/main-menu.jpg",
 			"background/dialog-regular.png",
@@ -25,11 +25,16 @@
 			"collage/arrows.png",
 			"collage/dialog-buttons.png",
 			"IGNORE/collage/dialog-arrow-buttons.png",
-			"IGNORE/collage/dialog-keypad-buttons.png",
+			"IGNORE/collage/dialog-keypad-buttons.png"
+		]
+	},
+	{
+		"name": "screen-map",
+		"contents": [	
+			"background/map.jpg",
 			"collage/map-board-1.png",
 			"collage/map-board-2.png",
 			"collage/map-board-buttons.png",
-			"background/map.jpg",
 			"collage/map-bonfire-arrow-strips.png",
 			"screen-map/bomb-left-one-strip.png",
 			"screen-map/bomb-left-two-strip.png",

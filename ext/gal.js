@@ -8,7 +8,6 @@
 *     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
@@ -35,7 +34,7 @@ var GAL = function(manifestUrl) {
   this.loaded = {};
   this.progress = {};
   this.error = {};
-  this.lookupTable = new Array();
+  this.lookupTable = [];
 };
  
 GAL.loadedPixels = 0;
@@ -82,7 +81,6 @@ GAL.prototype.download = function(bundleName) {
       });
       return;
     }
- 
     var key = bundle[index];
     if(!(key in that.lookupTable)){
       // Get the full url to the asset.
@@ -90,11 +88,12 @@ GAL.prototype.download = function(bundleName) {
       var collageDirectory = that.manifest.collageDirectory;
       var ignorePrefix = that.manifest.ignorePrefix;
       var keyArray = key.split(".");
+      var url;
       if( key.startsWith( ignorePrefix ) ) {
         loop(index + 1);
       }
       else if((','+audioExts+',').indexOf(','+keyArray[keyArray.length-1]+',') > -1){
-        var url = that.manifest.assetRootAudio + key;
+        url = that.manifest.assetRootAudio + key;
         var audio = new Audio();
         audio.onload = function() {
           that.lookupTable[key] = audio;
@@ -107,11 +106,13 @@ GAL.prototype.download = function(bundleName) {
         audio.src = url;
         audio.id = key;
       }else{
-        var url = that.manifest.assetRootImage + key;
-        console.debug( 'loading ' + url);
+        url = that.manifest.assetRootImage + key;
         var image = new Image();
+        var imagePixels;
         image.onload =function() {
-          GAL.loadedPixels += image.width * image.height;
+          imagePixels = image.width * image.height;
+          GAL.loadedPixels += imagePixels;
+          console.debug( url + ' loaded ' + imagePixels + ' pixels ');
           console.log("Total pixels loaded: " + GAL.loadedPixels);
           that.lookupTable[key] = image;
           if(key.indexOf(collageDirectory) > -1){
@@ -133,21 +134,22 @@ GAL.prototype.download = function(bundleName) {
 	}
   })(0);
   if(bundleAlreadyLoaded){
-	  fireCallback_(that.loaded, bundleName, {
+    fireCallback_(that.loaded, bundleName, {
         bundleName: bundleName,
         success: true
-      });
+    });
   }
 };
- 
-GAL.loadCollageImages = function(manifest, imageName){
-  var imageCollage = ImageCollage.loadByName(imageName);
-  var images = imageCollage.getImages();
+
+GAL.loadCollageImages = function(manifest, imageName) {
+  var imageCollage, images, index, imageId;
+  imageCollage = ImageCollage.loadByName(imageName);
+  images = imageCollage.getImages();
   for(index in images){
-    var imageId = images[index].id;
+    imageId = images[index].id;
     manifest.lookupTable[imageId] = images[index];
   }        
-}
+};
  
 /**
 * Adds a callback to fire when a bundle has been loaded.
@@ -225,6 +227,35 @@ GAL.prototype.check = function(bundleName, callback) {
 GAL.prototype.get = function(assetPath) {      
   return this.lookupTable[assetPath] || null;
 };
+
+/**
+* request release of memory occupied by resource at assetPath
+* @param {string} assetPath path of the asset relative to the manifest
+* root.
+* @throws {exception} if the asset doesn't actually exist.
+*/
+GAL.prototype.release = function(assetPath) {
+  var imagePixels, image, collageDescriptor, i;
+  image = this.get(assetPath);
+  // if we can't find the requested image, see if there's a corresponding image collage
+  // and release all of the images that we cut up from the collage (the collage itself
+  // was release immediately after it was cut up)
+  if( !image ) {
+    collageDescriptor = ImageCollage.findDescriptorByName(assetPath);
+    for( i = 0; i < collageDescriptor.imageCoordinateArray.length; i++ ) {
+      this.release(collageDescriptor.imageCoordinateArray[i].id);
+    }
+  }
+  else {
+    imagePixels = image.width * image.height;
+    this.lookupTable[assetPath] = null;
+    GAL.loadedPixels -= imagePixels;
+    console.debug( assetPath + ' released ' + imagePixels + ' pixels ');
+    console.log( 'Total pixels loaded: ' + GAL.loadedPixels );
+  }
+}; //GAL.prototype.release()
+
+
  
 /**
 * Gets the last cached time for an asset at a given path.
@@ -277,9 +308,12 @@ function initAdapter_(callback) {
 * @param {object} manifest The manifest object.
 */
 function setManifest_(manifest) {
+  var i, bundle;
   this.manifest = manifest;
   // Set this.bundles object and this.bundleOrder array
-  for (var i = 0, bundle; bundle = manifest.bundles[i]; ++i) {
+  bundle = true;
+  for (i = 0; i < manifest.bundles.length; ++i) {
+    bundle = manifest.bundles[i];
     this.bundles[bundle.name] = bundle.contents;
     this.bundleOrder.push(bundle.name);
   }
@@ -347,9 +381,11 @@ function fireCallback_(callbacks, bundleName, params) {
   fireCallbackHelper_(callbacks, '*', params);
 }
 function fireCallbackHelper_(object, bundleName, params) {
-  var callbacks = object[bundleName];
+  var callbacks, callback, i;
+  callbacks = object[bundleName];
   if (callbacks) {
-    for (var i = 0, callback; callback = callbacks[i]; ++i) {
+    for (i = 0; i < callbacks.length; ++i) {
+      callback = callbacks[i];
       callbacks[i](params);
     }
   }

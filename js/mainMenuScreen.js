@@ -107,6 +107,25 @@ MainMenuScreen.prototype.setImages = function() {
 	});
 }; //MainMenuScreen.prototype.setImages()
 
+MainMenuScreen.prototype.openMapScreen = function(isTimedMode) {
+	LoadingScreen.gal.onLoaded('screen-map', function(result) {
+		if (result.success) {
+			console.debug('map screen resource bundle loaded');
+			if( this.callingObject instanceof Level ) {
+				Galapago.isTimedMode = isTimedMode;
+				level = this.callingObject;
+				LevelMap.show(level);
+			}
+			else {
+				Galapago.init(isTimedMode);
+			}
+		}
+	});
+	LoadingScreen.gal.release( 'background/main-menu.jpg');
+	LoadingScreen.gal.release( 'collage/main-menu.png');
+	LoadingScreen.gal.download('screen-map');
+} //MainMenuScreen.prototype.openMapScreen()
+
 MainMenuScreen.prototype.selectHandler = function() {
 	var navItem, isTimedMode, level;
 	navItem = this.currentNavItem;
@@ -117,27 +136,12 @@ MainMenuScreen.prototype.selectHandler = function() {
 		case 'button-timed' :
 			this.hide();
 			isTimedMode = true;
-			if( this.callingObject instanceof Level ) {
-				Galapago.isTimedMode = isTimedMode;
-				level = this.callingObject;
-				LevelMap.show(level);
-				//level.showLevelMap(level);
-			}			else {
-				Galapago.init(isTimedMode);
-			}
-			break;
+			this.openMapScreen(isTimedMode);
+		break;
 		case 'button-relaxed' :
 			this.hide();
 			isTimedMode = false;
-			if( this.callingObject instanceof Level ) {
-				Galapago.isTimedMode = isTimedMode;
-				level = this.callingObject;
-				LevelMap.show(level);
-				//level.showLevelMap(level);
-			}
-			else {
-				Galapago.init(isTimedMode);
-			}
+			this.openMapScreen(isTimedMode);
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
