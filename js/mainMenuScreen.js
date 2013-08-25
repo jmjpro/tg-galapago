@@ -33,8 +33,8 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
-	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
+ 	"button-relaxed" : { /*"LEFT" : "button-timed",*/ "DOWN" : "button-quit" },
+	"button-how-to-play" : { "UP" : "button-relaxed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
 
@@ -208,10 +208,10 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	else if( callingScreen ) {
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
-				navItem = $('#button-timed');
+				navItem = $('#button-relaxed');
 				break;
 			case 'screen-map' :
-				navItem = $('#button-timed');
+				navItem = $('#button-relaxed');
 				break;
 			case 'screen-game' :
 				navItem = $(this.getLastSelectedMode());
