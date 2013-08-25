@@ -38,6 +38,7 @@ var GAL = function(manifestUrl) {
   this.lookupTable = new Array();
 };
  
+GAL.loadedPixels = 0;
 /**
 * Initializes loader.
 * @param {Function} callback called when the library finishes loading the
@@ -110,6 +111,8 @@ GAL.prototype.download = function(bundleName) {
         console.debug( 'loading ' + url);
         var image = new Image();
         image.onload =function() {
+          GAL.loadedPixels += image.width * image.height;
+          console.log("Total pixels loaded: " + GAL.loadedPixels);
           that.lookupTable[key] = image;
           if(key.indexOf(collageDirectory) > -1){
             GAL.loadCollageImages(that, key);
