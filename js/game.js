@@ -1087,6 +1087,7 @@ Level.prototype.won = function(){
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
+	this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isPreserveGridLayer){
@@ -1102,9 +1103,9 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
-	if(this.levelAnimation.powerAchievedAnimation){
+	if(this.levelAnimation.powerAchievedAnimationList){
 		this.levelAnimation.stopAllPowerAchieved();
-		this.levelAnimation.powerAchievedAnimation = null;
+		this.levelAnimation.powerAchievedAnimationList = null;
 	}
  	this.board.reshuffleService.stop();
  	Galapago.audioPlayer.stop();
@@ -1274,7 +1275,7 @@ Level.prototype.styleCanvas = function() {
 	canvasScore = $('#' + Level.LAYER_SCORE);
 	canvasScore[0].width = Score.MAX_WIDTH;
 	canvasScore[0].height = Score.MAX_HEIGHT;
-	canvasScore.css('left', Score.X + 'px');
+	canvasScore.css('left', Board.GRID_LEFT + 'px');
 	canvasScore.css('top', Score.Y + 'px');
 
 	console.debug('styling game animation canvas');
@@ -1349,7 +1350,7 @@ Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
 Board.LEVEL_NAME_X = 600;
 Board.LEVEL_NAME_Y = 60;
-Board.LEVEL_NAME_MAX_WIDTH = 100;
+Board.LEVEL_NAME_MAX_WIDTH = 400;
 Board.LEVEL_NAME_MAX_HEIGHT = 30;
 Board.LEVEL_NAME_FONT_SIZE = '30px';
 Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
