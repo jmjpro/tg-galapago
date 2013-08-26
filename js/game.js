@@ -248,7 +248,7 @@ LevelMap.STAR_SPRITE_MATRIX = [
 ];
 
 LevelMap.LAVA_SPRITE_MATRIX = [
-[{cell: [0, 0], id: 'lava-1'}, {cell: [190, 0], id: 'lava-2'}, {cell: [380, 0], id: 'lava-3'}, {cell: [570, 0], id: 'lava-4'}, {cell: [760, 0], id: 'lava-5'}, {cell: [950, 0], id: 'lava-6'}, {cell: [1140, 0], id: 'lava-7'}, {cell: [1330, 0], id: 'lava-8'}, {cell: [1520, 0], id: 'lava-9'}, {cell: [1710, 0], id: 'lava-10'}, {cell: [1900, 0], id: 'lava-11'}, {cell: [2090, 0], id: 'lava-12'}, {cell: [2280, 0], id: 'lava-13'}, {cell: [2470, 0], id: 'lava-14'}, {cell: [2660, 0], id: 'lava-15'}, {cell: [2850, 0], id: 'lava-16'}, {cell: [3040, 0], id: 'lava-17'}, {cell: [3230, 0], id: 'lava-18'}, {cell: [3420, 0], id: 'lava-19'}, {cell: [3610, 0], id: 'lava-20'}, {cell: [3800, 0], id: 'lava-21'}, {cell: [3990, 0], id: 'lava-22'}, {cell: [4180, 0], id: 'lava-23'}, {cell: [4370, 0], id: 'lava-24'}, {cell: [4560, 0], id: 'lava-25'}, {cell: [4750, 0], id: 'lava-26'}, {cell: [4940, 0], id: 'lava-27'}, {cell: [5130, 0], id: 'lava-28'}, {cell: [5320, 0], id: 'lava-29'}, {cell: [5510, 0], id: 'lava-30'}, {cell: [5700, 0], id: 'lava-31'}],
+[{cell: [0, 0], id: 'lava-1'}, {cell: [95, 0], id: 'lava-2'}, {cell: [190, 0], id: 'lava-3'}, {cell: [285, 0], id: 'lava-4'}, {cell: [380, 0], id: 'lava-5'}, {cell: [475, 0], id: 'lava-6'}, {cell: [570, 0], id: 'lava-7'}, {cell: [665, 0], id: 'lava-8'}, {cell: [760, 0], id: 'lava-9'}, {cell: [855, 0], id: 'lava-10'}, {cell: [950, 0], id: 'lava-11'}, {cell: [1045, 0], id: 'lava-12'}]
 ];
 
 /* begin class LevelMap */
@@ -279,8 +279,8 @@ LevelMap.prototype.display = function() {
 	this.screenDiv.show();
 	CanvasUtil.setDimensions(this.canvas, LevelMap.WIDTH, LevelMap.HEIGHT);
 	this.canvas.focus();
-	/*
-	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'lave-strip.png'),LevelMap.LAVA_SPRITE_MATRIX);
+	
+	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'lava-strip.png'),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	CanvasUtil.setDimensions( otherAnimationCanvas, LevelMap.WIDTH, LevelMap.HEIGHT );
 	var levelAnimation = this;
@@ -295,8 +295,8 @@ LevelMap.prototype.display = function() {
 	if(!Level.isComplete("1")){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
-	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-	*/
+	//this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	
 	this.drawHotspots();
 	this.registerEventHandlers();
 	Galapago.audioPlayer.playVolcanoLoop();
@@ -340,7 +340,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 }; //LevelMap.prototype.drawBlinkingArrows()
 
 LevelMap.prototype.animate = function(image, spriteMatrix){
-    var st=new SpriteSheet(image,spriteMatrix);
+    var st=new SpriteSheet(image,spriteMatrix , 2);
 	var xIndex =0;
 	var that=this;
 	var imageData=st.getSpriteData([xIndex,0]);

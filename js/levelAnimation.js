@@ -75,131 +75,55 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
- {cell: [146, 0], id: '2'}, 
- {cell: [292, 0], id: '3'}, 
- {cell: [438, 0], id: '4'}, 
- {cell: [584, 0], id: '5'}, 
- {cell: [730, 0], id: '6'}, 
- {cell: [876, 0], id: '7'},
- {cell: [1022, 0], id: '8'}, 
- {cell: [1168, 0], id: '9'}, 
- {cell: [1314, 0], id: '10'}, 
- {cell: [1460, 0], id: '11'}, 
- {cell: [1606, 0], id: '12'}, 
- {cell: [1752, 0], id: '13'}, 
- {cell: [1898, 0], id: '14'}, 
- {cell: [2044, 0], id: '15'},
- {cell: [2190, 0], id: '16'}, 
- {cell: [2336, 0], id: '17'}, 
- {cell: [2482, 0], id: '18'}, 
- {cell: [2628, 0], id: '19'}, 
- {cell: [2774, 0], id: '20'}, 
- {cell: [2920, 0], id: '21'},
- {cell: [3066, 0], id: '22'}, 
- {cell: [3212, 0], id: '23'}, 
- {cell: [3358, 0], id: '24'}, 
- {cell: [3504, 0], id: '25'}, 
- {cell: [3650, 0], id: '26'}, 
- {cell: [3796, 0], id: '27'}, 
- {cell: [3942, 0], id: '28'}
+ {cell: [73, 0], id: '2'}, 
+ {cell: [146, 0], id: '3'}, 
+ {cell: [219, 0], id: '4'}, 
+ {cell: [292, 0], id: '5'}, 
+ {cell: [365, 0], id: '6'}, 
+ {cell: [438, 0], id: '7'},
+ {cell: [511, 0], id: '8'}, 
+ {cell: [584, 0], id: '9'}, 
+ {cell: [657, 0], id: '10'}, 
+ {cell: [730, 0], id: '11'}
  ]];
 
  LevelAnimation.BOMB_2_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
- {cell: [160, 0], id: '2'}, 
- {cell: [320, 0], id: '3'}, 
- {cell: [480, 0], id: '4'}, 
- {cell: [640, 0], id: '5'}, 
- {cell: [800, 0], id: '6'}, 
- {cell: [960, 0], id: '7'},
- {cell: [1120, 0], id: '8'}, 
- {cell: [1280, 0], id: '9'}, 
- {cell: [1440, 0], id: '10'}, 
- {cell: [1600, 0], id: '11'}, 
- {cell: [1760, 0], id: '12'}, 
- {cell: [1920, 0], id: '13'}, 
- {cell: [2080, 0], id: '14'}, 
- {cell: [2240, 0], id: '15'},
- {cell: [2400, 0], id: '16'}, 
- {cell: [2560, 0], id: '17'}, 
- {cell: [2720, 0], id: '18'}, 
- {cell: [2880, 0], id: '19'}, 
- {cell: [3040, 0], id: '20'}, 
- {cell: [3200, 0], id: '21'},
- {cell: [3360, 0], id: '22'}, 
- {cell: [3520, 0], id: '23'}, 
- {cell: [3680, 0], id: '24'}, 
- {cell: [3840, 0], id: '25'}, 
- {cell: [4000, 0], id: '26'}, 
- {cell: [4160, 0], id: '27'}, 
- {cell: [4320, 0], id: '28'}, 
- {cell: [4480, 0], id: '29'}, 
- {cell: [4640, 0], id: '30'}, 
- {cell: [4800, 0], id: '31'}, 
- {cell: [4960, 0], id: '32'}, 
- {cell: [5120, 0], id: '33'}, 
- {cell: [5280, 0], id: '34'}, 
- {cell: [5440, 0], id: '35'}
+ {cell: [80, 0], id: '2'}, 
+ {cell: [160, 0], id: '3'}, 
+ {cell: [240, 0], id: '4'}, 
+ {cell: [320, 0], id: '5'}, 
+ {cell: [400, 0], id: '6'}, 
+ {cell: [480, 0], id: '7'},
+ {cell: [560, 0], id: '8'}, 
+ {cell: [640, 0], id: '9'}, 
+ {cell: [720, 0], id: '10'}, 
+ {cell: [800, 0], id: '11'}
  ]];
 
 LevelAnimation.BOMB_3_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
- {cell: [31, 0], id: '2'}, 
- {cell: [62, 0], id: '3'}, 
- {cell: [93, 0], id: '4'}, 
- {cell: [124, 0], id: '5'}, 
- {cell: [155, 0], id: '6'}, 
- {cell: [186, 0], id: '7'},
- {cell: [217, 0], id: '8'}, 
- {cell: [248, 0], id: '9'}, 
- {cell: [279, 0], id: '10'}, 
- {cell: [310, 0], id: '11'}, 
- {cell: [341, 0], id: '12'}, 
- {cell: [372, 0], id: '13'}, 
- {cell: [403, 0], id: '14'}, 
- {cell: [434, 0], id: '15'},
- {cell: [465, 0], id: '16'}, 
- {cell: [496, 0], id: '17'}, 
- {cell: [527, 0], id: '18'}, 
- {cell: [558, 0], id: '19'}, 
- {cell: [589, 0], id: '20'}, 
- {cell: [620, 0], id: '21'},
- {cell: [651, 0], id: '22'}
+ {cell: [15.5, 0], id: '2'}, 
+ {cell: [31, 0], id: '3'}, 
+ {cell: [46.5, 0], id: '4'}, 
+ {cell: [62, 0], id: '5'}, 
+ {cell: [77.5, 0], id: '6'}, 
+ {cell: [93, 0], id: '7'},
+ {cell: [108.5, 0], id: '8'}
  ]];
 
 LevelAnimation.BOMB_4_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
- {cell: [138, 0], id: '2'}, 
- {cell: [276, 0], id: '3'}, 
- {cell: [414, 0], id: '4'}, 
- {cell: [552, 0], id: '5'}, 
- {cell: [690, 0], id: '6'},
- {cell: [828, 0], id: '7'}, 
- {cell: [966, 0], id: '8'}, 
- {cell: [1104, 0], id: '9'}, 
- {cell: [1242, 0], id: '10'}, 
- {cell: [1380, 0], id: '11'}, 
- {cell: [1518, 0], id: '12'}, 
- {cell: [1656, 0], id: '13'}, 
- {cell: [1794, 0], id: '14'},
- {cell: [1932, 0], id: '15'}, 
- {cell: [2070, 0], id: '16'}, 
- {cell: [2208, 0], id: '17'}, 
- {cell: [2346, 0], id: '18'}, 
- {cell: [2484, 0], id: '19'}, 
- {cell: [2622, 0], id: '20'},
- {cell: [2760, 0], id: '21'}, 
- {cell: [2898, 0], id: '22'}, 
- {cell: [3036, 0], id: '23'}, 
- {cell: [3174, 0], id: '24'}, 
- {cell: [3312, 0], id: '25'}, 
- {cell: [3450, 0], id: '26'}, 
- {cell: [3588, 0], id: '27'}, 
- {cell: [3726, 0], id: '28'}, 
- {cell: [3864, 0], id: '29'}, 
- {cell: [4002, 0], id: '30'}, 
- {cell: [4140, 0], id: '31'}, 
- {cell: [4278, 0], id: '32'}
+ {cell: [69.27, 0], id: '2'}, 
+ {cell: [138.54, 0], id: '3'}, 
+ {cell: [207.81, 0], id: '4'}, 
+ {cell: [277.08, 0], id: '5'}, 
+ {cell: [346.35, 0], id: '6'},
+ {cell: [415.62, 0], id: '7'}, 
+ {cell: [484.89, 0], id: '8'}, 
+ {cell: [554.16, 0], id: '9'}, 
+ {cell: [623.43, 0], id: '10'}, 
+ {cell: [692.7, 0], id: '11'}
  ]];
 
 
@@ -629,7 +553,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bonfire-strip.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -666,24 +590,24 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
-				coordinates = [556, 305 - image.height];
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bomb-left-one-strip.png');
+				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX,2); 
+				coordinates = [556, 255 - image.height];
 				break;
 			case 2:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
-				coordinates = [546, 295 - image.height];
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bomb-left-two-strip.png');
+				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX,2); 
+				coordinates = [546, 245 - image.height];
 				break;
 			case 3:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
-				coordinates = [715, 386 - image.height];
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bomb-mid-strip.png');
+				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX,2); 
+				coordinates = [715, 336 - image.height];
 				break;
 			case 4:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
+				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bomb-right-strip.png');
 				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
-				coordinates = [744 , 295 - image.height];
+				coordinates = [744 , 245 - image.height];
 				break;
 		} //switch( randomBombId ) {
 		if(levelAnimation.bombAnimation){

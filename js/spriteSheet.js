@@ -1,4 +1,4 @@
-function SpriteSheet(image, spriteMatrix) {
+function SpriteSheet(image, spriteMatrix,magnifier) {
 	if( !image ) {
 		console.error( 'SpriteSheet constructor called without an image' );
 	}
@@ -11,6 +11,11 @@ function SpriteSheet(image, spriteMatrix) {
 	this._canvas.style.left = -1000;
 	this._canvas.style.top = -1000;
 	this._ctx = this._canvas.getContext('2d');
+	if(magnifier){
+		this.magnifier = magnifier;
+	}else{
+		this.magnifier = 1;
+	}
 }
 
 SpriteSheet.prototype.getSprite = function (matrixCell) {
@@ -31,10 +36,10 @@ SpriteSheet.prototype.getSprite = function (matrixCell) {
 	} else { //last row of sprites
 		height = this.image.height - y;
 	}
-	this._canvas.width = width;
-	this._canvas.height = height;
-	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
-	spriteData = this._ctx.getImageData(0, 0, width, height);
+	this._canvas.width = width * this.magnifier;
+	this._canvas.height = height * this.magnifier;
+	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width * this.magnifier , height * this.magnifier);
+	spriteData = this._ctx.getImageData(0, 0, width * this.magnifier, height * this.magnifier);
 	//returning the image data here is much faster than toDataURL(), but get/putImageData() don't account for css canvas stretching
 	//http://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
 	//just need to ensure that we don't stretch the canvas by defining it's width and height in CSS
@@ -64,9 +69,9 @@ SpriteSheet.prototype.getSpriteNew = function (matrixCell, degreesToRotate) {
 	} else { //last row of sprites
 		height = this.image.height - y;
 	}
-	this._canvas.width = width;
-	this._canvas.height = height;
-	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
+	this._canvas.width = width * this.magnifier;
+	this._canvas.height = height * this.magnifier;
+	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width * this.magnifier, height* this.magnifier);
 	var savedImage = new Image();
 	savedImage.src = this._canvas.toDataURL("image/png");
 	if(degreesToRotate && degreesToRotate > 0){
@@ -105,10 +110,10 @@ SpriteSheet.prototype.getSpriteData = function (matrixCell) {
 	} else { //last row of sprites
 		height = this.image.height - y;
 	}
-	this._canvas.width = width;
-	this._canvas.height = height;
-	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
-	spriteData = this._ctx.getImageData(0, 0, width, height);
+	this._canvas.width = width* this.magnifier;
+	this._canvas.height = height * this.magnifier;
+	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width * this.magnifier, height * this.magnifier);
+	spriteData = this._ctx.getImageData(0, 0, width * this.magnifier, height* this.magnifier);
 	//returning the image data here is much faster than toDataURL(), but get/putImageData() don't account for css canvas stretching
 	//http://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
 	//just need to ensure that we don't stretch the canvas by defining it's width and height in CSS
@@ -144,10 +149,10 @@ SpriteSheet.prototype.getSliceData = function (matrixCellStart, matrixCellEnd) {
 	} else { //last row of sprites
 		height = this.image.height - y;
 	}
-	this._canvas.width = width;
-	this._canvas.height = height;
-	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
-	sliceData = this._ctx.getImageData(0, 0, width, height);
+	this._canvas.width = width * this.magnifier;
+	this._canvas.height = height * this.magnifier;
+	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width * this.magnifier, height * this.magnifier);
+	sliceData = this._ctx.getImageData(0, 0, width * this.magnifier, height * this.magnifier);
 	return sliceData;
 }; //SpriteSheet.prototype.getSliceData()
 
