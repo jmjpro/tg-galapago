@@ -136,73 +136,73 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/game-beach-jump-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 476, 92], 'id': 'creatures/beach/blue-crab-jump-strip.png'},
-			{'cell': [0, 92, 476, 92], 'id': 'creatures/beach/green-turtle-jump-strip.png'},
-			{'cell': [0, 184, 476, 92], 'id': 'creatures/beach/pink-frog-jump-strip.png'},
-			{'cell': [0, 276, 476, 92], 'id': 'creatures/beach/red-starfish-jump-strip.png'},
-			{'cell': [0, 368, 476, 92], 'id': 'creatures/beach/teal-blob-jump-strip.png'},
-			{'cell': [0, 460, 476, 92], 'id': 'creatures/beach/violet-crab-jump-strip.png'},
-			{'cell': [0, 552, 476, 92], 'id': 'creatures/beach/yellow-fish-jump-strip.png'},
+			{'cell': [0, 0, 340, 92], 'id': 'creatures/beach/blue-crab-jump-strip.png'},
+			{'cell': [0, 92, 340, 92], 'id': 'creatures/beach/green-turtle-jump-strip.png'},
+			{'cell': [0, 184, 340, 92], 'id': 'creatures/beach/pink-frog-jump-strip.png'},
+			{'cell': [0, 276, 340, 92], 'id': 'creatures/beach/red-starfish-jump-strip.png'},
+			{'cell': [0, 368, 340, 92], 'id': 'creatures/beach/teal-blob-jump-strip.png'},
+			{'cell': [0, 460, 340, 92], 'id': 'creatures/beach/violet-crab-jump-strip.png'},
+			{'cell': [0, 552, 340, 92], 'id': 'creatures/beach/yellow-fish-jump-strip.png'},
 		]
 	},
 	{
 		'collageId': 'collage/game-beach-rollover-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 460, 46], 'id': 'creatures/beach/blue-crab-rollover-strip.png'},
-			{'cell': [0, 46, 460, 46], 'id': 'creatures/beach/green-turtle-rollover-strip.png'},
-			{'cell': [0, 92, 460, 46], 'id': 'creatures/beach/pink-frog-rollover-strip.png'},
-			{'cell': [0, 138, 460, 46], 'id': 'creatures/beach/red-starfish-rollover-strip.png'},
-			{'cell': [0, 184, 460, 46], 'id': 'creatures/beach/teal-blob-rollover-strip.png'},
-			{'cell': [0, 230, 460, 46], 'id': 'creatures/beach/violet-crab-rollover-strip.png'},
-			{'cell': [0, 276, 460, 46], 'id': 'creatures/beach/yellow-fish-rollover-strip.png'}
+			{'cell': [0, 0, 230, 46], 'id': 'creatures/beach/blue-crab-rollover-strip.png'},
+			{'cell': [0, 46, 230, 46], 'id': 'creatures/beach/green-turtle-rollover-strip.png'},
+			{'cell': [0, 92, 230, 46], 'id': 'creatures/beach/pink-frog-rollover-strip.png'},
+			{'cell': [0, 138, 230, 46], 'id': 'creatures/beach/red-starfish-rollover-strip.png'},
+			{'cell': [0, 184, 230, 46], 'id': 'creatures/beach/teal-blob-rollover-strip.png'},
+			{'cell': [0, 230, 230, 46], 'id': 'creatures/beach/violet-crab-rollover-strip.png'},
+			{'cell': [0, 276, 230, 46], 'id': 'creatures/beach/yellow-fish-rollover-strip.png'}
 		]
 	},
 	{
 		'collageId': 'collage/game-forest-jump-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 364, 92], 'id': 'creatures/forest/blue-beetle-jump-strip.png'},
-			{'cell': [0, 92, 364, 92], 'id': 'creatures/forest/green-butterfly-jump-strip.png'},
-			{'cell': [0, 184, 364, 92], 'id': 'creatures/forest/pink-lizard-jump-strip.png'},
-			{'cell': [0, 276, 364, 92], 'id': 'creatures/forest/red-beetle-jump-strip.png'},
-			{'cell': [0, 368, 364, 92], 'id': 'creatures/forest/teal-bug-jump-strip.png'},
-			{'cell': [0, 460, 364, 92], 'id': 'creatures/forest/violet-moth-jump-strip.png'},
-			{'cell': [0, 552, 364, 92], 'id': 'creatures/forest/yellow-frog-jump-strip.png'}
+			{'cell': [0, 0, 260, 92], 'id': 'creatures/forest/blue-beetle-jump-strip.png'},
+			{'cell': [0, 92, 260, 92], 'id': 'creatures/forest/green-butterfly-jump-strip.png'},
+			{'cell': [0, 184, 260, 92], 'id': 'creatures/forest/pink-lizard-jump-strip.png'},
+			{'cell': [0, 276, 260, 92], 'id': 'creatures/forest/red-beetle-jump-strip.png'},
+			{'cell': [0, 368, 260, 92], 'id': 'creatures/forest/teal-bug-jump-strip.png'},
+			{'cell': [0, 460, 260, 92], 'id': 'creatures/forest/violet-moth-jump-strip.png'},
+			{'cell': [0, 552, 260, 92], 'id': 'creatures/forest/yellow-frog-jump-strip.png'}
 		]
 	},
 	{
 		'collageId': 'collage/game-forest-rollover-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 460, 46], 'id': 'creatures/forest/blue-beetle-rollover-strip.png'},
-			{'cell': [0, 46, 460, 46], 'id': 'creatures/forest/green-butterfly-rollover-strip.png'},
-			{'cell': [0, 92, 460, 46], 'id': 'creatures/forest/pink-lizard-rollover-strip.png'},
-			{'cell': [0, 138, 460, 46], 'id': 'creatures/forest/red-beetle-rollover-strip.png'},
-			{'cell': [0, 184, 460, 46], 'id': 'creatures/forest/teal-bug-rollover-strip.png'},
-			{'cell': [0, 230, 460, 46], 'id': 'creatures/forest/violet-moth-rollover-strip.png'},
-			{'cell': [0, 276, 460, 46], 'id': 'creatures/forest/yellow-frog-rollover-strip.png'}
+			{'cell': [0, 0, 230, 46], 'id': 'creatures/forest/blue-beetle-rollover-strip.png'},
+			{'cell': [0, 46, 230, 46], 'id': 'creatures/forest/green-butterfly-rollover-strip.png'},
+			{'cell': [0, 92, 230, 46], 'id': 'creatures/forest/pink-lizard-rollover-strip.png'},
+			{'cell': [0, 138, 230, 46], 'id': 'creatures/forest/red-beetle-rollover-strip.png'},
+			{'cell': [0, 184, 230, 46], 'id': 'creatures/forest/teal-bug-rollover-strip.png'},
+			{'cell': [0, 230, 230, 46], 'id': 'creatures/forest/violet-moth-rollover-strip.png'},
+			{'cell': [0, 276, 230, 46], 'id': 'creatures/forest/yellow-frog-rollover-strip.png'}
 		]
 	},
 	{
 		'collageId': 'collage/game-cave-jump-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 490, 92], 'id': 'creatures/cave/blue-crystal-jump-strip.png'},
-			{'cell': [0, 92, 490, 92], 'id': 'creatures/cave/green-frog-jump-strip.png'},
-			{'cell': [0, 184, 490, 92], 'id': 'creatures/cave/pink-spike-jump-strip.png'},
-			{'cell': [0, 276, 490, 92], 'id': 'creatures/cave/red-beetle-jump-strip.png'},
-			{'cell': [0, 368, 490, 92], 'id': 'creatures/cave/teal-flyer-jump-strip.png'},
-			{'cell': [0, 460, 490, 92], 'id': 'creatures/cave/violet-lizard-jump-strip.png'},
-			{'cell': [0, 552, 490, 92], 'id': 'creatures/cave/yellow-bug-jump-strip.png'}
+			{'cell': [0, 0, 350, 92], 'id': 'creatures/cave/blue-crystal-jump-strip.png'},
+			{'cell': [0, 92, 350, 92], 'id': 'creatures/cave/green-frog-jump-strip.png'},
+			{'cell': [0, 184, 350, 92], 'id': 'creatures/cave/pink-spike-jump-strip.png'},
+			{'cell': [0, 276, 350, 92], 'id': 'creatures/cave/red-beetle-jump-strip.png'},
+			{'cell': [0, 368, 350, 92], 'id': 'creatures/cave/teal-flyer-jump-strip.png'},
+			{'cell': [0, 460, 350, 92], 'id': 'creatures/cave/violet-lizard-jump-strip.png'},
+			{'cell': [0, 552, 350, 92], 'id': 'creatures/cave/yellow-bug-jump-strip.png'}
 		]
 	},
 	{
 		'collageId': 'collage/game-cave-rollover-strips.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 460, 46], 'id': 'creatures/cave/blue-crystal-rollover-strip.png'},
-			{'cell': [0, 46, 460, 46], 'id': 'creatures/cave/green-frog-rollover-strip.png'},
-			{'cell': [0, 92, 460, 46], 'id': 'creatures/cave/pink-spike-rollover-strip.png'},
-			{'cell': [0, 138, 460, 46], 'id': 'creatures/cave/red-beetle-rollover-strip.png'},
-			{'cell': [0, 184, 460, 46], 'id': 'creatures/cave/teal-flyer-rollover-strip.png'},
-			{'cell': [0, 230, 460, 46], 'id': 'creatures/cave/violet-lizard-rollover-strip.png'},
-			{'cell': [0, 276, 460, 46], 'id': 'creatures/cave/yellow-bug-rollover-strip.png'}
+			{'cell': [0, 0, 230, 46], 'id': 'creatures/cave/blue-crystal-rollover-strip.png'},
+			{'cell': [0, 46, 230, 46], 'id': 'creatures/cave/green-frog-rollover-strip.png'},
+			{'cell': [0, 92, 230, 46], 'id': 'creatures/cave/pink-spike-rollover-strip.png'},
+			{'cell': [0, 138, 230, 46], 'id': 'creatures/cave/red-beetle-rollover-strip.png'},
+			{'cell': [0, 184, 230, 46], 'id': 'creatures/cave/teal-flyer-rollover-strip.png'},
+			{'cell': [0, 230, 230, 46], 'id': 'creatures/cave/violet-lizard-rollover-strip.png'},
+			{'cell': [0, 276, 230, 46], 'id': 'creatures/cave/yellow-bug-rollover-strip.png'}
 		]
 	},
 	{
