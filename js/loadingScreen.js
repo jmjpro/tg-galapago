@@ -43,6 +43,7 @@ LoadingScreen.registerEvent = function(){
 	this.gal.onLoaded('screen-main-menu', function(result) {
 		if (result.success) {
 			console.debug('screen-main-menu resource bundle loaded');
+			DialogMenu.setBackgrounds();
 		}
 	});
 	this.gal.onProgress("pngs", function(progress) {

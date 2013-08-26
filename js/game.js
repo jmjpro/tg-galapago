@@ -26,6 +26,7 @@ Galapago.CONFIG_FILE_PATH = 'js/levels.json';
 Galapago.CONFIG_FILE_PATH_YA = 'js/levels-ya.json';
 Galapago.NUM_LEVELS = 70;
 Galapago.GAME_SCREEN_GAL_PREFIX = 'screen-game/';
+Galapago.BACKGROUND_GAL_PREFIX = 'background/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';
 Galapago.creatureImages = {};
@@ -3875,14 +3876,6 @@ ArrayUtil.unique = function(arr) {
 };
 /* end class ArrayUtil */
 
-// define a startsWith method on String if it doesn't exist already
-if (typeof String.prototype.startsWith !== 'function') {
-	String.prototype.startsWith = function (str){
-		return this.slice(0, str.length) === str;
-	};
-}
-
-
 ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
 function ReshuffleService(board){
 	this.board = board;
@@ -4043,7 +4036,3 @@ function PauseableInterval(func, delay , sender){
 		return false;
      }	 
 } //function PauseableInterval()
-
-function replaceAll(str, find, replace) {
-  return str.replace(new RegExp(find, 'g'), replace);
-} //function replaceAll()

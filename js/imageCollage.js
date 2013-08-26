@@ -28,9 +28,9 @@ ImageCollage.COLLAGE_ARRAY = [
 		'collageId': 'collage/dialog-buttons.png',
 		'imageCoordinateArray': [
 		
-			{'cell': [0,0,194,47], 'id': 'dialog/button-disabled.png'},
-			{'cell': [0,47,194,47], 'id': 'dialog/button-regular.png'},
-			{'cell': [0,94,194,47], 'id': 'dialog/button-hilight.png'}
+			{'cell': [0,0,194,44], 'id': 'dialog/button-disabled.png'},
+			{'cell': [0,44,194,44], 'id': 'dialog/button-regular.png'},
+			{'cell': [0,88,194,44], 'id': 'dialog/button-hilight.png'}
 		]
 	},
 	{

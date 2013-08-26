@@ -125,7 +125,7 @@ MainMenuScreen.prototype.openMapScreen = function(isTimedMode) {
 } //MainMenuScreen.prototype.openMapScreen()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level, backgroundImage;
+	var navItem, isTimedMode, level, galImagePath, bgImage;
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
@@ -143,9 +143,13 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			backgroundImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png');
-			if( backgroundImage ) {
+			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png';
+			bgImage = LoadingScreen.gal.get( galImagePath );
+			if( bgImage ) {
 				$('#dialog-help').css('background-image','url(' +  + ')');
+			}
+			else {
+				console.error( 'unable to find ' + galImagePath );
 			}
 			new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular', TGH5.Reporting.Page.Help);
 			break;
@@ -162,9 +166,13 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			backgroundImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png');
-			if( backgroundImage ) {
-				$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(backgroundImage+'dialog-regular-no-title.png').src + ')');
+			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png';
+			bgImage = LoadingScreen.gal.get( galImagePath );
+			if( bgImage ) {
+				$('#dialog-quit').css('background-image','url(' + bgImage.src + ')');
+			}
+			else {
+				console.error( 'unable to find ' + galImagePath );
 			}
 			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
@@ -270,6 +278,9 @@ MainMenuScreen.prototype.addHilight = function(navItem) {
 	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
 	if( hilightedImage ) {
 		navItem.css( 'background-image', 'url(' + hilightedImage.src + ')' );
+	}
+	else {
+		console.error( 'unable to find ' + galHilightFilePath );
 	}
 };
 
