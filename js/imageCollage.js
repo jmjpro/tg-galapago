@@ -1,15 +1,20 @@
 ImageCollage.COLLAGE_ARRAY = [
 	{
-		'collageId': 'collage/main-menu.png',
+		'collageId': 'collage/main-menu-1.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 305, 60], 'id': 'main-menu/button-change-player-selected.png'},
 			{'cell': [0, 60, 305, 60], 'id': 'main-menu/button-change-player-regular.png'},
-			{'cell': [0, 120, 233, 164], 'id': 'main-menu/button-timed-selected.png'},
-			{'cell': [0, 284, 233, 164], 'id': 'main-menu/button-timed-regular.png'},
-			{'cell': [233, 120, 233, 164], 'id': 'main-menu/button-relaxed-selected.png'},
-			{'cell': [233, 284, 233, 164], 'id': 'main-menu/button-relaxed-regular.png'},
 			{'cell': [305, 0, 165, 60], 'id': 'main-menu/button-options-selected.png'},
 			{'cell': [305, 60, 165, 60], 'id': 'main-menu/button-options-regular.png'}
+		]
+	},
+	{
+		'collageId': 'collage/main-menu-2.png',
+		'imageCoordinateArray': [
+			/*{'cell': [0, 120, 233, 164], 'id': 'main-menu/button-timed-selected.png'},*/
+			{'cell': [0, 0, 234, 164], 'id': 'main-menu/button-timed-regular.png'},
+			{'cell': [0, 164, 234, 164], 'id': 'main-menu/button-relaxed-selected.png'},
+			{'cell': [0, 328, 234, 164], 'id': 'main-menu/button-relaxed-regular.png'}
 		]
 	},
 	{
@@ -23,12 +28,9 @@ ImageCollage.COLLAGE_ARRAY = [
 		'collageId': 'collage/dialog-buttons.png',
 		'imageCoordinateArray': [
 		
-			{'cell': [0,75,175,40], 'id': 'dialog/button-huge.png'},
-			{'cell': [10,128,175,40], 'id': 'dialog/button-huge-hilight.png'},
-			{'cell': [0,172,78,24], 'id': 'dialog/button_medium_regular.png'},
-			{'cell': [0,201,78,22], 'id': 'dialog/button_medium_disabled.png'},
-			{'cell': [11,238,78,22], 'id': 'dialog/button-medium-hilight.png'},
-
+			{'cell': [0,0,194,47], 'id': 'dialog/button-disabled.png'},
+			{'cell': [0,47,194,47], 'id': 'dialog/button-regular.png'},
+			{'cell': [0,94,194,47], 'id': 'dialog/button-hilight.png'}
 		]
 	},
 	{
@@ -38,7 +40,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		'collageId': 'collage/dialog-keypad-buttons.png',
+		'collageId': 'collage/keypad-buttons.png',
 		'imageCoordinateArray': [
 			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy.png'},
 		]

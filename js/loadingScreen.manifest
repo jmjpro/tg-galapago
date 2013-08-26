@@ -4,28 +4,30 @@
 	"collageDirectory" : "collage",
 	"audioExts": "mp3",
 	"ignorePrefix": "IGNORE/",
+	"noCachePrefix": "NOCACHE/",
 	"bundles": [
 	{
 		"name": "screen-loading",
 		"contents": [
-			"background/loading.jpg",
-			"screen-loading/loading-progress-bar.png",
-			"screen-loading/loading-progress-bar-fill.png",
-			"screen-loading/loading-progress-bar-left-cap.png"
+			"NOCACHE/background/loading.jpg",
+			"NOCACHE/screen-loading/loading-progress-bar.png",
+			"NOCACHE/screen-loading/loading-progress-bar-fill.png",
+			"NOCACHE/screen-loading/loading-progress-bar-left-cap.png"
 		]
 	},
 	{
 		"name": "screen-main-menu",
 		"contents": [
-			"background/main-menu.jpg",
+			"NOCACHE/background/main-menu.jpg",
 			"background/dialog-regular.png",
 			"background/dialog-regular-no-title.png",
 			"background/dialog-small.png",
-			"collage/main-menu.png",
+			"collage/main-menu-1.png",
+			"collage/main-menu-2.png",
 			"collage/arrows.png",
 			"collage/dialog-buttons.png",
-			"IGNORE/collage/dialog-arrow-buttons.png",
-			"IGNORE/collage/dialog-keypad-buttons.png"
+			"collage/dialog-arrow-buttons.png",
+			"collage/keypad-buttons.png"
 		]
 	},
 	{
@@ -35,7 +37,8 @@
 			"collage/map-board-1.png",
 			"collage/map-board-2.png",
 			"collage/map-board-buttons.png",
-			"collage/map-bonfire-arrow-strips.png",
+			"screen-map/start-arrow-strip.png",
+			"screen-map/bonfire-strip.png",
 			"screen-map/bomb-left-one-strip.png",
 			"screen-map/bomb-left-two-strip.png",
 			"screen-map/bomb-mid-strip.png",
@@ -66,10 +69,10 @@
 			"screen-game/tile-mark-strip.png"
 		]
 	},
-	{ "name": "beach-a", "contents": [ "background/beach-a.jpg" ] },
-	{ "name": "beach-b", "contents": [ "background/beach-b.jpg" ] },
-	{ "name": "beach-c", "contents": [ "background/beach-c.jpg" ] },
-	{ "name": "beach-d", "contents": [ "background/beach-d.jpg" ] },
+	{ "name": "beach-a", "contents": [ "NOCACHE/background/beach-a.jpg" ] },
+	{ "name": "beach-b", "contents": [ "NOCACHE/background/beach-b.jpg" ] },
+	{ "name": "beach-c", "contents": [ "NOCACHE/background/beach-c.jpg" ] },
+	{ "name": "beach-d", "contents": [ "NOCACHE/background/beach-d.jpg" ] },
 	{
 		"name": "beach-common",
 		"contents": [
@@ -78,13 +81,13 @@
 			"collage/game-beach-rollover-strips.png"
 		]
 	},
-	{ "name": "forest-a", "contents": [ "background/forest-a.jpg" ] },
-	{ "name": "forest-b", "contents": [ "background/forest-b.jpg" ] },
-	{ "name": "forest-c", "contents": [ "background/forest-c.jpg" ] },
-	{ "name": "forest-d", "contents": [ "background/forest-d.jpg" ] },
-	{ "name": "forest-e", "contents": [ "background/forest-e.jpg" ] },
-	{ "name": "forest-f", "contents": [ "background/forest-f.jpg" ] },
-	{ "name": "forest-g", "contents": [ "background/forest-g.jpg" ] },
+	{ "name": "forest-a", "contents": [ "NOCACHE/background/forest-a.jpg" ] },
+	{ "name": "forest-b", "contents": [ "NOCACHE/background/forest-b.jpg" ] },
+	{ "name": "forest-c", "contents": [ "NOCACHE/background/forest-c.jpg" ] },
+	{ "name": "forest-d", "contents": [ "NOCACHE/background/forest-d.jpg" ] },
+	{ "name": "forest-e", "contents": [ "NOCACHE/background/forest-e.jpg" ] },
+	{ "name": "forest-f", "contents": [ "NOCACHE/background/forest-f.jpg" ] },
+	{ "name": "forest-g", "contents": [ "NOCACHE/background/forest-g.jpg" ] },
 	{
 		"name": "forest-common",
 		"contents": [
@@ -93,12 +96,12 @@
 			"collage/game-forest-rollover-strips.png"
 		]
     },
-	{ "name": "cave-a", "contents": [ "background/cave-a.jpg" ] },
-	{ "name": "cave-b", "contents": [ "background/cave-b.jpg" ] },
-	{ "name": "cave-c", "contents": [ "background/cave-c.jpg" ] },
-	{ "name": "cave-d", "contents": [ "background/cave-d.jpg" ] },
-	{ "name": "cave-e", "contents": [ "background/cave-e.jpg" ] },
-	{ "name": "cave-f", "contents": [ "background/cave-f.jpg" ] },
+	{ "name": "cave-a", "contents": [ "NOCACHE/background/cave-a.jpg" ] },
+	{ "name": "cave-b", "contents": [ "NOCACHE/background/cave-b.jpg" ] },
+	{ "name": "cave-c", "contents": [ "NOCACHE/background/cave-c.jpg" ] },
+	{ "name": "cave-d", "contents": [ "NOCACHE/background/cave-d.jpg" ] },
+	{ "name": "cave-e", "contents": [ "NOCACHE/background/cave-e.jpg" ] },
+	{ "name": "cave-f", "contents": [ "NOCACHE/background/cave-f.jpg" ] },
     {
 		"name": "cave-common",
 		"contents": [

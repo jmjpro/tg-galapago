@@ -65,20 +65,22 @@
 	</head>
 	
 	<body onload="loadGame()">
+		<div id="image-cache"></div>
+
 		<div id="debug-console"></div>
 
 		<div id="screen-loading" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;"></canvas>
-			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
+			<canvas id="layer-background" width="1" height="1" style="z-index: 1;"></canvas>
+			<canvas id="layer-progress-bar" width="1" height="1" style="z-index: 2;" tabindex="1"></canvas>
 			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
 			&copy; 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.</span>
 		</div>
 
 		<div id="screen-map" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;" tabindex="1"></canvas>
-			<canvas id="layer-map" style="z-index: 2;" tabindex="2" width="1279" height="670"></canvas>
-			<canvas id="layer-map-other-animation" style="z-index: 3;" tabindex="3"></canvas>
-			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4"></canvas>
+			<canvas id="layer-background" width="1" height="1" style="z-index: 1;" tabindex="1"></canvas>
+			<canvas id="layer-map" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
+			<canvas id="layer-map-other-animation" width="1" height="1" style="z-index: 3;" tabindex="3"></canvas>
+			<canvas id="layer-map-animation" width="1" height="1" style="z-index: 4;" tabindex="4"></canvas>
 			
 			<ul id="map-nav">
 				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
@@ -90,20 +92,20 @@
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;" width="1279" height="720"></canvas>
-			<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>
-			<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>
-			<canvas id="layer-creature" class="layer-board" style="z-index: 4;"></canvas>
-			<canvas id="layer-hilight" class="layer-board" style="z-index: 5;" tabindex="1"></canvas>
-			<canvas id="layer-bonus-frenzy" style="z-index: 6;" tabindex="2"></canvas>
-			<canvas id="layer-score" style="z-index: 2;" tabindex="2"></canvas>
-			<canvas id="layer-power-up" style="z-index: 2;" tabindex="3"></canvas>
-			<canvas id="layer-danger-bar" style="z-index: 2;"></canvas>
-			<canvas id="layer-collection-key" style="z-index: 2;"></canvas>
-			<canvas id="layer-game-animation" style="z-index: 5;"></canvas>
-			<canvas id="layer-power-up-animation" style="z-index: 5;"></canvas>
-			<canvas id="layer-game-lightning" style="z-index: 5;"></canvas>
-			<canvas id="layer-bob-cervantes" style="z-index: 9;"></canvas>
+			<canvas id="layer-background" width="1" height="1" style="z-index: 1;"></canvas>
+			<canvas id="layer-grid" width="1" height="1" class="layer-board" style="z-index: 2;"></canvas>
+			<canvas id="layer-gold" width="1" height="1" class="layer-board" style="z-index: 3;"></canvas>
+			<canvas id="layer-creature" width="1" height="1" class="layer-board" style="z-index: 4;"></canvas>
+			<canvas id="layer-hilight" width="1" height="1" class="layer-board" style="z-index: 5;" tabindex="1"></canvas>
+			<canvas id="layer-bonus-frenzy" width="1" height="1" style="z-index: 6;" tabindex="2"></canvas>
+			<canvas id="layer-score" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
+			<canvas id="layer-power-up" width="1" height="1" style="z-index: 2;" tabindex="3"></canvas>
+			<canvas id="layer-danger-bar" width="1" height="1" style="z-index: 2;"></canvas>
+			<canvas id="layer-collection-key" width="1" height="1" style="z-index: 2;"></canvas>
+			<canvas id="layer-game-animation" width="1" height="1" style="z-index: 5;"></canvas>
+			<canvas id="layer-power-up-animation" width="1" height="1" style="z-index: 5;"></canvas>
+			<canvas id="layer-game-lightning" width="1" height="1" style="z-index: 5;"></canvas>
+			<canvas id="layer-bob-cervantes" width="1" height="1" style="z-index: 9;"></canvas>
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
@@ -360,6 +362,5 @@
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
-
 	</body>
 </html>

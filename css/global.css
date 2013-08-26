@@ -28,6 +28,14 @@ html, body {
 	padding: 0;
 }
 
+#image-cache {
+	top: 0px;
+	left: 0px;
+	width: 1px;
+	height: 1px;
+	z-index: -9999;
+}
+
 /* disable visual effects on focused elements;
 see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsing/ */
 *:focus {
@@ -66,8 +74,28 @@ canvas {
 
 canvas.layer-board {
 	position: absolute;
-	left: 0;
-	top: 0;
+	left: 325px; /* Board.GRID_LEFT */
+	top: 100px; /* Board.GRID_TOP */
+}
+
+#layer-bonus-frenzy {
+	left: 325px; /* Board.GRID_LEFT */
+	top: 0px;
+}
+
+#layer-score {
+	left: 325px; /* Board.GRID_LEFT */
+	top: 60px; /* Score.TOP */
+}
+
+#layer-game-animation {
+	left: 325px; /* Board.GRID_LEFT */
+	top: 100px; /* Board.GRID_TOP */
+}
+
+#layer-danger-bar {
+	left: 1064px; /* DangerBar.LEFT */;
+	top: 110px; /* DangerBar.TOP; */
 }
 
 #layer-map-animation {

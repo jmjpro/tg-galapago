@@ -220,7 +220,7 @@ Galapago.delay = function(delayMs) {
 };
 /* end class Galapago */
 
-LevelMap.WIDTH = 1280;
+LevelMap.WIDTH = 1279;
 LevelMap.HEIGHT = 640;
 LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
@@ -275,13 +275,14 @@ LevelMap.prototype.display = function() {
 	if( backgroundImage ) {
 		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
-	this.screenDiv.css( 'display', 'block');
+	//this.screenDiv.css( 'display', 'block');
+	this.screenDiv.show();
+	CanvasUtil.setDimensions(this.canvas, LevelMap.WIDTH, LevelMap.HEIGHT);
 	this.canvas.focus();
 	/*
-	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
+	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'lave-strip.png'),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
-	otherAnimationCanvas.width = LevelMap.WIDTH;
-	otherAnimationCanvas.height = LevelMap.HEIGHT;
+	CanvasUtil.setDimensions( otherAnimationCanvas, LevelMap.WIDTH, LevelMap.HEIGHT );
 	var levelAnimation = this;
 	otherAnimationCanvas.onclick = function(evt) {
 		levelAnimation.canvas.focus();
@@ -347,8 +348,7 @@ LevelMap.prototype.animate = function(image, spriteMatrix){
 	this.animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
-	this.animationCanvas.width = imageData.width;
-	this.animationCanvas.height = imageData.height;
+	CanvasUtil.setDimensions( this.animationCanvas, imageData.width, imageData.height );
 	this.animationLayer =  this.animationCanvas.getContext('2d');	
 	function cycleSprite(){
 	    var imageData=st.getSpriteData([xIndex,0]);
@@ -1236,7 +1236,7 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation, top, left;
 	console.debug('entering Level.prototype.styleCanvas()');
 	console.debug('styling background canvas');
 	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
@@ -1245,53 +1245,36 @@ Level.prototype.styleCanvas = function() {
 	resourcePath = 'background/' + themeComplete + '.jpg';
 	backgroundImage = LoadingScreen.gal.get(resourcePath);
 	if( backgroundImage ) {
-	console.debug('setting background to ' + resourcePath);
-	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+		console.debug('setting background to ' + resourcePath);
+		canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
 	}
-	/*
 	console.debug('before changing canvas width and height');
-	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
-	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
+	CanvasUtil.setDimensions(canvasBackground, LoadingScreen.STAGE_WIDTH, LoadingScreen.STAGE_HEIGHT);
 	console.debug('after changing canvas width and height');
-	*/
-	canvasBackground.css('left', '0px');
-	canvasBackground.css('top', '0px');
 	this.layerBackground = canvasBackground[0].getContext('2d');
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
-		layer.width = Board.GRID_WIDTH;
-		layer.height = Board.GRID_HEIGHT;
-		layer.style.left = Board.GRID_LEFT + 'px';
-		layer.style.top = Board.GRID_TOP + 'px';
+		CanvasUtil.setDimensions( layer, Board.GRID_WIDTH, Board.GRID_HEIGHT);
 	});
 	console.debug('styling bonus frenzy canvas');
 	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
-	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
-	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
-	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
-	canvasBonusFrenzy.css('top', '0px');
+	CanvasUtil.setDimensions(canvasBonusFrenzy, Board.GRID_WIDTH, Board.GRID_HEIGHT + Board.GRID_TOP);
 
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
-	canvasScore[0].width = Score.MAX_WIDTH;
-	canvasScore[0].height = Score.MAX_HEIGHT;
-	canvasScore.css('left', Board.GRID_LEFT + 'px');
-	canvasScore.css('top', Score.Y + 'px');
+	CanvasUtil.setDimensions( canvasScore, Score.MAX_WIDTH, Score.MAX_HEIGHT );
 
 	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
-	canvasGameAnimation[0].width = Board.GRID_WIDTH;
-	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
-	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
-	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
+	CanvasUtil.setDimensions( canvasGameAnimation, Board.GRID_WIDTH, LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP );
 
 	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
-	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
-    canvasGameLightning.css('top', top + 'px');  
-    canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
-    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;  
+	top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
+	left = (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);
+	canvasGameLightning.css('left', left + 'px');
+    canvasGameLightning.css('top', top + 'px');
+    CanvasUtil.setDimensions( canvasGameLightning, LevelAnimation.LIGHTNING_IMAGE_WIDTH, LoadingScreen.STAGE_HEIGHT - top );
 
 	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()
@@ -3714,7 +3697,7 @@ DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 383;
-DangerBar.DANGER_BAR_TOP = 110;
+DangerBar.TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_ADJUSTMENT_LEFT = 18;
 DangerBar.FILL_ADJUSTMENT_TOP = 33;
@@ -3728,12 +3711,9 @@ DangerBar.IMAGE_MAGNIFICATION = 2;
 function DangerBar(layerBackground, imageArray, initialTimeMs) {
 	this.layerBackground = layerBackground;
 	this.initImages(imageArray);
-	this.canvas = $('#layer-danger-bar');
-	this.canvas[0].width = this.danger_bar.width;
-	this.canvas[0].height = this.danger_bar.height;
-	this.canvas.css( 'left', DangerBar.LEFT + 'px' );
-	this.canvas.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.layer = this.canvas[0].getContext('2d');
+	this.canvas = $('#layer-danger-bar')[0];
+	CanvasUtil.setDimensions( this.canvas, this.danger_bar.width, this.danger_bar.height );
+	this.layer = this.canvas.getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
@@ -3764,7 +3744,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
+	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.TOP, this.danger_bar.width, this.danger_bar.height )
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
 	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );

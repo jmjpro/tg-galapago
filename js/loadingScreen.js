@@ -99,8 +99,7 @@ function ProgressBar(){
 	this.loadingProgressBarFill =LoadingScreen.gal.get("screen-loading/loading-progress-bar-fill.png");
 	this.canvas = $('#layer-progress-bar')[0];
 	this.canvas.focus();
-	this.canvas.width = ProgressBar.WIDTH;
-	this.canvas.height = this.loadingProgressBar.height;
+	CanvasUtil.setDimensions( this.canvas, ProgressBar.WIDTH, this.loadingProgressBar.height );
 	this.canvas.style.left = ProgressBar.LEFT + 'px';
 	this.canvas.style.top = ProgressBar.TOP + 'px';
 	this.layer = this.canvas.getContext('2d');
@@ -115,8 +114,7 @@ ProgressBar.prototype.drawImages = function() {
 	var backgroundCanvas, backgroundLayer
 	backgroundCanvas = $('#screen-loading #layer-background')[0];
 	backgroundLayer = backgroundCanvas.getContext('2d');
-	backgroundCanvas.width = this.canvas.width;
-	backgroundCanvas.height = this.canvas.height;
+	CanvasUtil.setDimensions( backgroundCanvas, this.canvas.width, this.canvas.height );
 	backgroundCanvas.style.left = this.canvas.style.left;
 	backgroundCanvas.style.top = this.canvas.style.top;
 	backgroundLayer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );

@@ -69,3 +69,10 @@ CanvasUtil.magnifyImage = function( img, factor ) {
 	img.height *= factor;
 	return img;
 }; //CanvasUtil.magnifyImage()
+
+CanvasUtil.setDimensions = function( canvas, width, height ) {
+	var canvasPixels;
+	canvas.width = width;
+	canvas.height = height;
+	LoadingScreen.gal.logPixelCount( canvas );
+}; //CanvasUtil.setDimensions()

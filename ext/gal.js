@@ -37,6 +37,7 @@ var GAL = function(manifestUrl) {
   this.lookupTable = [];
 };
  
+GAL.IMAGE_CACHE_DIV_ID = 'image-cache';
 GAL.loadedPixels = 0;
 /**
 * Initializes loader.
@@ -63,14 +64,16 @@ GAL.prototype.init = function(callback) {
 * @param {string} bundleName name of single bundle to download.
 */
 GAL.prototype.download = function(bundleName) {
-  var bundle = this.bundles[bundleName];
+  var bundle, that, bundleAlreadyLoaded, isVisualCache;
+  bundle = this.bundles[bundleName];
+  isVisualCache = true;
   if (!bundle) {
     // Attempting to download invalid bundle.
     throw "Invalid bundle specified";
   }
-  var that = this;
+  that = this;
  
-  var bundleAlreadyLoaded = false;
+  bundleAlreadyLoaded = false;
   // Setup a loop via callback chaining.
   (function loop(index) {
     // If we've finished loading all of the assets in the bundle.
@@ -87,8 +90,13 @@ GAL.prototype.download = function(bundleName) {
       var audioExts = that.manifest.audioExts;
       var collageDirectory = that.manifest.collageDirectory;
       var ignorePrefix = that.manifest.ignorePrefix;
+      var noCachePrefix = that.manifest.noCachePrefix;
       var keyArray = key.split(".");
       var url;
+      if( key.startsWith( noCachePrefix ) ) {
+        key = key.replace( noCachePrefix, '' );
+        isVisualCache = false;
+      }
       if( key.startsWith( ignorePrefix ) ) {
         loop(index + 1);
       }
@@ -108,17 +116,17 @@ GAL.prototype.download = function(bundleName) {
       }else{
         url = that.manifest.assetRootImage + key;
         var image = new Image();
-        var imagePixels;
         image.onload =function() {
-          imagePixels = image.width * image.height;
-          GAL.loadedPixels += imagePixels;
-          console.debug( url + ' loaded ' + imagePixels + ' pixels ');
-          console.log("Total pixels loaded: " + GAL.loadedPixels);
+          that.logPixelCount( image );
           that.lookupTable[key] = image;
           if(key.indexOf(collageDirectory) > -1){
-            GAL.loadCollageImages(that, key);
+            that.loadCollageImages(key, isVisualCache);
             // don't double-cache the original image collage along with the cut-up images
             that.lookupTable[key] = null;
+          } else {
+            if( isVisualCache ) {
+              document.getElementById(GAL.IMAGE_CACHE_DIV_ID).appendChild(image);
+            }
           }
           fireCallback_(that.progress, bundleName, {
             current: index + 1,
@@ -141,16 +149,36 @@ GAL.prototype.download = function(bundleName) {
   }
 };
 
-GAL.loadCollageImages = function(manifest, imageName) {
-  var imageCollage, images, index, imageId;
+GAL.prototype.loadCollageImages = function(imageName, isVisualCache) {
+  var imageCollage, images, image, index, imageId;
   imageCollage = ImageCollage.loadByName(imageName);
   images = imageCollage.getImages();
-  for(index in images){
-    imageId = images[index].id;
-    manifest.lookupTable[imageId] = images[index];
+  for(index = 0; index < images.length; index++){
+    image = images[index];
+    this.logPixelCount( image );
+    if( isVisualCache ) {
+      document.getElementById(GAL.IMAGE_CACHE_DIV_ID).appendChild(image);
+    }
+    imageId = image.id;
+    this.lookupTable[imageId] = image;
   }        
 };
- 
+
+GAL.prototype.logPixelCount = function( object, isLoad ) {
+  var numPixels, direction;
+  numPixels = object.width * object.height;
+  if( typeof isLoad === 'undefined' || isLoad === true ) {
+    isLoad = true;
+    GAL.loadedPixels += numPixels;
+  }
+  else {
+    GAL.loadedPixels -= numPixels;
+  }
+  direction = isLoad ? ' loaded ' : ' released ';
+  console.debug( object + ' ' + object.id + direction + numPixels + ' pixels ');
+  console.log("Total pixels loaded: " + GAL.loadedPixels);
+};
+
 /**
 * Adds a callback to fire when a bundle has been loaded.
 * @param {string} opt_bundleName Name of bundle to monitor (if none specified,
@@ -235,7 +263,7 @@ GAL.prototype.get = function(assetPath) {
 * @throws {exception} if the asset doesn't actually exist.
 */
 GAL.prototype.release = function(assetPath) {
-  var imagePixels, image, collageDescriptor, i;
+  var numPixels, image, collageDescriptor, i;
   image = this.get(assetPath);
   // if we can't find the requested image, see if there's a corresponding image collage
   // and release all of the images that we cut up from the collage (the collage itself
@@ -247,15 +275,10 @@ GAL.prototype.release = function(assetPath) {
     }
   }
   else {
-    imagePixels = image.width * image.height;
     this.lookupTable[assetPath] = null;
-    GAL.loadedPixels -= imagePixels;
-    console.debug( assetPath + ' released ' + imagePixels + ' pixels ');
-    console.log( 'Total pixels loaded: ' + GAL.loadedPixels );
+    this.logPixelCount( image, false );
   }
 }; //GAL.prototype.release()
-
-
  
 /**
 * Gets the last cached time for an asset at a given path.

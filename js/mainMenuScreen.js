@@ -121,13 +121,11 @@ MainMenuScreen.prototype.openMapScreen = function(isTimedMode) {
 			}
 		}
 	});
-	LoadingScreen.gal.release( 'background/main-menu.jpg');
-	LoadingScreen.gal.release( 'collage/main-menu.png');
 	LoadingScreen.gal.download('screen-map');
 } //MainMenuScreen.prototype.openMapScreen()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level;
+	var navItem, isTimedMode, level, backgroundImage;
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
@@ -145,7 +143,10 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			$('#dialog-help').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			backgroundImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png');
+			if( backgroundImage ) {
+				$('#dialog-help').css('background-image','url(' +  + ')');
+			}
 			new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :
@@ -161,7 +162,10 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			backgroundImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png');
+			if( backgroundImage ) {
+				$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(backgroundImage+'dialog-regular-no-title.png').src + ')');
+			}
 			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
 			break;
 	}
@@ -250,9 +254,12 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 }; //MainMenuScreen.prototype.setNavItem()
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
-	var galFilePath;
+	var galFilePath, image;
 	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
+	image = LoadingScreen.gal.get(galFilePath);
+	if( image ) {
+		navItem.css( 'background-image', 'url(' + image.src + ')' );
+	}
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
