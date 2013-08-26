@@ -170,8 +170,7 @@ LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 90], id: '6'}],   
 [{cell: [0, 108], id: '7'}],
 [{cell: [0, 126], id: '8'}],
-[{cell: [0, 144], id: '9'}],
-[{cell: [0, 162], id: '10'}]
+[{cell: [0, 144], id: '9'}]
 ];
 
 LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
