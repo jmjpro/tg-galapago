@@ -16,9 +16,8 @@
 		]
 	},
 	{
-		"name": "screen-main-menu",
+		"name": "pngs",
 		"contents": [
-			"NOCACHE/background/main-menu.jpg",
 			"background/dialog-regular.png",
 			"background/dialog-regular-no-title.png",
 			"background/dialog-small.png",
@@ -27,13 +26,7 @@
 			"collage/arrows.png",
 			"collage/dialog-buttons.png",
 			"collage/dialog-arrow-buttons.png",
-			"collage/keypad-buttons.png"
-		]
-	},
-	{
-		"name": "screen-map",
-		"contents": [	
-			"background/map.jpg",
+			"collage/keypad-buttons.png",
 			"collage/map-board-1.png",
 			"collage/map-board-2.png",
 			"collage/map-board-buttons.png",
@@ -43,12 +36,7 @@
 			"screen-map/bomb-left-two-strip.png",
 			"screen-map/bomb-mid-strip.png",
 			"screen-map/bomb-right-strip.png",
-			"screen-map/lava-strip.png"
-		]
-	},
-	{
-		"name": "board-common",
-		"contents": [
+			"screen-map/lava-strip.png",
 			"collage/game-powerup.png",
 			"screen-game/cocoon-removed-strip.png",
 			"screen-game/danger-bar-fill-1.png",
@@ -66,7 +54,33 @@
 			"screen-game/powerup-gained-strip.png",
 			"screen-game/sparkle-strip.png",
 			"screen-game/superfriends.png",
-			"screen-game/tile-mark-strip.png"
+			"screen-game/tile-mark-strip.png",
+			"screen-game/creatures-beach-strip.png",
+			"collage/game-beach-jump-strips.png",
+			"collage/game-beach-rollover-strips.png",
+			"screen-game/creatures-forest-strip.png",
+			"collage/game-forest-jump-strips.png",
+			"collage/game-forest-rollover-strips.png",
+			"screen-game/creatures-cave-strip.png",
+			"collage/game-cave-rollover-strips.png",
+			"collage/game-cave-jump-strips.png"
+		]
+	},
+	{
+		"name": "screen-main-menu",
+		"contents": [
+			"NOCACHE/background/main-menu.jpg"
+		]
+	},
+	{
+		"name": "screen-map",
+		"contents": [	
+			"background/map.jpg"
+		]
+	},
+	{
+		"name": "board-common",
+		"contents": [
 		]
 	},
 	{ "name": "beach-a", "contents": [ "NOCACHE/background/beach-a.jpg" ] },
@@ -76,9 +90,6 @@
 	{
 		"name": "beach-common",
 		"contents": [
-			"screen-game/creatures-beach-strip.png",
-			"collage/game-beach-jump-strips.png",
-			"collage/game-beach-rollover-strips.png"
 		]
 	},
 	{ "name": "forest-a", "contents": [ "NOCACHE/background/forest-a.jpg" ] },
@@ -91,9 +102,6 @@
 	{
 		"name": "forest-common",
 		"contents": [
-			"screen-game/creatures-forest-strip.png",
-			"collage/game-forest-jump-strips.png",
-			"collage/game-forest-rollover-strips.png"
 		]
     },
 	{ "name": "cave-a", "contents": [ "NOCACHE/background/cave-a.jpg" ] },
@@ -105,17 +113,8 @@
     {
 		"name": "cave-common",
 		"contents": [
-			"screen-game/creatures-cave-strip.png",
-			"collage/game-cave-rollover-strips.png",
-			"collage/game-cave-jump-strips.png"
 		]
 	},
-    {
-		"name": "dialog-and-menus-testing",
-		"contents": [
-			"collage/map_level_ui_static.png"
-    	]
-    },
     {
 		"name": "audio",
 		"contents": [

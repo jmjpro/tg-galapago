@@ -40,6 +40,22 @@ LoadingScreen.init = function() {
 
 LoadingScreen.registerEvent = function(){
 	var backgroundImage;
+	this.gal.onLoaded('screen-main-menu', function(result) {
+		if (result.success) {
+			console.debug('screen-main-menu resource bundle loaded');
+		}
+	});
+	this.gal.onProgress("pngs", function(progress) {
+		var percentage = progress.current/progress.total ;
+		LoadingScreen.progressBar.progress(percentage);
+	});
+	this.gal.onLoaded('pngs', function(result) {
+		if (result.success) {
+			console.debug('pngs resource bundle loaded');
+			LoadingScreen.gal.download('screen-main-menu');
+			LoadingScreen.progressBar.loaded();
+		}
+	});
 	this.gal.onLoaded('screen-loading', function(result) {
 		if (result.success) {
 			console.debug('screen-loading resource bundle loaded');
@@ -47,18 +63,8 @@ LoadingScreen.registerEvent = function(){
 			if( backgroundImage ) {
 				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 			}
-			LoadingScreen.gal.download('screen-main-menu');
+			LoadingScreen.gal.download('pngs');
 			LoadingScreen.progressBar = new ProgressBar();
-		}
-	});
-	this.gal.onProgress("screen-main-menu", function(progress) {
-		var percentage = progress.current/progress.total ;
-		LoadingScreen.progressBar.progress(percentage);
-	});
-	this.gal.onLoaded('screen-main-menu', function(result) {
-		if (result.success) {
-			console.debug('screen-main-menu resource bundle loaded');
-			LoadingScreen.progressBar.loaded();
 		}
 	});
 };
