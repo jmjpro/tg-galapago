@@ -143,12 +143,9 @@ LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 
 LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
-{cell: [49, 0], id: '2'}, 
-{cell: [98, 0], id: '3'}, 
-{cell: [147, 0], id: '4'}, 
-{cell: [196, 0], id: '5'}, 
-{cell: [145, 0], id: '6'}, 
-{cell: [194, 0], id: '7'}
+{cell: [48, 0], id: '2'}, 
+{cell: [96, 0], id: '3'}, 
+{cell: [144, 0], id: '4'}
 ]];
 
 LevelAnimation.POWER_ACTIVATED_SPRITE_MATRIX = [[

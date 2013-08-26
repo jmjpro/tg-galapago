@@ -420,11 +420,11 @@ Powerup.prototype.animatePowerStatus = function(){
     var newHeight=  ((Powerup.POWER_ICON_HEIGHT/2) - clipHeight);
 	console.log('newHeight : ' +newHeight);
 
-	if(!this.flipflopPowerAchieved){
+	if(!this.flipflopPowerAchieved && clipHeight){
 		this.layer.drawImage( this.swap_fill ,0, newHeight, this.swap_fill.width , clipHeight, 15, (Powerup.FLIPFLOP_TOP +Powerup.POWER_ICON_HEIGHT+10 - (clipHeight*2)) ,this.swap_fill.width*2,clipHeight*2 );
-	}else if(!this.firePowerAchieved){
+	}else if(!this.firePowerAchieved && clipHeight){
 		this.layer.drawImage( this.flame_fill ,0, newHeight, this.flame_fill.width , clipHeight, 15, (Powerup.FIRE_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.flame_fill.width*2,clipHeight*2 );
-	}else if(!this.shufflerPowerAchieved){
+	}else if(!this.shufflerPowerAchieved && clipHeight){
 		this.layer.drawImage( this.shuffle_fill ,0, newHeight, this.shuffle_fill.width , clipHeight, 15, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.shuffle_fill.width*2,clipHeight*2 );
 	}
 };
