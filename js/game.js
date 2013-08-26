@@ -1249,7 +1249,7 @@ Level.prototype.styleCanvas = function() {
 		canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
 	}
 	console.debug('before changing canvas width and height');
-	CanvasUtil.setDimensions(canvasBackground, LoadingScreen.STAGE_WIDTH, LoadingScreen.STAGE_HEIGHT);
+	CanvasUtil.setDimensions(canvasBackground[0], LoadingScreen.STAGE_WIDTH, LoadingScreen.STAGE_HEIGHT);
 	console.debug('after changing canvas width and height');
 	this.layerBackground = canvasBackground[0].getContext('2d');
 	console.debug('styling .layer-board canvas');
@@ -1258,15 +1258,15 @@ Level.prototype.styleCanvas = function() {
 	});
 	console.debug('styling bonus frenzy canvas');
 	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
-	CanvasUtil.setDimensions(canvasBonusFrenzy, Board.GRID_WIDTH, Board.GRID_HEIGHT + Board.GRID_TOP);
+	CanvasUtil.setDimensions(canvasBonusFrenzy[0], Board.GRID_WIDTH, Board.GRID_HEIGHT + Board.GRID_TOP);
 
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
-	CanvasUtil.setDimensions( canvasScore, Score.MAX_WIDTH, Score.MAX_HEIGHT );
+	CanvasUtil.setDimensions( canvasScore[0], Score.MAX_WIDTH, Score.MAX_HEIGHT );
 
 	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
-	CanvasUtil.setDimensions( canvasGameAnimation, Board.GRID_WIDTH, LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP );
+	CanvasUtil.setDimensions( canvasGameAnimation[0], Board.GRID_WIDTH, LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP );
 
 	console.debug('styling lightning canvas');
 	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
@@ -1274,7 +1274,7 @@ Level.prototype.styleCanvas = function() {
 	left = (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);
 	canvasGameLightning.css('left', left + 'px');
     canvasGameLightning.css('top', top + 'px');
-    CanvasUtil.setDimensions( canvasGameLightning, LevelAnimation.LIGHTNING_IMAGE_WIDTH, LoadingScreen.STAGE_HEIGHT - top );
+    CanvasUtil.setDimensions( canvasGameLightning[0], LevelAnimation.LIGHTNING_IMAGE_WIDTH, LoadingScreen.STAGE_HEIGHT - top );
 
 	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()

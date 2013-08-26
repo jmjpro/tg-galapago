@@ -14,12 +14,7 @@ LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [46, 0], id: '2'}, 
  {cell: [92, 0], id: '3'}, 
  {cell: [138, 0], id: '4'}, 
- {cell: [184, 0], id: '5'}, 
- {cell: [230, 0], id: '6'}, 
- {cell: [276, 0], id: '7'}, 
- {cell: [322, 0], id: '8'}, 
- {cell: [368, 0], id: '9'}, 
- {cell: [414, 0], id: '10'}
+ {cell: [184, 0], id: '5'}
  ]];
 
 LevelAnimation.JUMP_SPRITE_MATRIX = [[
@@ -32,11 +27,7 @@ LevelAnimation.JUMP_SPRITE_MATRIX = [[
  {cell: [215, 0], id: '7'}, 
  {cell: [261, 0], id: '8'}, 
  {cell: [283, 0], id: '9'}, 
- {cell: [329, 0], id: '10'}, 
- {cell: [351, 0], id: '11'}, 
- {cell: [397, 0], id: '12'}, 
- {cell: [419, 0], id: '13'}, 
- {cell: [465, 0], id: '14'}
+ {cell: [329, 0], id: '10'}
 ]];
 
 LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
@@ -49,11 +40,7 @@ LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
  {cell: [159, 0], id: '7'}, 
  {cell: [205, 0], id: '8'}, 
  {cell: [211, 0], id: '9'}, 
- {cell: [257, 0], id: '10'}, 
- {cell: [263, 0], id: '11'}, 
- {cell: [309, 0], id: '12'}, 
- {cell: [315, 0], id: '13'}, 
- {cell: [361, 0], id: '14'}
+ {cell: [257, 0], id: '10'}
 ]];
 
 LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
@@ -66,11 +53,7 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [222, 0], id: '7'}, 
  {cell: [268, 0], id: '8'}, 
  {cell: [292, 0], id: '9'}, 
- {cell: [338, 0], id: '10'}, 
- {cell: [362, 0], id: '11'}, 
- {cell: [408, 0], id: '12'}, 
- {cell: [432, 0], id: '13'}, 
- {cell: [478, 0], id: '14'}
+ {cell: [338, 0], id: '10'}
 ]];
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
@@ -188,15 +171,7 @@ LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 108], id: '7'}],
 [{cell: [0, 126], id: '8'}],
 [{cell: [0, 144], id: '9'}],
-[{cell: [0, 162], id: '10'}],
-[{cell: [0, 180], id: '11'}],
-[{cell: [0, 198], id: '12'}],
-[{cell: [0, 216], id: '13'}],
-[{cell: [0, 234], id: '14'}],
-[{cell: [0, 252], id: '15'}],
-[{cell: [0, 270], id: '16'}],
-[{cell: [0, 288], id: '17'}],
-[{cell: [0, 306], id: '18'}]
+[{cell: [0, 162], id: '10'}]
 ];
 
 LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
@@ -239,7 +214,6 @@ LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX = [[
 {cell: [407, 0], id: '12'}
 ]];
 
-
 LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'},
 {cell: [60, 0], id: '2'},  
@@ -250,16 +224,16 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [360, 0], id: '7'} 
 ]];
 
-LevelAnimation.SPARKLES_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 122], id: '2'}],  
-[{cell: [0, 244], id: '3'}], 
-[{cell: [0, 366], id: '4'}],  
-[{cell: [0, 488], id: '5'}],
-[{cell: [0, 610], id: '6'}],   
-[{cell: [0, 732], id: '7'}],   
-[{cell: [0, 854], id: '8'}] 
-];
+LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
+{cell: [0, 0], id: '1'},
+{cell: [146, 0], id: '2'},  
+{cell: [292, 0], id: '3'}, 
+{cell: [438, 0], id: '4'},  
+{cell: [584, 0], id: '5'},
+{cell: [730, 0], id: '6'},   
+{cell: [876, 0], id: '7'},   
+{cell: [1022, 0], id: '8'} 
+]]
 
 LevelAnimation.STARS_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
@@ -267,20 +241,13 @@ LevelAnimation.STARS_SPRITE_MATRIX = [
 [{cell: [0, 66], id: '3'}], 
 [{cell: [0, 99], id: '4'}],  
 [{cell: [0, 132], id: '5'}],
-[{cell: [0, 165], id: '6'}],   
-[{cell: [0, 198], id: '7'}],   
-[{cell: [0, 231], id: '8'}],   
-[{cell: [0, 264], id: '9'}],   
-[{cell: [0, 297], id: '10'}] 
+[{cell: [0, 165], id: '6'}]
 ];
 
 LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
 [{cell: [0, 58], id: '2'}],  
-[{cell: [0, 116], id: '3'}], 
-[{cell: [0, 174], id: '4'}],  
-[{cell: [0, 232], id: '5'}],
-[{cell: [0, 290], id: '6'}]   
+[{cell: [0, 116], id: '3'}]   
 ];
 
 LevelAnimation.sparklesImages = [];
@@ -499,13 +466,13 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
+			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
 				}
 				if(rolloverImageSpriteSheet1){
-					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
+					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
 				}
 			}
@@ -536,7 +503,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 4){
+				if(imgCnt >= LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 2){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -784,8 +751,8 @@ LevelAnimation.prototype.initSparkles = function() {
 		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png");
 		if( image ) {
 			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
-				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
+			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
+				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x, 0]));
 			}
 		}
 	}
@@ -950,7 +917,7 @@ RolloverAnimation.prototype.animate = function(){
 		image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
 		if( image ) {
 			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
-			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
+			this.rolloverSpriteId ++;
 			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
 			if(this.tileMarkImageSpriteSheet){
 				image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
@@ -1329,7 +1296,7 @@ SparklesAnimation.prototype.animate = function(){
 	}
 };
 
-StarsAnimation.ROLLOVER_TIME_INTERVAL=200;
+StarsAnimation.ROLLOVER_TIME_INTERVAL=300;
 function StarsAnimation(layer, x, y, destinationX, destinationY){
 	this.layer = layer;
 	this.interval = null;
