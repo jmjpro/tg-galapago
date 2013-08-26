@@ -181,6 +181,7 @@ MainMenuScreen.prototype.show = function() {
 
 MainMenuScreen.prototype.hide = function() {
 	this.unregisterEventHandlers();
+	LoadingScreen.gal.release( "background/main-menu.jpg" );
 	this.mainMenuDOM.hide();
 	/*
 	if( this.callingObject.registerEventHandlers ){

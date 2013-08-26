@@ -700,7 +700,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
 		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip-game-start-arrow.png');
+		image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'start-arrow-strip.png');
 		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
 		coordinates = [200 , 265 ];
 		if(levelAnimation.gameStartArrowAnimation){

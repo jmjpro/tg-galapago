@@ -34,6 +34,7 @@ html, body {
 	width: 1px;
 	height: 1px;
 	z-index: -9999;
+	display: none; /* TODO remove this */
 }
 
 /* disable visual effects on focused elements;
