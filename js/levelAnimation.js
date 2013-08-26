@@ -563,18 +563,18 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				}
 				layer.clearRect(x, y, width, height);
 				if(tileUpSelected){
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
 				}
 				else{
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}	
 				}
