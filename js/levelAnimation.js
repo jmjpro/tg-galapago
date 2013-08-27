@@ -228,7 +228,7 @@ LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
 {cell: [584, 0], id: '5'},
 {cell: [730, 0], id: '6'},   
 {cell: [876, 0], id: '7'},   
-{cell: [1022, 0], id: '8'} 
+{cell: [1022, 0], id: '8'}
 ]]
 
 LevelAnimation.STARS_SPRITE_MATRIX = [
@@ -742,14 +742,22 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 };
 
 LevelAnimation.prototype.initSparkles = function() {
+	var galAssetPath, bgImage;
 	console.debug('entering LevelAnimation.prototype.initSparkles()');
 	if(!LevelAnimation.sparklesImages.length){
-		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png");
+		galAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png";
+		console.debug( 'galAssetPath: ' + galAssetPath);
+		image = LoadingScreen.gal.get(galAssetPath);
+		console.debug( 'image: ' + image);
 		if( image ) {
 			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
 			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
+				console.debug( 'x: ' + x);
 				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x, 0]));
 			}
+		}
+		else {
+			console.error( 'unable to find image ' + galAssetPath);
 		}
 	}
 	console.debug('exiting LevelAnimation.prototype.initSparkles()');

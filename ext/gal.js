@@ -34,7 +34,7 @@ var GAL = function(manifestUrl) {
   this.loaded = {};
   this.progress = {};
   this.error = {};
-  this.lookupTable = [];
+  this.lookupTable = new Array();
 };
  
 GAL.IMAGE_CACHE_DIV_ID = 'image-cache';
@@ -147,7 +147,13 @@ GAL.prototype.download = function(bundleName) {
         success: true
     });
   }
-};
+  for( var image in this.lookupTable ) {
+    if( this.lookupTable[image] === null ) {
+      delete this.lookupTable[image];
+    }
+    //console.debug( image );
+  }
+}; //GAL.prototype.download()
 
 GAL.prototype.loadCollageImages = function(imageName, isVisualCache) {
   var imageCollage, images, image, index, imageId;
@@ -161,7 +167,8 @@ GAL.prototype.loadCollageImages = function(imageName, isVisualCache) {
     }
     imageId = image.id;
     this.lookupTable[imageId] = image;
-  }        
+  }
+  imageCollage = null;
 };
 
 GAL.prototype.logPixelCount = function( object, isLoad ) {
@@ -175,7 +182,7 @@ GAL.prototype.logPixelCount = function( object, isLoad ) {
     GAL.loadedPixels -= numPixels;
   }
   direction = isLoad ? ' loaded ' : ' released ';
-  console.debug( object + ' ' + object.id + direction + numPixels + ' pixels ');
+  console.debug( object + ' ' + object.id + ' width: ' + object.width + ' height: ' + object.height + ' ' + direction + numPixels + ' pixels ');
   console.log("Total pixels loaded: " + GAL.loadedPixels);
 };
 

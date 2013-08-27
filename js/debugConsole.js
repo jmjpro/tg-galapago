@@ -26,6 +26,7 @@ console.log = function(message, logType) {
     }
 	console.olog(message);
 	debugConsole = document.getElementById('debug-console');
+	debugConsole.style.display = 'block';
 	if( typeof logType === 'undefined' ) {
 		logType = 'log';
 	}

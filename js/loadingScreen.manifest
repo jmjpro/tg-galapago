@@ -9,20 +9,20 @@
 	{
 		"name": "screen-loading",
 		"contents": [
-			"NOCACHE/background/loading.jpg",
-			"NOCACHE/screen-loading/loading-progress-bar.png",
-			"NOCACHE/screen-loading/loading-progress-bar-fill.png",
-			"NOCACHE/screen-loading/loading-progress-bar-left-cap.png"
+			"IGNORE/background/loading.jpg",
+			"screen-loading/loading-progress-bar.png",
+			"screen-loading/loading-progress-bar-fill.png",
+			"screen-loading/loading-progress-bar-left-cap.png"
 		]
 	},
 	{
 		"name": "pngs",
 		"contents": [
-			"background/dialog-regular.png",
-			"background/dialog-regular-no-title.png",
-			"background/dialog-small.png",
-			"background/dialog-small-no-title.png",
-			"background/dialog-large.png",
+			"IGNORE/background/dialog-regular.png",
+			"IGNORE/background/dialog-regular-no-title.png",
+			"IGNORE/background/dialog-small.png",
+			"IGNORE/background/dialog-small-no-title.png",
+			"IGNORE/background/dialog-large.png",
 			"collage/main-menu-1.png",
 			"collage/main-menu-2.png",
 			"collage/arrows.png",
@@ -71,13 +71,13 @@
 	{
 		"name": "screen-main-menu",
 		"contents": [
-			"NOCACHE/background/main-menu.jpg"
+			"IGNORE/background/main-menu.jpg"
 		]
 	},
 	{
 		"name": "screen-map",
 		"contents": [	
-			"background/map.jpg"
+			"IGNORE/background/map.jpg"
 		]
 	},
 	{
@@ -85,33 +85,33 @@
 		"contents": [
 		]
 	},
-	{ "name": "beach-a", "contents": [ "NOCACHE/background/beach-a.jpg" ] },
-	{ "name": "beach-b", "contents": [ "NOCACHE/background/beach-b.jpg" ] },
-	{ "name": "beach-c", "contents": [ "NOCACHE/background/beach-c.jpg" ] },
-	{ "name": "beach-d", "contents": [ "NOCACHE/background/beach-d.jpg" ] },
+	{ "name": "beach-a", "contents": [ "IGNORE/background/beach-a.jpg" ] },
+	{ "name": "beach-b", "contents": [ "IGNORE/background/beach-b.jpg" ] },
+	{ "name": "beach-c", "contents": [ "IGNORE/background/beach-c.jpg" ] },
+	{ "name": "beach-d", "contents": [ "IGNORE/background/beach-d.jpg" ] },
 	{
 		"name": "beach-common",
 		"contents": [
 		]
 	},
-	{ "name": "forest-a", "contents": [ "NOCACHE/background/forest-a.jpg" ] },
-	{ "name": "forest-b", "contents": [ "NOCACHE/background/forest-b.jpg" ] },
-	{ "name": "forest-c", "contents": [ "NOCACHE/background/forest-c.jpg" ] },
-	{ "name": "forest-d", "contents": [ "NOCACHE/background/forest-d.jpg" ] },
-	{ "name": "forest-e", "contents": [ "NOCACHE/background/forest-e.jpg" ] },
-	{ "name": "forest-f", "contents": [ "NOCACHE/background/forest-f.jpg" ] },
-	{ "name": "forest-g", "contents": [ "NOCACHE/background/forest-g.jpg" ] },
+	{ "name": "forest-a", "contents": [ "IGNORE/background/forest-a.jpg" ] },
+	{ "name": "forest-b", "contents": [ "IGNORE/background/forest-b.jpg" ] },
+	{ "name": "forest-c", "contents": [ "IGNORE/background/forest-c.jpg" ] },
+	{ "name": "forest-d", "contents": [ "IGNORE/background/forest-d.jpg" ] },
+	{ "name": "forest-e", "contents": [ "IGNORE/background/forest-e.jpg" ] },
+	{ "name": "forest-f", "contents": [ "IGNORE/background/forest-f.jpg" ] },
+	{ "name": "forest-g", "contents": [ "IGNORE/background/forest-g.jpg" ] },
 	{
 		"name": "forest-common",
 		"contents": [
 		]
     },
-	{ "name": "cave-a", "contents": [ "NOCACHE/background/cave-a.jpg" ] },
-	{ "name": "cave-b", "contents": [ "NOCACHE/background/cave-b.jpg" ] },
-	{ "name": "cave-c", "contents": [ "NOCACHE/background/cave-c.jpg" ] },
-	{ "name": "cave-d", "contents": [ "NOCACHE/background/cave-d.jpg" ] },
-	{ "name": "cave-e", "contents": [ "NOCACHE/background/cave-e.jpg" ] },
-	{ "name": "cave-f", "contents": [ "NOCACHE/background/cave-f.jpg" ] },
+	{ "name": "cave-a", "contents": [ "IGNORE/background/cave-a.jpg" ] },
+	{ "name": "cave-b", "contents": [ "IGNORE/background/cave-b.jpg" ] },
+	{ "name": "cave-c", "contents": [ "IGNORE/background/cave-c.jpg" ] },
+	{ "name": "cave-d", "contents": [ "IGNORE/background/cave-d.jpg" ] },
+	{ "name": "cave-e", "contents": [ "IGNORE/background/cave-e.jpg" ] },
+	{ "name": "cave-f", "contents": [ "IGNORE/background/cave-f.jpg" ] },
     {
 		"name": "cave-common",
 		"contents": [

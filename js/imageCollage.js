@@ -36,13 +36,13 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		'collageId': 'collage/dialog-arrow-buttons.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy.png'},
+			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy-arrow-button.png'},
 		]
 	},
 	{
 		'collageId': 'collage/keypad-buttons.png',
 		'imageCoordinateArray': [
-			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy.png'},
+			{'cell': [0, 0, 1, 1], 'id': 'dialog/dummy-button.png'},
 		]
 	},
 	{

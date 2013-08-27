@@ -55,6 +55,22 @@ LoadingScreen.registerEvent = function(){
 			console.debug('pngs resource bundle loaded');
 			LoadingScreen.gal.download('screen-main-menu');
 			LoadingScreen.progressBar.loaded();
+
+			/*
+			console.debug( 'visual image cache' );
+			 _.each( $( '#image-cache' ).children(), function( image ) {
+			 	console.debug( image.id );
+			 });
+
+			console.debug( 'gal image cache' );
+			for( var image in LoadingScreen.gal.lookupTable ) {				
+				console.debug( image );
+			}
+			*/
+
+			console.debug( 'visual image cache count ' + $( '#image-cache' ).children().size() );
+			console.debug( 'gal image count ' + Object.keys(LoadingScreen.gal.lookupTable).length );
+
 		}
 	});
 	this.gal.onLoaded('screen-loading', function(result) {
@@ -79,10 +95,12 @@ LoadingScreen.hide = function(evt) {
 	}
 	this.screenDiv.hide();
 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+	/*
 	LoadingScreen.gal.release( "background/loading.jpg" );
 	LoadingScreen.gal.release( "screen-loading/loading-progress-bar.png" );
 	LoadingScreen.gal.release( "screen-loading/loading-progress-bar-fill.png" );
 	LoadingScreen.gal.release( "screen-loading/loading-progress-bar-left-cap.png" );
+	*/
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){

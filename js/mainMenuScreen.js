@@ -59,6 +59,12 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 
 	mainMenuScreen.windowKeyHandler= window.onkeydown;
 	mainMenuScreen.addMouseListener();
+
+	var imageId = 'screen-game/sparkle-strip.png';
+	var image = document.getElementById(imageId);
+	console.debug( 'visualCacheImage.width: ' + image.naturalWidth + ', visualCacheImage.height: ' + image.naturalHeight );
+	image = LoadingScreen.gal.get(imageId);
+	console.debug( 'GALImage.width: ' + image.naturalWidth + ', GALImage.height: ' + image.naturalHeight );
 }; //MainMenuScreen.init()
 
 MainMenuScreen.prototype.addMouseListener = function(){
