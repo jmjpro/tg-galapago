@@ -3111,6 +3111,7 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 
 Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 	var changedPoints= [];
+	var plainSpriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
 	var spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 	var board = this;
 	emptyPoints = ArrayUtil.unique(emptyPoints);
@@ -3128,6 +3129,8 @@ Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 			}
 			board.addTile(point, 'CREATURE', null, spriteNumber);
 			changedPoints.push(point);
+		}else{
+			board.addTile(point, 'CREATURE', null, plainSpriteNumber);
 		}
 	});
 	return changedPoints;
@@ -3136,8 +3139,7 @@ Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 Board.prototype.pointEligibleForGeneration = function(point) {
 	var tileLeftUp =  this.getNeighborFromPoint(point, [-1, -1]);
 	var tileRightUp =  this.getNeighborFromPoint(point, [1, -1]);
-	var tileDown =  this.getNeighborFromPoint(point, [0, 1]);
-	return (tileDown != null && !tileDown.isPlain()) || ((tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain()));
+	return (tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain());
 }
 
 // run an animation removing a matching tile triplet
