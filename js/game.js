@@ -2944,9 +2944,13 @@ Board.prototype.addTriplet = function(triplets, triplet) {
 };
 
 Board.prototype.getNeighbor = function( tile, coordsDistance ) {
+	return this.getNeighborFromPoint(tile.coordinates, coordsDistance);
+};
+
+Board.prototype.getNeighborFromPoint = function( point, coordsDistance ) {
 	var tileNeighbor, coordsNeighbor, col, row, matrix;
 	matrix = this.creatureTileMatrix;
-	coordsNeighbor = MatrixUtil.getNeighborCoordinates(tile.coordinates, coordsDistance);
+	coordsNeighbor = MatrixUtil.getNeighborCoordinates(point, coordsDistance);
 	col = coordsNeighbor[0];
 	row = coordsNeighbor[1];
 	if( col < 0 || col >= matrix.length || row < 0 || row >= matrix[0].length ) {
@@ -3000,7 +3004,7 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 			emptyPoints = MatrixUtil.getFirstNRowPoints(verticalPointsSet, startIndex);
 			if(startIndex > 0){
 				//nullify non first row empty points so that they dont take further part in lower tiles
-				board.nullifyEmptPoints(emptyPoints);
+				board.nullifyEmptyPoints(emptyPoints);
 				nonFirstRowPoints = nonFirstRowPoints.concat(emptyPoints);
 			}
 			else{
@@ -3020,12 +3024,12 @@ Board.prototype.lowerTilesAbove = function(verticalPointsSets) {
 	});
 	
 	//TODO client to confirm non first row empty points functionality
-	changedPoints = board.fillEmptyPoints(nonFirstRowPoints);
+	changedPoints = board.fillEmptyPoints(nonFirstRowPoints, true);
 	changedPointsArray = changedPointsArray.concat(changedPoints);
 	return changedPointsArray; //chainable
 }; //Board.prototype.lowerTilesAbove()
 
-Board.prototype.nullifyEmptPoints = function(emptyPoints) {
+Board.prototype.nullifyEmptyPoints = function(emptyPoints) {
 	var tileMatrix = this.creatureTileMatrix;
 	_.each(emptyPoints, function(emptyPoint){
 		tileMatrix[emptyPoint[0]][emptyPoint[1]] = null;
@@ -3105,7 +3109,7 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 	}
 }
 
-Board.prototype.fillEmptyPoints = function(emptyPoints) {
+Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 	var changedPoints= [];
 	var spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 	var board = this;
@@ -3115,6 +3119,7 @@ Board.prototype.fillEmptyPoints = function(emptyPoints) {
 		//var row = point[1] + 1;
 		//var tile = board.creatureTileMatrix[col][row];
 		//if(tile && tile.isPlain()){
+		if(!nonFirstRowPoints || board.pointEligibleForGeneration(point)){	
 			var fallingPoint = board.getFallingPoint(point);
 			while(fallingPoint != point){
 				board.addTile(fallingPoint, 'CREATURE', null, spriteNumber);
@@ -3123,9 +3128,15 @@ Board.prototype.fillEmptyPoints = function(emptyPoints) {
 			}
 			board.addTile(point, 'CREATURE', null, spriteNumber);
 			changedPoints.push(point);
-		//}
+		}
 	});
 	return changedPoints;
+}
+
+Board.prototype.pointEligibleForGeneration = function(point) {
+	var tileLeftUp =  this.getNeighborFromPoint(point, [-1, -1]);
+	var tileRightUp =  this.getNeighborFromPoint(point, [1, -1]);
+	return (tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain());
 }
 
 // run an animation removing a matching tile triplet
