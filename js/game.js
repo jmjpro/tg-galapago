@@ -284,6 +284,7 @@ LevelMap.prototype.display = function() {
 	CanvasUtil.setDimensions(this.canvas, LevelMap.WIDTH, LevelMap.HEIGHT);
 	this.canvas.focus();
 	
+	/*
 	assetPathLava = MapScreen.GAL_PREFIX + 'lava-strip.png';
 	imageLava = LoadingScreen.gal.get(assetPathLava);
 	if( imageLava ) {
@@ -307,7 +308,7 @@ LevelMap.prototype.display = function() {
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
 	//this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-	
+	*/
 	this.drawHotspots();
 	this.registerEventHandlers();
 	Galapago.audioPlayer.playVolcanoLoop();
