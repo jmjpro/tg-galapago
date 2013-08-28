@@ -15,7 +15,7 @@
 		<script src="ext/zepto-touch-1.0.js"></script>
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
-		<script src="../sdk/tgh5.min.js"></script>
+		<script src="../sdk/TGH5.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -44,7 +44,7 @@
 						jsErrLog.info = "Galapago debugging";                
 				}
 				if( typeof TGH5 !== 'undefined' ) {
-					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../SDK/" }).done(function (api) {
+					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../sdk/" }).done(function (api) {
 						sdkApi = api;
 				        // SDK successfully initialized
 				        api.preferredLanguage().always(function (language) {
@@ -59,7 +59,7 @@
 		    	LoadingScreen.init();
 			}
 		</script>
-		<!--script src="js/debugConsole.js"></script-->
+		<script src="js/debugConsole.js"></script>
 		<!--script src="ext/profiler.js"></script-->
 		<!--script src="ext/stacktrace-min-0.4.js"></script-->
 	</head>
