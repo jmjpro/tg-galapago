@@ -3126,7 +3126,8 @@ Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 Board.prototype.pointEligibleForGeneration = function(point) {
 	var tileLeftUp =  this.getNeighborFromPoint(point, [-1, -1]);
 	var tileRightUp =  this.getNeighborFromPoint(point, [1, -1]);
-	return (tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain());
+	var tileDown =  this.getNeighborFromPoint(point, [0, 1]);
+	return (tileDown != null && !tileDown.isPlain()) || ((tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain()));
 }
 
 // run an animation removing a matching tile triplet
