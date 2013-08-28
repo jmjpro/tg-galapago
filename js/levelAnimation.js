@@ -261,9 +261,20 @@ function LevelAnimation(layer){
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
+	/*
+	stripImagesToCache = ['screen-game/sparkle-strip.png', 'screen-game/cocoon-removed-strip.png','screen-game/lightning-strip.png'];
+	_.each( stripImagesToCache, function( assetPath ) {
+		var visualCacheImage = document.getElementById(assetPath);
+		var galCacheImage = LoadingScreen.gal.get(assetPath);
+		console.debug( 'visualCache: ' + assetPath + '.naturalWidth: ' + visualCacheImage.naturalWidth + ', naturalHeight: ' + visualCacheImage.naturalHeight );
+		console.debug( 'galCache: ' + assetPath + '.naturalWidth: ' + galCacheImage.naturalWidth + ', naturalHeight: ' + galCacheImage.naturalHeight );
+	});
+	*/
+	/*
 	this.initSparkles();
 	this.initStars();
 	this.initLightning();
+	*/
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -742,7 +753,7 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 };
 
 LevelAnimation.prototype.initSparkles = function() {
-	var galAssetPath, bgImage;
+	var galAssetPath, bgImage, sprite;
 	console.debug('entering LevelAnimation.prototype.initSparkles()');
 	if(!LevelAnimation.sparklesImages.length){
 		galAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png";
@@ -751,9 +762,10 @@ LevelAnimation.prototype.initSparkles = function() {
 		console.debug( 'image: ' + image);
 		if( image ) {
 			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; x++){
-				console.debug( 'x: ' + x);
-				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([x, 0]));
+			for(var col = 0; col < LevelAnimation.SPARKLES_SPRITE_MATRIX[0].length; col++){
+				sprite = spriteSheet.getSpriteNew([col, 0]);
+				console.debug( 'sprite id: ' + sprite.id);
+				LevelAnimation.sparklesImages.push(sprite);
 			}
 		}
 		else {

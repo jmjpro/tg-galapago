@@ -192,6 +192,9 @@ Galapago.setLevel = function(levelId) {
 			LoadingScreen.gal.clearOnLoaded(themeBundle);
 			console.debug(themeBundle + ' resource bundle loaded');
 			Galapago.level.levelAnimation = new LevelAnimation();
+			Galapago.level.levelAnimation.initSparkles();
+			Galapago.level.levelAnimation.initStars();
+			Galapago.level.levelAnimation.initLightning();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
 	Level.registerEventHandlers();
@@ -271,7 +274,7 @@ function LevelMap(level) {
 } //LevelMap constructor
 
 LevelMap.prototype.display = function() {
-	var backgroundImage;
+	var backgroundImage, assetPathLava, imageLava;
 	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
 	if( backgroundImage ) {
 		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
@@ -281,7 +284,14 @@ LevelMap.prototype.display = function() {
 	CanvasUtil.setDimensions(this.canvas, LevelMap.WIDTH, LevelMap.HEIGHT);
 	this.canvas.focus();
 	
-	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'lava-strip.png'),LevelMap.LAVA_SPRITE_MATRIX);
+	assetPathLava = MapScreen.GAL_PREFIX + 'lava-strip.png';
+	imageLava = LoadingScreen.gal.get(assetPathLava);
+	if( imageLava ) {
+		this.animate(imageLava,LevelMap.LAVA_SPRITE_MATRIX);		
+	}
+	else {
+		console.error( "unable to find image " + assetPathLava);
+	}
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	CanvasUtil.setDimensions( otherAnimationCanvas, LevelMap.WIDTH, LevelMap.HEIGHT );
 	var levelAnimation = this;

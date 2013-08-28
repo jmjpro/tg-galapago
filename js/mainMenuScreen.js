@@ -60,11 +60,13 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.windowKeyHandler= window.onkeydown;
 	mainMenuScreen.addMouseListener();
 
+	/*
 	var imageId = 'screen-game/sparkle-strip.png';
 	var image = document.getElementById(imageId);
 	console.debug( 'visualCacheImage.width: ' + image.naturalWidth + ', visualCacheImage.height: ' + image.naturalHeight );
 	image = LoadingScreen.gal.get(imageId);
 	console.debug( 'GALImage.width: ' + image.naturalWidth + ', GALImage.height: ' + image.naturalHeight );
+	*/
 }; //MainMenuScreen.init()
 
 MainMenuScreen.prototype.addMouseListener = function(){
@@ -152,7 +154,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png';
 			bgImage = LoadingScreen.gal.get( galImagePath );
 			if( bgImage ) {
-				$('#dialog-help').css('background-image','url(' +  + ')');
+				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');
 			}
 			else {
 				console.error( 'unable to find ' + galImagePath );
@@ -194,8 +196,12 @@ MainMenuScreen.prototype.show = function() {
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
+	var backgroundImage;
 	this.unregisterEventHandlers();
-	LoadingScreen.gal.release( "background/main-menu.jpg" );
+	backgroundImage = 'background/main-menu.jpg';
+	if( LoadingScreen.gal.get(backgroundImage) ) {
+		LoadingScreen.gal.release( "background/main-menu.jpg" );
+	}
 	this.mainMenuDOM.hide();
 	/*
 	if( this.callingObject.registerEventHandlers ){

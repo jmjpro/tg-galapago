@@ -70,9 +70,6 @@ SpriteSheet.prototype.getSpriteNew = function (matrixCell, degreesToRotate) {
 	} else { //last row of sprites
 		height = this.image.height - y;
 	}
-	var visualCacheImage = document.getElementById(image.id);
-	console.debug( 'visualCacheImage.width: ' + visualCacheImage.naturalWidth + ', visualCacheImage.height: ' + visualCacheImage.naturalHeight );
-	console.debug( 'this.image.width: ' + this.image.naturalWidth + ', this.image.height: ' + this.image.naturalHeight + ', x: ' + x + ', y: ' + y);
 	console.debug( 'width: ' + width + ', this.magnifier: ' + this.magnifier + ', height: ' + height);
 	CanvasUtil.setDimensions( this._canvas, width * this.magnifier, height * this.magnifier);
 	/*
@@ -83,9 +80,8 @@ SpriteSheet.prototype.getSpriteNew = function (matrixCell, degreesToRotate) {
 	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width * this.magnifier, height* this.magnifier);
 	console.debug( 'after draw image');
 	var savedImage = new Image();
-	console.debug( 'before toDataURL');
 	savedImage.src = this._canvas.toDataURL("image/png");
-	console.debug( 'after toDataURL');
+	savedImage.id = this.image.id.replace( '.png', '-' + col + '-' + row + '.png');
 	if(degreesToRotate && degreesToRotate > 0){
 		this._ctx.clearRect(0, 0, width, height);
     	CanvasUtil.canvasRotateImageDirection(this._canvas, this._ctx, savedImage, degreesToRotate);

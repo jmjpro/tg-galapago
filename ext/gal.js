@@ -171,6 +171,18 @@ GAL.prototype.loadCollageImages = function(imageName, isVisualCache) {
   imageCollage = null;
 };
 
+GAL.prototype.loadSpriteSheetImages = function(imageName, isVisualCache) {
+  var spriteSheet, col;
+
+  var spriteSheet = new SpriteSheet(image, LevelAnimation.SPRITE_MATRICES.imageName);
+  for(col = 0; col < LevelAnimation.SPRITE_MATRICES.imageName[0].length; col++){
+    sprite = spriteSheet.getSpriteNew([col, 0]);
+    LevelAnimation[imageName].push(sprite);
+  }
+  spriteSheet = null;
+};
+
+
 GAL.prototype.logPixelCount = function( object, isLoad ) {
   var numPixels, direction;
   numPixels = object.width * object.height;

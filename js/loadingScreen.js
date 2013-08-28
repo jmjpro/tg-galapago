@@ -46,13 +46,13 @@ LoadingScreen.registerEvent = function(){
 			DialogMenu.setBackgrounds();
 		}
 	});
-	this.gal.onProgress("pngs", function(progress) {
+	this.gal.onProgress('pngs-prior-to-game-screen', function(progress) {
 		var percentage = progress.current/progress.total ;
 		LoadingScreen.progressBar.progress(percentage);
 	});
-	this.gal.onLoaded('pngs', function(result) {
+	this.gal.onLoaded('pngs-prior-to-game-screen', function(result) {
 		if (result.success) {
-			console.debug('pngs resource bundle loaded');
+			console.debug('pngs-prior-to-game-screen resource bundle loaded');
 			LoadingScreen.gal.download('screen-main-menu');
 			LoadingScreen.progressBar.loaded();
 
@@ -80,7 +80,7 @@ LoadingScreen.registerEvent = function(){
 			if( backgroundImage ) {
 				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 			}
-			LoadingScreen.gal.download('pngs');
+			LoadingScreen.gal.download('pngs-prior-to-game-screen');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
 	});

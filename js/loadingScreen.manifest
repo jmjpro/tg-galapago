@@ -16,7 +16,7 @@
 		]
 	},
 	{
-		"name": "pngs",
+		"name": "pngs-prior-to-game-screen",
 		"contents": [
 			"IGNORE/background/dialog-regular.png",
 			"IGNORE/background/dialog-regular-no-title.png",
@@ -38,7 +38,24 @@
 			"screen-map/bomb-left-two-strip.png",
 			"screen-map/bomb-mid-strip.png",
 			"screen-map/bomb-right-strip.png",
-			"screen-map/lava-strip.png",
+			"screen-map/lava-strip.png"
+		]
+	},
+	{
+		"name": "screen-main-menu",
+		"contents": [
+			"IGNORE/background/main-menu.jpg"
+		]
+	},
+	{
+		"name": "screen-map",
+		"contents": [	
+			"IGNORE/background/map.jpg"
+		]
+	},
+	{
+		"name": "board-common",
+		"contents": [
 			"collage/game-powerup.png",
 			"screen-game/cocoon-removed-strip.png",
 			"screen-game/danger-bar-fill-1.png",
@@ -66,23 +83,6 @@
 			"screen-game/creatures-cave-strip.png",
 			"collage/game-cave-rollover-strips.png",
 			"collage/game-cave-jump-strips.png"
-		]
-	},
-	{
-		"name": "screen-main-menu",
-		"contents": [
-			"IGNORE/background/main-menu.jpg"
-		]
-	},
-	{
-		"name": "screen-map",
-		"contents": [	
-			"IGNORE/background/map.jpg"
-		]
-	},
-	{
-		"name": "board-common",
-		"contents": [
 		]
 	},
 	{ "name": "beach-a", "contents": [ "IGNORE/background/beach-a.jpg" ] },
