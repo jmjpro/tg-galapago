@@ -198,26 +198,51 @@ ImageCollage.COLLAGE_ARRAY = [
 	}
 ];
 
-	/* todo: add as second row to collage/level-ui-animated.png once sprite sheet coordinate matrix is adjusted
-			 
-	*/
-
 // assumes a sheet of symmetric images defined by a 1 or 2 dimensional image matrix
 function ImageCollage(collageDescriptor){
-	this.image = LoadingScreen.gal.get(collageDescriptor.collageId);
 	this.collageId = collageDescriptor.collageId;
 	this.imageCoordinateArray = collageDescriptor.imageCoordinateArray;
-	var tempCanvas = document.createElement('canvas');
-	this._canvas = tempCanvas;
-	this._canvas.style.display = 'none';
-	this._canvas.style.position = 'absolute';
-	this._canvas.style.left = -1000;
-	this._canvas.style.top = -1000;
-	this._ctx = this._canvas.getContext('2d');
-} //constructor 
+
+	var i, id, loadedImages = LoadingScreen.gal.getLoadedImages(this.collageId);
+	if(loadedImages) {
+		for(i = 0; i < collageDescriptor.imageCoordinateArray.length; i++) {
+			id = collageDescriptor.imageCoordinateArray[i].id;
+			this.imageCache[id] = loadedImages[id];
+		}
+	} else {
+		this.image = LoadingScreen.gal.get(this.collageId);
+		this._canvas = document.createElement('canvas');
+		this._canvas.style.display = 'none';
+		this._canvas.style.position = 'absolute';
+		this._canvas.style.left = -1000;
+		this._canvas.style.top = -1000;
+		this._ctx = this._canvas.getContext('2d');
+
+		this.imageCache = {};
+		for(i = 0; i < collageDescriptor.imageCoordinateArray.length; i++) {
+			id = collageDescriptor.imageCoordinateArray[i].id;
+			this.imageCache[id] = this.getImageForCache(id);
+		}
+
+		this._ctx = null;
+		this._canvas.width = 1;
+		this._canvas.height = 1;
+		this._canvas = null;
+		this.image = null;
+
+		LoadingScreen.gal.setLoadedImages(this.collageId, this.imageCache);
+		LoadingScreen.gal.set(this.collageId, null);
+	}
+
+	//this.collageId = null;
+} // ImageCollage constructor
 
 //return an array of image objects corresponding to the rectangular regions in the this.coordinateArray
 ImageCollage.prototype.getImage = function (imageId){
+	return this.imageCache[imageId];
+ }; // ImageCollage.prototype.getImage()
+
+ImageCollage.prototype.getImageForCache = function (imageId){
 	var imageCollage, imageCoordinate, image, x, y, width, height;
 	imageCollage = this;
 	imageCoordinate = _.find( this.imageCoordinateArray,{'id' : imageId} );
@@ -227,6 +252,23 @@ ImageCollage.prototype.getImage = function (imageId){
 	height = imageCoordinate.cell[3];
 	imageCollage._canvas.width = width;
 	imageCollage._canvas.height = height;
+	console.log(width + "," + height + "," + x + "," + y + "," + imageCollage.image.naturalWidth);
+	if(x + width > imageCollage.image.naturalWidth) {
+		if(imageCollage.image.naturalWidth >= width) {
+			x = imageCollage.image.naturalWidth - width;
+		} else {
+			x = 0;
+			width = imageCollage.image.naturalWidth;
+		}
+	}
+	if(y + height > imageCollage.image.naturalHeight) {
+		if(imageCollage.image.naturalHeight >= height) {
+			y = imageCollage.image.naturalHeight - height;
+		} else {
+			y = 0;
+			height = imageCollage.image.naturalHeight;
+		}
+	}
 	imageCollage._ctx.drawImage(imageCollage.image, x, y, width, height, 0, 0, width, height);
 	image = new Image();
 	image.src = imageCollage._canvas.toDataURL("image/png");

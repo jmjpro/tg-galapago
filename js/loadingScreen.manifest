@@ -4,6 +4,7 @@
 	"collageDirectory" : "collage",
 	"audioExts": "mp3",
 	"ignorePrefix": "IGNORE/",
+	"noCachePrefix": "NOCACHE/",
 	"bundles": [
 	{
 		"name": "screen-loading",
