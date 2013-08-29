@@ -138,15 +138,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				Galapago.init(isTimedMode);
 			}
-			break;
-		case 'button-how-to-play' :
-			this.unregisterEventHandlers();
-			$('#dialog-help').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular', TGH5.Reporting.Page.Help);
+			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', 'button-big-hilight', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Page.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -158,7 +154,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 		case 'button-quit' :
 			this.unregisterEventHandlers();
 			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
-			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
+			new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
 }; //MainMenuScreen.prototype.selectHandler()

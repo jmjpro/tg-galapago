@@ -25,19 +25,12 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		"collageId": "collage/dialog-buttons.png",
-		"imageCoordinateArray": [
-			{"cell": [0,0,358,60], "id": "dialog/button-large-narrow-regular.png"},
-			{"cell": [0,29,388,90], "id": "dialog/button-large-narrow-highlighted.png"},
-			{"cell": [0,75,175,40], "id": "dialog/button-huge.png"},
-			{"cell": [10,128,175,40], "id": "dialog/button-huge-hilight.png"},
-			{"cell": [0,172,78,24], "id": "dialog/button-medium-regular.png"},
-			{"cell": [0,201,78,22], "id": "dialog/button-medium-disabled.png"},
-			{"cell": [11,238,78,22], "id": "dialog/button-medium-hilight.png"},
-			{"cell": [0,269,164,85], "id": "dialog/button-game-menu-regular.png"},
-			{"cell": [0,312,190,110], "id": "dialog/button-game-menu-highlighted.png"},
-			{"cell": [0,367,98,61], "id": "dialog/button-small-regular.png"},
-			{"cell": [0,397,128,87], "id": "dialog/button-small-highlighted.png"}
+		'collageId': 'collage/dialog-buttons.png',
+		'imageCoordinateArray': [
+		
+			{'cell': [0,0,180,44], 'id': 'dialog/button-disabled.png'},
+			{'cell': [0,44,180,44], 'id': 'dialog/button-regular.png'},
+			{'cell': [10,98,180,44], 'id': 'dialog/button-hilight.png'}
 		]
 	},
 	{
