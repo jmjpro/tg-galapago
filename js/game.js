@@ -2750,18 +2750,20 @@ Board.prototype.handleRightArrow = function() {
 		tileRight = board.creatureTileMatrix[col][row];
 	}while(tileRight == null)
 	if( tileRight && !this.navigationLock) {
+		board.navigationLock = true;
 		if(board.hotspot){
 			board.displayMenuButton(false);
 			board.displayQuitButton(false);
 			board.hotspot = null;
 		}
-		board.navigationLock = true;
+		
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileRight);
 		board.navigationLock = false;
 		return this; //chainable;
 		}).done();
-	}else { // move to powerup if on the rightmost
+	}else if(!this.navigationLock){ // move to powerup if on the rightmost
+		board.navigationLock = true;
 		board.tileActive.setInactiveAsync(); 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			this.powerUp.addListener();
@@ -2771,6 +2773,7 @@ Board.prototype.handleRightArrow = function() {
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 		}
+		board.navigationLock = false;
 	}
 	return this; //chainable
 }; //Board.prototype.handleRightArrow
@@ -2802,18 +2805,20 @@ Board.prototype.handleLeftArrow = function() {
 		tileLeft = board.creatureTileMatrix[col][row];
 	}while(tileLeft == null)
 	if( tileLeft && !board.navigationLock) {
+		board.navigationLock=true;
 		if(board.hotspot){
 			board.displayMenuButton(false);
 			board.displayQuitButton(false);
 			board.hotspot = null;
 		}
-		board.navigationLock=true;
+		
 		board.tileActive.setInactiveAsync().then(function() {
 		board.setActiveTile(tileLeft);
 		board.navigationLock=false;
 		return this; //chainable
 		}).done();
-	} else {
+	} else if(!board.navigationLock){
+		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
@@ -2826,6 +2831,7 @@ Board.prototype.handleLeftArrow = function() {
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
+		board.navigationLock=false;
 		//board.displayMenuButton(true);
 		//this.hotspot = Board.HOTSPOT_MENU;
 	}
@@ -2858,7 +2864,8 @@ Board.prototype.handleDownArrow = function() {
 			return this; //chainable
 			}).done();
 		}
-	}else{
+	}else if(!board.navigationLock){
+		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_POWERUP){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
@@ -2879,6 +2886,7 @@ Board.prototype.handleDownArrow = function() {
 				this.hotspot = Board.HOTSPOT_MENU;
 			}
 		}
+		board.navigationLock=false;
 	}
 	return this; //chainable
 }; //Board.prototype.handleDownArrow
@@ -2901,7 +2909,7 @@ Board.prototype.handleUpArrow = function() {
 			}
 			tileUp = board.creatureTileMatrix[col][row];
 		}while(tileUp == null)
-		if( tileUp) {
+		if( tileUp && !board.navigationLock) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
 			board.setActiveTile(tileUp);
@@ -2909,7 +2917,8 @@ Board.prototype.handleUpArrow = function() {
 			return this; //chainable
 			}).done();
 		}
-	}else{
+	}else if(!board.navigationLock){
+		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_QUIT) {
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
@@ -2930,6 +2939,7 @@ Board.prototype.handleUpArrow = function() {
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;	
 		}
+		board.navigationLock=false;
 	}
 	return this; //chainable
 }; //Board.prototype.handleUpArrow
