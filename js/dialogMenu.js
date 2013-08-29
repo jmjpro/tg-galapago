@@ -1,6 +1,6 @@
 DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-quit", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-game-menu", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge"},
+	{"id" : "dialog-game-menu", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-time-out", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
@@ -78,7 +78,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			if( bgImage ) {
 				$('#dialog-new-game').css('background-image','url(' + bgImage.src + ')');
 			}			
-			new DialogMenu(mainCanvasId, board, 'dialog-new-game', 'button-huge-hilight','button-huge-hilight','button-huge');
+			new DialogMenu(mainCanvasId, board, 'dialog-new-game');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
@@ -88,7 +88,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			if( bgImage ) {
 				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');				
 			}
-			new DialogHelp(mainCanvasId, board, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular' ,TGH5.Reporting.Page.Help);
+			new DialogHelp(mainCanvasId, board, 'dialog-help',TGH5.Reporting.Page.Help);
 			break;
 		case 'option-options' :
 			this.hide();
@@ -231,7 +231,7 @@ DialogMenu.SELECT_HANDLERS['dialog-help'] = function(dialogMenu) {
 };
 /* end DialogMenu.SELECT_HANDLERS[] */
 
-function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass , hilightImageName , buttonImageName , sdkReportingPage, callback) {
+function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, callback) {
 	var menuButtonSize, liElement, galBgImagePath, bgImage;
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
@@ -246,13 +246,13 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass , hil
 	this.dialogId = dialogId;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
-	this.hilightClass = hilightClass;
-	this.hilightImageName = hilightImageName;
-	this.buttonImageName = DialogMenu.getButtonClass( dialogId );
+	this.hilightClass = DialogMenu.getButtonClass( dialogId );
+	this.hilightImageName = "button-hilight";
+	this.buttonImageName = "button-regular";
 	var menuButtonSize = this.dialogNav.children().length;
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (this.dialogNav.children()[i]);
-		galBgImagePath = DialogMenu.DIALOG_PREFIX + buttonImageName+'.png';
+		galBgImagePath = DialogMenu.DIALOG_PREFIX + this.buttonImageName+'.png';
 		bgImage = LoadingScreen.gal.get(galBgImagePath);
 		if( bgImage ) {
 			$('#'+liElement.id).css('background-image','url(' + bgImage.src + ')');
@@ -262,7 +262,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, hilightClass , hil
 		}
 	}
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
-	galBgImagePath = DialogMenu.DIALOG_PREFIX+hilightImageName+'.png';
+	galBgImagePath = DialogMenu.DIALOG_PREFIX+ this.hilightImageName+'.png';
 	bgImage = LoadingScreen.gal.get(galBgImagePath);
 	if( bgImage ) {
 		this.currentNavItem.css('background-image','url(' + bgImage.src + ')');

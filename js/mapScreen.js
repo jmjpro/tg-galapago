@@ -53,7 +53,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 		case 'button-reset-map' :
 			//console.log( 'selected reset map button');
 			$('#dialog-reset-game').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
+			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
 			//console.log( 'selected menu map button');
@@ -62,7 +62,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-quit-map' :
 			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
-			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
+			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
 }; //MapScreen.prototype.handleNavButtonSelect()
