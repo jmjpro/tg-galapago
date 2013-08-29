@@ -9,7 +9,7 @@
 			"unlocksLevels" :["2"],
 			"unlocksLevelsArrows" :[
 				{"2":
-					{"right_down":[235,335]}
+					{"right-down":[235,335]}
 				}
 			],
 			"dangerBarSeconds" : "400",
@@ -38,10 +38,10 @@
 			"unlocksLevels" :["1","3"],
 			"unlocksLevelsArrows" :[
 				{"1":
-					{"left_up":[245,341]}
+					{"left-up":[245,341]}
 				},
 				{"3":
-					{"right_down":[321,383]}
+					{"right-down":[321,383]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -113,7 +113,7 @@
 					{"left":[389,401]}
 				},
 				{"5":
-					{"right_down":[459,428]}
+					{"right-down":[459,428]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -142,7 +142,7 @@
 			"unlocksLevels" :["4","6","14"],
 			"unlocksLevelsArrows" :[
 				{"4":
-					{"left_up":[466,425]}
+					{"left-up":[466,425]}
 				},
 				{"6":
 					{"down":[453,492]}
@@ -181,10 +181,10 @@
 					{"up":[456,486]}
 				},
 				{"7":
-					{"right_down":[508,536]}
+					{"right-down":[508,536]}
 				},
 				{"14":
-					{"right_up":[515,502]}
+					{"right-up":[515,502]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -214,7 +214,7 @@
 			"unlocksLevels" :["6","14","8"],
 			"unlocksLevelsArrows" :[
 				{"6":
-					{"left_up":[510,529]}
+					{"left-up":[510,529]}
 				},
 				{"14":
 					{"up":[566,514]}
@@ -324,13 +324,13 @@
 					{"left":[781,575]}
 				},
 				{"16":
-					{"left_up":[784,538]}
+					{"left-up":[784,538]}
 				},
 				{"17":
 					{"up":[834,520]}
 				},
 				{"11":
-					{"right_up":[902,514]}
+					{"right-up":[902,514]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -359,13 +359,13 @@
 			"unlocksLevels" :["10","18","19"],
 			"unlocksLevelsArrows" :[
 				{"10":
-					{"left_down":[894,518]}
+					{"left-down":[894,518]}
 				},
 				{"18":
-					{"left_up":[902,482]}
+					{"left-up":[902,482]}
 				},
 				{"19":
-					{"right_up":[954,471]}
+					{"right-up":[954,471]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -425,10 +425,10 @@
 			"unlocksLevels" :["12","20"],
 			"unlocksLevelsArrows" :[
 				{"10":
-					{"left_down":[1068,445]}
+					{"left-down":[1068,445]}
 				},
 				{"18":
-					{"left_up":[1061,412]}
+					{"left-up":[1061,412]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -461,13 +461,13 @@
 					{"left":[490,470]}
 				},
 				{"6":
-					{"left_down":[508,505]}
+					{"left-down":[508,505]}
 				},
 				{"7":
 					{"down":[558,516]}
 				},
 				{"15":
-					{"right_down":[607,493]}
+					{"right-down":[607,493]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -552,7 +552,7 @@
 					{"down":[741,539]}
 				},
 				{"10":
-					{"right_down":[777,536]}
+					{"right-down":[777,536]}
 				},
 				{"17":
 					{"right":[789,506]}
@@ -638,13 +638,13 @@
 			"unlocksLevels" :["11","17","19"],
 			"unlocksLevelsArrows" :[
 				{"11":
-					{"left_down":[863,477]}
+					{"left-down":[863,477]}
 				},
 				{"17":
-					{"right_down":[905,478]}
+					{"right-down":[905,478]}
 				},
 				{"19":
-					{"right_up":[926,446]}
+					{"right-up":[926,446]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -682,13 +682,13 @@
 			"unlocksLevels" :["12","20","23"],
 				"unlocksLevelsArrows" :[
 				{"12":
-					{"right_down":[994,445]}
+					{"right-down":[994,445]}
 				},
 				{"20":
-					{"right_up":[1022,415]}
+					{"right-up":[1022,415]}
 				},
 				{"23":
-					{"right_up":[986,405]}
+					{"right-up":[986,405]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -726,10 +726,10 @@
 			"unlocksLevels" :["13","21"],
 			"unlocksLevelsArrows" :[
 				{"13":
-					{"right_down":[1062,409]}
+					{"right-down":[1062,409]}
 				},
 				{"21":
-					{"right_up":[1063,373]}
+					{"right-up":[1063,373]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -758,7 +758,7 @@
 			"unlocksLevels" :["22"],
 				"unlocksLevelsArrows" :[
 				{"22":
-					{"right_up":[1102,328]}
+					{"right-up":[1102,328]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -842,7 +842,7 @@
 					{"left":[1002,262]}
 				},
 				{"26":
-					{"left_down":[992,315]}
+					{"left-down":[992,315]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -871,7 +871,7 @@
 			"unlocksLevels" :["26"],
 			"unlocksLevelsArrows" :[
 				{"26":
-					{"left_down":[965,295]}
+					{"left-down":[965,295]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -899,7 +899,7 @@
 			"unlocksLevels" :["27","29"],
 			"unlocksLevelsArrows" :[
 				{"27":
-					{"left_down":[902,331]}
+					{"left-down":[902,331]}
 				},
 				{"29":
 					{"down":[953,352]}
@@ -994,7 +994,7 @@
 					{"left":[908,368]}
 				},
 				{"35":
-					{"left_down":[929,400]}
+					{"left-down":[929,400]}
 				}
 			],
 			"dangerBarSeconds" : "300",
@@ -1198,7 +1198,7 @@
 			"unlocksLevels" :["36"],
 			"unlocksLevelsArrows" :[
 				{"36":
-					{"left_down":[856,427]}
+					{"left-down":[856,427]}
 				}
 			],
 			"dangerBarSeconds" : "240",
@@ -1326,7 +1326,7 @@
 					{"up":[588,410]}
 				},
 				{"40":
-					{"left_up":[522,425]}
+					{"left-up":[522,425]}
 				}
 			],
 			"dangerBarSeconds" : "240",
@@ -1355,7 +1355,7 @@
 			"unlocksLevels" :["41"],
 				"unlocksLevelsArrows" :[
 				{"41":
-					{"left_up":[463,349]}
+					{"left-up":[463,349]}
 				}
 			],
 			"dangerBarSeconds" : "240",
@@ -1417,7 +1417,7 @@
 					{"down":[410,307]}
 				},
 				{"44":
-					{"left_down":[364,300]}
+					{"left-down":[364,300]}
 				},
 				{"45":
 					{"right":[437,282]}
@@ -1449,7 +1449,7 @@
 			"unlocksLevels" :["44"],
 			"unlocksLevelsArrows" :[
 				{"44":
-					{"left_up":[325,320]}
+					{"left-up":[325,320]}
 				}
 			],
 			"dangerBarSeconds" : "400",
@@ -1511,7 +1511,7 @@
 					{"down":[475,300]}
 				},
 				{"54":
-					{"right_up":[480,270]}
+					{"right-up":[480,270]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1569,7 +1569,7 @@
 			"unlocksLevels" :["48"],
 			"unlocksLevelsArrows" :[
 				{"48":
-					{"right_down":[610,305]}
+					{"right-down":[610,305]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1656,7 +1656,7 @@
 			"unlocksLevels" :["51"],
 			"unlocksLevelsArrows" :[
 				{"51":
-					{"right_up":[818,301]}
+					{"right-up":[818,301]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1714,7 +1714,7 @@
 			"unlocksLevels" :["53"],
 			"unlocksLevelsArrows" :[
 				{"53":
-					{"right_up":[911,255]}
+					{"right-up":[911,255]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1743,7 +1743,7 @@
 			"unlocksLevels" :["62"],
 			"unlocksLevelsArrows" :[
 				{"62":
-					{"left_up":[887,213]}
+					{"left-up":[887,213]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1772,7 +1772,7 @@
 			"unlocksLevels" :["47"],
 			"unlocksLevelsArrows" :[
 				{"47":
-					{"right_down":[518,275]}
+					{"right-down":[518,275]}
 				}
 			],
 			"dangerBarSeconds" : "330",
@@ -1801,7 +1801,7 @@
 			"unlocksLevels" :["64"],
 			"unlocksLevelsArrows" :[
 				{"64":
-					{"right_up":[530,236]}
+					{"right-up":[530,236]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1830,7 +1830,7 @@
 			"unlocksLevels" :["55"],
 			"unlocksLevelsArrows" :[
 				{"55":
-					{"left_up":[575,233]}
+					{"left-up":[575,233]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1862,7 +1862,7 @@
 					{"left":[647,264]}
 				},
 				{"63":
-					{"left_up":[672,226]}
+					{"left-up":[672,226]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -1977,7 +1977,7 @@
 			"unlocksLevels" :["60"],
 			"unlocksLevelsArrows" :[
 				{"60":
-					{"right_up":[822,225]}
+					{"right-up":[822,225]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -2006,7 +2006,7 @@
 			"unlocksLevels" :["61"],
 			"unlocksLevelsArrows" :[
 				{"61":
-					{"left_down":[855,204]}
+					{"left-down":[855,204]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -2035,7 +2035,7 @@
 			"unlocksLevels" :["64"],
 			"unlocksLevelsArrows" :[
 				{"64":
-					{"left_up":[620,208]}
+					{"left-up":[620,208]}
 				}
 			],
 			"dangerBarSeconds" : "220",
@@ -2063,7 +2063,7 @@
 			"unlocksLevels" :["55","65"],
 			"unlocksLevelsArrows" :[
 				{"55":
-					{"left_down":[585,205]}
+					{"left-down":[585,205]}
 				},
 				{"65":
 					{"right":[636,170]}
@@ -2155,7 +2155,7 @@
 			"unlocksLevels" :["68"],
 			"unlocksLevelsArrows" :[
 				{"68":
-					{"right_up":[777,170]}
+					{"right-up":[777,170]}
 				}
 			],
 			"dangerBarSeconds" : "330",
@@ -2184,7 +2184,7 @@
 			"unlocksLevels" :["69"],
 			"unlocksLevelsArrows" :[
 				{"69":
-					{"right_up":[810,150]}
+					{"right-up":[810,150]}
 				}
 			],
 			"dangerBarSeconds" : "220",
