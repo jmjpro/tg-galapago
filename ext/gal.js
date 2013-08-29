@@ -265,8 +265,19 @@
 	 * @throws {exception} if the asset doesn't actually exist.
 	 */
 	GAL.prototype.get = function (assetPath) {
-		return this.lookupTable[assetPath] || null;
-	};
+			return this.lookupTable[assetPath] || null;
+	}; //GAL.prototype.get()
+
+	/**
+	 * Gets child images for an image collage
+	 * @param {string} assetPath path of the asset relative to the manifest
+	 * root.
+	 * @return {array} JS image objects.
+	 * @throws {exception} if the asset doesn't actually exist.
+	 */
+	GAL.prototype.getSprites = function (assetPath) {
+		return ImageCollage.getSprites(assetPath);
+	}; //GAL.prototype.getSprites()
 
 	/**
 	* request release of memory occupied by resource at assetPath

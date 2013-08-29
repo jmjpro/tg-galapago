@@ -14,29 +14,15 @@ LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [46, 0], id: '2'}, 
  {cell: [92, 0], id: '3'}, 
  {cell: [138, 0], id: '4'}, 
- {cell: [184, 0], id: '5'}, 
- {cell: [230, 0], id: '6'}, 
- {cell: [276, 0], id: '7'}, 
- {cell: [322, 0], id: '8'}, 
- {cell: [368, 0], id: '9'}, 
- {cell: [414, 0], id: '10'}
+ {cell: [184, 0], id: '5'}
  ]];
 
-LevelAnimation.JUMP_SPRITE_MATRIX = [[
+LevelAnimation.BEACH_JUMP_SPRITE_MATRIX = [[
  {cell: [11, 0], id: '1'}, 
  {cell: [57, 0], id: '2'}, 
  {cell: [79, 0], id: '3'}, 
  {cell: [125, 0], id: '4'}, 
- {cell: [147, 0], id: '5'}, 
- {cell: [193, 0], id: '6'},
- {cell: [215, 0], id: '7'}, 
- {cell: [261, 0], id: '8'}, 
- {cell: [283, 0], id: '9'}, 
- {cell: [329, 0], id: '10'}, 
- {cell: [351, 0], id: '11'}, 
- {cell: [397, 0], id: '12'}, 
- {cell: [419, 0], id: '13'}, 
- {cell: [465, 0], id: '14'}
+ {cell: [147, 0], id: '5'}
 ]];
 
 LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
@@ -44,16 +30,7 @@ LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
  {cell: [49, 0], id: '2'}, 
  {cell: [55, 0], id: '3'}, 
  {cell: [101, 0], id: '4'}, 
- {cell: [107, 0], id: '5'}, 
- {cell: [153, 0], id: '6'},
- {cell: [159, 0], id: '7'}, 
- {cell: [205, 0], id: '8'}, 
- {cell: [211, 0], id: '9'}, 
- {cell: [257, 0], id: '10'}, 
- {cell: [263, 0], id: '11'}, 
- {cell: [309, 0], id: '12'}, 
- {cell: [315, 0], id: '13'}, 
- {cell: [361, 0], id: '14'}
+ {cell: [107, 0], id: '5'}
 ]];
 
 LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
@@ -61,16 +38,7 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [58, 0], id: '2'}, 
  {cell: [82, 0], id: '3'}, 
  {cell: [128, 0], id: '4'}, 
- {cell: [152, 0], id: '5'}, 
- {cell: [198, 0], id: '6'},
- {cell: [222, 0], id: '7'}, 
- {cell: [268, 0], id: '8'}, 
- {cell: [292, 0], id: '9'}, 
- {cell: [338, 0], id: '10'}, 
- {cell: [362, 0], id: '11'}, 
- {cell: [408, 0], id: '12'}, 
- {cell: [432, 0], id: '13'}, 
- {cell: [478, 0], id: '14'}
+ {cell: [152, 0], id: '5'}
 ]];
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
@@ -274,6 +242,7 @@ LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomV
 LevelAnimation.bobCervantesAnimation = null;
 	
 function LevelAnimation(layer){
+	this.collageDirectory = Galapago.collageDirectory;
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -349,7 +318,7 @@ LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
 			if( image ) {
 				switch( bgTheme ) {
 					case 'beach':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.JUMP_SPRITE_MATRIX);
+						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.BEACH_JUMP_SPRITE_MATRIX);
 						break;
 					case 'forest':
 						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.FOREST_JUMP_SPRITE_MATRIX);
@@ -402,7 +371,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
-	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkImageSpriteSheet;
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkSprites, tileMarkImageSpriteSheet;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -424,13 +393,19 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMark = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'tile-mark-strip.png');
-			tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
+			tileMark = LoadingScreen.gal.get(this.collageDirectory + 'tile-mark-strip.png');
+			//tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
+			if( tileMark ) {
+				tileMarkSprites	= LoadingScreen.gal.getSprites(tileMark);
+			}
+			else {
+				throw 'unable to find image ' + tileMark;
+			}
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
 		this.rolloverAnimation.start();
 	}
-};
+}; //LevelAnimation.prototype.animateCreatureSelection()
 
 LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, tilePrev, callback){
 	var startedAnimation = false;
@@ -484,7 +459,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
+			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
 				if(rolloverImageSpriteSheet){
 					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
@@ -521,7 +496,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.JUMP_SPRITE_MATRIX[0].length / 4){
+				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 4){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -608,14 +583,15 @@ LevelAnimation.prototype.animateBombs = function(layer){
 LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
-		var coordinates, image, gameStartArrowImageSpriteSheet;
-		image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip-game-start-arrow.png');
-		gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX); 
-		coordinates = [200 , 265 ];
+		var coordinates, sprites, galAssetPath;
+		galAssetPath = levelAnimation.collageDirectory + 'map-start-arrow-strip.png';
+		sprites = LoadingScreen.gal.getSprites( galAssetPath );
+		//gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX);
+		coordinates = [200, 265];
 		if(levelAnimation.gameStartArrowAnimation){
 			levelAnimation.gameStartArrowAnimation.stop();
 		}
-		var gameStartArrowAnimation = new GameStartArrowAnimation(coordinates, gameStartArrowImageSpriteSheet,layer,animateGameStartArrow);		
+		var gameStartArrowAnimation = new GameStartArrowAnimation( coordinates, sprites, layer, animateGameStartArrow );
 		gameStartArrowAnimation.start();
 		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
 	}
@@ -1007,18 +983,22 @@ BombAnimation.prototype.animate = function(){
 //
 
 GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
-function GameStartArrowAnimation(coordinates, imageSpriteSheet, layer ,callback){
-	this.imageSpriteSheet = imageSpriteSheet;
+function GameStartArrowAnimation(coordinates, sprites, layer ,callback){
+	//this.imageSpriteSheet = imageSpriteSheet;
+	this.sprites = sprites;
 	this.interval = null;
 	this.spriteId = 0;
 	this.coordinates = coordinates;
 	this.layer = layer;
 	this.callback = callback;
+	this.imageWidth = 0;
+	this.imageHeight = 0;
 }
 
 GameStartArrowAnimation.prototype.start = function(){
+	var animation;
+	animation = this;
 	this.spriteId = 0;
-	var animation = this;
 	this.interval = setInterval(function(){
 		animation.animate();},
 		GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL);
@@ -1033,13 +1013,15 @@ GameStartArrowAnimation.prototype.stop = function(){
 };
 
 GameStartArrowAnimation.prototype.animate = function(){
-	var image = this.imageSpriteSheet.getSprite([this.spriteId, 0]);
-	this.imageHeight = image.height;
-	this.imageWidth = image.width;
-	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
+	var image;
+	//image = this.imageSpriteSheet.getSprite([spriteId, 0]);
+	image = this.sprites[this.spriteId];
+	this.imageWidth = image.naturalWidth;
+	this.imageHeight = image.naturalHeight;
+	//this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
+	this.layer.drawImage( image, this.coordinates[0], this.coordinates[1]);
 	this.spriteId++;
-	if(this.spriteId >= this.imageSpriteSheet.spriteMatrix[0].length-1){
-		//this.callback();
+	if(this.spriteId >= this.sprites.length-1){
 		this.spriteId=0;
 	}
 };

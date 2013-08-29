@@ -1,7 +1,7 @@
 {
 	"assetRootImage": "res/img/",
 	"assetRootAudio": "res/audio/",
-	"collageDirectory" : "collage",
+	"collageDirectory" : "collage/",
 	"audioExts": "mp3",
 	"ignorePrefix": "IGNORE/",
 	"noCachePrefix": "NOCACHE/",
@@ -33,12 +33,12 @@
 			"collage/map-board-buttons.png",
 			"background/map.jpg",
 			"screen-map/bonfire-strip.png",
-			"screen-map/start-arrow-strip.png",
+			"collage/map-start-arrow-strip.png",
 			"screen-map/bomb-left-one-strip.png",
 			"screen-map/bomb-left-two-strip.png",
 			"screen-map/bomb-mid-strip.png",
 			"screen-map/bomb-right-strip.png",
-			"screen-map/lava-strip.png"
+			"collage/map-lava-strip.png"
 		]
 	},
 	{
@@ -61,7 +61,7 @@
 			"screen-game/powerup-gained-strip.png",
 			"screen-game/sparkle-strip.png",
 			"screen-game/superfriends.png",
-			"screen-game/tile-mark-strip.png"
+			"collage/game-tile-mark-strip.png"
 		]
 	},
 	{ "name": "beach-a", "contents": [ "background/beach-a.jpg" ] },

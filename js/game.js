@@ -86,6 +86,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 
 Galapago.init = function(isTimedMode) {
 	var levelTemp, level, levelIt;
+	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
 	//Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'false' ? false : true);
@@ -220,7 +221,7 @@ Galapago.delay = function(delayMs) {
 };
 /* end class Galapago */
 
-LevelMap.WIDTH = 1280;
+LevelMap.WIDTH = 1279;
 LevelMap.HEIGHT = 640;
 LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
@@ -246,10 +247,11 @@ LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 LevelMap.STAR_SPRITE_MATRIX = [
 	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
 ];
-
+/*
 LevelMap.LAVA_SPRITE_MATRIX = [
 [{cell: [0, 0], id: 'lava-1'}, {cell: [190, 0], id: 'lava-2'}, {cell: [380, 0], id: 'lava-3'}, {cell: [570, 0], id: 'lava-4'}, {cell: [760, 0], id: 'lava-5'}, {cell: [950, 0], id: 'lava-6'}, {cell: [1140, 0], id: 'lava-7'}, {cell: [1330, 0], id: 'lava-8'}, {cell: [1520, 0], id: 'lava-9'}, {cell: [1710, 0], id: 'lava-10'}, {cell: [1900, 0], id: 'lava-11'}, {cell: [2090, 0], id: 'lava-12'}, {cell: [2280, 0], id: 'lava-13'}, {cell: [2470, 0], id: 'lava-14'}, {cell: [2660, 0], id: 'lava-15'}, {cell: [2850, 0], id: 'lava-16'}, {cell: [3040, 0], id: 'lava-17'}, {cell: [3230, 0], id: 'lava-18'}, {cell: [3420, 0], id: 'lava-19'}, {cell: [3610, 0], id: 'lava-20'}, {cell: [3800, 0], id: 'lava-21'}, {cell: [3990, 0], id: 'lava-22'}, {cell: [4180, 0], id: 'lava-23'}, {cell: [4370, 0], id: 'lava-24'}, {cell: [4560, 0], id: 'lava-25'}, {cell: [4750, 0], id: 'lava-26'}, {cell: [4940, 0], id: 'lava-27'}, {cell: [5130, 0], id: 'lava-28'}, {cell: [5320, 0], id: 'lava-29'}, {cell: [5510, 0], id: 'lava-30'}, {cell: [5700, 0], id: 'lava-31'}],
 ];
+*/
 
 /* begin class LevelMap */
 function LevelMap(level) {
@@ -270,15 +272,13 @@ function LevelMap(level) {
 } //LevelMap constructor
 
 LevelMap.prototype.display = function() {
-	var backgroundImage;
+	var backgroundImage, lavaAssetPath;
 	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
 	if( backgroundImage ) {
 		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
 	this.screenDiv.css( 'display', 'block');
 	this.canvas.focus();
-	/*
-	this.animate(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_lava_idle.png'),LevelMap.LAVA_SPRITE_MATRIX);
 	var otherAnimationCanvas = this.otherAnimationCanvas;
 	otherAnimationCanvas.width = LevelMap.WIDTH;
 	otherAnimationCanvas.height = LevelMap.HEIGHT;
@@ -286,15 +286,18 @@ LevelMap.prototype.display = function() {
 	otherAnimationCanvas.onclick = function(evt) {
 		levelAnimation.canvas.focus();
 	};
+	if(Level.isComplete("1")){
+	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
+	}
+	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
+	this.animate(lavaAssetPath);
+	/*
 	var completedLevelIds = LevelMap.getLevelsCompleted();
 	if(completedLevelIds.length){
 		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
 	}
 	this.levelAnimation.animateBombs(this.otherAnimationLayer);
-	if(!Level.isComplete("1")){
-	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
-	}
-	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	*/
 	this.drawHotspots();
 	this.registerEventHandlers();
@@ -323,7 +326,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 				if(!Level.isComplete(levelId)){
 					levelInfo = unlockLevelArrow[levelId];
 					for(arrow in levelInfo){
-						var img = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'next_level_arrow_' + arrow + '.png');
+						var img = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png');
 						var coordinates = levelInfo[arrow];
 						var x = coordinates[0];
 						var y = coordinates[1];
@@ -338,24 +341,26 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 	}
 }; //LevelMap.prototype.drawBlinkingArrows()
 
-LevelMap.prototype.animate = function(image, spriteMatrix){
-    var st=new SpriteSheet(image,spriteMatrix);
-	var xIndex =0;
-	var that=this;
-	var imageData=st.getSpriteData([xIndex,0]);
-	//animationCanvas.style.zIndex = 9;
+LevelMap.prototype.animate = function(assetPath){
+	var xIndex, that, sprites, sprite;
+	sprites = LoadingScreen.gal.getSprites(assetPath);
+	xIndex =0;
+	that=this;
+	sprite = sprites[xIndex];
+	sprite = CanvasUtil.magnifyImage( sprite, 2 );
 	this.animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
 	};
-	this.animationCanvas.width = imageData.width;
-	this.animationCanvas.height = imageData.height;
+	this.animationCanvas.width = sprite.width;
+	this.animationCanvas.height = sprite.height;
 	this.animationLayer =  this.animationCanvas.getContext('2d');	
 	function cycleSprite(){
-	    var imageData=st.getSpriteData([xIndex,0]);
-	    that.animationLayer.clearRect(0,0,imageData.width,imageData.height);			
-		that.animationLayer.putImageData(imageData,0,0);
-		xIndex=xIndex+1;
-		if(Number(xIndex)>spriteMatrix[0].length-2){
+	    sprite = sprites[xIndex];
+	    sprite = CanvasUtil.magnifyImage( sprite, 2 );
+	    that.animationLayer.clearRect(0,0,sprite.width,sprite.height);
+		that.animationLayer.drawImage(sprite, 0, 0, sprite.width, sprite.height);
+		xIndex++;
+		if( xIndex > sprites.length - 1 ){
 		  xIndex=0;
 		}
 	}

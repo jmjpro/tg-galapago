@@ -65,7 +65,7 @@ CanvasUtil.getBase64Image = function(img) {
 }; //CanvasUtil.getBase64Image()
 
 CanvasUtil.magnifyImage = function( img, factor ) {
-	img.width *= factor;
-	img.height *= factor;
+	img.width = img.naturalWidth * factor;
+	img.height = img.naturalHeight * factor;
 	return img;
 }; //CanvasUtil.magnifyImage()
