@@ -8,6 +8,7 @@ LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
 LevelAnimation.JUMP_SUFFIX = '-jump';
+LevelAnimation.LEVEL_1_CENTER = [200, 265];
 
 LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
@@ -587,7 +588,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 		galAssetPath = levelAnimation.collageDirectory + 'map-start-arrow-strip.png';
 		sprites = LoadingScreen.gal.getSprites( galAssetPath );
 		//gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX);
-		coordinates = [200, 265];
+		coordinates = LevelAnimation.LEVEL_1_CENTER;
 		if(levelAnimation.gameStartArrowAnimation){
 			levelAnimation.gameStartArrowAnimation.stop();
 		}
@@ -1019,6 +1020,7 @@ GameStartArrowAnimation.prototype.animate = function(){
 	this.imageWidth = image.naturalWidth;
 	this.imageHeight = image.naturalHeight;
 	//this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
+	this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
 	this.layer.drawImage( image, this.coordinates[0], this.coordinates[1]);
 	this.spriteId++;
 	if(this.spriteId >= this.sprites.length-1){
