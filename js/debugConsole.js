@@ -25,6 +25,7 @@ console.log = function(message, logType) {
 		}
     }
 	console.olog(message);
+	//return;
 	debugConsole = document.getElementById('debug-console');
 	debugConsole.style.display = 'block';
 	if( typeof logType === 'undefined' ) {
@@ -33,7 +34,7 @@ console.log = function(message, logType) {
 	else {
 		logType = logType;
 	}
-	debugConsole.innerHTML += '<p class="' + logType + '">' + message + '</p>';
+	debugConsole.insertAdjacentHTML('beforeend', '<p class="' + logType + '">' + message + '</p>');
 	debugConsole.scrollTop = debugConsole.scrollHeight;
 };
 

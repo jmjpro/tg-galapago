@@ -35,7 +35,6 @@
 		this.progress = {};
 		this.error = {};
 		this.lookupTable = new Array();
-		this.lookupLoadedImagesTable = [];
 	};
 
 	GAL.IMAGE_CACHE_DIV_ID = 'image-cache';
@@ -88,7 +87,7 @@
 			}
 
 			var key = bundle[index];
-			if (!(key in that.lookupTable)) {
+			if (typeof that.lookupTable[key] === 'undefined' || that.lookupTable[key] === null) {
 				// Get the full url to the asset.
 				var audioExts = that.manifest.audioExts;
 				var collageDirectory = that.manifest.collageDirectory;
@@ -162,7 +161,7 @@
 		}
 		for( var image in this.lookupTable ) {
 			if( this.lookupTable[image] === null ) {
-			delete this.lookupTable[image];
+				delete this.lookupTable[image];
 			}
 			//console.debug( image );
 		}
@@ -289,21 +288,10 @@
 		}
 		else {
 			this.lookupTable[assetPath] = null;
+			delete this.lookupTable[assetPath];
 			this.logPixelCount( image, false );
 		}
 	}; //GAL.prototype.release()
-
-	GAL.prototype.getLoadedImages = function (assetPath) {
-		return this.lookupLoadedImagesTable[assetPath] || null;
-	};
-
-	GAL.prototype.setLoadedImages = function (assetPath, imagesArray) {
-		this.lookupLoadedImagesTable[assetPath] = imagesArray;
-	};
-
-	GAL.prototype.set = function (assetPath, data) {
-		this.lookupTable[assetPath] = data;
-	};
 
 	/**
 	 * Gets the last cached time for an asset at a given path.
