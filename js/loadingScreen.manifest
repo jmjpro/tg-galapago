@@ -45,7 +45,7 @@
 		"name": "board-common",
 		"contents": [
 			"collage/game-powerup.png",
-			"screen-game/cocoon-removed-strip.png",
+			"collage/cocoon-removed-strip.png",
 			"screen-game/danger-bar-fill-1.png",
 			"screen-game/danger-bar-fill-2.png",
 			"screen-game/danger-bar-fill-strip.png",
@@ -59,7 +59,7 @@
 			"screen-game/lightning-strip.png",
 			"screen-game/powerup-activated-strip.png",
 			"screen-game/powerup-gained-strip.png",
-			"screen-game/sparkle-strip.png",
+			"collage/sparkle-strip.png",
 			"screen-game/superfriends.png",
 			"collage/game-tile-mark-strip.png"
 		]

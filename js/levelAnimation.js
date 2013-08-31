@@ -23,7 +23,12 @@ LevelAnimation.BEACH_JUMP_SPRITE_MATRIX = [[
  {cell: [57, 0], id: '2'}, 
  {cell: [79, 0], id: '3'}, 
  {cell: [125, 0], id: '4'}, 
- {cell: [147, 0], id: '5'}
+ {cell: [147, 0], id: '5'}, 
+ {cell: [193, 0], id: '6'},
+ {cell: [215, 0], id: '7'}, 
+ {cell: [261, 0], id: '8'}, 
+ {cell: [283, 0], id: '9'}, 
+ {cell: [329, 0], id: '10'}
 ]];
 
 LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
@@ -31,7 +36,12 @@ LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
  {cell: [49, 0], id: '2'}, 
  {cell: [55, 0], id: '3'}, 
  {cell: [101, 0], id: '4'}, 
- {cell: [107, 0], id: '5'}
+ {cell: [107, 0], id: '5'}, 
+ {cell: [153, 0], id: '6'},
+ {cell: [159, 0], id: '7'}, 
+ {cell: [205, 0], id: '8'}, 
+ {cell: [211, 0], id: '9'}, 
+ {cell: [257, 0], id: '10'}
 ]];
 
 LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
@@ -39,9 +49,16 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [58, 0], id: '2'}, 
  {cell: [82, 0], id: '3'}, 
  {cell: [128, 0], id: '4'}, 
- {cell: [152, 0], id: '5'}
+ {cell: [152, 0], id: '5'}, 
+ {cell: [198, 0], id: '6'},
+ {cell: [222, 0], id: '7'}, 
+ {cell: [268, 0], id: '8'}, 
+ {cell: [292, 0], id: '9'}, 
+ {cell: [338, 0], id: '10'}
 ]];
+
 /*
+
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
  {cell: [73, 0], id: '2'}, 
@@ -114,18 +131,6 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [294, 0], id: '15'}, 
  {cell: [315, 0], id: '16'}
  ]];*/
-
-LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'}, 
-{cell: [27, 0], id: '2'}, 
-{cell: [54, 0], id: '3'}, 
-{cell: [81, 0], id: '4'}, 
-{cell: [108, 0], id: '5'}, 
-{cell: [135, 0], id: '6'}, 
-{cell: [162, 0], id: '7'}, 
-{cell: [189, 0], id: '8'}, 
-{cell: [216, 0], id: '9'}
-]];
 
 LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
@@ -207,38 +212,12 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [360, 0], id: '7'} 
 ]];
 
-LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [146, 0], id: '2'},  
-{cell: [292, 0], id: '3'}, 
-{cell: [438, 0], id: '4'},  
-{cell: [584, 0], id: '5'},
-{cell: [730, 0], id: '6'},   
-{cell: [876, 0], id: '7'},   
-{cell: [1022, 0], id: '8'} 
-]]
-
-LevelAnimation.STARS_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 33], id: '2'}],  
-[{cell: [0, 66], id: '3'}], 
-[{cell: [0, 99], id: '4'}],  
-[{cell: [0, 132], id: '5'}],
-[{cell: [0, 165], id: '6'}],   
-[{cell: [0, 198], id: '7'}],   
-[{cell: [0, 231], id: '8'}],   
-[{cell: [0, 264], id: '9'}],   
-[{cell: [0, 297], id: '10'}] 
-];
-
 LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
 [{cell: [0, 58], id: '2'}],  
 [{cell: [0, 116], id: '3'}]   
 ];
 
-LevelAnimation.sparklesImages = [];
-LevelAnimation.starImages = [];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
 	
@@ -253,8 +232,6 @@ function LevelAnimation(layer){
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
-	this.initSparkles();
-	this.initStars();
 	this.initLightning();
 }
 
@@ -372,7 +349,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
-	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkSprites, tileMarkImageSpriteSheet;
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites, tileMarkImageSpriteSheet;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -394,16 +371,9 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMark = LoadingScreen.gal.get(this.collageDirectory + 'game-tile-mark-strip.png');
-			//tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
-			if( tileMark ) {
-				tileMarkSprites	= LoadingScreen.gal.getSprites(tileMark);
-			}
-			else {
-				throw 'unable to find image ' + tileMark;
-			}
+			tileMarkSprites	= LoadingScreen.gal.getSprites(this.collageDirectory + 'game-tile-mark-strip.png');
 		}
-		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
+		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites);
 		this.rolloverAnimation.start();
 	}
 }; //LevelAnimation.prototype.animateCreatureSelection()
@@ -460,13 +430,13 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
+			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
 				}
 				if(rolloverImageSpriteSheet1){
-					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
+					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
 				}
 			}
@@ -481,23 +451,23 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				}
 				layer.clearRect(x, y, width, height);
 				if(tileUpSelected){
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
 				}
 				else{
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 4){
+				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 2){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -514,7 +484,43 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
+
 		var bonfireImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bonfire-strip.png');
+		var animatedLevels = [];
+		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
+		for (var i = 0; i < parallelAnimation; i++) {
+			var randomLevelId;
+			do{
+				randomLevelId = Math.ceil( Math.random() * highestCompletedId);
+			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId));
+			animatedLevels.push(randomLevelId);
+		}
+		_.each(animatedLevels, function(animatedLevel){
+			var level = Level.findById(animatedLevel);
+			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
+			var x = centroid[0] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_WIDTH / 3);
+			var y = centroid[1] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_HEIGHT / 1.4);
+			coordinates.push([x, y]);
+		});
+		if(coordinates.length){
+			if(levelAnimation.bonFireAnimation){
+				levelAnimation.bonFireAnimation.stop();
+			}
+			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
+			bonFireAnimation.start();
+			levelAnimation.bonFireAnimation = bonFireAnimation;
+		}
+	}
+	animateRandomBornFires();
+	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
+}; 
+
+//LevelAnimation.prototype.animateBonFire()
+LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
+	var levelAnimation = this;
+	function animateRandomBornFires(){
+		var coordinates = [];
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -723,32 +729,6 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	}
 };
 
-LevelAnimation.prototype.initSparkles = function() {
-	console.debug('entering LevelAnimation.prototype.initSparkles()');
-	if(!LevelAnimation.sparklesImages.length){
-		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png");
-		if( image ) {
-			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
-				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
-			}
-		}
-	}
-	console.debug('exiting LevelAnimation.prototype.initSparkles()');
-}
-
-LevelAnimation.prototype.initStars = function() {
-	if(!LevelAnimation.starImages.length){
-		var image = LoadingScreen.gal.get("screen-game/cocoon-removed-strip.png");
-		if( image ) {
-			var spriteSheet = new SpriteSheet(image, LevelAnimation.STARS_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.STARS_SPRITE_MATRIX.length; x++){
-				LevelAnimation.starImages.push(spriteSheet.getSpriteNew([0,x]));
-			}
-		}
-	}
-}
-
 LevelAnimation.prototype.initLightning = function() {
 	var image, spriteSheet, x;
 	if(!LevelAnimation.lightningImages.rightHorizontal.length){
@@ -776,7 +756,7 @@ LevelAnimation.makeLightningFunction = function(spriteSheet, x) {
 }
 
 LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {
-	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP );
+	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( this.collageDirectory + 'cocoon-removed-strip.png' ));
 	starsAnimation.start();	
 }
 
@@ -799,7 +779,7 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 }
 
 LevelAnimation.prototype.animateSparkles = function(layer, x, y){
-	var sparklesAnimation = new SparklesAnimation(layer, x, y);
+	var sparklesAnimation = new SparklesAnimation(layer, x, y, LoadingScreen.gal.getSprites( this.collageDirectory + 'sparkle-strip.png' ));
 	sparklesAnimation.start();
 };
 
@@ -860,14 +840,14 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 };
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
-function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet){
+function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites){
 	this.layer = layer;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
 	this.interval = null;
 	this.rolloverSpriteId = 0;
 	this.tileActive = tileActive;
 	this.stopCallback = stopCallback;
-	this.tileMarkImageSpriteSheet = tileMarkImageSpriteSheet;
+	this.tileMarkSprites = tileMarkSprites;
 	this.tileMarkSpriteId = 0;
 }
 
@@ -892,8 +872,8 @@ RolloverAnimation.prototype.animate = function(){
 			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
 			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
-			if(this.tileMarkImageSpriteSheet){
-				image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
+			if(this.tileMarkSprites){
+				image = this.tileMarkSprites[this.tileMarkSpriteId];
 				if( image ) {
 					this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 					this.tileMarkSpriteId++;
@@ -1238,59 +1218,60 @@ BobCervantesAnimation.prototype.animate = function(){
 };
 
 SparklesAnimation.ROLLOVER_TIME_INTERVAL=100;
-function SparklesAnimation(layer, x, y){
+function SparklesAnimation(layer, x, y, sprites){
 	this.layer = layer;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
+	this.sprites = sprites;
 }
 
 SparklesAnimation.prototype.start = function(){
 	if(this.interval){
 		this.stop();
 	}
-	if( LevelAnimation.sparklesImages && LevelAnimation.sparklesImages.length > 0 ) {
-		this.x = this.x + (Board.TILE_WIDTH);
-		this.y = this.y + (Board.TILE_HEIGHT);
-		this.x = this.x - (LevelAnimation.sparklesImages[0].width);
-		this.y = this.y - (LevelAnimation.sparklesImages[0].height);
-		
-		var sparklesAnimation = this;
-		this.interval = setInterval(function() {
-			sparklesAnimation.animate();
-		}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
-	}
+	this.x = this.x + (Board.TILE_WIDTH);
+	this.y = this.y + (Board.TILE_HEIGHT);
+	this.x = this.x - (this.sprites[0].width);
+	this.y = this.y - (this.sprites[0].height);
+	
+	var sparklesAnimation = this;
+	this.interval = setInterval(function() {
+		sparklesAnimation.animate();
+	}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
+	
 };
 
 SparklesAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, LevelAnimation.sparklesImages[0].width * 2, LevelAnimation.sparklesImages[0].height * 2);
+		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
 		clearInterval(this.interval);
 	}
 };
 
 SparklesAnimation.prototype.animate = function(){
-	var image = LevelAnimation.sparklesImages[this.rolloverSpriteId];
+	var image = this.sprites[this.spriteId];
 	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
 	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
-	this.rolloverSpriteId++;
-	if(this.rolloverSpriteId == LevelAnimation.sparklesImages.length){
+	this.spriteId++;
+	if(this.spriteId == this.sprites.length){
 		this.stop();
 	}
 };
 
 StarsAnimation.ROLLOVER_TIME_INTERVAL=200;
-function StarsAnimation(layer, x, y, destinationX, destinationY){
+function StarsAnimation(layer, x, y, destinationX, destinationY, sprites){
 	this.layer = layer;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
 	this.verticalOffset = 0;
 	this.horizontalOffset = 0;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
 	this.destinationX = destinationX;
 	this.destinationY = destinationY;
+	this.sprites = sprites;
 }
 
 StarsAnimation.prototype.start = function(){
@@ -1298,8 +1279,8 @@ StarsAnimation.prototype.start = function(){
 		this.stop();
 	}
 	
-	this.horizontalOffset = (this.destinationX - this.x) / (LevelAnimation.STARS_SPRITE_MATRIX.length);
-	this.verticalOffset = (this.destinationY - this.y) / (LevelAnimation.STARS_SPRITE_MATRIX.length - 1);
+	this.horizontalOffset = (this.destinationX - this.x) / (this.sprites.length);
+	this.verticalOffset = (this.destinationY - this.y) / (this.sprites.length - 1);
 	var starsAnimation = this;
 	this.interval = setInterval(function() {
 		starsAnimation.animate();
@@ -1308,19 +1289,19 @@ StarsAnimation.prototype.start = function(){
 
 StarsAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, LevelAnimation.starImages[0].width * 2, LevelAnimation.starImages[0].height * 2);
+		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
 		clearInterval(this.interval);
 	}
 };
 
 StarsAnimation.prototype.animate = function(){
-	var image = LevelAnimation.starImages[this.rolloverSpriteId];
+	var image = this.sprites[this.spriteId];
 	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
 	this.x = this.x + this.horizontalOffset;
 	this.y = this.y + this.verticalOffset;
 	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
-	this.rolloverSpriteId++;
-	if(this.rolloverSpriteId == LevelAnimation.starImages.length){
+	this.spriteId++;
+	if(this.spriteId == this.sprites.length){
 		this.stop();
 	}
 };
