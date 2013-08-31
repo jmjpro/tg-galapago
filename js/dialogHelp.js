@@ -17,7 +17,7 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 };
 /* end DialogHelp.SELECT_HANDLERS[] */
 
-function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass , hilightImageName , regularImageName, sdkReportingPage, callback) {
+function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
 	this.mouseClickHandler = window.onclick;
@@ -28,13 +28,13 @@ function DialogHelp(callingScreenId, callingObject, dialogId, hilightClass , hil
 	this.dialogHelpDOM = $('#' + dialogId);
 	this.scrollDiv = $('#help-text-scroll');
 	this.dialogNav = this.dialogHelpDOM.find('ul');
-	this.hilightClass = hilightClass;
-	this.hilightImageName = hilightImageName;
-	this.regularImageName = regularImageName;
+	this.hilightClass = "button-medium-hilight";
+	this.hilightImageName = "button-hilight";
+	this.regularImageName = "button-regular";
 	var menuButtonSize = this.dialogNav.children().length;
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (this.dialogNav.children()[i]);
-		$('#'+liElement.id).css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+regularImageName+'.png').src + ')');
+		$('#'+liElement.id).css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.regularImageName+'.png').src + ')');
 	}
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
 	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.hilightImageName+'.png').src + ')');

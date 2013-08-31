@@ -248,7 +248,7 @@ LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
 LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 //TODO: define this in a JSON config file
 LevelMap.STAR_SPRITE_MATRIX = [
-	[{cell: [0, 0]}, {cell: [18, 0]}, {cell: [36, 0]}, {cell: [54, 0]}, {cell: [72, 0]}, {cell: [90, 0]}, {cell: [108, 0]}, {cell: [126, 0]}, {cell: [144, 0]}, {cell: [162, 0]}]
+	[{cell: [0, 0]}, {cell: [18, 0]}]
 ];
 
 LevelMap.LAVA_SPRITE_MATRIX = [
@@ -385,9 +385,20 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
-	this.layer.drawImage(level_stars_silver, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y );
 	spriteSheet = new SpriteSheet(level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
-	spriteSheet.displayFraction(this.layer, this.hotspotLevel.difficulty/LevelMap.MAX_DIFFICULTY, 1, LevelMap.DIFFICULTY_STARS_X, LevelMap.DIFFICULTY_STARS_Y);
+	var levelDifficulty = this.hotspotLevel.difficulty;
+	for(var cnt=0;cnt<5;cnt++){
+		if((cnt  + 1 ) <= levelDifficulty ){
+			this.layer.drawImage(level_stars_gold, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
+		}else{
+			this.layer.drawImage(level_stars_silver, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
+			var fraction = levelDifficulty - cnt;
+			if(fraction > 0 && fraction < 1){
+
+				spriteSheet.displayFraction(this.layer, fraction, 1, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );
+			}
+		}
+	}
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
@@ -2321,7 +2332,7 @@ Board.prototype.setComplete = function() {
 		$('#levelScore').html( this.score );
 		$('#score').html( totalScore );
 		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-		new DialogMenu('screen-game', this, 'dialog-level-won', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
+		new DialogMenu('screen-game', this, 'dialog-level-won');
 		this.showGoldAndCreatures();
 	}
 } //Board.prototype.setComplete()
@@ -2604,10 +2615,10 @@ Board.prototype.dangerBarEmptied = function() {
 	$('#final-score').html(gameboard.score);
 	if(sdkApi.inDemoMode()){
 			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
-			 new DialogMenu('screen-game', gameboard, 'dialog-game-over', 'button-medium-hilight' ,'button-medium-hilight' ,'button_medium_regular' );
+			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 	}else{
 			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			 new DialogMenu('screen-game', gameboard, 'dialog-time-out', 'button-medium-hilight','button-medium-hilight','button_medium_regular');
+			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
 } //Board.prototype.dangerBarEmptied
 
@@ -2664,7 +2675,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			}
 			board.reshuffleService.stop();
 			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			new DialogMenu('screen-game', this, 'dialog-game-menu', 'button-huge-hilight','button-huge-hilight','button-huge');
+			new DialogMenu('screen-game', this, 'dialog-game-menu');
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
@@ -2673,7 +2684,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			}
 			board.reshuffleService.stop();
 			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
-			new DialogMenu('screen-game', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
+			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null:
 		default:

@@ -159,11 +159,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				console.error( 'unable to find ' + galImagePath );
 			}
-			new DialogHelp('main-menu-screen', this, 'dialog-help', 'button-medium-hilight','button-medium-hilight','button_medium_regular', TGH5.Reporting.Page.Help);
+			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', 'button-big-hilight', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Page.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -182,7 +182,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				console.error( 'unable to find ' + galImagePath );
 			}
-			new DialogMenu('main-menu-screen', this, 'dialog-quit', 'button-huge-hilight','button-huge-hilight','button-huge');
+			new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
 }; //MainMenuScreen.prototype.selectHandler()
