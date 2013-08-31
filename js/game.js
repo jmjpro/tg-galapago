@@ -286,7 +286,7 @@ LevelMap.prototype.display = function() {
 	otherAnimationCanvas.onclick = function(evt) {
 		levelAnimation.canvas.focus();
 	};
-	if(Level.isComplete("1")){
+	if(!Level.isComplete("1")){
 	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
