@@ -16,9 +16,9 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-reset-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-help", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"}
 ];
+DialogMenu.DIALOG_PREFIX = 'dialog/';
 /* begin DialogMenu.SELECT_HANDLERS[] */
 DialogMenu.SELECT_HANDLERS = [];
-DialogMenu.DIALOG_PREFIX = 'dialog/';
 DialogMenu.SELECT_HANDLERS['dialog-profile-create'] = function(dialogMenu) {
 	Galapago.profile = $('#dialog-profile-create').find('.profile-name')[0].value;
 	this.hide();
@@ -51,7 +51,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 };
 
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
-	var optionId, board, mainCanvasId;
+	var optionId, board, mainCanvasId, bgImage;
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
@@ -74,14 +74,20 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			$('#dialog-new-game').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
+			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png');
+			if( bgImage ) {
+				$('#dialog-new-game').css('background-image','url(' + bgImage.src + ')');
+			}			
 			new DialogMenu(mainCanvasId, board, 'dialog-new-game');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			$('#dialog-help').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png');
+			if( bgImage ) {
+				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');				
+			}
 			new DialogHelp(mainCanvasId, board, 'dialog-help',TGH5.Reporting.Page.Help);
 			break;
 		case 'option-options' :
@@ -250,6 +256,10 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 		bgImage = LoadingScreen.gal.get(galBgImagePath);
 		if( bgImage ) {
 			$('#'+liElement.id).css('background-image','url(' + bgImage.src + ')');
+		}
+		else {
+			console.error( 'unable to find image ' + galBgImagePath);
+		}
 	}
 	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
 	galBgImagePath = DialogMenu.DIALOG_PREFIX+ this.hilightImageName+'.png';
@@ -300,11 +310,16 @@ DialogMenu.prototype.hide = function() {
 
 DialogMenu.prototype.setNavItem = function(item) {
 	this.currentNavItem.removeClass(this.hilightClass); // remove hilight from old item
-	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.regularImageName+'.png').src + ')');
+	bgImage = LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.buttonImageName+'.png');
+	if( bgImage ) {
+		this.currentNavItem.css('background-image','url(' + bgImage.src + ')');
+	}
 	this.currentNavItem = item;
 	this.currentNavItem.addClass(this.hilightClass); // add hilight to new item
-	this.currentNavItem.css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.hilightImageName+'.png').src + ')');
-
+	bgImage = LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+this.hilightImageName+'.png');
+	if( bgImage ) {
+		this.currentNavItem.css('background-image','url(' + bgImage.src + ')');
+	}
 }; //DialogMenu.prototype.setNavItem()
 
 DialogMenu.prototype.registerMouseHandlers = function() {
@@ -437,3 +452,26 @@ DialogMenu.prototype.unregisterEventHandlers = function() {
 		liElement.onclick = null;
 	}
 }; //MapScreen.prototype.unregisterEventHandlers()
+
+/* initialize the backgrounds for all the dialog boxes */
+DialogMenu.setBackgrounds = function() {
+	var dialogId, bgImageId, galImagePath, bgImage;
+	_.each( DialogMenu.BACKGROUNDS_AND_BUTTONS, function( dialogDescriptor ) {
+		dialogId = dialogDescriptor.id;
+		bgImageId = dialogDescriptor.background;
+		galImagePath = Galapago.BACKGROUND_GAL_PREFIX + bgImageId;
+		bgImage = LoadingScreen.gal.get( galImagePath );
+		if( bgImage ) {
+			$( '#' + dialogId ).css( 'background-image', 'url(' + bgImage.src + ')' );
+		}
+		else {
+			console.error( "unable to find image " + galImagePath);
+		}
+	});
+};
+
+DialogMenu.getButtonClass = function(dialogId) {
+	var dialogDescriptor;
+	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} )
+	return dialogDescriptor['button-class'];
+}; //DialogMenu.getButtonClass()

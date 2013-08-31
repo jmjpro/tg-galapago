@@ -138,6 +138,17 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				Galapago.init(isTimedMode);
 			}
+			break;
+		case 'button-how-to-play' :
+			this.unregisterEventHandlers();
+			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png';
+			bgImage = LoadingScreen.gal.get( galImagePath );
+			if( bgImage ) {
+				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');
+			}
+			else {
+				console.error( 'unable to find ' + galImagePath );
+			}
 			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
 			break;
 		case 'button-top-scores' :

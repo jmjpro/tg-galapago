@@ -394,7 +394,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMark = LoadingScreen.gal.get(this.collageDirectory + 'tile-mark-strip.png');
+			tileMark = LoadingScreen.gal.get(this.collageDirectory + 'game-tile-mark-strip.png');
 			//tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
 			if( tileMark ) {
 				tileMarkSprites	= LoadingScreen.gal.getSprites(tileMark);
