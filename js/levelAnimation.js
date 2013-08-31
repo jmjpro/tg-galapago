@@ -23,7 +23,12 @@ LevelAnimation.BEACH_JUMP_SPRITE_MATRIX = [[
  {cell: [57, 0], id: '2'}, 
  {cell: [79, 0], id: '3'}, 
  {cell: [125, 0], id: '4'}, 
- {cell: [147, 0], id: '5'}
+ {cell: [147, 0], id: '5'}, 
+ {cell: [193, 0], id: '6'},
+ {cell: [215, 0], id: '7'}, 
+ {cell: [261, 0], id: '8'}, 
+ {cell: [283, 0], id: '9'}, 
+ {cell: [329, 0], id: '10'}
 ]];
 
 LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
@@ -31,7 +36,12 @@ LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
  {cell: [49, 0], id: '2'}, 
  {cell: [55, 0], id: '3'}, 
  {cell: [101, 0], id: '4'}, 
- {cell: [107, 0], id: '5'}
+ {cell: [107, 0], id: '5'}, 
+ {cell: [153, 0], id: '6'},
+ {cell: [159, 0], id: '7'}, 
+ {cell: [205, 0], id: '8'}, 
+ {cell: [211, 0], id: '9'}, 
+ {cell: [257, 0], id: '10'}
 ]];
 
 LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
@@ -39,8 +49,14 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [58, 0], id: '2'}, 
  {cell: [82, 0], id: '3'}, 
  {cell: [128, 0], id: '4'}, 
- {cell: [152, 0], id: '5'}
+ {cell: [152, 0], id: '5'}, 
+ {cell: [198, 0], id: '6'},
+ {cell: [222, 0], id: '7'}, 
+ {cell: [268, 0], id: '8'}, 
+ {cell: [292, 0], id: '9'}, 
+ {cell: [338, 0], id: '10'}
 ]];
+
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
@@ -460,13 +476,13 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/4; imgCnt++){
+			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
 				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 4, 0], tileDownDegreesToRotate);
+					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
 					imageArray.push(image);
 				}
 				if(rolloverImageSpriteSheet1){
-					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 4, 0], tileUpDegreesToRotate);
+					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
 					imageArray1.push(image);
 				}
 			}
@@ -481,23 +497,23 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				}
 				layer.clearRect(x, y, width, height);
 				if(tileUpSelected){
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
 				}
 				else{
-					if(image1){
+					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
-					if(image){
+					if(image && image.width){
 						layer.drawImage(image, x, y);
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 4){
+				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 2){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -510,6 +526,41 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		}
 };
 
+LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
+	var levelAnimation = this;
+	function animateRandomBornFires(){
+		var coordinates = [];
+		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'bonfire-strip.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var animatedLevels = [];
+		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
+		for (var i = 0; i < parallelAnimation; i++) {
+			var randomLevelId;
+			do{
+				randomLevelId = Math.ceil( Math.random() * highestCompletedId);
+			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId));
+			animatedLevels.push(randomLevelId);
+		}
+		_.each(animatedLevels, function(animatedLevel){
+			var level = Level.findById(animatedLevel);
+			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
+			var x = centroid[0] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_WIDTH / 3);
+			var y = centroid[1] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_HEIGHT / 1.4);
+			coordinates.push([x, y]);
+		});
+		if(coordinates.length){
+			if(levelAnimation.bonFireAnimation){
+				levelAnimation.bonFireAnimation.stop();
+			}
+			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
+			bonFireAnimation.start();
+			levelAnimation.bonFireAnimation = bonFireAnimation;
+		}
+	}
+	animateRandomBornFires();
+	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
+}; 
+
+//LevelAnimation.prototype.animateBonFire()
 LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
 	var levelAnimation = this;
 	function animateRandomBornFires(){
