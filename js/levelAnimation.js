@@ -223,17 +223,6 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [360, 0], id: '7'} 
 ]];
 
-LevelAnimation.SPARKLES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [146, 0], id: '2'},  
-{cell: [292, 0], id: '3'}, 
-{cell: [438, 0], id: '4'},  
-{cell: [584, 0], id: '5'},
-{cell: [730, 0], id: '6'},   
-{cell: [876, 0], id: '7'},   
-{cell: [1022, 0], id: '8'} 
-]]
-
 LevelAnimation.STARS_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
 [{cell: [0, 33], id: '2'}],  
@@ -253,7 +242,6 @@ LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 [{cell: [0, 116], id: '3'}]   
 ];
 
-LevelAnimation.sparklesImages = [];
 LevelAnimation.starImages = [];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
@@ -269,7 +257,6 @@ function LevelAnimation(layer){
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
-	this.initSparkles();
 	this.initStars();
 	this.initLightning();
 }
@@ -770,20 +757,6 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	}
 };
 
-LevelAnimation.prototype.initSparkles = function() {
-	console.debug('entering LevelAnimation.prototype.initSparkles()');
-	if(!LevelAnimation.sparklesImages.length){
-		var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "sparkle-strip.png");
-		if( image ) {
-			var spriteSheet = new SpriteSheet(image, LevelAnimation.SPARKLES_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.SPARKLES_SPRITE_MATRIX.length; x++){
-				LevelAnimation.sparklesImages.push(spriteSheet.getSpriteNew([0,x]));
-			}
-		}
-	}
-	console.debug('exiting LevelAnimation.prototype.initSparkles()');
-}
-
 LevelAnimation.prototype.initStars = function() {
 	if(!LevelAnimation.starImages.length){
 		var image = LoadingScreen.gal.get("screen-game/cocoon-removed-strip.png");
@@ -846,7 +819,7 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 }
 
 LevelAnimation.prototype.animateSparkles = function(layer, x, y){
-	var sparklesAnimation = new SparklesAnimation(layer, x, y);
+	var sparklesAnimation = new SparklesAnimation(layer, x, y, LoadingScreen.gal.getSprites( this.collageDirectory + 'sparkle-strip.png' ));
 	sparklesAnimation.start();
 };
 
@@ -1282,44 +1255,44 @@ BobCervantesAnimation.prototype.animate = function(){
 };
 
 SparklesAnimation.ROLLOVER_TIME_INTERVAL=100;
-function SparklesAnimation(layer, x, y){
+function SparklesAnimation(layer, x, y, sprites){
 	this.layer = layer;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
+	this.sprites = sprites;
 }
 
 SparklesAnimation.prototype.start = function(){
 	if(this.interval){
 		this.stop();
 	}
-	if( LevelAnimation.sparklesImages && LevelAnimation.sparklesImages.length > 0 ) {
-		this.x = this.x + (Board.TILE_WIDTH);
-		this.y = this.y + (Board.TILE_HEIGHT);
-		this.x = this.x - (LevelAnimation.sparklesImages[0].width);
-		this.y = this.y - (LevelAnimation.sparklesImages[0].height);
-		
-		var sparklesAnimation = this;
-		this.interval = setInterval(function() {
-			sparklesAnimation.animate();
-		}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
-	}
+	this.x = this.x + (Board.TILE_WIDTH);
+	this.y = this.y + (Board.TILE_HEIGHT);
+	this.x = this.x - (this.sprites[0].width);
+	this.y = this.y - (this.sprites[0].height);
+	
+	var sparklesAnimation = this;
+	this.interval = setInterval(function() {
+		sparklesAnimation.animate();
+	}, SparklesAnimation.ROLLOVER_TIME_INTERVAL);
+	
 };
 
 SparklesAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, LevelAnimation.sparklesImages[0].width * 2, LevelAnimation.sparklesImages[0].height * 2);
+		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
 		clearInterval(this.interval);
 	}
 };
 
 SparklesAnimation.prototype.animate = function(){
-	var image = LevelAnimation.sparklesImages[this.rolloverSpriteId];
+	var image = this.sprites[this.spriteId];
 	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
 	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
-	this.rolloverSpriteId++;
-	if(this.rolloverSpriteId == LevelAnimation.sparklesImages.length){
+	this.spriteId++;
+	if(this.spriteId == this.sprites.length){
 		this.stop();
 	}
 };

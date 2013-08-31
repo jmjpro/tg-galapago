@@ -272,6 +272,19 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [204, 0, 68, 92]},
 			{"cell": [272, 0, 68, 92]}
 		]
+	},
+	{
+		"collageId": "collage/sparkle-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 146, 122]},
+			{"cell": [146, 0, 146, 122]},  
+			{"cell": [292, 0, 146, 122]}, 
+			{"cell": [438, 0, 146, 122]},  
+			{"cell": [584, 0, 146, 122]},
+			{"cell": [730, 0, 146, 122]},   
+			{"cell": [876, 0, 146, 122]},   
+			{"cell": [1022, 0, 146, 122]} 
+		]
 	}
 ];
 
