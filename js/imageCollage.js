@@ -285,6 +285,21 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [876, 0, 146, 122]},   
 			{"cell": [1022, 0, 146, 122]} 
 		]
+	},
+	{
+		"collageId": "collage/cocoon-removed-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 33, 33]},
+			{"cell": [0, 33, 33, 33]},  
+			{"cell": [0, 66, 33, 33]}, 
+			{"cell": [0, 99, 33, 33]},  
+			{"cell": [0, 132, 33, 33]},
+			{"cell": [0, 165, 33, 33]},   
+			{"cell": [0, 198, 33, 33]},   
+			{"cell": [0, 231, 33, 33]},
+			{"cell": [0, 264, 33, 33]},
+			{"cell": [0, 297, 33, 33]} 
+		]
 	}
 ];
 

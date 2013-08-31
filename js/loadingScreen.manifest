@@ -45,7 +45,7 @@
 		"name": "board-common",
 		"contents": [
 			"collage/game-powerup.png",
-			"screen-game/cocoon-removed-strip.png",
+			"collage/cocoon-removed-strip.png",
 			"screen-game/danger-bar-fill-1.png",
 			"screen-game/danger-bar-fill-2.png",
 			"screen-game/danger-bar-fill-strip.png",

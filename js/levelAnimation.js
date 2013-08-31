@@ -131,18 +131,6 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [315, 0], id: '16'}
  ]];
 
-LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'}, 
-{cell: [27, 0], id: '2'}, 
-{cell: [54, 0], id: '3'}, 
-{cell: [81, 0], id: '4'}, 
-{cell: [108, 0], id: '5'}, 
-{cell: [135, 0], id: '6'}, 
-{cell: [162, 0], id: '7'}, 
-{cell: [189, 0], id: '8'}, 
-{cell: [216, 0], id: '9'}
-]];
-
 LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
 {cell: [48, 0], id: '2'}, 
@@ -223,26 +211,12 @@ LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
 {cell: [360, 0], id: '7'} 
 ]];
 
-LevelAnimation.STARS_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 33], id: '2'}],  
-[{cell: [0, 66], id: '3'}], 
-[{cell: [0, 99], id: '4'}],  
-[{cell: [0, 132], id: '5'}],
-[{cell: [0, 165], id: '6'}],   
-[{cell: [0, 198], id: '7'}],   
-[{cell: [0, 231], id: '8'}],   
-[{cell: [0, 264], id: '9'}],   
-[{cell: [0, 297], id: '10'}] 
-];
-
 LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
 [{cell: [0, 58], id: '2'}],  
 [{cell: [0, 116], id: '3'}]   
 ];
 
-LevelAnimation.starImages = [];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
 	
@@ -257,7 +231,6 @@ function LevelAnimation(layer){
 	this.nextLevelArrowAnimatios = null;
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
-	this.initStars();
 	this.initLightning();
 }
 
@@ -375,7 +348,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
-	var tileActive, imageId, rolloverImageSpriteSheet, tileMark, tileMarkSprites, tileMarkImageSpriteSheet;
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites, tileMarkImageSpriteSheet;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -397,16 +370,9 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMark = LoadingScreen.gal.get(this.collageDirectory + 'game-tile-mark-strip.png');
-			//tileMarkImageSpriteSheet = new SpriteSheet(tileMark, LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX);
-			if( tileMark ) {
-				tileMarkSprites	= LoadingScreen.gal.getSprites(tileMark);
-			}
-			else {
-				throw 'unable to find image ' + tileMark;
-			}
+			tileMarkSprites	= LoadingScreen.gal.getSprites(this.collageDirectory + 'game-tile-mark-strip.png');
 		}
-		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet);
+		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites);
 		this.rolloverAnimation.start();
 	}
 }; //LevelAnimation.prototype.animateCreatureSelection()
@@ -757,18 +723,6 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	}
 };
 
-LevelAnimation.prototype.initStars = function() {
-	if(!LevelAnimation.starImages.length){
-		var image = LoadingScreen.gal.get("screen-game/cocoon-removed-strip.png");
-		if( image ) {
-			var spriteSheet = new SpriteSheet(image, LevelAnimation.STARS_SPRITE_MATRIX);
-			for(var x = 0; x < LevelAnimation.STARS_SPRITE_MATRIX.length; x++){
-				LevelAnimation.starImages.push(spriteSheet.getSpriteNew([0,x]));
-			}
-		}
-	}
-}
-
 LevelAnimation.prototype.initLightning = function() {
 	var image, spriteSheet, x;
 	if(!LevelAnimation.lightningImages.rightHorizontal.length){
@@ -796,7 +750,7 @@ LevelAnimation.makeLightningFunction = function(spriteSheet, x) {
 }
 
 LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {
-	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP );
+	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( this.collageDirectory + 'cocoon-removed-strip.png' ));
 	starsAnimation.start();	
 }
 
@@ -880,14 +834,14 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 };
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
-function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkImageSpriteSheet){
+function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites){
 	this.layer = layer;
 	this.rolloverImageSpriteSheet = rolloverImageSpriteSheet;
 	this.interval = null;
 	this.rolloverSpriteId = 0;
 	this.tileActive = tileActive;
 	this.stopCallback = stopCallback;
-	this.tileMarkImageSpriteSheet = tileMarkImageSpriteSheet;
+	this.tileMarkSprites = tileMarkSprites;
 	this.tileMarkSpriteId = 0;
 }
 
@@ -912,8 +866,8 @@ RolloverAnimation.prototype.animate = function(){
 			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
 			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
 			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
-			if(this.tileMarkImageSpriteSheet){
-				image = this.tileMarkImageSpriteSheet.getSpriteNew([0, this.tileMarkSpriteId]);
+			if(this.tileMarkSprites){
+				image = this.tileMarkSprites[this.tileMarkSpriteId];
 				if( image ) {
 					this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 					this.tileMarkSpriteId++;
@@ -1298,16 +1252,17 @@ SparklesAnimation.prototype.animate = function(){
 };
 
 StarsAnimation.ROLLOVER_TIME_INTERVAL=200;
-function StarsAnimation(layer, x, y, destinationX, destinationY){
+function StarsAnimation(layer, x, y, destinationX, destinationY, sprites){
 	this.layer = layer;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
 	this.verticalOffset = 0;
 	this.horizontalOffset = 0;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
 	this.destinationX = destinationX;
 	this.destinationY = destinationY;
+	this.sprites = sprites;
 }
 
 StarsAnimation.prototype.start = function(){
@@ -1315,8 +1270,8 @@ StarsAnimation.prototype.start = function(){
 		this.stop();
 	}
 	
-	this.horizontalOffset = (this.destinationX - this.x) / (LevelAnimation.STARS_SPRITE_MATRIX.length);
-	this.verticalOffset = (this.destinationY - this.y) / (LevelAnimation.STARS_SPRITE_MATRIX.length - 1);
+	this.horizontalOffset = (this.destinationX - this.x) / (this.sprites.length);
+	this.verticalOffset = (this.destinationY - this.y) / (this.sprites.length - 1);
 	var starsAnimation = this;
 	this.interval = setInterval(function() {
 		starsAnimation.animate();
@@ -1325,19 +1280,19 @@ StarsAnimation.prototype.start = function(){
 
 StarsAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, LevelAnimation.starImages[0].width * 2, LevelAnimation.starImages[0].height * 2);
+		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
 		clearInterval(this.interval);
 	}
 };
 
 StarsAnimation.prototype.animate = function(){
-	var image = LevelAnimation.starImages[this.rolloverSpriteId];
+	var image = this.sprites[this.spriteId];
 	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
 	this.x = this.x + this.horizontalOffset;
 	this.y = this.y + this.verticalOffset;
 	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
-	this.rolloverSpriteId++;
-	if(this.rolloverSpriteId == LevelAnimation.starImages.length){
+	this.spriteId++;
+	if(this.spriteId == this.sprites.length){
 		this.stop();
 	}
 };
