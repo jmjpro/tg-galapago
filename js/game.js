@@ -292,13 +292,13 @@ LevelMap.prototype.display = function() {
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
 	this.animate(lavaAssetPath);
-	/*
+	
 	var completedLevelIds = LevelMap.getLevelsCompleted();
 	if(completedLevelIds.length){
 		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
 	}
 	this.levelAnimation.animateBombs(this.otherAnimationLayer);
-	*/
+	
 	this.drawHotspots();
 	this.registerEventHandlers();
 	Galapago.audioPlayer.playVolcanoLoop();

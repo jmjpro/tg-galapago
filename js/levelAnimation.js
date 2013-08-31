@@ -41,7 +41,7 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [128, 0], id: '4'}, 
  {cell: [152, 0], id: '5'}
 ]];
-
+/*
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'},
  {cell: [73, 0], id: '2'}, 
@@ -94,8 +94,8 @@ LevelAnimation.BOMB_4_SPRITE_MATRIX = [[
  {cell: [623.43, 0], id: '10'}, 
  {cell: [692.7, 0], id: '11'}
  ]];
-
-
+*/
+/*
 LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [0, 0], id: '1'}, 
  {cell: [21, 0], id: '2'}, 
@@ -113,7 +113,7 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [273, 0], id: '14'}, 
  {cell: [294, 0], id: '15'}, 
  {cell: [315, 0], id: '16'}
- ]];
+ ]];*/
 
 LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
@@ -514,7 +514,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
+		var bonfireImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bonfire-strip.png');
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -551,24 +551,28 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
-				coordinates = [556, 305 - image.height];
+				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
+				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-one-strip.png');
+				coordinates = [556, 305 - bombImageSpriteSheet[0].height];
 				break;
 			case 2:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
-				coordinates = [546, 295 - image.height];
+				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
+				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-two-strip.png');
+				coordinates = [546, 295 - bombImageSpriteSheet[0].height];
 				break;
 			case 3:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
-				coordinates = [715, 386 - image.height];
+				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
+				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-mid-strip.png');
+				coordinates = [715, 386 - bombImageSpriteSheet[0].height];
 				break;
 			case 4:
-				image = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
-				bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX); 
-				coordinates = [744 , 295 - image.height];
+				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
+				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX);
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-right-strip.png');				
+				coordinates = [744 , 295 - bombImageSpriteSheet[0].height];
 				break;
 		} //switch( randomBombId ) {
 		if(levelAnimation.bombAnimation){
@@ -935,13 +939,13 @@ BonFireAnimation.prototype.stop = function(){
 };
 
 BonFireAnimation.prototype.animate = function(){
-	var image = this.bonfireImageSpriteSheet.getSprite([this.bonfireSpriteId, 0]);
+	var image = this.bonfireImageSpriteSheet[this.bonfireSpriteId];
 	var bonFireAnimation = this;
 	_.each(this.coordinates, function(coordinate){
-		bonFireAnimation.layer.putImageData(image, coordinate[0], coordinate[1]);
+		bonFireAnimation.layer.drawImage(image, coordinate[0], coordinate[1]);
 	});
 	this.bonfireSpriteId++;
-	this.bonfireSpriteId = this.bonfireSpriteId % LevelAnimation.BONFIRE_SPRITE_MATRIX[0].length;
+	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSpriteSheet.length;
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
@@ -971,12 +975,15 @@ BombAnimation.prototype.stop = function(){
 };
 
 BombAnimation.prototype.animate = function(){
-	var image = this.bombImageSpriteSheet.getSprite([this.bombSpriteId, 0]);
+	//var image = this.bombImageSpriteSheet.getSprite([this.bombSpriteId, 0]);
+	var image = this.bombImageSpriteSheet[this.bombSpriteId];
+	image = CanvasUtil.magnifyImage( image, 2 );
 	this.imageHeight = image.height;
 	this.imageWidth = image.width;
-	this.layer.putImageData(image, this.coordinates[0], this.coordinates[1]);
+	this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+	this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
 	this.bombSpriteId++;
-	if(this.bombSpriteId >= this.bombImageSpriteSheet.spriteMatrix[0].length){
+	if(this.bombSpriteId >= this.bombImageSpriteSheet.length-1){
 		this.callback(this.callback);
 	}
 };

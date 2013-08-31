@@ -127,7 +127,7 @@
 								intervalId = null;
 								console.debug('loaded ' + url);
 								that.lookupTable[key] = image;
-								if (key.indexOf(collageDirectory) > -1) {
+								if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // temp hardcode , need to discuess
 									GAL.loadCollageImages(that, key);
 									// don't double-cache the original image collage along with the cut-up images
 									that.lookupTable[key] = null;
