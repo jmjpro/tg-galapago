@@ -384,6 +384,27 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 264, 33, 33]},
 			{"cell": [0, 297, 33, 33]} 
 		]
+	},
+	{
+		"collageId": "collage/powerup-gained-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 48 , 57]}, 
+			{"cell": [48, 0, 48 , 57]}, 
+			{"cell": [96, 0, 48 , 57]}, 
+			{"cell": [144, 0, 48 , 57]}
+		]	
+	},
+	{
+		"collageId": "collage/powerup-activated-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0 ,74 ,75]}, 
+			{"cell": [74, 0,74 ,75]}, 
+			{"cell": [148, 0,74 ,75]}, 
+			{"cell": [222, 0,74 ,75]}, 
+			{"cell": [296, 0,74 ,75]}, 
+			{"cell": [370, 0,74 ,75]}, 
+			{"cell": [444, 0,74 ,75]}
+		]		
 	}
 ];
 
