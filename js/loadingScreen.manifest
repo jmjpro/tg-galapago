@@ -60,7 +60,7 @@
 			"screen-game/powerup-activated-strip.png",
 			"screen-game/powerup-gained-strip.png",
 			"collage/sparkle-strip.png",
-			"screen-game/superfriends.png",
+			"collage/superfriends.png",
 			"collage/game-tile-mark-strip.png"
 		]
 	},
@@ -71,7 +71,7 @@
 	{
 		"name": "beach-common",
 		"contents": [
-			"screen-game/creatures-beach-strip.png",
+			"collage/creatures-beach-strip.png",
 			"collage/game-beach-jump-strips.png",
 			"collage/game-beach-rollover-strips.png"
 		]
@@ -86,7 +86,7 @@
 	{
 		"name": "forest-common",
 		"contents": [
-			"screen-game/creatures-forest-strip.png",
+			"collage/creatures-forest-strip.png",
 			"collage/game-forest-jump-strips.png",
 			"collage/game-forest-rollover-strips.png"
 		]
@@ -100,7 +100,7 @@
     {
 		"name": "cave-common",
 		"contents": [
-			"screen-game/creatures-cave-strip.png",
+			"collage/creatures-cave-strip.png",
 			"collage/game-cave-rollover-strips.png",
 			"collage/game-cave-jump-strips.png"
 		]

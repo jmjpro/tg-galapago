@@ -1,24 +1,4 @@
-﻿Galapago.CREATURE_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b1'},{cell: [46, 0], id: 'b2'},{cell: [92, 0], id: 'b3'}],
-[{cell: [0, 46], id: 'g1'},{cell: [46, 46], id: 'g2'},{cell: [92, 46], id: 'g3'}],
-[{cell: [0, 92], id: 'p1'},{cell: [46, 92], id: 'p2'},{cell: [92, 92], id: 'p3'}],
-[{cell: [0, 138], id: 'r1'},{cell: [46, 138], id: 'r2'},{cell: [92, 138], id: 'r3'}],
-[{cell: [0, 184], id: 't1'},{cell: [46, 184], id: 't2'},{cell: [92, 184], id: 't3'}],
-[{cell: [0, 230], id: 'v1'},{cell: [46, 230], id: 'v2'},{cell: [92, 230], id: 'v3'}],
-[{cell: [0, 276], id: 'y1'},{cell: [46, 276], id: 'y2'},{cell: [92, 276], id: 'y3'}]
-];
-
-Galapago.SUPER_FRIENDS_SPRITE_MATRIX=[
-[{cell: [0, 0], id: 'b4'}],
-[{cell: [0, 46], id: 'g4'}],
-[{cell: [0, 92], id: 'p4'}],
-[{cell: [0, 138], id: 'r4'}],
-[{cell: [0, 184], id: 't4'}],
-[{cell: [0, 230], id: 'v4'}],
-[{cell: [0, 276], id: 'y4'}]
-];
-
-/* begin class Galapago */
+﻿/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
@@ -929,56 +909,44 @@ Level.prototype.imgpreloadAsync = function(imagePaths) {
 };
 
 Level.prototype.getCreatureImages = function(bgTheme) {
-	var creatureSpriteSheet;
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
- 				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-beach-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
-				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_BEACH_CREATURES);
+ 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-forest-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
-				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_FOREST_CREATURES);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_FOREST_CREATURES);
 				break;
 			case 'cave':
-				creatureSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/creatures-cave-strip.png"),Galapago.CREATURE_SPRITE_MATRIX);
-				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, creatureSpriteSheet, Level.BG_THEME_CAVE_CREATURES);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_CAVE_CREATURES);
 		}
 		if(!('superFriends'  in Galapago.creatureImages)){
-			var superFriendsSpriteSheet = new SpriteSheet(LoadingScreen.gal.get("screen-game/superfriends.png"),Galapago.SUPER_FRIENDS_SPRITE_MATRIX);
-			Galapago.creatureImages['superFriends'] = this.loadSuperFriends(superFriendsSpriteSheet);
+			Galapago.creatureImages['superFriends'] = this.loadSuperFriends();
 		}
 	}
 	return Galapago.creatureImages[bgTheme];
 }; //Level.prototype.getCreatureImages()
 
-Level.prototype.loadImageSprites = function(bgTheme, creatureSpriteSheet, creatureTypes) {
-	var images={};
-	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		for(var y=0; y<creatureSpriteSheet.spriteMatrix[x].length;y++){
-			var image = creatureSpriteSheet.getSpriteNew([y,x]);
-			var id = creatureSpriteSheet.spriteMatrix[x][y].id;
-			var creatureType = _.filter(creatureTypes, function(creatureType) {
-				return creatureType.startsWith(id[0]);
-			})[0];
-			image.id = creatureType + '_' + id[1]; 
-			images[image.id] = image;
-		}
-	}
+Level.prototype.loadImageSprites = function(bgTheme, creatureTypes) {
+	var images, sprites;
+	images={};
+	_.each(creatureTypes, function(creatureType){
+		sprites  = ImageCollage.getSprites(bgTheme + "/" + creatureType + Level.BLOB_IMAGE_EXTENSION);
+		_.each(sprites, function(sprite){
+			sprite.id = sprite.id.replace(bgTheme + '/','');
+			images[sprite.id] = sprite;
+		});
+	});	
 	return images;
 }; //Level.prototype.loadImageSprites()
 
 Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
-	var images={};
-	for(var x=0; x<creatureSpriteSheet.spriteMatrix.length;x++){
-		var image = creatureSpriteSheet.getSpriteNew([0,x]);
-		var id = creatureSpriteSheet.spriteMatrix[x][0].id;
-			var sfType = _.filter(Level.SUPER_FRIENDS, function(sfType) {
-				return sfType.startsWith(id[0]);
-			})[0];
-			image.id = sfType; 
-			images[image.id] = image;
-		}
+	var images, sprites;
+	images={};
+	sprites  = ImageCollage.getSprites("collage/superfriends.png");
+	_.each(sprites, function(sprite){
+		images[sprite.id] = sprite;
+	});
 	return images;
 }; //Level.prototype.loadSuperFriends()
 

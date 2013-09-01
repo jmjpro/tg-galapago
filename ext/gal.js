@@ -168,12 +168,7 @@
 	}; //GAL.prototype.download()
 
 	GAL.loadCollageImages = function (manifest, imageName) {
-		var imageCollage = ImageCollage.loadByName(imageName);
-		var images = imageCollage.getImages();
-		for (index in images) {
-			var imageId = images[index].id;
-			manifest.lookupTable[imageId] = images[index];
-		}
+		ImageCollage.loadByName(imageName);
 	}; //GAL.loadCollageImages()
 
 	GAL.prototype.logPixelCount = function( object, isLoad ) {

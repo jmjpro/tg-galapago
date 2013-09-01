@@ -180,13 +180,13 @@ ImageCollage.COLLAGE_ARRAY = [
 	{
 		"collageId": "collage/superfriends.png",
 		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46], "id": "screen-game/superfriends/blue.png"},
-			{"cell": [0, 46, 46, 46], "id": "screen-game/superfriends/green.png"},
-			{"cell": [0, 92, 46, 46], "id": "screen-game/superfriends/pink.png"},
-			{"cell": [0, 138, 46, 46], "id": "screen-game/superfriends/red.png"},
-			{"cell": [0, 184, 46, 46], "id": "screen-game/superfriends/teal.png"},
-			{"cell": [0, 230, 46, 46], "id": "screen-game/superfriends/violet.png"},
-			{"cell": [0, 276, 46, 46], "id": "screen-game/superfriends/yellow.png"}
+			{"cell": [0, 0, 46, 46], "id": "blue-friend"},
+			{"cell": [0, 46, 46, 46], "id": "green-friend"},
+			{"cell": [0, 92, 46, 46], "id": "pink-friend"},
+			{"cell": [0, 138, 46, 46], "id": "red-friend"},
+			{"cell": [0, 184, 46, 46], "id": "teal-friend"},
+			{"cell": [0, 230, 46, 46], "id": "violet-friend"},
+			{"cell": [0, 276, 46, 46], "id": "yellow-friend"}
 		]
 	},
 	{
@@ -384,6 +384,210 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 264, 33, 33]},
 			{"cell": [0, 297, 33, 33]} 
 		]
+	},
+	{
+		"collageId": "collage/creatures-forest-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 138, 46], "id": "forest/blue-beetle.png"},
+			{"cell": [0, 46, 138, 46], "id": "forest/green-butterfly.png"},
+			{"cell": [0, 92, 138, 46], "id": "forest/pink-lizard.png"},
+			{"cell": [0, 138, 138, 46], "id": "forest/red-beetle.png"},
+			{"cell": [0, 184, 138, 46], "id": "forest/teal-bug.png"},
+			{"cell": [0, 230, 138, 46], "id": "forest/violet-moth.png"},
+			{"cell": [0, 276, 138, 46], "id": "forest/yellow-frog.png"}
+		]
+	},
+	{
+		"collageId": "forest/blue-beetle.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/green-butterfly.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/pink-lizard.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/red-beetle.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/teal-bug.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/violet-moth.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "forest/yellow-frog.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "collage/creatures-beach-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 138, 46], "id": "beach/blue-crab.png"},
+			{"cell": [0, 46, 138, 46], "id": "beach/green-turtle.png"},
+			{"cell": [0, 92, 138, 46], "id": "beach/pink-frog.png"},
+			{"cell": [0, 138, 138, 46], "id": "beach/red-starfish.png"},
+			{"cell": [0, 184, 138, 46], "id": "beach/teal-blob.png"},
+			{"cell": [0, 230, 138, 46], "id": "beach/violet-crab.png"},
+			{"cell": [0, 276, 138, 46], "id": "beach/yellow-fish.png"}
+		]
+	},
+	{
+		"collageId": "beach/blue-crab.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/green-turtle.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/pink-frog.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/red-starfish.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/teal-blob.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/violet-crab.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "beach/yellow-fish.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "collage/creatures-cave-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 138, 46], "id": "cave/blue-crystal.png"},
+			{"cell": [0, 46, 138, 46], "id": "cave/green-frog.png"},
+			{"cell": [0, 92, 138, 46], "id": "cave/pink-spike.png"},
+			{"cell": [0, 138, 138, 46], "id": "cave/red-beetle.png"},
+			{"cell": [0, 184, 138, 46], "id": "cave/teal-flyer.png"},
+			{"cell": [0, 230, 138, 46], "id": "cave/violet-lizard.png"},
+			{"cell": [0, 276, 138, 46], "id": "cave/yellow-bug.png"}
+		]
+	},
+	{
+		"collageId": "cave/blue-crystal.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/green-frog.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/pink-spike.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/red-beetle.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/teal-flyer.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/violet-lizard.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
+	},
+	{
+		"collageId": "cave/yellow-bug.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 46]},
+			{"cell": [46, 0, 46, 46]},  
+			{"cell": [92, 0, 46, 46]} 
+		]
 	}
 ];
 
@@ -393,12 +597,16 @@ ImageCollage.COLLAGE_ARRAY = [
  * @param {object} collageDescriptor
  * @constructor
  */
-function ImageCollage (collageDescriptor) {
-	var collageId, lookupTable, i, id;
+function ImageCollage (collageDescriptor, image) {
+	var collageId, lookupTable, i, id, childCollageDescriptor;
 	collageId = collageDescriptor.collageId,
 	lookUpTable = LoadingScreen.gal.lookupTable;
 
-	this.image = LoadingScreen.gal.get(collageId);
+	if(image){
+		this.image = image
+	}else{
+		this.image = LoadingScreen.gal.get(collageId);
+	}
 	this.imageCoordinateArray = collageDescriptor.imageCoordinateArray;
 
 	//id = id ? id : ImageCollage.buildSpriteAssetPath( this.collageId, i);
@@ -414,7 +622,12 @@ function ImageCollage (collageDescriptor) {
 		id = id || ImageCollage.buildSpriteAssetPath( collageId, i);
 		if (typeof lookUpTable[id] === 'undefined' || lookUpTable[id] === null) {
 			collageDescriptor.imageCoordinateArray[i].id = id;
-			lookUpTable[id] = this.getImageForCache(i);
+			var imageForCache = this.getImageForCache(i);
+			childCollageDescriptor = ImageCollage.findByName( id );
+			lookUpTable[id] = imageForCache;
+			if(childCollageDescriptor){
+				new ImageCollage(childCollageDescriptor, imageForCache);
+			}	
 		}
 	}
 
@@ -517,7 +730,7 @@ ImageCollage.findByName = function( collageId ) {
 }; //ImageCollage.findByName()
 
 ImageCollage.buildSpriteAssetPath = function( collageId, i ) {
-	return collageId.replace( Level.BLOB_IMAGE_EXTENSION, '-' + i + Level.BLOB_IMAGE_EXTENSION );
+	return collageId.replace( Level.BLOB_IMAGE_EXTENSION, '_' + (i + 1));
 }; //ImageCollage.buildSpriteAssetPath()
 
 ImageCollage.getSprites = function( collageId ) {
@@ -527,7 +740,7 @@ ImageCollage.getSprites = function( collageId ) {
 	i = 0;
 	if( collageDescriptor ) {
 		_.each( collageDescriptor.imageCoordinateArray, function( imageCoordinate ) {
-			spriteAssetPath = ImageCollage.buildSpriteAssetPath( collageId, i++ );
+			spriteAssetPath = imageCoordinate.id || ImageCollage.buildSpriteAssetPath( collageId, i++ );
 			//spriteAssetPath = imageCoordinate.id;
 			sprite = LoadingScreen.gal.get( spriteAssetPath );
 			if( sprite ) {

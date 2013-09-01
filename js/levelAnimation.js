@@ -349,7 +349,7 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 };
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
-	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites, tileMarkImageSpriteSheet;
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -877,7 +877,7 @@ RolloverAnimation.prototype.animate = function(){
 				if( image ) {
 					this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 					this.tileMarkSpriteId++;
-					this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkImageSpriteSheet.spriteMatrix.length;				
+					this.tileMarkSpriteId = this.tileMarkSpriteId % this.tileMarkSprites.length;				
 				}
 				else {
 					console.error( 'unable to load tile mark animation' );
