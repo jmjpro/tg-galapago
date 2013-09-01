@@ -132,7 +132,7 @@ LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
  {cell: [315, 0], id: '16'}
  ]];*/
 
-LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
+/*LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
 {cell: [0, 0], id: '1'}, 
 {cell: [48, 0], id: '2'}, 
 {cell: [96, 0], id: '3'}, 
@@ -147,7 +147,7 @@ LevelAnimation.POWER_ACTIVATED_SPRITE_MATRIX = [[
 {cell: [296, 0], id: '5'}, 
 {cell: [370, 0], id: '6'}, 
 {cell: [444, 0], id: '7'}
-]];
+]];*/
 
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
@@ -620,9 +620,7 @@ LevelAnimation.prototype.stopGameStartArrow = function(){
 LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
-	var  image, powerAchievedImageSpriteSheet;
-	image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "Powerup_ready_strip.png");
-	powerAchievedImageSpriteSheet = new SpriteSheet(image, LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX); 
+	var   powerAchievedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-gained-strip.png"); 
 	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
 	function animatePowerAchieved(){
 		powerAchievedAnimation.start();
@@ -653,6 +651,24 @@ LevelAnimation.prototype.stopAllPowerAchieved = function(){
 	}
 }
 ////
+LevelAnimation.prototype.animatePowerActivated = function(layer ,coordinates){
+	var levelAnimation = this;
+	var powerActivatedAnimation;
+	var  powerActivatedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-activated-strip.png");
+	powerActivatedAnimation = new GameStartArrowAnimation(coordinates, powerActivatedImageSpriteSheet,layer,animatePowerActivated);	
+	function animatePowerActivated(){
+		powerActivatedAnimation.start();
+		levelAnimation.powerActivatedAnimation = powerActivatedAnimation;
+	}
+	animatePowerActivated();
+}
+
+LevelAnimation.prototype.stopPowerActivated = function(){
+	if(this.powerActivatedAnimation){
+			this.powerActivatedAnimation.stop();
+			this.powerActivatedAnimation=null;
+	}
+}
 
 LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
 	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
@@ -823,6 +839,10 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	}
 	if(LevelAnimation.bobCervantesAnimation){
 		LevelAnimation.bobCervantesAnimation.stop();
+	}
+	if(this.powerActivatedAnimation){
+		this.powerActivatedAnimation.stop();
+		this.powerActivatedAnimation = null;
 	}
 };
 

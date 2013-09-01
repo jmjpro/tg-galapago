@@ -386,6 +386,27 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
+		"collageId": "collage/powerup-gained-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 48 , 57]}, 
+			{"cell": [48, 0, 48 , 57]}, 
+			{"cell": [96, 0, 48 , 57]}, 
+			{"cell": [144, 0, 48 , 57]}
+		]	
+	},
+	{
+		"collageId": "collage/powerup-activated-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0 ,74 ,75]}, 
+			{"cell": [74, 0,74 ,75]}, 
+			{"cell": [148, 0,74 ,75]}, 
+			{"cell": [222, 0,74 ,75]}, 
+			{"cell": [296, 0,74 ,75]}, 
+			{"cell": [370, 0,74 ,75]}, 
+			{"cell": [444, 0,74 ,75]}
+		]		
+	},
+	{
 		"collageId": "collage/creatures-forest-strip.png",
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 138, 46], "id": "forest/blue-beetle.png"},

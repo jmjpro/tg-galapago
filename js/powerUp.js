@@ -2,6 +2,7 @@ Powerup.LEFT = 124;
 Powerup.TOP = 232;
 Powerup.MARGIN = 10;
 Powerup.LAYER_POWER_UP = 'layer-power-up';
+Powerup.LAYER_POWERUP_ANIMATION = 'layer-power-up-animation';
 Powerup.NOTCH_SPACE_HEIGHT = 75;
 Powerup.FLIPFLOP_TOP = 30;
 Powerup.FIRE_TOP = Powerup.FLIPFLOP_TOP + Powerup.NOTCH_SPACE_HEIGHT;
@@ -47,7 +48,13 @@ function Powerup(board ,powerupPoints) {
 	this.canvas.height = this.powerups_holder.height ;
 	this.canvas.style.left = Powerup.LEFT + 'px';
 	this.canvas.style.top = Powerup.TOP + 'px';
+	var animationCanvas = $('#' + Powerup.LAYER_POWERUP_ANIMATION)[0];
+	animationCanvas.width = this.canvas.width;
+	animationCanvas.height = this.canvas.height;
+	animationCanvas.style.left = this.canvas.style.left;
+	animationCanvas.style.top = this.canvas.style.top;
 	this.layer = $('#' + Powerup.LAYER_POWER_UP)[0].getContext('2d');
+	this.animationLayer = $('#' + Powerup.LAYER_POWERUP_ANIMATION)[0].getContext('2d');
 	this.update();
 	this.timer = new PauseableInterval(this.decrementScore,5000,this);
 	this.score=0;
@@ -159,15 +166,17 @@ Powerup.prototype.removeNavigation = function(e){
 Powerup.prototype.powerUsed = function(){
  if(this.isFlipFlopSelected()){
     this.flipflopPowerAchieved = false;
-//this.board.level.levelAnimation.stopPowerAchieved(this.flipflopAnimator);
+    this.board.level.levelAnimation.stopPowerAchieved(this.flipflopAnimator);
+	this.board.level.levelAnimation.stopPowerActivated();
 	//this.drawFlipFlop();
  }else if(this.isFireSelected()){
  	this.firePowerAchieved = false;
-//	this.board.level.levelAnimation.stopPowerAchieved(this.fireAnimator);	
+	this.board.level.levelAnimation.stopPowerAchieved(this.fireAnimator);	
+	this.board.level.levelAnimation.stopPowerActivated();
 	//this.drawFire();
  }else if(this.isShufflerSelected()){
 	this.shufflerPowerAchieved = false;
-//	this.board.level.levelAnimation.stopPowerAchieved(this.shufflerAnimator);		
+	this.board.level.levelAnimation.stopPowerAchieved(this.shufflerAnimator);		
 	//this.drawShuffler();
  }
  this.update();
@@ -181,9 +190,12 @@ Powerup.prototype.handleSelect = function(){
 	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){
 		this.powerSelected = Powerup.FLIPFLOP_SELECTED;
 		this.drawFlipFlop(Powerup.POWER_PRESSED);
+		this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,25]); 
+		
 	}else if(this.currentFocus == Powerup.FIRE_SELECTED){
         this.powerSelected = Powerup.FIRE_SELECTED;	
 		this.drawFire(Powerup.POWER_PRESSED);
+		this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,100]);
 	}else if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
 	    this.powerSelected = Powerup.SHUFFLER_SELECTED;
 		this.drawShuffler(Powerup.POWER_PRESSED);
@@ -408,29 +420,28 @@ Powerup.prototype.animatePowerStatus = function(){
     var newHeight=  ((Powerup.POWER_ICON_HEIGHT/2) - clipHeight);
 	console.log('newHeight : ' +newHeight);
 
-	if(!this.flipflopPowerAchieved){
+	if(!this.flipflopPowerAchieved && clipHeight){
 		this.layer.drawImage( this.swap_fill ,0, newHeight, this.swap_fill.width , clipHeight, 15, (Powerup.FLIPFLOP_TOP +Powerup.POWER_ICON_HEIGHT+10 - (clipHeight*2)) ,this.swap_fill.width*2,clipHeight*2 );
-	}else if(!this.firePowerAchieved){
+	}else if(!this.firePowerAchieved && clipHeight){
 		this.layer.drawImage( this.flame_fill ,0, newHeight, this.flame_fill.width , clipHeight, 15, (Powerup.FIRE_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.flame_fill.width*2,clipHeight*2 );
-	}else if(!this.shufflerPowerAchieved){
+	}else if(!this.shufflerPowerAchieved && clipHeight){
 		this.layer.drawImage( this.shuffle_fill ,0, newHeight, this.shuffle_fill.width , clipHeight, 15, (Powerup.SHUFFLER_TOP +Powerup.POWER_ICON_HEIGHT +10 - (clipHeight*2)) ,this.shuffle_fill.width*2,clipHeight*2 );
 	}
 };
 
 Powerup.prototype.updatePowerAchieved = function(){
     var flagPowerUpdated = false;
-	var powerUpAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
-	var powerUpAnimationLayer = powerUpAnimationCanvas.getContext('2d');
+
 	while(this.score >= Powerup.POWER_POINTS){
 		if(!this.flipflopPowerAchieved){
 		    this.flipflopPowerAchieved = true;
-			this.flipflopAnimator = this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,222]); //[115,222]//[124,262]
+			this.flipflopAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,25]); //[115,222]//[124,262]
 		}else if(!this.firePowerAchieved){
 			this.firePowerAchieved = true;
-			this.fireAnimator = this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,303]); //343
+			this.fireAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,100]); //343
 		}else if(!this.shufflerPowerAchieved){
 			this.shufflerPowerAchieved = true;
-			this.shufflerAnimator =this.board.level.levelAnimation.animatePowerAchieved(powerUpAnimationLayer, [115,384]);//424
+			this.shufflerAnimator =this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,180]);//424
 		}
 		this.score -= Powerup.POWER_POINTS;
 		if(this.focusOn ==1){
