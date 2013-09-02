@@ -282,33 +282,13 @@ LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
 	var path, galPath, creatureTypeIt, image, creatureImagePaths, creatureType;
 	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
-			creatureType = creatureTypes[creatureTypeIt];
-			galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
-			image =  LoadingScreen.gal.get(galPath);
-			if( image ) {
-				this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			}
-			else {
-				console.error( 'unable to load image ' + galPath);
-			}
-			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
-			image = LoadingScreen.gal.get(galPath);
-			if( image ) {
-				switch( bgTheme ) {
-					case 'beach':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.BEACH_JUMP_SPRITE_MATRIX);
-						break;
-					case 'forest':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.FOREST_JUMP_SPRITE_MATRIX);
-						break;
-					case 'cave':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.CAVE_JUMP_SPRITE_MATRIX);
-						break;
-				}
-			}
-			else {
-				console.error( 'unable to load image ' + galPath);
-			}
+		creatureType = creatureTypes[creatureTypeIt];
+		
+		galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
+		this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = ImageCollage.getSprites( galPath );
+		
+		galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
+		this[creatureType + LevelAnimation.JUMP_SUFFIX] = ImageCollage.getSprites( galPath );
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
 	return creatureImagePaths;
@@ -430,15 +410,15 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
-				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
-					imageArray.push(image);
-				}
-				if(rolloverImageSpriteSheet1){
-					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
-					imageArray1.push(image);
-				}
+			if(rolloverImageSpriteSheet){
+				imageArray = CanvasUtil.rotateImages( rolloverImageSpriteSheet, tileDownDegreesToRotate );
+				//image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
+				//imageArray.push(image);
+			}
+			if(rolloverImageSpriteSheet1){
+				imageArray1 = CanvasUtil.rotateImages( rolloverImageSpriteSheet1, tileUpDegreesToRotate );
+				//image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
+				//imageArray1.push(image);
 			}
 			imgCnt = 0;
 			var interval = setInterval(function(){
@@ -467,7 +447,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 2){
+				if(imgCnt >= rolloverImageSpriteSheet.length){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -486,41 +466,6 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 		var coordinates = [];
 
 		var bonfireImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bonfire-strip.png');
-		var animatedLevels = [];
-		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
-		for (var i = 0; i < parallelAnimation; i++) {
-			var randomLevelId;
-			do{
-				randomLevelId = Math.ceil( Math.random() * highestCompletedId);
-			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId));
-			animatedLevels.push(randomLevelId);
-		}
-		_.each(animatedLevels, function(animatedLevel){
-			var level = Level.findById(animatedLevel);
-			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
-			var x = centroid[0] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_WIDTH / 3);
-			var y = centroid[1] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_HEIGHT / 1.4);
-			coordinates.push([x, y]);
-		});
-		if(coordinates.length){
-			if(levelAnimation.bonFireAnimation){
-				levelAnimation.bonFireAnimation.stop();
-			}
-			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
-			bonFireAnimation.start();
-			levelAnimation.bonFireAnimation = bonFireAnimation;
-		}
-	}
-	animateRandomBornFires();
-	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
-}; 
-
-//LevelAnimation.prototype.animateBonFire()
-LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
-	var levelAnimation = this;
-	function animateRandomBornFires(){
-		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -887,11 +832,14 @@ RolloverAnimation.prototype.stop = function(){
 RolloverAnimation.prototype.animate = function(){
 	var image;
 	if( this.rolloverImageSpriteSheet ) {
-		image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
+		image = this.rolloverImageSpriteSheet[this.rolloverSpriteId];
+		//image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
 		if( image ) {
-			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
-			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
-			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
+			this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
+			//this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
+			this.rolloverSpriteId++;
+			//this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
+			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.length;
 			if(this.tileMarkSprites){
 				image = this.tileMarkSprites[this.tileMarkSpriteId];
 				if( image ) {

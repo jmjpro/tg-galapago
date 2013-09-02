@@ -287,7 +287,7 @@
 		// and release all of the images that we cut up from the collage (the collage itself
 		// was release immediately after it was cut up)
 		if( !image ) {
-			collageDescriptor = ImageCollage.findDescriptorByName(assetPath);
+			collageDescriptor = ImageCollage.findByName(assetPath);
 			for( i = 0; i < collageDescriptor.imageCoordinateArray.length; i++ ) {
 				this.release(collageDescriptor.imageCoordinateArray[i].id);
 			}

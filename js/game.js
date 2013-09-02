@@ -152,9 +152,13 @@ Galapago.setLevel = function(levelId) {
 
 	LoadingScreen.gal.onLoaded( backgroundBundle, function(result) {
 			if (result.success) {
-			LoadingScreen.gal.clearOnLoaded( backgroundBundle );
-			console.debug( backgroundBundle + ' resource bundle loaded' );
-			LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+				LoadingScreen.gal.clearOnLoaded( backgroundBundle );
+				console.debug( backgroundBundle + ' resource bundle loaded' );
+				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+				Galapago.level.levelAnimation = new LevelAnimation();
+				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
+				Galapago.level.display();
+				Level.registerEventHandlers();
 			}
 		});
 
@@ -174,7 +178,7 @@ Galapago.setLevel = function(levelId) {
 			Galapago.level.levelAnimation = new LevelAnimation();
 			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 			Galapago.level.display();
-	Level.registerEventHandlers();
+			Level.registerEventHandlers();
 		}
 	});
 
@@ -935,8 +939,23 @@ Level.prototype.loadImageSprites = function(bgTheme, creatureTypes) {
 		_.each(sprites, function(sprite){
 			sprite.id = sprite.id.replace(bgTheme + '/','');
 			images[sprite.id] = sprite;
+			console.debug( 'loaded sprite ' + sprite.id );
 		});
 	});	
+	return images;
+}; //Level.prototype.loadImageSprites()
+
+Level.prototype.loadRolloverSprites = function(bgTheme, creatureTypes) {
+	var images, sprites;
+	images={};
+	_.each(creatureTypes, function(creatureType){
+		sprites  = ImageCollage.getSprites(bgTheme + "/" + creatureType + Level.BLOB_IMAGE_EXTENSION);
+		_.each(sprites, function(sprite){
+			sprite.id = sprite.id.replace(bgTheme + '/','');
+			images[sprite.id] = sprite;
+			console.debug( 'loaded sprite ' + sprite.id );
+		});
+	});
 	return images;
 }; //Level.prototype.loadImageSprites()
 
@@ -1062,10 +1081,14 @@ Level.prototype.won = function(){
 	Galapago.audioPlayer.playLevelWon();
     level = this;
     level.cleanup();
-	sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(LevelMap.getNextLevel());
-		//level.showLevelMap(LevelMap.getNextLevel());
-	});
+	if( sdkApi ) {
+		sdkApi.requestModalAd("inGame").done( function() {
+			LevelMap.show( LevelMap.getNextLevel() );
+		});
+	}
+	else {
+		LevelMap.show( LevelMap.getNextLevel() );
+	}
 }; //Level.prototypepx()
 
 Level.prototype.quit = function(){
@@ -3398,13 +3421,6 @@ Tile.prototype.setUnselected = function() {
 	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	return this; // chainable
 };
-
-/*
-Tile.prototype.getFilteredPixels = function (filter, arg1, arg2, arg3) {
-	var pixelsOut = Filters.filterImage(filter, this.board.creatureLayer, this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT, arg1, arg2, arg3);
-	return pixelsOut;
-};
-*/	
 
 Tile.prototype.clear = function() {
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
