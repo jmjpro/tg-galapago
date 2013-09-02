@@ -223,15 +223,6 @@ LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE = '17px';
 LevelMap.LEVEL_STATUS_SCORE_SIZE = '22px';
 LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
 LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
-//TODO: define this in a JSON config file
-LevelMap.STAR_SPRITE_MATRIX = [
-	[{cell: [0, 0]}, {cell: [18, 0]}]
-];
-/*
-LevelMap.LAVA_SPRITE_MATRIX = [
-[{cell: [0, 0], id: 'lava-1'}, {cell: [190, 0], id: 'lava-2'}, {cell: [380, 0], id: 'lava-3'}, {cell: [570, 0], id: 'lava-4'}, {cell: [760, 0], id: 'lava-5'}, {cell: [950, 0], id: 'lava-6'}, {cell: [1140, 0], id: 'lava-7'}, {cell: [1330, 0], id: 'lava-8'}, {cell: [1520, 0], id: 'lava-9'}, {cell: [1710, 0], id: 'lava-10'}, {cell: [1900, 0], id: 'lava-11'}, {cell: [2090, 0], id: 'lava-12'}, {cell: [2280, 0], id: 'lava-13'}, {cell: [2470, 0], id: 'lava-14'}, {cell: [2660, 0], id: 'lava-15'}, {cell: [2850, 0], id: 'lava-16'}, {cell: [3040, 0], id: 'lava-17'}, {cell: [3230, 0], id: 'lava-18'}, {cell: [3420, 0], id: 'lava-19'}, {cell: [3610, 0], id: 'lava-20'}, {cell: [3800, 0], id: 'lava-21'}, {cell: [3990, 0], id: 'lava-22'}, {cell: [4180, 0], id: 'lava-23'}, {cell: [4370, 0], id: 'lava-24'}, {cell: [4560, 0], id: 'lava-25'}, {cell: [4750, 0], id: 'lava-26'}, {cell: [4940, 0], id: 'lava-27'}, {cell: [5130, 0], id: 'lava-28'}, {cell: [5320, 0], id: 'lava-29'}, {cell: [5510, 0], id: 'lava-30'}, {cell: [5700, 0], id: 'lava-31'}],
-];
-*/
 
 /* begin class LevelMap */
 function LevelMap(level) {
@@ -348,7 +339,7 @@ LevelMap.prototype.animate = function(assetPath){
 }; //LevelMap.prototype.animate()
 
 LevelMap.prototype.updateLevelStatus = function() {
-	var text, spriteSheet, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock;
+	var text, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock;
 	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-silver.png');
 	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-gold.png');
 	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green-v.png');
@@ -358,7 +349,6 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
 	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
-	spriteSheet = new SpriteSheet(level_stars_gold, LevelMap.STAR_SPRITE_MATRIX);
 	var levelDifficulty = this.hotspotLevel.difficulty;
 	for(var cnt=0;cnt<5;cnt++){
 		if((cnt  + 1 ) <= levelDifficulty ){
@@ -367,8 +357,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 			this.layer.drawImage(level_stars_silver, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
 			var fraction = levelDifficulty - cnt;
 			if(fraction > 0 && fraction < 1){
-
-				spriteSheet.displayFraction(this.layer, fraction, 1, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );
+				this.layer.drawImage(level_stars_gold, 0, 0, level_stars_gold.width * fraction, level_stars_gold.height, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y, level_stars_gold.width * fraction, level_stars_gold.height);
 			}
 		}
 	}
