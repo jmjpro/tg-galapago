@@ -582,9 +582,12 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 };
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var image, imgCnt, validArray = true, imageArray = [];
-	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint-strip.png");
-	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
+	var galAssetPath, rolloverImageSpriteSheet, sprite, spriteRotated, imgCnt, validArray = true, imageArray = [];
+	galAssetPath = this.collageDirectory + "game-hint-strip.png";
+	var rolloverImageSpriteSheet = ImageCollage.getSprites( galAssetPath );
+	if( !rolloverImageSpriteSheet ) {
+		console.error( 'unable to load image ' + galAssetPath);
+	}
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
 		tile = swapTile;
@@ -602,12 +605,13 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	}
 	if(degreesToRotate){
 		if(!this.makeMatchVerticalSpritesArray){
-			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
-				if(!image.naturalHeight){
+			for(imgCnt = 0; imgCnt < rolloverImageSpriteSheet.length; imgCnt++){
+				sprite = rolloverImageSpriteSheet[imgCnt];
+				spriteRotated = CanvasUtil.rotateImage( sprite, degreesToRotate );
+				if(!spriteRotated.naturalHeight){
 					validArray = false;
 				}
-				imageArray.push(image);
+				imageArray.push(spriteRotated);
 			}
 			if(validArray){
 				this.makeMatchVerticalSpritesArray = imageArray;
@@ -617,12 +621,12 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 		}	 
 	}else{
 		if(!this.makeMatchHorizontalSpritesArray){
-			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
-				if(!image.naturalHeight){
+			for(imgCnt = 0; imgCnt < rolloverImageSpriteSheet.length; imgCnt++){
+				sprite = rolloverImageSpriteSheet[imgCnt];
+				if(!sprite.naturalHeight){
 					validArray = false;
 				}
-				imageArray.push(image);
+				imageArray.push(sprite);
 			}
 			if(validArray){
 				this.makeMatchHorizontalSpritesArray = imageArray;
@@ -634,7 +638,8 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, imageArray, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
-};
+}; //LevelAnimation.prototype.animateMakeMatch()
+
 
 LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	if(this.makeMatchAnimation){
@@ -656,11 +661,9 @@ LevelAnimation.prototype.initLightning = function() {
 }
 
 LevelAnimation.makeLightningFunction = function(sprite) {
-	//return function(){
 		LevelAnimation.lightningImages.bottomVertical = LevelAnimation.lightningImages.bottomVertical.concat( CanvasUtil.rotateImages([sprite], 90) );
 		LevelAnimation.lightningImages.leftHorizontal = LevelAnimation.lightningImages.leftHorizontal.concat( CanvasUtil.rotateImages([sprite], 180) );
 		LevelAnimation.lightningImages.topVertical = LevelAnimation.lightningImages.topVertical.concat( CanvasUtil.rotateImages([sprite], 270) );
-	//}
 }
 
 LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {

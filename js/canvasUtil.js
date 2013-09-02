@@ -17,23 +17,23 @@ CanvasUtil.canvasImageRotate = function(ctx, image, width, height, x, y, degrees
 }
 
 CanvasUtil.canvasRotateImageDirection = function(canvas, ctx, image, degrees) {
-	var cw = image.width, ch = image.height, cx = 0, cy = 0;
+	var cw = image.naturalWidth, ch = image.naturalHeight, cx = 0, cy = 0;
 
 	//   Calculate new canvas size and x/y coorditates for image
 	switch(degrees){
 	    case CanvasUtil.LEFT_DIRECTION_DEGREE:
-	        cw = image.height;
-	        ch = image.width;
-	        cy = image.height * (-1);
+	        cw = image.naturalHeight;
+	        ch = image.naturalWidth;
+	        cy = image.naturalHeight * (-1);
 	        break;
 	    case CanvasUtil.UP_DIRECTION_DEGREE:
-	        cx = image.width * (-1);
-	        cy = image.height * (-1);
+	        cx = image.naturalWidth * (-1);
+	        cy = image.naturalHeight * (-1);
 	        break;
 	    case CanvasUtil.RIGHT_DIRECTION_DEGREE:
-	        cw = image.height;
-	        ch = image.width;
-	        cx = image.width * (-1);
+	        cw = image.naturalHeight;
+	        ch = image.naturalWidth;
+	        cx = image.naturalWidth * (-1);
 	        break;
 	}
 
@@ -44,11 +44,8 @@ CanvasUtil.canvasRotateImageDirection = function(canvas, ctx, image, degrees) {
 	ctx.drawImage(image, cx, cy);   
 };
 
-//assumes all images are same dimensions
-CanvasUtil.rotateImages = function(images, degrees) {
-	var image, imagesRotated, imageRotated, canvas, ctx, cw, ch, cx, cy;
-	image = images[0];
-	imagesRotated = [];
+CanvasUtil.getTempCanvas = function() {
+	var canvas;
 	canvas = document.createElement("canvas");
 	canvas.style.display = 'none';
 	canvas.style.position = 'absolute';
@@ -56,7 +53,29 @@ CanvasUtil.rotateImages = function(images, degrees) {
 	canvas.style.top = '-1000px';
 	canvas.width = 1;
 	canvas.height = 1;
+	return canvas;
+}; //CanvasUtil.getTempCanvas()
+
+//assumes all images are same dimensions
+CanvasUtil.rotateImages = function(images, degrees) {
+	var image, imagesRotated, imageRotated, canvas, ctx, cw, ch, cx, cy;
+	image = images[0];
+	imagesRotated = [];
+	canvas = CanvasUtil.getTempCanvas();
 	ctx = canvas.getContext('2d');
+	for( i = 0; i < images.length; i++ ) {
+		image = images[i];
+		imagesRotated.push( CanvasUtil.rotateImage( image, degrees, ctx ) );
+	}
+	return imagesRotated;
+}; //CanvasUtil.rotateImages()
+
+CanvasUtil.rotateImage = function( image, degrees, ctx  ) {
+	var canvas, imageRotated, cw, ch, cx, cy;
+	if( !ctx ) {
+		ctx = CanvasUtil.getTempCanvas().getContext('2d');
+	}
+	canvas = ctx.canvas;
 	cw = image.naturalWidth;
 	ch = image.naturalHeight;
 	cx = 0;
@@ -84,15 +103,11 @@ CanvasUtil.rotateImages = function(images, degrees) {
 	canvas.width = cw;
 	canvas.height = ch;
 	ctx.rotate(degrees * Math.PI / 180);
-
-	for( i = 0; i < images.length; i++ ) {
-		ctx.clearRect(cx,cy,images[i].width,images[i].height)
-		ctx.drawImage(images[i], cx, cy);
-		imageRotated = new Image();
-		imageRotated.src = canvas.toDataURL('image/png');
-		imagesRotated.push( imageRotated );
-	}
-	return imagesRotated;
+	ctx.clearRect(cx,cy,image.naturalWidth,image.naturalHeight);
+	ctx.drawImage(image, cx, cy);
+	imageRotated = new Image();
+	imageRotated.src = canvas.toDataURL('image/png');
+	return imageRotated;
 };
 
 // Code taken from MatthewCrumley (http://stackoverflow.com/a/934925/298479)

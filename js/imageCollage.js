@@ -1037,6 +1037,28 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 58, 235, 58]},
 			{"cell": [0, 166, 235, 58]}
 		]
+	},
+	{
+		"collageId": "collage/game-lightning-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 235, 58]},
+			{"cell": [0, 58, 235, 58]},
+			{"cell": [0, 166, 235, 58]}
+		]
+	},
+	{
+		"collageId": "collage/game-hint-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 41, 18]},
+			{"cell": [0, 18, 41, 18]},
+			{"cell": [0, 36, 41, 18]},
+			{"cell": [0, 54, 41, 18]},
+			{"cell": [0, 72, 41, 18]},
+			{"cell": [0, 90, 41, 18]},
+			{"cell": [0, 108, 41, 18]},
+			{"cell": [0, 126, 41, 18]},
+			{"cell": [0, 144, 41, 18]}
+		]
 	}
 ];
 
