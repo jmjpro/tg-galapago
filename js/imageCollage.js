@@ -1029,6 +1029,14 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [215, 0, 46, 92]},
 			{"cell": [283, 0, 46, 92]}
 		]
+	},
+	{
+		"collageId": "collage/game-lightning-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 235, 58]},
+			{"cell": [0, 58, 235, 58]},
+			{"cell": [0, 166, 235, 58]}
+		]
 	}
 ];
 
