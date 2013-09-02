@@ -10,53 +10,6 @@ LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
 LevelAnimation.JUMP_SUFFIX = '-jump';
 LevelAnimation.LEVEL_1_CENTER = [200, 265];
 
-LevelAnimation.ROLLOVER_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'}, 
- {cell: [46, 0], id: '2'}, 
- {cell: [92, 0], id: '3'}, 
- {cell: [138, 0], id: '4'}, 
- {cell: [184, 0], id: '5'}
- ]];
-
-LevelAnimation.BEACH_JUMP_SPRITE_MATRIX = [[
- {cell: [11, 0], id: '1'}, 
- {cell: [57, 0], id: '2'}, 
- {cell: [79, 0], id: '3'}, 
- {cell: [125, 0], id: '4'}, 
- {cell: [147, 0], id: '5'}, 
- {cell: [193, 0], id: '6'},
- {cell: [215, 0], id: '7'}, 
- {cell: [261, 0], id: '8'}, 
- {cell: [283, 0], id: '9'}, 
- {cell: [329, 0], id: '10'}
-]];
-
-LevelAnimation.FOREST_JUMP_SPRITE_MATRIX = [[
- {cell: [3, 0], id: '1'}, 
- {cell: [49, 0], id: '2'}, 
- {cell: [55, 0], id: '3'}, 
- {cell: [101, 0], id: '4'}, 
- {cell: [107, 0], id: '5'}, 
- {cell: [153, 0], id: '6'},
- {cell: [159, 0], id: '7'}, 
- {cell: [205, 0], id: '8'}, 
- {cell: [211, 0], id: '9'}, 
- {cell: [257, 0], id: '10'}
-]];
-
-LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
- {cell: [12, 0], id: '1'}, 
- {cell: [58, 0], id: '2'}, 
- {cell: [82, 0], id: '3'}, 
- {cell: [128, 0], id: '4'}, 
- {cell: [152, 0], id: '5'}, 
- {cell: [198, 0], id: '6'},
- {cell: [222, 0], id: '7'}, 
- {cell: [268, 0], id: '8'}, 
- {cell: [292, 0], id: '9'}, 
- {cell: [338, 0], id: '10'}
-]];
-
 /*
 
 LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
@@ -282,33 +235,13 @@ LevelAnimation.prototype.initImages = function(bgTheme, creatureTypes){
 	var path, galPath, creatureTypeIt, image, creatureImagePaths, creatureType;
 	path = "creatures/" + bgTheme + "/" ;
 	for( creatureTypeIt = 0; creatureTypeIt < creatureTypes.length; creatureTypeIt++ ) {
-			creatureType = creatureTypes[creatureTypeIt];
-			galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
-			image =  LoadingScreen.gal.get(galPath);
-			if( image ) {
-				this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = new SpriteSheet(image, LevelAnimation.ROLLOVER_SPRITE_MATRIX);
-			}
-			else {
-				console.error( 'unable to load image ' + galPath);
-			}
-			galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
-			image = LoadingScreen.gal.get(galPath);
-			if( image ) {
-				switch( bgTheme ) {
-					case 'beach':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.BEACH_JUMP_SPRITE_MATRIX);
-						break;
-					case 'forest':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.FOREST_JUMP_SPRITE_MATRIX);
-						break;
-					case 'cave':
-						this[creatureType + LevelAnimation.JUMP_SUFFIX] = new SpriteSheet(image, LevelAnimation.CAVE_JUMP_SPRITE_MATRIX);
-						break;
-				}
-			}
-			else {
-				console.error( 'unable to load image ' + galPath);
-			}
+		creatureType = creatureTypes[creatureTypeIt];
+		
+		galPath = path + creatureType + LevelAnimation.ROLLOVER_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
+		this[creatureType + LevelAnimation.ROLLOVER_SUFFIX] = ImageCollage.getSprites( galPath );
+		
+		galPath = path + creatureType + LevelAnimation.JUMP_SUFFIX + '-strip' + Level.BLOB_IMAGE_EXTENSION;
+		this[creatureType + LevelAnimation.JUMP_SUFFIX] = ImageCollage.getSprites( galPath );
 	}
 	//console.debug('creatureImagePaths: ' + creatureImagePaths);
 	return creatureImagePaths;
@@ -430,15 +363,15 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 			var imageArray1 = [];
 			var imgCnt = 0;
 			var image;
-			for(imgCnt = 0;imgCnt < LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length/2; imgCnt++){
-				if(rolloverImageSpriteSheet){
-					image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
-					imageArray.push(image);
-				}
-				if(rolloverImageSpriteSheet1){
-					image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
-					imageArray1.push(image);
-				}
+			if(rolloverImageSpriteSheet){
+				imageArray = CanvasUtil.rotateImages( rolloverImageSpriteSheet, tileDownDegreesToRotate );
+				//image = rolloverImageSpriteSheet.getSpriteNew([imgCnt * 2, 0], tileDownDegreesToRotate);
+				//imageArray.push(image);
+			}
+			if(rolloverImageSpriteSheet1){
+				imageArray1 = CanvasUtil.rotateImages( rolloverImageSpriteSheet1, tileUpDegreesToRotate );
+				//image = rolloverImageSpriteSheet1.getSpriteNew([imgCnt * 2, 0], tileUpDegreesToRotate);
+				//imageArray1.push(image);
 			}
 			imgCnt = 0;
 			var interval = setInterval(function(){
@@ -451,7 +384,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				}
 				layer.clearRect(x, y, width, height);
 				if(tileUpSelected){
-					if(image && image.width){
+					if(image && image.naturalWidth){
 						layer.drawImage(image, x, y);
 					}
 					if(image1 && image1.width){
@@ -462,12 +395,12 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					if(image1 && image1.width){
 						layer.drawImage(image1, x, y);
 					}
-					if(image && image.width){
+					if(image && image.naturalWidth){
 						layer.drawImage(image, x, y);
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= LevelAnimation.BEACH_JUMP_SPRITE_MATRIX[0].length / 2){
+				if(imgCnt >= rolloverImageSpriteSheet.length){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -486,41 +419,6 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 		var coordinates = [];
 
 		var bonfireImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bonfire-strip.png');
-		var animatedLevels = [];
-		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
-		for (var i = 0; i < parallelAnimation; i++) {
-			var randomLevelId;
-			do{
-				randomLevelId = Math.ceil( Math.random() * highestCompletedId);
-			}while(_.contains(animatedLevels, randomLevelId) || !_.contains(completedLevelIds, randomLevelId));
-			animatedLevels.push(randomLevelId);
-		}
-		_.each(animatedLevels, function(animatedLevel){
-			var level = Level.findById(animatedLevel);
-			var centroid = LevelAnimation.getMapHotspotRegionCentroid(level.mapHotspotRegion);
-			var x = centroid[0] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_WIDTH / 3);
-			var y = centroid[1] - Math.ceil(LevelAnimation.BONFIRE_IMAGE_HEIGHT / 1.4);
-			coordinates.push([x, y]);
-		});
-		if(coordinates.length){
-			if(levelAnimation.bonFireAnimation){
-				levelAnimation.bonFireAnimation.stop();
-			}
-			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
-			bonFireAnimation.start();
-			levelAnimation.bonFireAnimation = bonFireAnimation;
-		}
-	}
-	animateRandomBornFires();
-	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
-}; 
-
-//LevelAnimation.prototype.animateBonFire()
-LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
-	var levelAnimation = this;
-	function animateRandomBornFires(){
-		var coordinates = [];
-		var bonfireImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'strip_bonfire.png'), LevelAnimation.BONFIRE_SPRITE_MATRIX); 
 		var animatedLevels = [];
 		var parallelAnimation = Math.ceil( Math.random() * completedLevelIds.length);
 		for (var i = 0; i < parallelAnimation; i++) {
@@ -684,9 +582,12 @@ LevelAnimation.prototype.stopNextLevelArrows = function(){
 };
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
-	var image, imgCnt, validArray = true, imageArray = [];
-	var image = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "hint-strip.png");
-	var rolloverImageSpriteSheet = new SpriteSheet(image, LevelAnimation.IDLE_HINT_SPRITE_MATRIX); 
+	var galAssetPath, rolloverImageSpriteSheet, sprite, spriteRotated, imgCnt, validArray = true, imageArray = [];
+	galAssetPath = this.collageDirectory + "game-hint-strip.png";
+	var rolloverImageSpriteSheet = ImageCollage.getSprites( galAssetPath );
+	if( !rolloverImageSpriteSheet ) {
+		console.error( 'unable to load image ' + galAssetPath);
+	}
 	var tile,degreesToRotate;			
 	if(initialTile.coordinates[1] > swapTile.coordinates[1]){
 		tile = swapTile;
@@ -704,12 +605,13 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	}
 	if(degreesToRotate){
 		if(!this.makeMatchVerticalSpritesArray){
-			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt], degreesToRotate);
-				if(!image.height){
+			for(imgCnt = 0; imgCnt < rolloverImageSpriteSheet.length; imgCnt++){
+				sprite = rolloverImageSpriteSheet[imgCnt];
+				spriteRotated = CanvasUtil.rotateImage( sprite, degreesToRotate );
+				if(!spriteRotated.naturalHeight){
 					validArray = false;
 				}
-				imageArray.push(image);
+				imageArray.push(spriteRotated);
 			}
 			if(validArray){
 				this.makeMatchVerticalSpritesArray = imageArray;
@@ -719,12 +621,12 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 		}	 
 	}else{
 		if(!this.makeMatchHorizontalSpritesArray){
-			for(imgCnt = 0;imgCnt < LevelAnimation.IDLE_HINT_SPRITE_MATRIX.length; imgCnt++){
-				image = rolloverImageSpriteSheet.getSpriteNew([0, imgCnt]);
-				if(!image.height){
+			for(imgCnt = 0; imgCnt < rolloverImageSpriteSheet.length; imgCnt++){
+				sprite = rolloverImageSpriteSheet[imgCnt];
+				if(!sprite.naturalHeight){
 					validArray = false;
 				}
-				imageArray.push(image);
+				imageArray.push(sprite);
 			}
 			if(validArray){
 				this.makeMatchHorizontalSpritesArray = imageArray;
@@ -736,7 +638,8 @@ LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTil
 	var makeMatchAnimation = new MakeMatchAnimation(layer, initialTile, swapTile, imageArray, tile.getXCoord(), tile.getYCoord(), degreesToRotate);
 	this.makeMatchAnimation = makeMatchAnimation;
 	makeMatchAnimation.start();
-};
+}; //LevelAnimation.prototype.animateMakeMatch()
+
 
 LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 	if(this.makeMatchAnimation){
@@ -746,29 +649,21 @@ LevelAnimation.prototype.stopMakeMatchAnimation = function(){
 };
 
 LevelAnimation.prototype.initLightning = function() {
-	var image, spriteSheet, x;
+	var sprite, x;
 	if(!LevelAnimation.lightningImages.rightHorizontal.length){
-		image = LoadingScreen.gal.get("screen-game/lightning-strip.png");
-		if( image ) {
-			spriteSheet = new SpriteSheet(image, LevelAnimation.LIGHTNING_SPRITE_MATRIX);
-			for(x = 0; x < LevelAnimation.LIGHTNING_SPRITE_MATRIX.length; x++){
-				//load the original image
-				image = spriteSheet.getSpriteNew([0,x]);
-				LevelAnimation.lightningImages.rightHorizontal.push(image);
-				//since loading may take time, attempt retrieving rotated images, once the original image gets loaded n cached.
-				//As subsequent calls to get the rotated image, will get the original cached image, and then rotating it would not fail
-				image.onload = LevelAnimation.makeLightningFunction(spriteSheet, x);
-			}
+		LevelAnimation.lightningSprites = ImageCollage.getSprites('collage/game-lightning-strip.png');
+		for(x = 0; x < LevelAnimation.lightningSprites.length; x++){
+			sprite = LevelAnimation.lightningSprites[x];
+			LevelAnimation.lightningImages.rightHorizontal.push(sprite);
+			LevelAnimation.makeLightningFunction(sprite);
 		}
 	}
 }
 
-LevelAnimation.makeLightningFunction = function(spriteSheet, x) {
-	return function(){
-		LevelAnimation.lightningImages.bottomVertical.push(spriteSheet.getSpriteNew([0,x], 90));
-		LevelAnimation.lightningImages.leftHorizontal.push(spriteSheet.getSpriteNew([0,x], 180));
-		LevelAnimation.lightningImages.topVertical.push(spriteSheet.getSpriteNew([0,x], 270));
-	}
+LevelAnimation.makeLightningFunction = function(sprite) {
+		LevelAnimation.lightningImages.bottomVertical = LevelAnimation.lightningImages.bottomVertical.concat( CanvasUtil.rotateImages([sprite], 90) );
+		LevelAnimation.lightningImages.leftHorizontal = LevelAnimation.lightningImages.leftHorizontal.concat( CanvasUtil.rotateImages([sprite], 180) );
+		LevelAnimation.lightningImages.topVertical = LevelAnimation.lightningImages.topVertical.concat( CanvasUtil.rotateImages([sprite], 270) );
 }
 
 LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {
@@ -887,11 +782,14 @@ RolloverAnimation.prototype.stop = function(){
 RolloverAnimation.prototype.animate = function(){
 	var image;
 	if( this.rolloverImageSpriteSheet ) {
-		image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
+		image = this.rolloverImageSpriteSheet[this.rolloverSpriteId];
+		//image = this.rolloverImageSpriteSheet.getSprite([this.rolloverSpriteId, 0]);
 		if( image ) {
-			this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
-			this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
-			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.spriteMatrix[0].length;
+			this.layer.drawImage(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
+			//this.layer.putImageData(image, this.tileActive.getXCoord(), this.tileActive.getYCoord());
+			this.rolloverSpriteId++;
+			//this.rolloverSpriteId += 2; //jj: testing a skip of the even sprites for performance reasons
+			this.rolloverSpriteId = this.rolloverSpriteId % this.rolloverImageSpriteSheet.length;
 			if(this.tileMarkSprites){
 				image = this.tileMarkSprites[this.tileMarkSpriteId];
 				if( image ) {
@@ -978,8 +876,8 @@ BombAnimation.prototype.animate = function(){
 	//var image = this.bombImageSpriteSheet.getSprite([this.bombSpriteId, 0]);
 	var image = this.bombImageSpriteSheet[this.bombSpriteId];
 	image = CanvasUtil.magnifyImage( image, 2 );
-	this.imageHeight = image.height;
-	this.imageWidth = image.width;
+	this.imageHeight = image.naturalHeight;
+	this.imageWidth = image.naturalWidth;
 	this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
 	this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
 	this.bombSpriteId++;
@@ -1056,7 +954,7 @@ NextLevelArrowAnimation.prototype.stop = function(){
 	var nextLevelArrowAnimation = this;
 	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
 	_.each(arrowsInfo, function(arrowInfo){
-		nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.width, arrowInfo.image.height);	
+		nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.naturalWidth, arrowInfo.image.naturalHeight);	
 	});
 };
 
@@ -1065,7 +963,7 @@ NextLevelArrowAnimation.prototype.animate = function(){
 	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
 	_.each(arrowsInfo, function(arrowInfo){
 		if(nextLevelArrowAnimation.rolloverSpriteId == 1){
-			nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.width, arrowInfo.image.height);	
+			nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.naturalWidth, arrowInfo.image.naturalHeight);	
 		}else{
 			nextLevelArrowAnimation.layer.drawImage(arrowInfo.image, arrowInfo.xCoord, arrowInfo.yCoord);
 		}
@@ -1108,7 +1006,7 @@ MakeMatchAnimation.prototype.animate = function(){
 	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	var image = this.imageArray[this.rolloverSpriteId];
-	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
+	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.rolloverSpriteId++;
 	this.rolloverSpriteId = this.rolloverSpriteId % this.imageArray.length;
 };
@@ -1214,11 +1112,11 @@ BobCervantesAnimation.prototype.stop = function(){
 	if(this.interval){
 		var image = this.bcLeftHeadImageArray[0];
 		this.layer.clearRect(0, 0, this.layer.canvas.width, this.layer.canvas.height);
-		this.layer.drawImage(image, 33, 155, image.width * 1.1, image.height * 1.1);
+		this.layer.drawImage(image, 33, 155, image.naturalWidth * 1.1, image.naturalHeight * 1.1);
 		image = this.bcRightHeadImageArray[0];
-		this.layer.drawImage(image, 113, 125, image.width * 1.1, image.height * 1.1);
+		this.layer.drawImage(image, 113, 125, image.naturalWidth * 1.1, image.naturalHeight * 1.1);
 		image = this.bcMouthImageArray[0];
-		this.layer.drawImage(image, 82, 140, image.width * 2 , image.height * 2);
+		this.layer.drawImage(image, 82, 140, image.naturalWidth * 2 , image.naturalHeight * 2);
 		clearInterval(this.interval);
 	}
 };
@@ -1226,11 +1124,11 @@ BobCervantesAnimation.prototype.stop = function(){
 BobCervantesAnimation.prototype.animate = function(){
 	var image = this.bcLeftHeadImageArray[this.eyeRolloverSpriteId];
 	this.layer.clearRect(0, 0, this.layer.canvas.width, this.layer.canvas.height);
-	this.layer.drawImage(image, 33, 155, image.width * 1.1, image.height * 1.1);
+	this.layer.drawImage(image, 33, 155, image.naturalWidth * 1.1, image.naturalHeight * 1.1);
 	image = this.bcRightHeadImageArray[this.eyeRolloverSpriteId];
-	this.layer.drawImage(image, 113, 125, image.width * 1.1, image.height * 1.1);
+	this.layer.drawImage(image, 113, 125, image.naturalWidth * 1.1, image.naturalHeight * 1.1);
 	image = this.bcMouthImageArray[this.mouthRolloverSpriteId];
-	this.layer.drawImage(image, 82, 140, image.width * 2 , image.height * 2);
+	this.layer.drawImage(image, 82, 140, image.naturalWidth * 2 , image.naturalHeight * 2);
 	this.eyeRolloverSpriteId++;
 	this.eyeRolloverSpriteId = this.eyeRolloverSpriteId % this.bcRightHeadImageArray.length;
 	this.mouthRolloverSpriteId++;
@@ -1272,8 +1170,8 @@ SparklesAnimation.prototype.stop = function(){
 
 SparklesAnimation.prototype.animate = function(){
 	var image = this.sprites[this.spriteId];
-	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
-	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
+	this.layer.clearRect(this.x,this.y, image.naturalWidth * 2, image.naturalHeight * 2);
+	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.spriteId++;
 	if(this.spriteId == this.sprites.length){
 		this.stop();
@@ -1316,10 +1214,10 @@ StarsAnimation.prototype.stop = function(){
 
 StarsAnimation.prototype.animate = function(){
 	var image = this.sprites[this.spriteId];
-	this.layer.clearRect(this.x,this.y, image.width * 2, image.height * 2);
+	this.layer.clearRect(this.x,this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.x = this.x + this.horizontalOffset;
 	this.y = this.y + this.verticalOffset;
-	this.layer.drawImage(image, this.x, this.y, image.width * 2, image.height * 2);
+	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.spriteId++;
 	if(this.spriteId == this.sprites.length){
 		this.stop();
@@ -1360,31 +1258,61 @@ LightningAnimation.prototype.stop = function(){
 LightningAnimation.prototype.animate = function(){
 	var image;
 	if(this.horizontal){
-		if(this.rolloverSpriteId != LevelAnimation.LIGHTNING_SPRITE_MATRIX.length){ 
+		if(this.rolloverSpriteId < LevelAnimation.lightningSprites.length){ 
 			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];
-			this.layer.clearRect(0, this.coordinate, 4*image.width, 2*image.height);
-			this.layer.drawImage(image, 0, this.coordinate, 2*image.width, 2*image.height);
+			if( image ) {
+			this.layer.clearRect(0, this.coordinate, 4*image.naturalWidth, 2*image.naturalHeight);
+			this.layer.drawImage(image, 0, this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+			}
+			else {
+				console.error( 'no left horizontal lightning image');
+			}
 			image = LevelAnimation.lightningImages.rightHorizontal[this.rolloverSpriteId];
-			this.layer.drawImage(image, 2*image.width , this.coordinate, 2*image.width, 2*image.height);
 			this.rolloverSpriteId++;
+			if( image ) {
+				this.layer.drawImage(image, 2*image.naturalWidth , this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+			}
+			else {
+				console.error( 'no right horizontal lightning image');
+			}
 		}else{
 			this.rolloverSpriteId--;
 			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];;
-			this.layer.clearRect(0, this.coordinate, 4 * image.width, 2*image.height);
+			if( image ) {
+				this.layer.clearRect(0, this.coordinate, 4 * image.naturalWidth, 2*image.naturalHeight);
+			}
+			else {
+				console.error( 'no left horizontal lightning image');
+			}
 			this.stop();
 		}
 	}else{
 		if(this.rolloverSpriteId != LevelAnimation.LIGHTNING_SPRITE_MATRIX.length){ 
 			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];
-			this.layer.clearRect(this.coordinate, 0, 2 * image.width, 4 * image.height);
-			this.layer.drawImage(image, this.coordinate, 0, 2 * image.width, 2 * image.height);
+			if( image ) {
+				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
+				this.layer.drawImage(image, this.coordinate, 0, 2 * image.naturalWidth, 2 * image.naturalHeight);
+			}
+			else {
+				console.error( 'no top vertical lightning image');
+			}
 			image = LevelAnimation.lightningImages.bottomVertical[this.rolloverSpriteId];
-			this.layer.drawImage(image, this.coordinate, 2* image.height, 2 * image.width, 2 * image.height);
 			this.rolloverSpriteId++;
+			if( image ) {
+				this.layer.drawImage(image, this.coordinate, 2* image.naturalHeight, 2 * image.naturalWidth, 2 * image.naturalHeight);
+			}
+			else {
+				console.error( 'no bottom vertical lightning image');
+			}
 		}else{
 			this.rolloverSpriteId--;
 			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];;
-			this.layer.clearRect(this.coordinate, 0, 2 * image.width, 4 * image.height);
+			if( image ) {
+				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
+			}
+			else {
+				console.error( 'no top vertical lightning image');
+			}
 			this.stop();
 		}
 	}
