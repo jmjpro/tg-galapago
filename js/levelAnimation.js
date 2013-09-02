@@ -57,98 +57,6 @@ LevelAnimation.CAVE_JUMP_SPRITE_MATRIX = [[
  {cell: [338, 0], id: '10'}
 ]];
 
-/*
-
-LevelAnimation.BOMB_1_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'},
- {cell: [73, 0], id: '2'}, 
- {cell: [146, 0], id: '3'}, 
- {cell: [219, 0], id: '4'}, 
- {cell: [292, 0], id: '5'}, 
- {cell: [365, 0], id: '6'}, 
- {cell: [438, 0], id: '7'},
- {cell: [511, 0], id: '8'}, 
- {cell: [584, 0], id: '9'}, 
- {cell: [657, 0], id: '10'}, 
- {cell: [730, 0], id: '11'}
- ]];
-
- LevelAnimation.BOMB_2_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'},
- {cell: [80, 0], id: '2'}, 
- {cell: [160, 0], id: '3'}, 
- {cell: [240, 0], id: '4'}, 
- {cell: [320, 0], id: '5'}, 
- {cell: [400, 0], id: '6'}, 
- {cell: [480, 0], id: '7'},
- {cell: [560, 0], id: '8'}, 
- {cell: [640, 0], id: '9'}, 
- {cell: [720, 0], id: '10'}, 
- {cell: [800, 0], id: '11'}
- ]];
-
-LevelAnimation.BOMB_3_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'},
- {cell: [15.5, 0], id: '2'}, 
- {cell: [31, 0], id: '3'}, 
- {cell: [46.5, 0], id: '4'}, 
- {cell: [62, 0], id: '5'}, 
- {cell: [77.5, 0], id: '6'}, 
- {cell: [93, 0], id: '7'},
- {cell: [108.5, 0], id: '8'}
- ]];
-
-LevelAnimation.BOMB_4_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'},
- {cell: [69.27, 0], id: '2'}, 
- {cell: [138.54, 0], id: '3'}, 
- {cell: [207.81, 0], id: '4'}, 
- {cell: [277.08, 0], id: '5'}, 
- {cell: [346.35, 0], id: '6'},
- {cell: [415.62, 0], id: '7'}, 
- {cell: [484.89, 0], id: '8'}, 
- {cell: [554.16, 0], id: '9'}, 
- {cell: [623.43, 0], id: '10'}, 
- {cell: [692.7, 0], id: '11'}
- ]];
-*/
-/*
-LevelAnimation.BONFIRE_SPRITE_MATRIX = [[
- {cell: [0, 0], id: '1'}, 
- {cell: [21, 0], id: '2'}, 
- {cell: [42, 0], id: '3'}, 
- {cell: [63, 0], id: '4'}, 
- {cell: [84, 0], id: '5'}, 
- {cell: [105, 0], id: '6'}, 
- {cell: [126, 0], id: '7'}, 
- {cell: [147, 0], id: '8'}, 
- {cell: [168, 0], id: '9'}, 
- {cell: [189, 0], id: '10'},
- {cell: [210, 0], id: '11'}, 
- {cell: [231, 0], id: '12'}, 
- {cell: [252, 0], id: '13'}, 
- {cell: [273, 0], id: '14'}, 
- {cell: [294, 0], id: '15'}, 
- {cell: [315, 0], id: '16'}
- ]];*/
-
-/*LevelAnimation.POWER_ACHIEVED_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'}, 
-{cell: [48, 0], id: '2'}, 
-{cell: [96, 0], id: '3'}, 
-{cell: [144, 0], id: '4'}
-]];
-
-LevelAnimation.POWER_ACTIVATED_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'}, 
-{cell: [74, 0], id: '2'}, 
-{cell: [148, 0], id: '3'}, 
-{cell: [222, 0], id: '4'}, 
-{cell: [296, 0], id: '5'}, 
-{cell: [370, 0], id: '6'}, 
-{cell: [444, 0], id: '7'}
-]];*/
-
 LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
 [{cell: [0, 18], id: '2'}],  
@@ -160,57 +68,6 @@ LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
 [{cell: [0, 126], id: '8'}],
 [{cell: [0, 144], id: '9'}]
 ];
-
-LevelAnimation.BUBBLE_TIP_HINT_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 30], id: '2'}],  
-[{cell: [0, 60], id: '3'}], 
-[{cell: [0, 90], id: '4'}],  
-[{cell: [0, 120], id: '5'}],
-[{cell: [0, 150], id: '6'}],   
-[{cell: [0, 180], id: '7'}]
-];
-
-LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [46, 0], id: '2'},  
-{cell: [92, 0], id: '3'}, 
-{cell: [138, 0], id: '4'},  
-{cell: [184, 0], id: '5'},
-{cell: [230, 0], id: '6'},   
-{cell: [276, 0], id: '7'},   
-{cell: [322, 0], id: '8'},   
-{cell: [368, 0], id: '9'},   
-{cell: [414, 0], id: '10'},   
-{cell: [460, 0], id: '11'},   
-{cell: [506, 0], id: '12'}
-]];
-
-LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [37, 0], id: '2'},
-{cell: [74, 0], id: '3'}, 
-{cell: [111, 0], id: '4'},  
-{cell: [148, 0], id: '5'},
-{cell: [185, 0], id: '6'},   
-{cell: [222, 0], id: '7'},   
-{cell: [259, 0], id: '8'},   
-{cell: [296, 0], id: '9'},   
-{cell: [333, 0], id: '10'},   
-{cell: [370, 0], id: '11'},   
-{cell: [407, 0], id: '12'}
-]];
-
-
-LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX = [[
-{cell: [0, 0], id: '1'},
-{cell: [60, 0], id: '2'},  
-{cell: [120, 0], id: '3'}, 
-{cell: [180, 0], id: '4'},  
-{cell: [240, 0], id: '5'},
-{cell: [300, 0], id: '6'},   
-{cell: [360, 0], id: '7'} 
-]];
 
 LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
 [{cell: [0, 0], id: '1'}],
@@ -239,7 +96,7 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	if(LevelAnimation.bobCervantesAnimation){
 		return;
 	}
-	var headsBase, canvasBC, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
+	var headsBase, canvasBC, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
 	headsBase = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-base.png");
 	headsBase = CanvasUtil.magnifyImage( headsBase, 2);
 	canvasBC = $('#layer-bob-cervantes');
@@ -249,25 +106,16 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	canvasBC.css('top', '0px');
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	layer.drawImage(headsBase, 0, 0, headsBase.width, headsBase.height);
-	bcLeftHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-left-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX);
-	bcRightHeadImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-right-eyes-strip.png"), LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX);
-	bcMouthImageSpriteSheet = new SpriteSheet(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-mouth-strip.png"), LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX);
-	imgLeftHeadEyes = bcLeftHeadImageSpriteSheet.getSpriteNew([0,0]);
-	imgLeftHeadEyes.onload =function() {
-		CanvasUtil.magnifyImage( imgLeftHeadEyes, 1.1 );
-		layer.drawImage(imgLeftHeadEyes, 33, 155, imgLeftHeadEyes.width, imgLeftHeadEyes.height);
-	}
-	imgRightHeadEyes = bcRightHeadImageSpriteSheet.getSpriteNew([0,0]);
-	imgRightHeadEyes.onload =function() {
-		CanvasUtil.magnifyImage( imgRightHeadEyes, 1.1 );
-		layer.drawImage(imgRightHeadEyes, 113, 125, imgRightHeadEyes.width, imgRightHeadEyes.height);		
-	}
-	imgRightHeadMouth = bcMouthImageSpriteSheet.getSpriteNew([0,0]);
-	imgRightHeadMouth.onload =function() {
-		CanvasUtil.magnifyImage( imgRightHeadMouth, 2 );
-		layer.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width, imgRightHeadMouth.height);
-	}
-	LevelAnimation.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
+	bcLeftHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-left-eyes-strip.png");
+	bcRightHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-right-eyes-strip.png");
+	bcMouthImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-mouth-strip.png");
+	imgLeftHeadEyes = bcLeftHeadImageSprites[0];
+	layer.drawImage(imgLeftHeadEyes, 33, 155, imgLeftHeadEyes.width * 1.1, imgLeftHeadEyes.height* 1.1);
+	imgRightHeadEyes = bcRightHeadImageSprites[0];
+	layer.drawImage(imgRightHeadEyes, 113, 125, imgRightHeadEyes.width* 1.1, imgRightHeadEyes.height* 1.1);		
+	imgRightHeadMouth = bcMouthImageSprites[0];
+	layer.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width* 2, imgRightHeadMouth.height* 2);
+	LevelAnimation.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites);
 }
 
 LevelAnimation.prototype.animateBobCervantes = function(imageArray) {
@@ -1173,31 +1021,14 @@ BoardBuildAnimation.prototype.animate = function(){
 };
 
 BobCervantesAnimation.ROLLOVER_TIME_INTERVAL=200;
-function BobCervantesAnimation(layer, bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet){
+function BobCervantesAnimation(layer, bcLeftHeadImageArray, bcRightHeadImageArray, bcMouthImageArray){
 	this.layer = layer;
 	this.interval = null;
 	this.eyeRolloverSpriteId = 0;
 	this.mouthRolloverSpriteId = 0;
-	this.bcLeftHeadImageArray = [];
-	this.bcRightHeadImageArray = [];
-	this.bcMouthImageArray= [];
-	this.init(bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet);
-}
-
-BobCervantesAnimation.prototype.init = function(bcLeftHeadImageSpriteSheet, bcRightHeadImageSpriteSheet, bcMouthImageSpriteSheet){
-	var image, imgCnt;
-	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_LEFT_EYES_SPRITE_MATRIX[0].length; imgCnt++){
-		image = bcLeftHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
-		this.bcLeftHeadImageArray.push(image);
-	}
-	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_RIGHT_EYES_SPRITE_MATRIX[0].length; imgCnt++){
-		image = bcRightHeadImageSpriteSheet.getSpriteNew([imgCnt, 0]);
-		this.bcRightHeadImageArray.push(image);
-	}
-	for(imgCnt = 0;imgCnt < LevelAnimation.BOB_CERVANTES_MOUTH_SPRITE_MATRIX[0].length; imgCnt++){
-		image = bcMouthImageSpriteSheet.getSpriteNew([imgCnt, 0]);
-		this.bcMouthImageArray.push(image);
-	}
+	this.bcLeftHeadImageArray = bcLeftHeadImageArray;
+	this.bcRightHeadImageArray = bcRightHeadImageArray;
+	this.bcMouthImageArray= bcMouthImageArray;
 }
 
 BobCervantesAnimation.prototype.start = function(){

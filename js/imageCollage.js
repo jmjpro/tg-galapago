@@ -99,10 +99,56 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
+		"collageId": "collage/heads-mouth-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 60, 62]},
+			{"cell": [60, 0, 60, 62]},
+			{"cell": [120, 0, 60, 62]},
+			{"cell": [180, 0, 60, 62]},
+			{"cell": [240, 0, 60, 62]},
+			{"cell": [300, 0, 60, 62]},
+			{"cell": [360, 0, 60, 62]}
+		]
+	},
+	{
 		"collageId": "collage/heads-eyes-strip.png",
 		"imageCoordinateArray": [
-			{"cell": [0, 0, 552, 21], "id": "screen-game/heads-right-eyes-strip.png"},
-			{"cell": [0, 21, 481, 21], "id": "screen-game/heads-left-eyes-strip.png"}
+			{"cell": [0, 0, 552, 21], "id": "collage/heads-right-eyes-strip.png"},
+			{"cell": [0, 21, 481, 21], "id": "collage/heads-left-eyes-strip.png"}
+		]
+	},
+	{
+		"collageId": "collage/heads-left-eyes-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 37, 21]},
+			{"cell": [37, 0, 37, 21]},
+			{"cell": [74, 0, 37, 21]},
+			{"cell": [111, 0, 37, 21]},
+			{"cell": [148, 0, 37, 21]},
+			{"cell": [185, 0, 37, 21]},
+			{"cell": [222, 0, 37, 21]},
+			{"cell": [259, 0, 37, 21]},
+			{"cell": [296, 0, 37, 21]},
+			{"cell": [333, 0, 37, 21]},
+			{"cell": [370, 0, 37, 21]},
+			{"cell": [407, 0, 37, 21]}
+		]
+	},
+	{
+		"collageId": "collage/heads-right-eyes-strip.png",
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 46, 21]},
+			{"cell": [46, 0, 46, 21]},
+			{"cell": [92, 0, 46, 21]},
+			{"cell": [138, 0, 46, 21]},
+			{"cell": [184, 0, 46, 21]},
+			{"cell": [230, 0, 46, 21]},
+			{"cell": [276, 0, 46, 21]},
+			{"cell": [322, 0, 46, 21]},
+			{"cell": [368, 0, 46, 21]},
+			{"cell": [414, 0, 46, 21]},
+			{"cell": [460, 0, 46, 21]},
+			{"cell": [506, 0, 46, 21]}
 		]
 	},
 	{
