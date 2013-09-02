@@ -86,10 +86,11 @@ CanvasUtil.rotateImages = function(images, degrees) {
 	ctx.rotate(degrees * Math.PI / 180);
 
 	for( i = 0; i < images.length; i++ ) {
-		ctx.drawImage(image, cx, cy);
+		ctx.clearRect(cx,cy,images[i].width,images[i].height)
+		ctx.drawImage(images[i], cx, cy);
 		imageRotated = new Image();
 		imageRotated.src = canvas.toDataURL('image/png');
-		imagesRotated.push( image );
+		imagesRotated.push( imageRotated );
 	}
 	return imagesRotated;
 };
