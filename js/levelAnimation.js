@@ -657,11 +657,9 @@ LevelAnimation.prototype.initLightning = function() {
 
 LevelAnimation.makeLightningFunction = function(sprite) {
 	//return function(){
-		var ctx;
-		ctx = CanvasUtil.getTempCanvas().getContext('2d');
-		LevelAnimation.lightningImages.bottomVertical.push( CanvasUtil.rotateImage(ctx, sprite, 90) );
-		LevelAnimation.lightningImages.leftHorizontal.push( CanvasUtil.rotateImage(ctx, sprite, 180) );
-		LevelAnimation.lightningImages.topVertical.push( CanvasUtil.rotateImage(ctx, sprite, 270) );
+		LevelAnimation.lightningImages.bottomVertical = LevelAnimation.lightningImages.bottomVertical.concat( CanvasUtil.rotateImages([sprite], 90) );
+		LevelAnimation.lightningImages.leftHorizontal = LevelAnimation.lightningImages.leftHorizontal.concat( CanvasUtil.rotateImages([sprite], 180) );
+		LevelAnimation.lightningImages.topVertical = LevelAnimation.lightningImages.topVertical.concat( CanvasUtil.rotateImages([sprite], 270) );
 	//}
 }
 
