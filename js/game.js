@@ -1088,7 +1088,7 @@ Level.prototype.quit = function(){
 
 Level.prototype.cleanup = function(isPreserveGridLayer){
 	if( isPreserveGridLayer ) {
-		this.board.hideGoldAndCreatures();
+		this.board.hideGoldAndCreatures();	
 	}
 	else {
 		this.board.screenDiv.hide();		
@@ -1099,6 +1099,7 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
+	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
 		this.levelAnimation.stopAllPowerAchieved();
 		this.levelAnimation.powerAchievedAnimation = null;
