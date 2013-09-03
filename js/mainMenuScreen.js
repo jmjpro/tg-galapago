@@ -181,6 +181,12 @@ MainMenuScreen.prototype.show = function() {
 MainMenuScreen.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.mainMenuDOM.hide();
+
+	// TODO: IGOR: MainMenuScreen: cleanup
+	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
+		$(selector).css( 'background-image','');
+	});
+
 	/*
 	if( this.callingObject.registerEventHandlers ){
 		this.callingObject.registerEventHandlers();

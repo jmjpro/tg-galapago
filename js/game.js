@@ -17,7 +17,7 @@ Galapago.gameImageNames = [
 	'bracket-left',
 	'bracket-right',
 	'button-regular',
-	'button-cursor',
+	'button-cursor'
 ];
 Galapago.dangerBarImageNames = [
 	'danger-bar',
@@ -532,6 +532,19 @@ LevelMap.prototype.cleanup = function() {
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
 	this.unregisterEventHandlers();
+	// TODO: IGOR: LevelMap: added cleanup
+	this.screenDiv.css('background-image',"");
+	this.canvas.width = this.canvas.height = 1;
+
+	var el = document.getElementById('layer-map');
+	el.width = el.height = 1;
+
+	el = document.getElementById('layer-map-other-animation');
+	el.width = el.height = 1;
+
+	el = document.getElementById('layer-map-animation');
+	el.width = el.height = 1;
+
 	this.screenDiv.css('display', 'none');
 	this.cleanupAnimationAndSound();
 }; //LevelMap.prototype.cleanup()
@@ -635,6 +648,11 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 }; //LevelMap.prototype.debugDisplayMapCoordinates
 
 LevelMap.show = function(level){
+	// TODO: IGOR: LevelMap: Init canvas sizes
+	var el = document.getElementById('layer-map');
+	el.width = 1279;
+	el.height = 670;
+
 	Galapago.levelMap = new LevelMap(level);
 	Galapago.levelMap.canvas.focus();
 	Galapago.levelMap.registerEventHandlers();
@@ -1231,18 +1249,99 @@ Level.prototype.unregisterEventHandlers = function() {
 	window.onkeydown = null;
 }; //Level.prototype.unregisterEventHandlers()
 
+function changeCanvasState(stateName) {
+	function c(name) {
+		var el = document.getElementById(name);
+		if(el) {
+			el.width = 1;
+			el.height = 1;
+			el.style.width = "1px";
+			el.style.height = "1px";
+		}
+		/*if(el && el.parentNode) {
+			el.parentNode.removeChild(el);
+		}
+		el = null;*/
+	}
+
+	switch(stateName) {
+		case "gameScreen":
+			//c("layer-background");
+			c("layer-progress-bar");
+			//c("layer-background");
+			c("layer-map");
+			c("layer-map-other-animation");
+			c("layer-map-animation");
+			break;
+	}
+
+
+
+	function findAllPixels(element, deep, pixels, prevId) {
+		if(typeof deep === 'undefined') {
+			deep = 0;
+			pixels = 0;
+		}
+		var child, next;
+		child = element.firstElementChild;
+		while (child) {
+			if(child.nodeName.toLocaleLowerCase() === 'canvas') {
+				console.log("Found canvas id = " + child.id + ", pixels: " + (child.width * child.height) + " in div id = " + prevId);
+				pixels += child.width * child.height;
+			}
+			if(typeof child.style !== 'undefined' && typeof child.style.backgroundImage !== 'undefined' &&
+				child.style.backgroundImage !== null && child.style.backgroundImage !== "") {
+				var w = parseInt(window.getComputedStyle(child, null).width);
+				var h = parseInt(window.getComputedStyle(child, null).height);
+				if(w*h > 0) {
+					console.log("Found background-image of ELEMENT id = " + child.id + ", pixels: " + (w*h) + " in div id = " + prevId);
+					pixels += w*h;
+					//child.parentNode.removeChild(child);
+				}
+			}
+			if(child.nodeName.toLowerCase() === 'img' && child.naturalWidth !== 0) {
+				var im = child;
+				console.log("Found IMG id = " + child.id + ", pixels: " + (im.naturalWidth * child.naturalHeight) + " in div id = " + prevId);
+				pixels += im.naturalWidth * child.naturalHeight;
+			}
+
+			next = child.nextElementSibling;
+			deep++;
+			pixels = findAllPixels(child, deep, pixels, child.id);
+			deep--;
+			child = next;
+		}
+
+		if(deep === 0) {
+			console.log("Total number of pixels in canvases: " + pixels);
+		}
+		return pixels;
+	}
+	findAllPixels(document.body);
+}
+
 Level.prototype.styleCanvas = function() {
 	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
 	console.debug('entering Level.prototype.styleCanvas()');
 	console.debug('styling background canvas');
-	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
+	// TODO: IGOR: changed all layer-background canvas usage to one root canvas with the same id
+	// TODO: IGOR: full-screen canvas is not needed for game screen
+	canvasBackground = $('#' + Galapago.LAYER_BACKGROUND);
 	console.debug( 'canvasBackground: ' + canvasBackground.selector );
 	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
 	resourcePath = 'background/' + themeComplete + '.jpg';
 	backgroundImage = LoadingScreen.gal.get(resourcePath);
+	canvasBackground.css('left', '0px');
+	canvasBackground.css('top', '0px');
+	canvasBackground[0].width = 1;
+	canvasBackground[0].height = 1;
+
+	//this.layerBackground = canvasBackground[0].getContext('2d');
 	if( backgroundImage ) {
-	console.debug('setting background to ' + resourcePath);
-	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+		console.debug('setting background to ' + resourcePath);
+		var bgElement = $('#layer_screen_game_background');
+		bgElement.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+		//this.layerBackground.drawImage(backgroundImage, 0, 0, 1279, 720);
 	}
 	/*
 	console.debug('before changing canvas width and height');
@@ -1250,9 +1349,6 @@ Level.prototype.styleCanvas = function() {
 	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
 	console.debug('after changing canvas width and height');
 	*/
-	canvasBackground.css('left', '0px');
-	canvasBackground.css('top', '0px');
-	this.layerBackground = canvasBackground[0].getContext('2d');
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
@@ -1357,7 +1453,7 @@ Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
-	this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
+	this.backgroundLayer = $('#' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
