@@ -91,7 +91,8 @@
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;" width="1279" height="720"></canvas>
+			<!--canvas id="layer-background" style="z-index: 1;" width="1279" height="720"></canvas-->
+			<div id="current-score"></div><div id="level-name"></div>
 			<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>
 			<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>
 			<canvas id="layer-creature" class="layer-board" style="z-index: 4;"></canvas>
@@ -105,6 +106,10 @@
 			<canvas id="layer-power-up-animation" width="1" height="1" style="z-index: 5;"></canvas>
 			<canvas id="layer-game-lightning" style="z-index: 5;"></canvas>
 			<canvas id="layer-bob-cervantes" style="z-index: 9;"></canvas>
+			<ul id="game-nav">
+				<li><div id="game-button-menu" class="game-nav-button">MENU</div></li>
+				<li><div id="game-button-quit" class="game-nav-button">QUIT</div></li>
+			</ul>
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
@@ -242,11 +247,11 @@
 				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
 				<table>
 					<tr><th>Level</th><td id="level"></td></tr>
-					<tr><th>Bonus Frenzy</th><td id="bonusFrenzy"></td></tr>
-					<tr><th>Bonus Points</th><td id="bonusPoints"></td></tr>
-					<tr id="row-timeBonus"><th>Time Bonus</th><td id="timeBonus"></td></tr>
-					<tr><th>Level Score</th><td id="levelScore"></td></tr>
-					<tr><th>Score</th><td id="score"></td></tr>
+					<tr><th>Bonus Frenzy</th><td id="bonus-frenzy"></td></tr>
+					<tr><th>Bonus Points</th><td id="bonus-points"></td></tr>
+					<tr id="row-time-bonus"><th>Time Bonus</th><td id="time-bonus"></td></tr>
+					<tr><th>Level Score</th><td id="level-score"></td></tr>
+					<tr><th>Score</th><td id="total-score"></td></tr>
 				</table>
 				<ul class="vertical-button-nav">
 					<li id="option-close" data-i18n="Dialog Level Won.OptionClose"  class="button-medium button-medium-hilight">Close</li>
