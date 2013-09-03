@@ -1090,7 +1090,7 @@ LightningAnimation.prototype.animate = function(){
 			this.stop();
 		}
 	}else{
-		if(this.rolloverSpriteId != LevelAnimation.LIGHTNING_SPRITE_MATRIX.length){ 
+		if(this.rolloverSpriteId != LevelAnimation.lightningSprites.length){ 
 			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];
 			if( image ) {
 				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
