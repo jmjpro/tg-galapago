@@ -9,25 +9,6 @@ LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
 LevelAnimation.JUMP_SUFFIX = '-jump';
 LevelAnimation.LEVEL_1_CENTER = [200, 265];
-
-LevelAnimation.IDLE_HINT_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 18], id: '2'}],  
-[{cell: [0, 36], id: '3'}], 
-[{cell: [0, 54], id: '4'}],  
-[{cell: [0, 72], id: '5'}],
-[{cell: [0, 90], id: '6'}],   
-[{cell: [0, 108], id: '7'}],
-[{cell: [0, 126], id: '8'}],
-[{cell: [0, 144], id: '9'}]
-];
-
-LevelAnimation.LIGHTNING_SPRITE_MATRIX = [
-[{cell: [0, 0], id: '1'}],
-[{cell: [0, 58], id: '2'}],  
-[{cell: [0, 116], id: '3'}]   
-];
-
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
 	
@@ -303,26 +284,18 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_left_one.png');
-				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_1_SPRITE_MATRIX); 
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-one-strip.png');
 				coordinates = [556, 305 - bombImageSpriteSheet[0].height];
 				break;
 			case 2:
-				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_left_two.png');
-				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_2_SPRITE_MATRIX); 
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-two-strip.png');
 				coordinates = [546, 295 - bombImageSpriteSheet[0].height];
 				break;
 			case 3:
-				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_mid.png');
-				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_3_SPRITE_MATRIX); 
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-mid-strip.png');
 				coordinates = [715, 386 - bombImageSpriteSheet[0].height];
 				break;
 			case 4:
-				//image = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'strip_bomb_right.png');
-				//bombImageSpriteSheet = new SpriteSheet(image, LevelAnimation.BOMB_4_SPRITE_MATRIX);
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-right-strip.png');				
 				coordinates = [744 , 295 - bombImageSpriteSheet[0].height];
 				break;
@@ -343,7 +316,6 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 		var coordinates, sprites, galAssetPath;
 		galAssetPath = levelAnimation.collageDirectory + 'map-start-arrow-strip.png';
 		sprites = LoadingScreen.gal.getSprites( galAssetPath );
-		//gameStartArrowImageSpriteSheet = new SpriteSheet(image, LevelAnimation.GAME_START_ARROW_SPRITE_MATRIX);
 		coordinates = LevelAnimation.LEVEL_1_CENTER;
 		if(levelAnimation.gameStartArrowAnimation){
 			levelAnimation.gameStartArrowAnimation.stop();
