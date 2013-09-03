@@ -1228,6 +1228,8 @@ Level.prototype.unregisterEventHandlers = function() {
 	document.onclick = null;
 	$('#layer-grid').off('click');
 	$('#layer-grid').off('tap');
+	window.onclick = null;
+	window.onmousemove = null;
 	window.onkeydown = null;
 }; //Level.prototype.unregisterEventHandlers()
 
