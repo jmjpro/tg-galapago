@@ -1017,7 +1017,7 @@ Level.prototype.display = function() {
 		if( Galapago.isTimedMode ) {
 			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
 			var restoreLookup ,dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 			if(restoreLookupString != undefined){
 			   restoreLookup = JSON.parse(restoreLookupString);
 			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
@@ -1269,7 +1269,7 @@ Level.prototype.styleCanvas = function() {
 	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
 	canvasBonusFrenzy.css('top', '0px');
 
-	$('#current-score').css('left', Board.GRID_LEFT + 'px');
+	this.board.scoreElement.css('left', Board.GRID_LEFT + 'px');
 	/*
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
@@ -1373,8 +1373,8 @@ function Board() {
 	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
-	this.scoreElement = $('current-score');
-	this.levelNameElement = $('level-name');
+	this.scoreElement = $('#current-score');
+	this.levelNameElement = $('#level-name');
 
 	this.score = 0;
 	this.hotspot = null;
@@ -3444,27 +3444,25 @@ Tile.prototype.clear = function() {
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
-	var layer, x, y, width, height, offset;
+	var layer, x, y, width, height;
 	layer = this.board.gridLayer;
 	x = Tile.getXCoord(this.coordinates[0]);
 	y = Tile.getYCoord(this.coordinates[1]);
 	layer.strokeStyle = color;
 	layer.lineWidth = lineWidth;
-	offset = 1;
-	width = Board.TILE_WIDTH * offset;
-	height = Board.TILE_HEIGHT * offset;
+	width = Board.TILE_WIDTH;
+	height = Board.TILE_HEIGHT;
 	layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	
-	var layer, x, y, width, height, offset;
+	var layer, x, y, width, height;
 	layer = this.board.hilightLayer;
-	offset = 1;
-	x = Tile.getXCoord(this.coordinates[0])/* - offset*/;
-	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
-	width = Board.TILE_WIDTH/* + 2 * offset*/;
-	height = Board.TILE_HEIGHT/* + 2 * offset*/;
+	x = Tile.getXCoord(this.coordinates[0]);
+	y = Tile.getYCoord(this.coordinates[1]);
+	width = Board.TILE_WIDTH;
+	height = Board.TILE_HEIGHT;
 	layer.drawImage( this.board.level.gameImages.tile_selected, x, y, width, height );
 }; //Tile.prototype.drawHilight()
 
@@ -3766,8 +3764,8 @@ DangerBar.IMAGE_MAGNIFICATION = 2;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(layerBackground, imageArray, initialTimeMs) {
-	this.layerBackground = layerBackground;
+function DangerBar(imageArray, initialTimeMs) {
+	//this.layerBackground = layerBackground;
 	this.initImages(imageArray);
 	this.canvas = $('#layer-danger-bar');
 	this.canvas[0].width = this.danger_bar.width;
@@ -3805,7 +3803,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
+	this.layer.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
 	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
