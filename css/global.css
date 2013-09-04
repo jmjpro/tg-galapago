@@ -588,7 +588,7 @@ ul.galapago-drop-down {
 
 #current-score {
 	position: absolute;
-	left: 500px;
+	/*left: 500px; yj: left is dynamically positioned by .js code to align with left side of game board */
 	top: 60px;
 	width: 100px;
 	height: 25px;

@@ -1234,7 +1234,7 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	var screenDivElement, canvasBackground, themeComplete, resourcePath, backgroundImage, /*canvasScore, */canvasGameAnimation;
 	console.debug('entering Level.prototype.styleCanvas()');
 	//console.debug('styling background canvas');
 	//canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
@@ -1269,12 +1269,15 @@ Level.prototype.styleCanvas = function() {
 	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
 	canvasBonusFrenzy.css('top', '0px');
 
+	$('#current-score').css('left', Board.GRID_LEFT + 'px');
+	/*
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
 	canvasScore[0].width = Score.MAX_WIDTH;
 	canvasScore[0].height = Score.MAX_HEIGHT;
 	canvasScore.css('left', Board.GRID_LEFT + 'px');
 	canvasScore.css('top', Score.Y + 'px');
+	*/
 
 	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
@@ -1366,7 +1369,7 @@ function Board() {
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
-	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
+	//this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
