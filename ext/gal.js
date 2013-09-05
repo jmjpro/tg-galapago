@@ -84,25 +84,46 @@
 	 * @param {string} bundleName name of single bundle to download.
 	 */
 	GAL.prototype.download = function (bundleName) {
-		var bundle, that, bundleAlreadyLoaded, isVisualCache, isFinished = false;
-		isVisualCache = true;
+		var bundle,
+			that = this,
+			bundleAlreadyLoaded = false,
+			isVisualCache = true,
+			onFinishedSent = false;
+
+		function onFinished() {
+			if(!onFinishedSent) {
+				onFinishedSent = true;
+				var intervalId = setInterval(function() {
+					console.log("Images in imageCollage queue: " + ImageCollage.imagesInWork);
+					if(ImageCollage.imagesInWork === 0) {
+						console.log("All images in imageCollage queue Loaded");
+						clearInterval(intervalId);
+						intervalId = null;
+						fireCallback_(that.loaded, bundleName, {
+							bundleName : bundleName,
+							success    : true
+						}, true);
+
+					}
+				}, 50);
+			}
+		}
+
 		bundle = this.bundles[bundleName];
 		if (!bundle) {
 			// Attempting to download invalid bundle.
 			throw "Invalid bundle specified";
 		}
-		that = this;
 
-		bundleAlreadyLoaded = false;
 		// Setup a loop via callback chaining.
 		(function loop (index) {
 			// If we've finished loading all of the assets in the bundle.
 			if (index == bundle.length) {
-				fireCallback_(that.loaded, bundleName, {
+				onFinished();
+				/*fireCallback_(that.loaded, bundleName, {
 					bundleName : bundleName,
 					success    : true
-				}, true);
-				isFinished = true;
+				}, true);*/
 				return;
 			}
 
@@ -147,12 +168,12 @@
 								intervalId = null;
 								console.debug('loaded ' + url);
 								that.lookupTable[key] = image;
-								if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // TODO: temp hardcode , need to discuess
-									GAL.loadCollageImages(that, key);
+								//if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // TODO: temp hardcode , need to discuess
+
+								if(GAL.loadCollageImages(that, key)) {
 									// don't double-cache the original image collage along with the cut-up images
 									that.lookupTable[key] = null;
-								}
-								else {
+								} else {
 									if( isVisualCache ) {
 										//document.getElementById(GAL.IMAGE_CACHE_DIV_ID).appendChild(image);
 									}
@@ -173,11 +194,8 @@
 				bundleAlreadyLoaded = true;
 			}
 		})(0);
-		if (bundleAlreadyLoaded && !isFinished) {
-			fireCallback_(that.loaded, bundleName, {
-				bundleName : bundleName,
-				success    : true
-			}, true);
+		if (bundleAlreadyLoaded) {
+			onFinished();
 		}
 		for( var image in this.lookupTable ) {
 			if( this.lookupTable[image] === null ) {
@@ -188,7 +206,12 @@
 	}; //GAL.prototype.download()
 
 	GAL.loadCollageImages = function (manifest, imageName) {
-		ImageCollage.loadByName(imageName);
+		if(ImageCollage.findByName(imageName)) {
+			ImageCollage.loadByName(imageName);
+			return true;
+		} else {
+			return false;
+		}
 	}; //GAL.loadCollageImages()
 
 	GAL.prototype.logPixelCount = function( object, isLoad ) {
