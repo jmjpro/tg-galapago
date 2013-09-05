@@ -486,8 +486,8 @@ LevelAnimation.makeLightningFunction = function(sprite) {
 		LevelAnimation.lightningImages.topVertical = LevelAnimation.lightningImages.topVertical.concat( CanvasUtil.rotateImages([sprite], 270) );
 }
 
-LevelAnimation.prototype.animateStars = function(layer, x, y, imageId, blobCollection) {
-	var starsAnimation = new StarsAnimation(layer, x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( this.collageDirectory + 'cocoon-removed-strip.png' ));
+LevelAnimation.prototype.animateStars = function(x, y, imageId, blobCollection) {
+	var starsAnimation = new StarsAnimation(x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( this.collageDirectory + 'cocoon-removed-strip.png' ));
 	starsAnimation.start();	
 }
 
@@ -509,8 +509,8 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 	lightningAnimation.start();	
 }
 
-LevelAnimation.prototype.animateSparkles = function(layer, x, y){
-	var sparklesAnimation = new SparklesAnimation(layer, x, y, LoadingScreen.gal.getSprites( this.collageDirectory + 'sparkle-strip.png' ));
+LevelAnimation.prototype.animateSparkles = function(x, y){
+	var sparklesAnimation = new SparklesAnimation(x, y, LoadingScreen.gal.getSprites( this.collageDirectory + 'sparkle-strip.png' ));
 	sparklesAnimation.start();
 };
 
@@ -939,8 +939,8 @@ BobCervantesAnimation.prototype.animate = function(){
 };
 
 SparklesAnimation.ROLLOVER_TIME_INTERVAL=100;
-function SparklesAnimation(layer, x, y, sprites){
-	this.layer = layer;
+function SparklesAnimation(x, y, sprites){
+	this.div = null;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
@@ -956,7 +956,7 @@ SparklesAnimation.prototype.start = function(){
 	this.y = this.y + (Board.TILE_HEIGHT);
 	this.x = this.x - (this.sprites[0].width);
 	this.y = this.y - (this.sprites[0].height);
-	
+	this.div = new AnimationDiv(this.x + Board.GRID_LEFT, this.y + Board.GRID_TOP, this.sprites[0].width * 2, this.sprites[0].height*2);
 	var sparklesAnimation = this;
 	this.interval = setInterval(function() {
 		sparklesAnimation.animate();
@@ -966,15 +966,14 @@ SparklesAnimation.prototype.start = function(){
 
 SparklesAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
+		this.div.destroy();
 		clearInterval(this.interval);
 	}
 };
 
 SparklesAnimation.prototype.animate = function(){
 	var image = this.sprites[this.spriteId];
-	this.layer.clearRect(this.x,this.y, image.naturalWidth * 2, image.naturalHeight * 2);
-	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
+	this.div.addBackground(image);
 	this.spriteId++;
 	if(this.spriteId == this.sprites.length){
 		this.stop();
@@ -982,8 +981,8 @@ SparklesAnimation.prototype.animate = function(){
 };
 
 StarsAnimation.ROLLOVER_TIME_INTERVAL=200;
-function StarsAnimation(layer, x, y, destinationX, destinationY, sprites){
-	this.layer = layer;
+function StarsAnimation(x, y, destinationX, destinationY, sprites){
+	this.div = null;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
@@ -1002,6 +1001,7 @@ StarsAnimation.prototype.start = function(){
 	
 	this.horizontalOffset = (this.destinationX - this.x) / (this.sprites.length);
 	this.verticalOffset = (this.destinationY - this.y) / (this.sprites.length - 1);
+	this.div = new AnimationDiv(-1, -1, this.sprites[0].width * 2, this.sprites[0].height*2);
 	var starsAnimation = this;
 	this.interval = setInterval(function() {
 		starsAnimation.animate();
@@ -1010,17 +1010,17 @@ StarsAnimation.prototype.start = function(){
 
 StarsAnimation.prototype.stop = function(){
 	if(this.interval){
-		this.layer.clearRect(this.x,this.y, this.sprites[0].width * 2, this.sprites[0].height * 2);
+		this.div.destroy();
 		clearInterval(this.interval);
 	}
 };
 
 StarsAnimation.prototype.animate = function(){
 	var image = this.sprites[this.spriteId];
-	this.layer.clearRect(this.x,this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.x = this.x + this.horizontalOffset;
 	this.y = this.y + this.verticalOffset;
-	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
+	this.div.move(this.x + Board.GRID_LEFT, this.y + Board.GRID_TOP);
+	this.div.addBackground(image);
 	this.spriteId++;
 	if(this.spriteId == this.sprites.length){
 		this.stop();
@@ -1121,3 +1121,28 @@ LightningAnimation.prototype.animate = function(){
 	}
 	
 };
+
+function AnimationDiv(left, top, width, height){
+	this.div = $('<div>');
+	$(document.body).append(this.div);
+	this.div.css('position', 'absolute');
+	this.div.css('top', top + 'px');
+	this.div.css('left', left + 'px');  
+    this.div.css('width', width + 'px');
+	this.div.css('height', height + 'px');
+	this.div.css('z-index', '1000');
+	this.div.css('background-size','100%'); 
+}
+
+AnimationDiv.prototype.move = function(left, top){
+	this.div.css('top', top + 'px');
+	this.div.css('left', left + 'px');  
+}
+
+AnimationDiv.prototype.addBackground = function(image){
+	this.div.css('background-image', "url('"+image.src+"')");
+}
+
+AnimationDiv.prototype.destroy = function(url){
+	this.div.remove();
+}
