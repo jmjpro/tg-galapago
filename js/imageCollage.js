@@ -536,8 +536,8 @@ ImageCollage.COLLAGE_ARRAY = [
 		"collageId": "beach/blue-crab.png",
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
+			{"cell": [46, 0, 46, 46]},
+			{"cell": [92, 0, 46, 46]}
 		]
 	},
 	{
@@ -1115,9 +1115,9 @@ ImageCollage.COLLAGE_ARRAY = [
  * @constructor
  */
 function ImageCollage (collageDescriptor, image) {
-	var collageId, lookupTable, i, id, childCollageDescriptor;
-	collageId = collageDescriptor.collageId,
-	lookUpTable = LoadingScreen.gal.lookupTable;
+	var i, id, childCollageDescriptor,
+		collageId = collageDescriptor.collageId,
+		lookUpTable = LoadingScreen.gal.lookupTable;
 
 	if(image){
 		this.image = image

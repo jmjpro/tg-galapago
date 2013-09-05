@@ -45,20 +45,26 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	/*
-	if( callingScreenId == 'screen-loading') {
-		mainMenuScreen.registerImageLoadEvents();
-	}
-	else {
-		mainMenuScreen.setInitialNavItem();
-	}
-	*/
-	mainMenuScreen.setImages();
 	mainMenuScreen.setInitialNavItem();
-	mainMenuScreen.show();
+	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
+		if (result.success) {
+			//LoadingScreen.gal.un
+			/*
+			 if( callingScreenId == 'screen-loading') {
+			 mainMenuScreen.registerImageLoadEvents();
+			 }
+			 else {
+			 mainMenuScreen.setInitialNavItem();
+			 }
+			 */
+			mainMenuScreen.setImages();
+			mainMenuScreen.show();
 
-	mainMenuScreen.windowKeyHandler= window.onkeydown;
-	mainMenuScreen.addMouseListener();
+			mainMenuScreen.windowKeyHandler= window.onkeydown;
+			mainMenuScreen.addMouseListener();
+		}
+	});
+	LoadingScreen.gal.download('bg-main-menu');
 }; //MainMenuScreen.init()
 
 MainMenuScreen.prototype.addMouseListener = function(){
@@ -186,6 +192,8 @@ MainMenuScreen.prototype.hide = function() {
 	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
 		$(selector).css( 'background-image','');
 	});
+
+	LoadingScreen.gal.unload('bg-main-menu');
 
 	/*
 	if( this.callingObject.registerEventHandlers ){

@@ -5,6 +5,18 @@
 		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
 		<link rel="stylesheet" type="text/css" href="css/global.css"/>
 		<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
+		<!--<script type="text/javascript" src="http://192.168.40.100:8082/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="http://192.168.40.100:8082/addons/console.js"></script>
+		<script type="text/javascript" src="http://192.168.40.100:8082/addons/socket.js"></script>
+		<script type="text/javascript" src="http://192.168.40.100:8082/addons/web.js"></script>
+		<script type="text/javascript" src="http://192.168.40.100:8082/addons/inject.js?url=http://192.168.40.100:8082"></script>
+		<script>
+			window.onerror = function(errorMsg, url, lineNumber) {
+				console.error("errorMsg: " + errorMsg + ", url: " + url + ", lineNumber: " + lineNumber);
+			};
+		</script>
+		<link type="text/css" media="all" href="http://192.168.40.100:8082/resources/console.css" />-->
+
 		<!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
 		<script src="ext/lodash.min.js"></script>
 		<script src="ext/imgpreload.js"></script>
@@ -15,7 +27,7 @@
 		<script src="ext/zepto-touch-1.0.js"></script>
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
-		<script src="../sdk/TGH5.js"></script>
+		<script src="../sdk/tgh5.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -68,15 +80,15 @@
 
 		<div id="debug-console"></div>
 
+		<canvas id="layer-background" style="z-index: 1;"></canvas>
+
 		<div id="screen-loading" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;"></canvas>
 			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
 			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
 			&copy; 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.</span>
 		</div>
 
 		<div id="screen-map" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;" tabindex="1"></canvas>
 			<canvas id="layer-map" style="z-index: 2;" tabindex="2" width="1279" height="670"></canvas>
 			<canvas id="layer-map-other-animation" style="z-index: 3;" tabindex="3"></canvas>
 			<canvas id="layer-map-animation" style="z-index: 4;" tabindex="4" width="1" height="1"></canvas>
@@ -91,7 +103,7 @@
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<canvas id="layer-background" style="z-index: 1;" width="1279" height="720"></canvas>
+			<div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div>
 			<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>
 			<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>
 			<canvas id="layer-creature" class="layer-board" style="z-index: 4;"></canvas>

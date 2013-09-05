@@ -94,7 +94,7 @@ LoadingScreen.hide = function(evt) {
 	this.layer = null;
 	backgroundCanvas = null;
 
-	LoadingScreen.gal.lookupTable['background/loading.jpg'] = null;
+	LoadingScreen.gal.unload('screen-loading');
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){

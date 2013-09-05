@@ -247,36 +247,44 @@ function LevelMap(level) {
 } //LevelMap constructor
 
 LevelMap.prototype.display = function() {
-	var backgroundImage, lavaAssetPath;
-	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-	if( backgroundImage ) {
-		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-	}
-	this.screenDiv.css( 'display', 'block');
-	this.canvas.focus();
-	var otherAnimationCanvas = this.otherAnimationCanvas;
-	otherAnimationCanvas.width = LevelMap.WIDTH;
-	otherAnimationCanvas.height = LevelMap.HEIGHT;
-	var levelAnimation = this;
-	otherAnimationCanvas.onclick = function(evt) {
-		levelAnimation.canvas.focus();
-	};
-	if(!Level.isComplete("1")){
-	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
-	}
-	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-	lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
-	this.animate(lavaAssetPath);
-	
-	var completedLevelIds = LevelMap.getLevelsCompleted();
-	if(completedLevelIds.length){
-		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
-	}
-	this.levelAnimation.animateBombs(this.otherAnimationLayer);
-	
-	this.drawHotspots();
-	this.registerEventHandlers();
-	Galapago.audioPlayer.playVolcanoLoop();
+	var that = this;
+
+	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
+		if (result.success) {
+			var backgroundImage, lavaAssetPath;
+			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+			if( backgroundImage ) {
+				that.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+			}
+			that.screenDiv.css( 'display', 'block');
+			that.canvas.focus();
+			var otherAnimationCanvas = that.otherAnimationCanvas;
+			otherAnimationCanvas.width = LevelMap.WIDTH;
+			otherAnimationCanvas.height = LevelMap.HEIGHT;
+			var levelAnimation = that;
+			otherAnimationCanvas.onclick = function(evt) {
+				levelAnimation.canvas.focus();
+			};
+			if(!Level.isComplete("1")){
+				that.levelAnimation.animateGameStartArrow(that.otherAnimationLayer);
+			}
+			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+			lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
+			that.animate(lavaAssetPath);
+
+			var completedLevelIds = LevelMap.getLevelsCompleted();
+			if(completedLevelIds.length){
+				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.otherAnimationLayer);
+			}
+			that.levelAnimation.animateBombs(that.otherAnimationLayer);
+
+			that.drawHotspots();
+			that.registerEventHandlers();
+			Galapago.audioPlayer.playVolcanoLoop();
+		}
+	});
+	LoadingScreen.gal.download('bg-map-screen');
+
 }; //LevelMap.prototype.display()
 
 LevelMap.prototype.drawHotspots = function(level){
@@ -519,7 +527,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
-	    this.cleanup();
+		this.cleanup();
 		//$( 'ul#map-nav' ).css( 'display', 'none' );
 		Galapago.setLevel(this.hotspotLevel.id);
 	}
@@ -544,6 +552,8 @@ LevelMap.prototype.cleanup = function() {
 
 	el = document.getElementById('layer-map-animation');
 	el.width = el.height = 1;
+
+	LoadingScreen.gal.unload('bg-map-screen');
 
 	this.screenDiv.css('display', 'none');
 	this.cleanupAnimationAndSound();
@@ -777,14 +787,15 @@ MapCell.prototype.toString = function() {
 /* begin class Level */
 Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
-Level.LAYER_GRID = 'layer-grid';
-Level.LAYER_GOLD = 'layer-gold';
+Level.LAYER_GRID = 'layer-grid'; // need to convert to DOM divs
+Level.LAYER_GOLD = 'layer-gold'; // need to convert to DOM divs
 Level.LAYER_CREATURE = 'layer-creature';
 Level.LAYER_HILIGHT = 'layer-hilight';
 Level.LAYER_SCORE = 'layer-score';
-Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
-Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
-Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
+// TODO: for next 3 canvases need to create one canvas or convert to using DOM divs
+Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy'; // need to eliminate
+Level.LAYER_GAME_ANIMATION = 'layer-game-animation'; // need to eliminate
+Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning'; // need to eliminate
 Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
@@ -1026,40 +1037,41 @@ Level.prototype.display = function() {
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.putInAnimationQ = false;
 		level.board.animationQ = [];
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.gameAnimationLayer, level.board.creatureTileMatrix, function(){
-		level.board.displayBlobCollections();
-		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
-			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
-		}
-		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		if( Galapago.isTimedMode ) {
-			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
-			var restoreLookup ,dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-			if(restoreLookupString != undefined){
-			   restoreLookup = JSON.parse(restoreLookupString);
-			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-			   if(dangerBarTimeRemaining != undefined){
-				  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
-				  level.dangerBar.start();
-			   }
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.gameAnimationLayer, level.board.creatureTileMatrix, function () {
+			level.board.displayBlobCollections();
+			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
+				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 			}
-		}
-		console.debug(level.toString());
+			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			if (Galapago.isTimedMode) {
+				var restoreLookupString = localStorage.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
+				var restoreLookup , dangerBarTimeRemaining = null;
+				level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+				if (restoreLookupString != undefined) {
+					restoreLookup = JSON.parse(restoreLookupString);
+					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+					if (dangerBarTimeRemaining != undefined) {
+						level.dangerBar.timeRemainingMs = dangerBarTimeRemaining;
+						level.dangerBar.start();
+					}
+				}
+			}
+			console.debug(level.toString());
 
-		level.board.addPowerups();
-		level.board.displayLevelName();
-		level.board.displayMenuButton(false);
-		level.board.displayQuitButton(false);
-		level.board.display();
-		level.board.setActiveTile();
-		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
-		console.debug( 'exiting Level.prototype.display()');
-		return level; //chainable
+			level.board.addPowerups();
+			level.board.displayLevelName();
+			level.board.displayMenuButton(false);
+			level.board.displayQuitButton(false);
+			level.board.display();
+			level.board.setActiveTile();
+			localStorage.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
+			console.debug('exiting Level.prototype.display()');
+			return level; //chainable
 		});
 	}
-	else {
-		console.debug( 'exiting Level.prototype.display()');
+	else
+	{
+		console.debug('exiting Level.prototype.display()');
 		return level; //chainable
 	}
 }; //Level.prototype.display()
@@ -1277,47 +1289,47 @@ function changeCanvasState(stateName) {
 
 
 
-	function findAllPixels(element, deep, pixels, prevId) {
-		if(typeof deep === 'undefined') {
-			deep = 0;
-			pixels = 0;
-		}
-		var child, next;
-		child = element.firstElementChild;
-		while (child) {
-			if(child.nodeName.toLocaleLowerCase() === 'canvas') {
-				console.log("Found canvas id = " + child.id + ", pixels: " + (child.width * child.height) + " in div id = " + prevId);
-				pixels += child.width * child.height;
-			}
-			if(typeof child.style !== 'undefined' && typeof child.style.backgroundImage !== 'undefined' &&
-				child.style.backgroundImage !== null && child.style.backgroundImage !== "") {
-				var w = parseInt(window.getComputedStyle(child, null).width);
-				var h = parseInt(window.getComputedStyle(child, null).height);
-				if(w*h > 0) {
-					console.log("Found background-image of ELEMENT id = " + child.id + ", pixels: " + (w*h) + " in div id = " + prevId);
-					pixels += w*h;
-					//child.parentNode.removeChild(child);
-				}
-			}
-			if(child.nodeName.toLowerCase() === 'img' && child.naturalWidth !== 0) {
-				var im = child;
-				console.log("Found IMG id = " + child.id + ", pixels: " + (im.naturalWidth * child.naturalHeight) + " in div id = " + prevId);
-				pixels += im.naturalWidth * child.naturalHeight;
-			}
+}
 
-			next = child.nextElementSibling;
-			deep++;
-			pixels = findAllPixels(child, deep, pixels, child.id);
-			deep--;
-			child = next;
-		}
-
-		if(deep === 0) {
-			console.log("Total number of pixels in canvases: " + pixels);
-		}
-		return pixels;
+function findAllPixels(element, deep, pixels, prevId) {
+	if(typeof deep === 'undefined') {
+		deep = 0;
+		pixels = 0;
 	}
-	findAllPixels(document.body);
+	var child, next;
+	child = element.firstElementChild;
+	while (child) {
+		if(child.nodeName.toLocaleLowerCase() === 'canvas') {
+			console.log("Found canvas id = " + child.id + ", pixels: " + (child.width * child.height) + " in div id = " + prevId);
+			pixels += child.width * child.height;
+		}
+		if(typeof child.style !== 'undefined' && typeof child.style.backgroundImage !== 'undefined' &&
+			child.style.backgroundImage !== null && child.style.backgroundImage !== "") {
+			var w = parseInt(window.getComputedStyle(child, null).width);
+			var h = parseInt(window.getComputedStyle(child, null).height);
+			if(w*h > 0) {
+				console.log("Found background-image of ELEMENT id = " + child.id + ", pixels: " + (w*h) + " in div id = " + prevId);
+				pixels += w*h;
+				//child.parentNode.removeChild(child);
+			}
+		}
+		if(child.nodeName.toLowerCase() === 'img' && child.naturalWidth !== 0) {
+			var im = child;
+			console.log("Found IMG id = " + child.id + ", pixels: " + (im.naturalWidth * child.naturalHeight) + " in div id = " + prevId);
+			pixels += im.naturalWidth * child.naturalHeight;
+		}
+
+		next = child.nextElementSibling;
+		deep++;
+		pixels = findAllPixels(child, deep, pixels, child.id);
+		deep--;
+		child = next;
+	}
+
+	if(deep === 0) {
+		console.log("Total number of pixels in canvases: " + pixels);
+	}
+	return pixels;
 }
 
 Level.prototype.styleCanvas = function() {
@@ -1357,7 +1369,7 @@ Level.prototype.styleCanvas = function() {
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
 	console.debug('styling bonus frenzy canvas');
-	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
+	var canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
 	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
 	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
 	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
@@ -1370,6 +1382,19 @@ Level.prototype.styleCanvas = function() {
 	canvasScore.css('left', Board.GRID_LEFT + 'px');
 	canvasScore.css('top', Score.Y + 'px');
 
+	findAllPixels(document.body);
+	var t = LoadingScreen.gal.lookupTable;
+	//t['background/main-menu.jpg'] = null;
+	//t['background/map.jpg'] = null;
+	for(var k in t) {
+		if(t.hasOwnProperty(k)) {
+			var i = t[k];
+			if(i && i.src && i.src.indexOf('data:') < 0) {
+				console.log("incorrect image found: " + k + "," + i.id + ", size: " + i.naturalWidth * i.naturalHeight);
+			}
+		}
+	}
+
 	console.debug('styling game animation canvas');
 	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
 	canvasGameAnimation[0].width = Board.GRID_WIDTH;
@@ -1378,12 +1403,12 @@ Level.prototype.styleCanvas = function() {
 	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
 
 	console.debug('styling lightning canvas');
-	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
+	var canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
 	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
 	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
     canvasGameLightning.css('top', top + 'px');  
     canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
-    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;  
+    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;
 
 	console.debug('exiting Level.prototype.styleCanvas()');
 }; //Level.prototype.styleCanvas()

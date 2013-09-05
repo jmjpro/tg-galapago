@@ -16,6 +16,18 @@
 		]
 	},
 	{
+		"name": "bg-main-menu",
+		"contents": [
+			"background/main-menu.jpg"
+		]
+	},
+	{
+		"name": "bg-map-screen",
+		"contents": [
+			"background/map.jpg"
+		]
+	},
+	{
 		"name": "common",
 		"contents": [
 			"background/main-menu.jpg",
@@ -31,7 +43,6 @@
 			"collage/map-board-1.png",
 			"collage/map-board-2.png",
 			"collage/map-board-buttons.png",
-			"background/map.jpg",
 			"screen-map/bonfire-strip.png",
 			"collage/map-start-arrow-strip.png",
 			"screen-map/bomb-left-one-strip.png",

@@ -61,11 +61,30 @@
 	};
 
 	/**
+	 * @Unloads bundle from GAL
+	 * @param {string} bundleName
+	 */
+	GAL.prototype.unload = function(bundleName) {
+		var bundle = this.bundles[bundleName];
+		if (!bundle) {
+			// Attempting to download invalid bundle.
+			throw "Invalid bundle specified";
+		}
+
+		for(var i = bundle.length - 1; i >= 0; i--) {
+			var key = bundle[i];
+			if(typeof this.lookupTable[key] !== 'undefined' && this.lookupTable[key]) {
+				this.release(key);
+			}
+		}
+	};
+
+	/**
 	 * Downloads assets contained in the named bundle.
 	 * @param {string} bundleName name of single bundle to download.
 	 */
 	GAL.prototype.download = function (bundleName) {
-		var bundle, that, bundleAlreadyLoaded, isVisualCache;
+		var bundle, that, bundleAlreadyLoaded, isVisualCache, isFinished = false;
 		isVisualCache = true;
 		bundle = this.bundles[bundleName];
 		if (!bundle) {
@@ -82,7 +101,8 @@
 				fireCallback_(that.loaded, bundleName, {
 					bundleName : bundleName,
 					success    : true
-				});
+				}, true);
+				isFinished = true;
 				return;
 			}
 
@@ -127,7 +147,7 @@
 								intervalId = null;
 								console.debug('loaded ' + url);
 								that.lookupTable[key] = image;
-								if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // temp hardcode , need to discuess
+								if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // TODO: temp hardcode , need to discuess
 									GAL.loadCollageImages(that, key);
 									// don't double-cache the original image collage along with the cut-up images
 									that.lookupTable[key] = null;
@@ -153,11 +173,11 @@
 				bundleAlreadyLoaded = true;
 			}
 		})(0);
-		if (bundleAlreadyLoaded) {
+		if (bundleAlreadyLoaded && !isFinished) {
 			fireCallback_(that.loaded, bundleName, {
 				bundleName : bundleName,
 				success    : true
-			});
+			}, true);
 		}
 		for( var image in this.lookupTable ) {
 			if( this.lookupTable[image] === null ) {
@@ -408,23 +428,54 @@
 
 	/**
 	 * @private
+	 * Adds a callback associated with a bundle name.
+	 * @param {object} callbacks an object associated with an event type
+	 *    (ex. bundle loaded, bundle load progress updated, bundle failed).
+	 * @param {string|function} bundleName the name of the bundle to monitor. If set
+	 *    to "*", all bundles will be monitored.
+	 * @param {function} callback the function to call.
+	 */
+	function removeCallback_ (callbacks, bundleName, callback) {
+		if (typeof bundleName == "function") {
+			// bundleName is optional, and may be a callback instead.
+			callback = bundleName;
+			bundleName = '*';
+		}
+		// TODO: IGOR: callback will be removed only from bundle OR *. Consider to remove callback for both cases.
+		// TODO: IGOR: see fireCallback_ for example where callbacks sent for both * and bundle.
+		if (callbacks[bundleName] && callbacks[bundleName].indexOf(callback) >= 0) {
+			callbacks[bundleName].splice(callbacks[bundleName].indexOf(callback), 1);
+		}
+
+	}
+
+	/**
+	 * @private
 	 * Fires callbacks of a given type for a certain bundle.
 	 * @param {object} object dictionary of callbacks.
 	 * @param {string} bundleName string with the name of the bundle.
 	 * @param {object} params to call the callback with.
 	 */
-	function fireCallback_ (callbacks, bundleName, params) {
+	function fireCallback_ (callbacks, bundleName, params, removeAfterFire) {
 		// Fire the principle callbacks, indexed by given bundleName.
-		fireCallbackHelper_(callbacks, bundleName, params);
+		fireCallbackHelper_(callbacks, bundleName, params, removeAfterFire);
 		// Also fire all * callbacks.
-		fireCallbackHelper_(callbacks, '*', params);
+		fireCallbackHelper_(callbacks, '*', params, removeAfterFire);
 	}
 
-	function fireCallbackHelper_ (object, bundleName, params) {
+	function fireCallbackHelper_ (object, bundleName, params, removeAfterFire) {
 		var callbacks = object[bundleName];
 		if (callbacks) {
+			var removeCallBacksArray = [];
 			for (var i = 0, callback; callback = callbacks[i]; ++i) {
 				callbacks[i](params);
+				if(removeAfterFire) {
+					removeCallBacksArray.push(callbacks[i]);
+				}
+			}
+			while(removeCallBacksArray.length > 0) {
+				var callbackToRemove = removeCallBacksArray.pop();
+				removeCallback_(object, bundleName, callbackToRemove);
 			}
 		}
 	}
