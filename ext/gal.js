@@ -94,16 +94,17 @@
 			if(!onFinishedSent) {
 				onFinishedSent = true;
 				var intervalId = setInterval(function() {
-					console.log("Images in imageCollage queue: " + ImageCollage.imagesInWork);
-					if(ImageCollage.imagesInWork === 0) {
-						console.log("All images in imageCollage queue Loaded");
-						clearInterval(intervalId);
-						intervalId = null;
-						fireCallback_(that.loaded, bundleName, {
-							bundleName : bundleName,
-							success    : true
-						}, true);
-
+					if (intervalId !== null) {
+						console.log("Images in imageCollage queue: " + ImageCollage.imagesInWork + ", bundle: " + bundleName);
+						if (ImageCollage.imagesInWork === 0) {
+							console.log("All images in imageCollage queue Loaded, bundle: " + bundleName);
+							clearInterval(intervalId);
+							intervalId = null;
+							fireCallback_(that.loaded, bundleName, {
+								bundleName : bundleName,
+								success    : true
+							}, true);
+						}
 					}
 				}, 50);
 			}
@@ -120,10 +121,6 @@
 			// If we've finished loading all of the assets in the bundle.
 			if (index == bundle.length) {
 				onFinished();
-				/*fireCallback_(that.loaded, bundleName, {
-					bundleName : bundleName,
-					success    : true
-				}, true);*/
 				return;
 			}
 
@@ -158,31 +155,63 @@
 					audio.id = key;
 				} else {
 					url = that.manifest.assetRootImage + key;
-					console.debug('loading ' + url);
+
 					var image = new Image();
-					image.onload = function () {
+					image.onload = function onLoad() {
 						that.logPixelCount( image );
 						if (intervalId !== null) {
-							if (image.naturalHeight !== 0 && image.naturalWidth !== 0) {
+							if (image.complete && typeof image.naturalWidth !== 'undefined' && image.naturalWidth !== 0) {
+								var restarted = false;
+
 								clearInterval(intervalId);
 								intervalId = null;
-								console.debug('loaded ' + url);
+								image.onload = null;
+								//console.debug('loaded ' + url);
 								that.lookupTable[key] = image;
 								//if (key.indexOf(collageDirectory) > -1 || key.indexOf('screen-map/')>-1) { // TODO: temp hardcode , need to discuess
+								var isDataURLSrc = image.src && image.src.indexOf('data:') >= 0;
+								if(!isDataURLSrc) {
+									if(GAL.loadCollageImages(that, key)) {
+										console.debug('imageCollage ' + url + ' loaded');
+										// don't double-cache the original image collage along with the cut-up images
+										that.lookupTable[key] = null;
+									} else if(image.naturalWidth * image.naturalHeight < 1000*700) {
+										var canvas = document.createElement('canvas'),
+											ctx = canvas.getContext('2d');
 
-								if(GAL.loadCollageImages(that, key)) {
-									// don't double-cache the original image collage along with the cut-up images
-									that.lookupTable[key] = null;
+										canvas.width = image.naturalWidth;
+										canvas.height = image.naturalHeight;
+										ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+										var src = canvas.toDataURL('image/png');
+
+										// TODO: check if we can convert images.dataURL larger than 65536 bytes images to Image?
+										if (src && src.length < (1 << 16)) {
+											console.debug('image ' + url + " loaded. converting to dataURL...");
+											image = new Image();
+											image.onload = onLoad;
+											intervalId = setInterval(onLoad, 50);
+											image.src = src;
+											restarted = true;
+										} else {
+											console.debug('common image ' + url + " loaded");
+										}
+										canvas.width = canvas.height = 1;
+										canvas = ctx = null;
+									}
 								} else {
+									console.debug('- dataURL ' + url + " created");
 									if( isVisualCache ) {
 										//document.getElementById(GAL.IMAGE_CACHE_DIV_ID).appendChild(image);
 									}
 								}
-								fireCallback_(that.progress, bundleName, {
-									current : index + 1,
-									total   : bundle.length
-								});
-								loop(index + 1);
+
+								if(!restarted) {
+									fireCallback_(that.progress, bundleName, {
+										current : index + 1,
+										total   : bundle.length
+									});
+									loop(index + 1);
+								}
 							}
 						}
 					};
@@ -192,6 +221,7 @@
 				}
 			} else {
 				bundleAlreadyLoaded = true;
+				loop(index + 1);
 			}
 		})(0);
 		if (bundleAlreadyLoaded) {
@@ -218,15 +248,15 @@
 		var numPixels, direction;
 		numPixels = object.width * object.height;
 		if( typeof isLoad === 'undefined' || isLoad === true ) {
-		isLoad = true;
-		GAL.loadedPixels += numPixels;
+			isLoad = true;
+			GAL.loadedPixels += numPixels;
 		}
 		else {
-		GAL.loadedPixels -= numPixels;
+			GAL.loadedPixels -= numPixels;
 		}
-		direction = isLoad ? ' loaded ' : ' released ';
-		console.debug( object + ' ' + object.id + ' width: ' + object.width + ' height: ' + object.height + ' ' + direction + numPixels + ' pixels ');
-		console.log("Total pixels loaded: " + GAL.loadedPixels);
+		//direction = isLoad ? ' loaded ' : ' released ';
+		//console.debug( object + ' ' + object.id + ' width: ' + object.width + ' height: ' + object.height + ' ' + direction + numPixels + ' pixels ');
+		//console.log("Total pixels loaded: " + GAL.loadedPixels);
 	}; //GAL.prototype.logPixelCount()
 
 	/**
@@ -475,9 +505,10 @@
 	/**
 	 * @private
 	 * Fires callbacks of a given type for a certain bundle.
-	 * @param {object} object dictionary of callbacks.
+	 * @param {object} callbacks dictionary of callbacks.
 	 * @param {string} bundleName string with the name of the bundle.
 	 * @param {object} params to call the callback with.
+	 * @param {boolean} removeAfterFire
 	 */
 	function fireCallback_ (callbacks, bundleName, params, removeAfterFire) {
 		// Fire the principle callbacks, indexed by given bundleName.
