@@ -233,6 +233,9 @@ function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
+	this.canvas.width = 1279;
+	this.canvas.height = 670;
+
 	this.animationCanvas = $('#' + 'layer-map-animation')[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
 	this.layer = this.canvas.getContext('2d');
@@ -284,7 +287,6 @@ LevelMap.prototype.display = function() {
 		}
 	});
 	LoadingScreen.gal.download('bg-map-screen');
-
 }; //LevelMap.prototype.display()
 
 LevelMap.prototype.drawHotspots = function(level){
@@ -658,11 +660,6 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 }; //LevelMap.prototype.debugDisplayMapCoordinates
 
 LevelMap.show = function(level){
-	// TODO: IGOR: LevelMap: Init canvas sizes
-	var el = document.getElementById('layer-map');
-	el.width = 1279;
-	el.height = 670;
-
 	Galapago.levelMap = new LevelMap(level);
 	Galapago.levelMap.canvas.focus();
 	Galapago.levelMap.registerEventHandlers();
@@ -1134,6 +1131,11 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
  	this.board.reshuffleService.stop();
+
+	$("#screen-game").children("canvas").each(function() {
+		this.width = this.height = 1;
+	});
+
  	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
