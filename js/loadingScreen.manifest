@@ -76,12 +76,8 @@
 			"collage/game-forest-rollover-strips.png",
 			"collage/creatures-cave-strip.png",
 			"collage/game-cave-rollover-strips.png",
-			"collage/game-cave-jump-strips.png"
-		]
-	},
-	{
-		"name": "board-common",
-		"contents": [
+			"collage/game-cave-jump-strips.png",
+
 			"collage/game-powerup.png",
 			"collage/cocoon-removed-strip.png",
 			"screen-game/danger-bar-fill-1.png",
@@ -93,13 +89,20 @@
 			"screen-game/heads-base.png",
 			"collage/heads-eyes-strip.png",
 			"collage/heads-mouth-strip.png",
-			"screen-game/hint-strip.png",
-			"screen-game/lightning-strip.png",
 			"collage/powerup-activated-strip.png",
 			"collage/powerup-gained-strip.png",
 			"collage/sparkle-strip.png",
 			"collage/superfriends.png",
-			"collage/game-tile-mark-strip.png"
+			"collage/game-tile-mark-strip.png",
+
+			"collage/creatures-beach-strip.png",
+			"collage/game-beach-jump-strips.png",
+			"collage/game-beach-rollover-strips.png"
+		]
+	},
+	{
+		"name": "board-common",
+		"contents": [
 		]
 	},
 	{ "name": "beach-a", "contents": [ "background/beach-a.jpg" ] },
@@ -109,9 +112,6 @@
 	{
 		"name": "beach-common",
 		"contents": [
-			"collage/creatures-beach-strip.png",
-			"collage/game-beach-jump-strips.png",
-			"collage/game-beach-rollover-strips.png"
 		]
 	},
 	{ "name": "forest-a", "contents": [ "background/forest-a.jpg" ] },
