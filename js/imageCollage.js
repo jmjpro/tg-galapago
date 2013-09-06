@@ -1136,7 +1136,7 @@ function ImageCollage (collageDescriptor, image) {
 			collageDescriptor.imageCoordinateArray[i].id = id;
 
 			lookUpTable[id] = new Image();
-			lookUpTable[id].onload = ImageCollage.makeOnloadFunction(id);
+			lookUpTable[id].onload = ImageCollage.makeOnloadFunction(id, lookUpTable[id]);
 			this.getImageForCache(lookUpTable[id], i);
 		}
 	}
@@ -1152,15 +1152,25 @@ function ImageCollage (collageDescriptor, image) {
 
 ImageCollage.imagesInWork = 0;
 
-ImageCollage.makeOnloadFunction = function(id) {
+ImageCollage.makeOnloadFunction = function(id, image) {
 	ImageCollage.imagesInWork++;
-	return function(){
-		var childCollageDescriptor = ImageCollage.findByName( id );
-		if(childCollageDescriptor) {
-			new ImageCollage(childCollageDescriptor);
+	function f(){
+		if(intervalId !== null) {
+			if(image.complete && typeof image.naturalWidth !== 'undefined' && image.naturalWidth !== 0) {
+				clearInterval(intervalId);
+				intervalId = null;
+				var childCollageDescriptor = ImageCollage.findByName( id );
+				if(childCollageDescriptor) {
+					new ImageCollage(childCollageDescriptor);
+				}
+				ImageCollage.imagesInWork--;
+
+				image = null;
+			}
 		}
-		ImageCollage.imagesInWork--;
 	}
+	var intervalId = setInterval(f, 50);
+	return f;
 };
 
 /**
@@ -1174,8 +1184,8 @@ ImageCollage.prototype.getImage = function (imageId) {
 
 /**
  * @private
+ * @param {Image|HTMLImageElement} imageContainer
  * @param {integer} index
- * @returns {Image}
  */
 ImageCollage.prototype.getImageForCache = function (imageContainer, index){
 	var imageCoordinate, image, x, y, width, height;
@@ -1218,23 +1228,23 @@ ImageCollage.prototype.getImageForCache = function (imageContainer, index){
 	//return imageContainer;
 }; //ImageCollage.prototype.getImage()
 
-/**
+/*
  * Returns an array of image objects corresponding to the rectangular regions in the this.coordinateArray
  * @private
  * @returns {Array.<Image>}
- */
+
 ImageCollage.prototype.getImages = function () {
-	var imageCollage, imageArray, id, i;
+	var imageCollage, imageArray, id;//, i;
 	imageCollage = this;
 	imageArray = [];
-	i = 0;
+	//i = 0;
 	_.each(this.imageCoordinateArray, function (imageCoordinate) {
 		//id = imageCoordinate.id ? imageCoordinate.id : ImageCollage.buildSpriteAssetPath( imageCollage.collageId, i++ );
 		id = imageCoordinate.id;
 		imageArray.push( imageCollage.getImage(id) );
 	});
 	return imageArray;
-}; //ImageCollage.prototype.getImages()
+};*/ //ImageCollage.prototype.getImages()
 
 /**
  * @public
