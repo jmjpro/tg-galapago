@@ -60,7 +60,7 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 			mainMenuScreen.setImages();
 			mainMenuScreen.show();
 
-			mainMenuScreen.windowKeyHandler= window.onkeydown;
+			mainMenuScreen.windowKeyHandler = window.onkeydown;
 			mainMenuScreen.addMouseListener();
 		}
 	});
@@ -97,7 +97,7 @@ MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 MainMenuScreen.prototype.setInitialNavItem = function(){
 	this.currentNavItem = null;
 	this.setNavItem(this.getNavItem(null, this.callingScreen));
-	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
+	//console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
@@ -155,11 +155,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				console.error( 'unable to find ' + galImagePath );
 			}
-			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
+			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Screen.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Screen.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
