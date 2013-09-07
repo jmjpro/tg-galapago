@@ -3437,6 +3437,7 @@ Tile.prototype.setSelectedAsync = function() {
 	
 	var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
 	if(!this.board.getGoldTile(this)){
+		$('#'+spanId).css('background-size','cover');
 		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
 	}
 	
