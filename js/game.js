@@ -764,7 +764,6 @@ Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
 Level.LAYER_HILIGHT = 'layer-hilight';
 Level.LAYER_SCORE = 'layer-score';
-Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
 Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
 Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
 Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
@@ -1087,10 +1086,7 @@ Level.prototype.quit = function(){
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isPreserveGridLayer){
-	if( isPreserveGridLayer ) {
-		this.board.hideGoldAndCreatures();	
-	}
-	else {
+	if(!isPreserveGridLayer ) {
 		this.board.screenDiv.hide();		
 	}
 	this.bubbleTip.hideBubbleTip();
@@ -1144,7 +1140,6 @@ Level.registerEventHandlers = function() {
 		board.handleClickOrTap(evt);
 	});
 	
-	//$('#layer-bonus-frenzy').click(function(evt){
 	window.onclick = function(evt){
 		board.handleMouseClickEvent(evt);
 		evt.preventDefault();
@@ -1263,12 +1258,6 @@ Level.prototype.styleCanvas = function() {
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
-	console.debug('styling bonus frenzy canvas');
-	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
-	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
-	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
-	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
-	canvasBonusFrenzy.css('top', '0px');
 
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
@@ -1366,7 +1355,6 @@ function Board() {
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
-	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
 
