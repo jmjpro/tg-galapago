@@ -1085,8 +1085,10 @@ Level.prototype.quit = function(){
 	this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 }; //Level.prototype.quit()
 
-Level.prototype.cleanup = function(isPreserveGridLayer){
-	if(!isPreserveGridLayer ) {
+Level.prototype.cleanup = function(isBonusFrenzyOn){
+	if(isBonusFrenzyOn) {
+		this.board.hideGameScreenLayersForBonusFrenzy();
+	}else{
 		this.board.screenDiv.hide();		
 	}
 	this.bubbleTip.hideBubbleTip();
@@ -1395,18 +1397,21 @@ Board.prototype.quit = function() {
 	return this; //chainable
 }; //Board.prototype.quit()
 
-Board.prototype.hideGoldAndCreatures = function() {
+Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
 	$('#' + Level.LAYER_GOLD).hide();
-	$('#' + Level.LAYER_CREATURE).hide();
-}; //Board.protoype.hideBoardLayer()
+	$('#' + Level.LAYER_HILIGHT).hide();
+	$('#' + Level.LAYER_GAME_ANIMATION).hide();
+	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
+}; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
-Board.prototype.showGoldAndCreatures = function() {
+Board.prototype.showGameScreenLayers = function() {
 	$('#' + Level.LAYER_GOLD).show();
-	$('#' + Level.LAYER_CREATURE).show();
-}; //Board.protoype.showBoardLayer()
+	$('#' + Level.LAYER_HILIGHT).show();
+	$('#' + Level.LAYER_GAME_ANIMATION).show();
+	$('#' + Level.LAYER_GAME_LIGHTNING).show();
+}; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
-	//this.showGoldAndCreatures();
 	this.creatureLayer.canvas.focus();
 	this.level.levelAnimation.initBobCervantes(this.backgroundLayer);
 	this.reshuffleService.start();
@@ -2314,7 +2319,7 @@ Board.prototype.setComplete = function() {
 		$('#score').html( totalScore );
 		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.showGoldAndCreatures();
+		this.showGameScreenLayers();
 	}
 } //Board.prototype.setComplete()
 
