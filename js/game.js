@@ -1644,9 +1644,9 @@ Board.prototype.toString = function() {
 Board.prototype.init = function(tilePositions) {
 	var board, tileMatrix, colIt, rowIt;
 	board = this;
-	$('#gridTable').width(tilePositions[0].length * Board.TILE_WIDTH);
-	$('#gridTable').height( tilePositions.length * Board.TILE_HEIGHT);
-	$('#gridTable').html("<tbody> </tbody>");
+	//$('#gridTable').width(tilePositions[0].length * Board.TILE_WIDTH);
+	//$('#gridTable').height( tilePositions.length * Board.TILE_HEIGHT);
+	//$('#gridTable').html("<tbody> </tbody>");
 	/*for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		$('#gridTable> tbody').append("<tr class='gridTr' id='tr_"+rowIt+"'></tr>");
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
