@@ -2251,7 +2251,7 @@ Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
 	if(changedPointsArray.length){
 		var changedTiles = [];
 		_.each( changedPointsArray, function( point ) {
-			var changedTile = board.creatureTileMat2261rix[point[0]][point[1]];
+			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
 			if(changedTile && !changedTile.isPlain()){
 				changedTiles.push(changedTile);
 			}
@@ -2696,8 +2696,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
-		case null:
-			break;
+		case null: //Fallthrough
 		default:
 			this.handleTileSelect(this.tileActive);
 			if(this.initialSwapForTripletInfo){
