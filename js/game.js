@@ -2371,7 +2371,7 @@ Board.prototype.animateStars = function(tiles){
 	var board = this;
 	function draw(){
 		_.each(tiles, function(tile){
-			board.level.levelAnimation.animateStars(board.gameAnimationLayer, tile.getXCoord(), tile.getYCoord(), tile.blob.image.id, board.blobCollection);
+			board.level.levelAnimation.animateStars(tile.getXCoord(), tile.getYCoord(), tile.blob.image.id, board.blobCollection);
 		});
 	}
 	if(this.putInAnimationQ){
@@ -3328,7 +3328,7 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 	function draw(){
 		if(sparkles){
 			var centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
-			board.level.levelAnimation.animateSparkles(board.gameAnimationLayer, Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
+			board.level.levelAnimation.animateSparkles(Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
 		}
 		_.each( pointsArray, function(point) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
