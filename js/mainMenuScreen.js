@@ -218,7 +218,7 @@ MainMenuScreen.prototype.isFirstTimeShown = function() {
 
 MainMenuScreen.prototype.getLastSelectedMode = function() {
 	//TODO read from local storage
-	return '#button-timed';
+	return '#button-relaxed';
 }; //MainMenuScreen.prototype.getLastSelectedMode()
 
 MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {

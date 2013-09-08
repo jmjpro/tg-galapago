@@ -1115,7 +1115,7 @@ Level.prototype.quit = function(){
 
 Level.prototype.cleanup = function(isPreserveGridLayer){
 	if( isPreserveGridLayer ) {
-		this.board.hideGoldAndCreatures();
+		this.board.hideGoldAndCreatures();	
 	}
 	else {
 		this.board.screenDiv.hide();		
@@ -1126,6 +1126,7 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 	}
     this.board.powerUp.timer.clearInterval();
  	this.levelAnimation.stopAllAnimations();
+	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
 		this.levelAnimation.stopAllPowerAchieved();
 		this.levelAnimation.powerAchievedAnimation = null;
@@ -1260,6 +1261,8 @@ Level.prototype.unregisterEventHandlers = function() {
 	document.onclick = null;
 	$('#layer-grid').off('click');
 	$('#layer-grid').off('tap');
+	window.onclick = null;
+	window.onmousemove = null;
 	window.onkeydown = null;
 }; //Level.prototype.unregisterEventHandlers()
 
@@ -1481,8 +1484,8 @@ Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
 function Board() {
 	this.screenDiv = $('#screen-game');
 	this.backgroundLayer = $('#' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
-	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
-	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
+	//this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
+	//this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
@@ -1504,7 +1507,7 @@ function Board() {
 	this.buttonActive = null;
 	this.rotateAngle = 0;
 	this.creatureYOffset = 0;
-	this.blobCollection = new BlobCollection(this.gridLayer);
+	this.blobCollection = new BlobCollection();
 
 	this.creatureCounter = 0;
 	this.chainReactionCounter = 0;
@@ -1672,7 +1675,7 @@ Board.prototype.getLayer = function(blobType) {
 	var layer;
 	switch( blobType ) {
 		case 'GOLD':
-			layer = this.goldLayer;
+			//layer = this.goldLayer;
 			break;
 		case 'CREATURE':
 			layer = this.creatureLayer;
@@ -1764,6 +1767,30 @@ Board.prototype.toString = function() {
 Board.prototype.init = function(tilePositions) {
 	var board, tileMatrix, colIt, rowIt;
 	board = this;
+	//$('#gridTable').width(tilePositions[0].length * Board.TILE_WIDTH);
+	//$('#gridTable').height( tilePositions.length * Board.TILE_HEIGHT);
+	//$('#gridTable').html("<tbody> </tbody>");
+	/*for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+		$('#gridTable> tbody').append("<tr class='gridTr' id='tr_"+rowIt+"'></tr>");
+		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
+			$("#tr_"+rowIt).append("<td class='gridTd' id='td_"+rowIt+"_"+colIt+"'></td>");
+		}
+	}*/
+	var left = 0;
+	var top =100;
+	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
+		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
+		$("#div_"+rowIt).css('top',top);
+		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
+			$("#div_"+rowIt).append("<span class='columnSpan' id='span_"+rowIt+"_"+colIt+"'></span>");
+			var spanId = 'span_'+rowIt+'_'+colIt;
+			$("#"+spanId).css('left',left);
+			left+=47;
+		}
+		top+=47;
+		left=0;
+	}
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
@@ -1991,8 +2018,14 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
 		if( blob && blob.image ) {
 			function draw(){
-				layer.clearRect( x, y, width, height );
-				layer.drawImage(blob.image, x, y, width, height);
+				if(!layer){
+					var spanId = 'span_'+row+'_'+col;
+					$('#'+spanId).css('backgroundImage','');
+					$('#'+spanId).css('backgroundImage','url('+blob.image.src+')');
+				}else{
+					layer.clearRect( x, y, width, height );
+					layer.drawImage(blob.image, x, y, width, height);
+				}
 			}
 			if(this.putInAnimationQ && blob.blobType != 'GOLD'){
 				this.animationQ.push(draw);
@@ -3364,7 +3397,9 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	Galapago.audioPlayer.playGoldOrBlockingMatch();
 	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
-		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		//board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		var spanId = 'span_'+tile.coordinates[1]+'_'+tile.coordinates[0];
+		$('#'+spanId).css('backgroundImage','url('+board.level.gameImages.tile_regular.src+')');
 	});
 	//deferred.resolve();
 	//return deferred.promise;
@@ -3520,8 +3555,15 @@ Tile.prototype.setSelectedAsync = function() {
 	var deferred;
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	
+	var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	if(!this.board.getGoldTile(this)){
+		$('#'+spanId).css('background-size','cover');
+		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
+	}
+	
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3529,8 +3571,13 @@ Tile.prototype.setSelectedAsync = function() {
 }; //Tile.prototype.setSelectedAsync()
 
 Tile.prototype.setUnselected = function() {
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	
+	var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	if(!this.board.getGoldTile(this)){
+		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
+	}
 	return this; // chainable
 };
 
@@ -3539,17 +3586,23 @@ Tile.prototype.clear = function() {
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
-	var layer, x, y, width, height, offset;
-	layer = this.board.gridLayer;
-	x = Tile.getXCoord(this.coordinates[0]);
-	y = Tile.getYCoord(this.coordinates[1]);
-	layer.strokeStyle = color;
-	layer.lineWidth = lineWidth;
-	offset = 1;
-	width = Board.TILE_WIDTH * offset;
-	height = Board.TILE_HEIGHT * offset;
-	layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
-	layer.strokeRect(x, y, width, height);
+	//var layer, x, y, width, height, offset;
+	//layer = this.board.gridLayer;
+	//x = Tile.getXCoord(this.coordinates[0]);
+	//y = Tile.getYCoord(this.coordinates[1]);
+	//layer.strokeStyle = color;
+	//layer.lineWidth = lineWidth;
+	//offset = 1;
+	//width = Board.TILE_WIDTH * offset;
+	//height = Board.TILE_HEIGHT * offset;
+	//layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
+	//layer.strokeRect(x, y, width, height);
+	var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	$('#'+spanId).css('border', '1px solid '+color);
+	if(!$('#'+spanId).css('backgroundImage')){
+		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
+	}
+	
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	

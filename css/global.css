@@ -657,3 +657,25 @@ ul.galapago-drop-down {
 	left: 4%;
 	margin-left: -13px;
 }
+#layerGrid{
+	left: 325px; 
+	top:100px;
+	z-index:2; 
+	position:absolute; 
+	border-collapse: collapse;
+}
+
+.rowDiv{
+	height:47px;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	border-spacing:0px;
+}
+.columnSpan{
+	height:47px;
+	width:47px;
+	padding:0px;
+	margin:0px;
+	position:absolute; 
+}
