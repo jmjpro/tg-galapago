@@ -536,8 +536,8 @@ ImageCollage.COLLAGE_ARRAY = [
 		"collageId": "beach/blue-crab.png",
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
+			{"cell": [46, 0, 46, 46]},
+			{"cell": [92, 0, 46, 46]}
 		]
 	},
 	{
@@ -1112,12 +1112,13 @@ ImageCollage.COLLAGE_ARRAY = [
  * Assumes a sheet of symmetric images defined by a 1 or 2 dimensional image matrix
  * @class ImageCollage
  * @param {object} collageDescriptor
+ * @param {Image|HTMLImageElement} [image]
  * @constructor
  */
 function ImageCollage (collageDescriptor, image) {
-	var collageId, lookupTable, i, id, childCollageDescriptor;
-	collageId = collageDescriptor.collageId,
-	lookUpTable = LoadingScreen.gal.lookupTable;
+	var i, id,
+		collageId = collageDescriptor.collageId,
+		lookUpTable = LoadingScreen.gal.lookupTable;
 
 	if(image){
 		this.image = image
@@ -1125,27 +1126,18 @@ function ImageCollage (collageDescriptor, image) {
 		this.image = LoadingScreen.gal.get(collageId);
 	}
 	this.imageCoordinateArray = collageDescriptor.imageCoordinateArray;
-
-	//id = id ? id : ImageCollage.buildSpriteAssetPath( this.collageId, i);
 	this._canvas = document.createElement('canvas');
 	this._ctx = this._canvas.getContext('2d');
-	/*this._canvas.style.display = 'none';
-	this._canvas.style.position = 'absolute';
-	this._canvas.style.left = -1000;
-	this._canvas.style.top = -1000;*/
 
 	for (i = this.imageCoordinateArray.length - 1; i >= 0; i--) {
 		id = this.imageCoordinateArray[i].id;
 		id = id || ImageCollage.buildSpriteAssetPath( collageId, i);
 		if (typeof lookUpTable[id] === 'undefined' || lookUpTable[id] === null) {
 			collageDescriptor.imageCoordinateArray[i].id = id;
-			var imageForCache = this.getImageForCache(i);
-			childCollageDescriptor = ImageCollage.findByName( id );
-			lookUpTable[id] = imageForCache;
-			if(childCollageDescriptor){
-				imageForCache.onload = ImageCollage.makeOnloadFunction(childCollageDescriptor, imageForCache);
-			}	
-			
+
+			lookUpTable[id] = new Image();
+			lookUpTable[id].onload = ImageCollage.makeOnloadFunction(id, lookUpTable[id]);
+			this.getImageForCache(lookUpTable[id], i);
 		}
 	}
 
@@ -1158,11 +1150,28 @@ function ImageCollage (collageDescriptor, image) {
 	LoadingScreen.gal.release(collageId);
 } // ImageCollage constructor
 
-ImageCollage.makeOnloadFunction = function(childCollageDescriptor, imageForCache) {
-	return function(){
-		new ImageCollage(childCollageDescriptor, imageForCache);
+ImageCollage.imagesInWork = 0;
+
+ImageCollage.makeOnloadFunction = function(id, image) {
+	ImageCollage.imagesInWork++;
+	function f(){
+		if(intervalId !== null) {
+			if(image.complete && typeof image.naturalWidth !== 'undefined' && image.naturalWidth !== 0) {
+				clearInterval(intervalId);
+				intervalId = null;
+				var childCollageDescriptor = ImageCollage.findByName( id );
+				if(childCollageDescriptor) {
+					new ImageCollage(childCollageDescriptor);
+				}
+				ImageCollage.imagesInWork--;
+
+				image = null;
+			}
+		}
 	}
-}
+	var intervalId = setInterval(f, 50);
+	return f;
+};
 
 /**
  * Returns an image object corresponding to the rectangular region in the this.coordinateArray by imageId
@@ -1175,10 +1184,10 @@ ImageCollage.prototype.getImage = function (imageId) {
 
 /**
  * @private
+ * @param {Image|HTMLImageElement} imageContainer
  * @param {integer} index
- * @returns {Image}
  */
-ImageCollage.prototype.getImageForCache = function (index){
+ImageCollage.prototype.getImageForCache = function (imageContainer, index){
 	var imageCoordinate, image, x, y, width, height;
 
 	imageCoordinate = this.imageCoordinateArray[index];
@@ -1214,29 +1223,28 @@ ImageCollage.prototype.getImageForCache = function (index){
 	this._ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
 
 	// create image from canvas
-	image = new Image();
-	image.src = this._canvas.toDataURL("image/png");
-	image.id = imageCoordinate.id;
-	return image;
+	imageContainer.src = this._canvas.toDataURL("image/png");
+	imageContainer.id = imageCoordinate.id;
+	//return imageContainer;
 }; //ImageCollage.prototype.getImage()
 
-/**
+/*
  * Returns an array of image objects corresponding to the rectangular regions in the this.coordinateArray
  * @private
  * @returns {Array.<Image>}
- */
+
 ImageCollage.prototype.getImages = function () {
-	var imageCollage, imageArray, id, i;
+	var imageCollage, imageArray, id;//, i;
 	imageCollage = this;
 	imageArray = [];
-	i = 0;
+	//i = 0;
 	_.each(this.imageCoordinateArray, function (imageCoordinate) {
 		//id = imageCoordinate.id ? imageCoordinate.id : ImageCollage.buildSpriteAssetPath( imageCollage.collageId, i++ );
 		id = imageCoordinate.id;
 		imageArray.push( imageCollage.getImage(id) );
 	});
 	return imageArray;
-}; //ImageCollage.prototype.getImages()
+};*/ //ImageCollage.prototype.getImages()
 
 /**
  * @public

@@ -45,20 +45,26 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	/*
-	if( callingScreenId == 'screen-loading') {
-		mainMenuScreen.registerImageLoadEvents();
-	}
-	else {
-		mainMenuScreen.setInitialNavItem();
-	}
-	*/
-	mainMenuScreen.setImages();
 	mainMenuScreen.setInitialNavItem();
-	mainMenuScreen.show();
+	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
+		if (result.success) {
+			//LoadingScreen.gal.un
+			/*
+			 if( callingScreenId == 'screen-loading') {
+			 mainMenuScreen.registerImageLoadEvents();
+			 }
+			 else {
+			 mainMenuScreen.setInitialNavItem();
+			 }
+			 */
+			mainMenuScreen.setImages();
+			mainMenuScreen.show();
 
-	mainMenuScreen.windowKeyHandler= window.onkeydown;
-	mainMenuScreen.addMouseListener();
+			mainMenuScreen.windowKeyHandler = window.onkeydown;
+			mainMenuScreen.addMouseListener();
+		}
+	});
+	LoadingScreen.gal.download('bg-main-menu');
 }; //MainMenuScreen.init()
 
 MainMenuScreen.prototype.addMouseListener = function(){
@@ -91,7 +97,7 @@ MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 MainMenuScreen.prototype.setInitialNavItem = function(){
 	this.currentNavItem = null;
 	this.setNavItem(this.getNavItem(null, this.callingScreen));
-	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
+	//console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
@@ -149,11 +155,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			else {
 				console.error( 'unable to find ' + galImagePath );
 			}
-			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
+			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Screen.Help);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Screen.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -181,6 +187,14 @@ MainMenuScreen.prototype.show = function() {
 MainMenuScreen.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.mainMenuDOM.hide();
+
+	// TODO: IGOR: MainMenuScreen: cleanup
+	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
+		$(selector).css( 'background-image','');
+	});
+
+	LoadingScreen.gal.unload('bg-main-menu');
+
 	/*
 	if( this.callingObject.registerEventHandlers ){
 		this.callingObject.registerEventHandlers();
