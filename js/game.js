@@ -262,7 +262,7 @@ LevelMap.prototype.display = function() {
 		levelAnimation.canvas.focus();
 	};
 	if(!Level.isComplete("1")){
-	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
+		this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
 	}
 	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 	lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
@@ -330,13 +330,13 @@ LevelMap.prototype.animate = function(assetPath){
 	this.animationCanvas.height = sprite.height;
 	this.animationLayer =  this.animationCanvas.getContext('2d');	
 	function cycleSprite(){
-	    sprite = sprites[xIndex];
-	    sprite = CanvasUtil.magnifyImage( sprite, 2 );
-	    that.animationLayer.clearRect(0,0,sprite.width,sprite.height);
+		sprite = sprites[xIndex];
+		sprite = CanvasUtil.magnifyImage( sprite, 2 );
+		that.animationLayer.clearRect(0,0,sprite.width,sprite.height);
 		that.animationLayer.drawImage(sprite, 0, 0, sprite.width, sprite.height);
 		xIndex++;
 		if( xIndex > sprites.length - 1 ){
-		  xIndex=0;
+			xIndex=0;
 		}
 	}
 	this.handle =window.setInterval(cycleSprite,300);
@@ -519,7 +519,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
-	    this.cleanup();
+		this.cleanup();
 		//$( 'ul#map-nav' ).css( 'display', 'none' );
 		Galapago.setLevel(this.hotspotLevel.id);
 	}
@@ -702,7 +702,7 @@ LevelMap.getLevelsCompleted = function() {
 // we want to know the level unlocked by the highest level completed;
 // when the highest level completed unlocks multiple levels return the minimum of those levels
 LevelMap.getNextLevel = function() {
-	var highestLevelCompleted, unlockedLevelIds, unlockedLevels, nextLevelId;
+	var highestLevelCompleted, nextLevel, unlockedLevelIds, unlockedLevels, nextLevelId;
 	unlockedLevels = [];
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
 	if( typeof highestLevelCompleted === 'undefined' ) {
@@ -726,16 +726,16 @@ LevelMap.getNextLevel = function() {
 }; //LevelMap.getNextLevel()
 
 LevelMap.reset = function() {
-	var keyIt;
-	var keyList = new  Array();
-	for (var i = 0; i < localStorage.length; i++) {
+	var keyIt, keyList, i;
+	keyList = new  Array();
+	for (i = 0; i < localStorage.length; i++) {
 		keyIt = localStorage.key(i);
 		if(keyIt.indexOf(Galapago.profile)>0){ // reset all the local storage of current Profile only.
 			//localStorage.removeItem(keyIt);
 			keyList.push(keyIt);
 		}
 	}
-	for (var i = 0; i < keyList.length; i++) {
+	for (i = 0; i < keyList.length; i++) {
 		localStorage.removeItem(keyList[i]);
 	}
 }; //LevelMap.reset()
@@ -759,6 +759,7 @@ MapCell.prototype.toString = function() {
 /* begin class Level */
 Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
+Level.LAYER_NAV = 'layer-nav';
 Level.LAYER_GRID = 'layer-grid';
 Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
@@ -773,10 +774,16 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
+Level.NAV_LEFT = 124;
+Level.NAV_TOP = 600;
+Level.NAV_MARGIN_BOTTOM = 10;
+/*
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
-Level.BUTTON_WIDTH = 116;
-Level.BUTTON_HEIGHT = 42;
+*/
+Level.NAV_BUTTON_WIDTH = 116;
+Level.NAV_BUTTON_HEIGHT = 42;
+Level.NAV_BUTTON_HILIGHT_THICKNESS = 1;
 Level.POWER_UP_SCORE =0;
 Level.SUPER_FRIEND_SUFFIX = '-friend';
 
@@ -905,7 +912,7 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
- 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_BEACH_CREATURES);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_FOREST_CREATURES);
@@ -1018,21 +1025,21 @@ Level.prototype.display = function() {
 			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
 			var restoreLookup ,dangerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-			if(restoreLookupString != undefined){
-			   restoreLookup = JSON.parse(restoreLookupString);
-			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-			   if(dangerBarTimeRemaining != undefined){
-				  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
-				  level.dangerBar.start();
-			   }
+			if(restoreLookupString !== 'undefined'){
+				restoreLookup = JSON.parse(restoreLookupString);
+				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+				if(dangerBarTimeRemaining !== 'undefined'){
+					level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
+					level.dangerBar.start();
+				}
 			}
 		}
 		console.debug(level.toString());
 
 		level.board.addPowerups();
 		level.board.displayLevelName();
-		//level.board.displayMenuButton(false);
-		//level.board.displayQuitButton(false);
+		level.board.displayMenuButton(false);
+		level.board.displayQuitButton(false);
 		level.board.display();
 		level.board.setActiveTile();
 		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
@@ -1100,13 +1107,13 @@ Level.prototype.cleanup = function(isPreserveGridLayer){
 		this.dangerBar.stop();
 	}
     this.board.powerUp.timer.clearInterval();
- 	this.levelAnimation.stopAllAnimations();
+	this.levelAnimation.stopAllAnimations();
 	if(this.levelAnimation.powerAchievedAnimation){
 		this.levelAnimation.stopAllPowerAchieved();
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
- 	this.board.reshuffleService.stop();
- 	Galapago.audioPlayer.stop();
+	this.board.reshuffleService.stop();
+	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
 Level.prototype.getCreatureSubset = function(creatureTypes) {
@@ -1234,7 +1241,7 @@ Level.prototype.unregisterEventHandlers = function() {
 }; //Level.prototype.unregisterEventHandlers()
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, canvasBackground, themeComplete, resourcePath, backgroundImage, /*canvasScore, */canvasGameAnimation;
+	var screenDivElement, canvasNav, /*canvasBackground, */themeComplete, resourcePath, backgroundImage, /*canvasScore, */canvasGameAnimation, canvasBonusFrenzy, canvasGameLightning;
 	console.debug('entering Level.prototype.styleCanvas()');
 	//console.debug('styling background canvas');
 	//canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
@@ -1246,6 +1253,16 @@ Level.prototype.styleCanvas = function() {
 		console.debug('setting background to ' + resourcePath);
 		this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
+	canvasNav = this.board.navLayer.canvas;
+	canvasNav.width = Level.NAV_BUTTON_WIDTH;
+	canvasNav.height = Level.NAV_BUTTON_HEIGHT * 2 + Level.NAV_MARGIN_BOTTOM;
+	canvasNav.style.left = Level.NAV_LEFT + 'px';
+	canvasNav.style.top = Level.NAV_TOP + 'px';
+	this.board.navLayer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
+	this.board.navLayer.fillStyle = Board.NAV_BUTTON_LABEL_COLOR;
+	this.board.navLayer.textAlign = 'center';
+	this.board.navLayer.textBaseline = 'middle';
+
 	/*
 	console.debug('before changing canvas width and height');
 	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
@@ -1360,11 +1377,12 @@ Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
 */
 Board.BUTTON_FONT_SIZE = '17px';
 Board.BUTTON_FONT_NAME = 'JungleFever';
-Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
+Board.NAV_BUTTON_LABEL_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
 	//this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
+	this.navLayer = $('#' + Level.LAYER_NAV)[0].getContext('2d');
 	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
@@ -1448,50 +1466,43 @@ Board.prototype.displayLevelName = function() {
 	//levelNameElement.fillText(levelNameText, Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y);
 }; //Board.protoype.displayLevelName()
 
-/*
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage, gameButtonCursor;
-	layer = this.backgroundLayer;
+	var layer, menuButtonImage, gameButtonCursor;
+	layer = this.navLayer;
 	menuButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(menuButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, 0, 0, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.clearRect(0, 0, Level.NAV_BUTTON_WIDTH + Level.NAV_BUTTON_HILIGHT_THICKNESS * 2, Level.NAV_BUTTON_HEIGHT + Level.NAV_BUTTON_HILIGHT_THICKNESS * 2);
+		layer.drawImage(menuButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
 	}
-	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
-	layer.fillStyle = Board.BUTTON_FONT_COLOR;
-	layer.fillText('MENU', Level.MENU_BUTTON_X+33, Level.MENU_BUTTON_Y+10);
+	layer.fillText( 'MENU', Level.NAV_BUTTON_WIDTH/2, (Level.NAV_BUTTON_HEIGHT/2) + Level.NAV_BUTTON_HILIGHT_THICKNESS );
 }; //Board.protoype.displayMenuButton()
-
+	
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage, gameButtonCursor;
-	layer = this.backgroundLayer;
+	var layer, quitButtonImage, gameButtonCursor;
+	layer = this.navLayer;
 	quitButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
-	var quitImageX = Level.MENU_BUTTON_X;
-	var quitImageY = (Level.MENU_BUTTON_Y + Level.BUTTON_HEIGHT +10);
+	var quitImageTop = Level.NAV_BUTTON_HEIGHT + Level.NAV_MARGIN_BOTTOM;
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.drawImage(quitButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		layer.drawImage(gameButtonCursor, 0, quitImageTop, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		layer.clearRect(0, quitImageTop, Level.NAV_BUTTON_WIDTH + 2 * Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HEIGHT + 2 * Level.NAV_BUTTON_HILIGHT_THICKNESS);
+		layer.drawImage(quitButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
 	}
-	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
-	layer.fillStyle = Board.BUTTON_FONT_COLOR;
-	layer.fillText('QUIT', Level.MENU_BUTTON_X+35, quitImageY+10);
-}; //Board.protoype.displayMenuButton()
-*/
+	layer.fillText( 'QUIT', Level.NAV_BUTTON_WIDTH/2, (Level.NAV_BUTTON_HEIGHT/2) + quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS );
+}; //Board.protoype.displayQuitButton()
 
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.POWER_UP_SCORE);
@@ -1504,17 +1515,16 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
-	var markTile;
-	var timedMode, tileActive, col, row;
+	var markTile, tileActive, col, row, key;
 	if(tile) {
 		tileActive = tile;
 	}
 	
 	else if(!tile &&  _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.id) && this.initialSwapForTripletInfo) {
-	    col = this.initialSwapForTripletInfo.tipInfo.initialTile[0];
+		col = this.initialSwapForTripletInfo.tipInfo.initialTile[0];
 		row = this.initialSwapForTripletInfo.tipInfo.initialTile[1];
 		tileActive = this.creatureTileMatrix[col][row];
-		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
+		key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
 		this.level.bubbleTip.showBubbleTip(i18n.t(key));
 		this.bubbleInitialTile = this.initialSwapForTripletInfo.tipInfo.initialTile;
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
@@ -1669,7 +1679,7 @@ Board.prototype.build = function(tilePositions) {
 	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
     restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
-	if(restoreLookupString != undefined){
+	if(restoreLookupString){
 		restoreLookup = JSON.parse(restoreLookupString);
 		this.score = restoreLookup['score'];
 		this.displayScore();
@@ -1677,7 +1687,7 @@ Board.prototype.build = function(tilePositions) {
 		var image ;
 		var id;
 		for(key in nilCollection){
-		    image=null;
+			image=null;
 			id=null;
 			if(nilCollection[key] in this.level.creatureImages){
 				id = nilCollection[key];
@@ -1686,12 +1696,12 @@ Board.prototype.build = function(tilePositions) {
 				id = nilCollection[key];
 				image = this.level.superFriendImages[id];
 			}else{
-			    for(var creatureKey in this.level.goldImages){
+				for(var creatureKey in this.level.goldImages){
 					id = this.level.goldImages[creatureKey].id;
-				  	if(id == nilCollection[key]){
-				    	image = this.level.goldImages[creatureKey];
-				    	break;
-				  	}
+					if(id == nilCollection[key]){
+						image = this.level.goldImages[creatureKey];
+						break;
+					}
 				}
 			}
 			var blobItem = new BlobItem(image, 0);
@@ -1712,7 +1722,7 @@ Board.prototype.build = function(tilePositions) {
 			if(restoreLookup ){
 				key = colIt+'_'+rowIt;
 				if(cellObject.gold && restoreLookup[key]){
-				    cellObject = this.parseCell(restoreLookup[key]);
+					cellObject = this.parseCell(restoreLookup[key]);
 				}else if((cellObject.gold || cellObject.blocking || cellObject.cocoon || cellObject.hasTileOnly || cellObject.superFriend) && !restoreLookup[key]){
 					cellObject = this.parseCell('1');
 					//this.blobCollection.addBlobItem(tile);
@@ -1938,7 +1948,7 @@ Board.prototype.getNonMatchingCreatureTile = function(tile) {
 	}
 	while( this.tilesEventProcessor.getMatchingTilesSets(tile).length > 0 );
 	return tile;
-} //Board.prototype.getNonMatchingCreatureTile()
+}; //Board.prototype.getNonMatchingCreatureTile()
 
 Board.prototype.removeTile = function(tile) {
 	var layer, tileMatrix, col, row;
@@ -1981,10 +1991,10 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 				board.powerUp.addListener();
 				board.isPowerUpFocused = true;
 			}
-			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
 			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
 					//alert('flipflop power up');
 					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
 					board.powerUp.focus();
@@ -2003,40 +2013,33 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			}
 			
 		}else if(board.isPowerUpFocused){
-				  board.isPowerUpFocused =false
-			      board.powerUp.update();
-				  board.powerUp.currentFocus=0;
-				  board.powerUp.nextFocus=0;
-				  window.onkeydown=null;
-				  board.powerUp.focusOn= 0;
-				  //board.powerUp.canvas.onfocus=null;
+			board.isPowerUpFocused =false;
+			board.powerUp.update();
+			board.powerUp.currentFocus=0;
+			board.powerUp.nextFocus=0;
+			window.onkeydown=null;
+			board.powerUp.focusOn= 0;
+			//board.powerUp.canvas.onfocus=null;
 			window.onkeydown = board.powerUp.boardKeyHandler;
 		}
 	}
 	
 	if(board.blobCollection && board.blobCollection.button_regular){
 		var menuButtonImage = board.blobCollection.button_regular;
-		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_regular;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
+		if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
-				/*
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
-				*/
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
+		}else if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
 				board.tileActive.setInactiveAsync();
-				/*
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
-				*/
 				board.hotspot = Board.HOTSPOT_QUIT;
 		}else if(board.hotspot){
-				/*
 				board.displayMenuButton(false);
 				board.displayQuitButton(false);
-				*/
 				board.hotspot = null;	
 				board.setActiveTile(board.tileActive);
 		}
@@ -2061,7 +2064,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 					var currentY = tile.getYCoord()+100;
 					
 					if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> currentY && y< (currentY+ Board.TILE_HEIGHT )){
-					   if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
+						if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
 							var icol = board.bubbleInitialTile[0];
 							var irow = board.bubbleInitialTile[1];
 							if(icol != col || irow != row){
@@ -2085,7 +2088,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 				}
 			}
 			if(found) {
-			    break;
+				break;
 		}
 		}	
 		this.handleMouseClickForMenuAndQuit(x,y);
@@ -2094,17 +2097,17 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 }; //Board.prototype.handleMouseClickEvent()
 
 Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
-	var board = this;
-	var menuButtonImage = board.blobCollection.button_regular;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+	var board, menuButtonImage, quitButtonY
+	board = this;
+	menuButtonImage = board.blobCollection.button_regular;
+	if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 			board.handleKeyboardSelect();
 	}
-	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-	var quitButtonImage = board.blobCollection.button_regular;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
+	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
+	if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;
@@ -2117,22 +2120,22 @@ Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
 		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
 			//alert('power up cliecked'+ x +"  "+ y);
-			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
 			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
 					//alert('flipflop power up');
 					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 				
 			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
 					//alert('fire power up');
 					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 				
 				
 			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
@@ -2140,7 +2143,7 @@ Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 			}
 			
 		}
@@ -2159,7 +2162,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		board.reshuffleService.stop();
 		var validMatchWithCollection = false;
-	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
+		this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
@@ -2241,21 +2244,21 @@ Board.prototype.animateStars = function(tiles){
 	}else{
 		draw();
 	}
-}
+}; //Board.prototype.animateStars()
 
 Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
 	var board = this;
 	if(changedPointsArray.length){
 		var changedTiles = [];
 		_.each( changedPointsArray, function( point ) {
-			var changedTile = board.creatureTileMatrix[point[0]][point[1]];
+			var changedTile = board.creatureTileMat2261rix[point[0]][point[1]];
 			if(changedTile && !changedTile.isPlain()){
 				changedTiles.push(changedTile);
 			}
 		});
 		this.handleTriplets(changedTiles);
 	}
-}
+}; //Board.prototype.handleChangedPointsArray()
 
 Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 	var verticalPointsSets = [];
@@ -2288,20 +2291,20 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 		verticalPointsSets.push(verticalPointsSet);
 	});	
 	return verticalPointsSets;
-}
+}; //Board.getVerticalPointsSets()
 
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
-	if(this.bonusFrenzy == undefined){
+	if(this.bonusFrenzy === 'undefined'){
 		window.onkeydown= null;
 		window.onclick = null;
 		window.onmousemove = null;
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
-	    Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
+		Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.isTimedMode ) {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
@@ -2343,7 +2346,7 @@ Board.prototype.setComplete = function() {
 		new DialogMenu('screen-game', this, 'dialog-level-won');
 		this.showGoldAndCreatures();
 	}
-} //Board.prototype.setComplete()
+}; //Board.prototype.setComplete()
 
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
@@ -2458,7 +2461,7 @@ Board.prototype.handleTileSelect = function(tile) {
 			this.blobCollection.removeBlobItems([goldTile]);
 		}
 		if(tile.isBlocked() || tile.isCocooned()){
-		    this.blobCollection.removeBlobItems([tile]);
+			this.blobCollection.removeBlobItems([tile]);
 		}
 		var tileSet = [[tile]];
 		if(tile.hasSuperFriend()){
@@ -2505,8 +2508,8 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	var board = this;
 	board.updateScore();
 	if(board.collectionModified || board.powerAchieved){
-	   board.saveBoard();
-	   board.collectionModified = false;
+		board.saveBoard();
+		board.collectionModified = false;
 	}
 	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
 	board.tileActive.setActiveAsync().done();
@@ -2518,7 +2521,7 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 		board.setComplete();
 	}
 	}
-}
+}; //Board.prototype.updateScoreAndCollections()
 
 Board.prototype.shuffleBoard = function() {
 	var tileMatrix = this.creatureTileMatrix;
@@ -2530,24 +2533,24 @@ Board.prototype.shuffleBoard = function() {
 	if(dangerBar){
 		dangerBar.pause();
 	}
-	var originalLockedTiles = []
+	var originalLockedTiles = [];
 	var changedPointsArray =[];
 	for (var col = tileMatrix.length - 1; col >= 0; col--) {
 		for (var row = tileMatrix[col].length - 1; row >= 0; row--) {
-	        var tile = tileMatrix[col][row];
-	        if(tile && !tile.isPlain()){
-	        	var coordinates, temp, fallingPoint, fallingPointOther;
-	        	changedPointsArray.push(tile.coordinates);
-	        	fallingPoint = null;
-	        	do{
-			        var randomIt = Math.floor(Math.random() * ((col * tileMatrix[col].length) + row + 1));
-			        var newCol = Math.floor(randomIt/tileMatrix[col].length);
-			        var newRow = randomIt%tileMatrix[col].length;
-			        temp = tileMatrix[newCol][newRow];
-			    }while(!temp || temp.isPlain())
-			    var handled = board.handleLockedTilesForShuffle(tile, temp, changedPointsArray, originalLockedTiles);
-			    handled = board.handleLockedTilesForShuffle(temp, tile, changedPointsArray, originalLockedTiles) || handled;
-			    if(!handled){
+			var tile = tileMatrix[col][row];
+			if(tile && !tile.isPlain()){
+				var coordinates, temp, fallingPoint, fallingPointOther;
+				changedPointsArray.push(tile.coordinates);
+				fallingPoint = null;
+				do{
+					var randomIt = Math.floor(Math.random() * ((col * tileMatrix[col].length) + row + 1));
+					var newCol = Math.floor(randomIt/tileMatrix[col].length);
+					var newRow = randomIt%tileMatrix[col].length;
+					temp = tileMatrix[newCol][newRow];
+				}while(!temp || temp.isPlain());
+				var handled = board.handleLockedTilesForShuffle(tile, temp, changedPointsArray, originalLockedTiles);
+				handled = board.handleLockedTilesForShuffle(temp, tile, changedPointsArray, originalLockedTiles) || handled;
+				if(!handled){
 			    	coordinates = temp.coordinates;
 			    	board.addTile(tile.coordinates, null, null, null, temp);
 			    	board.addTile(coordinates, null, null, null, tile);
@@ -2579,9 +2582,8 @@ Board.prototype.shuffleBoard = function() {
   	var coords = board.tileActive.coordinates; 
   	board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
   	board.tileActive.setActiveAsync().done();
-  	board.reshuffleService.start();	
-	
-}
+  	board.reshuffleService.start();
+}; //Board.prototype.shuffleBoard()
 
 Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPointsArray, originalLockedTiles) {
 	var board = this;
@@ -2600,7 +2602,7 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
     	return true;
    }
    return false;
-} //Board.prototype.handleLockedTilesForShuffle
+}; //Board.prototype.handleLockedTilesForShuffle
 
 Board.prototype.dangerBarEmptied = function() {
 	var timedMode, tileMatrix, gameboard;
@@ -2617,7 +2619,7 @@ Board.prototype.dangerBarEmptied = function() {
 				  
 				}
 			  }
-		})
+		});
 	 });
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
@@ -2628,7 +2630,7 @@ Board.prototype.dangerBarEmptied = function() {
 			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
-} //Board.prototype.dangerBarEmptied
+}; //Board.prototype.dangerBarEmptied
 
 Board.prototype.saveBoard = function() {
 	var restoreLookup, originalblogPositions, tileMatrix, gameboard, x, y, key, originalBlogconfig, timedMode;
@@ -2656,13 +2658,13 @@ Board.prototype.saveBoard = function() {
 					restoreLookup[key]= tile.blobConfig;
 				}
 			  }
-		})
+		});
  });
 	restoreLookup['score'] = gameboard.score;
 	blogColl = gameboard.blobCollection.blobCollection;
 	nilcollections = [];
     for(var key in blogColl){
-		if(blogColl[key].count == 0 )
+		if(blogColl[key].count === 0 )
 		  nilcollections.push(key);
 	}
 	restoreLookup['nilCollection'] =  nilcollections; 	
@@ -2671,7 +2673,7 @@ Board.prototype.saveBoard = function() {
 	}
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
-} //Board.prototype.saveBoard()
+}; //Board.prototype.saveBoard()
 
 Board.prototype.handleKeyboardSelect = function() {
     var board = this;
@@ -2695,6 +2697,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null:
+			break;
 		default:
 			this.handleTileSelect(this.tileActive);
 			if(this.initialSwapForTripletInfo){
@@ -2713,7 +2716,9 @@ Board.prototype.handleKeyboardSelect = function() {
 				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
 					this.level.bubbleTip.showBubbleTip(i18n.t(key));
-					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t(key))});
+					Galapago.delay(5000).done(function(){
+						board.level.bubbleTip.clearBubbleTip( i18n.t(key) );
+					});
 				}
 			}
 			break;
@@ -2746,14 +2751,12 @@ Board.prototype.handleRightArrow = function() {
 			}
 		}
 		tileRight = board.creatureTileMatrix[col][row];
-	}while(tileRight == null)
+	}while(tileRight === null);
 	if( tileRight && !this.navigationLock) {
 		board.navigationLock = true;
 		if(board.hotspot){
-			/*
 			board.displayMenuButton(false);
 			board.displayQuitButton(false);
-			*/
 			board.hotspot = null;
 		}
 		
@@ -2769,10 +2772,8 @@ Board.prototype.handleRightArrow = function() {
 			this.powerUp.addListener();
 			this.hotspot = Board.HOTSPOT_POWERUP;
 		}else{
-			/*
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
-			*/
 			board.hotspot = Board.HOTSPOT_MENU;
 		}
 		board.navigationLock = false;
@@ -2805,14 +2806,12 @@ Board.prototype.handleLeftArrow = function() {
 			}
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
-	}while(tileLeft == null)
+	}while(tileLeft === null);
 	if( tileLeft && !board.navigationLock) {
 		board.navigationLock=true;
 		if(board.hotspot){
-			/*
 			board.displayMenuButton(false);
 			board.displayQuitButton(false);
-			*/
 			board.hotspot = null;
 		}
 		
@@ -2831,15 +2830,13 @@ Board.prototype.handleLeftArrow = function() {
 			this.hotspot = Board.HOTSPOT_POWERUP;
 			//this.powerUp.canvas.focus();
 		}else{
-			/*
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
-			*/
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
-		//board.displayMenuButton(true);
-		//this.hotspot = Board.HOTSPOT_MENU;
+		board.displayMenuButton(true);
+		this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow
@@ -2861,7 +2858,7 @@ Board.prototype.handleDownArrow = function() {
 				row = 0;
 			}
 			tileDown = board.creatureTileMatrix[col][row];
-		}while(tileDown == null)
+		}while(tileDown === null);
 		if( tileDown && !board.navigationLock) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
@@ -2873,30 +2870,22 @@ Board.prototype.handleDownArrow = function() {
 	}else if(!board.navigationLock){
 		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_POWERUP){
-			/*
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
-			*/
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}else if(this.hotspot == Board.HOTSPOT_MENU) {
-			/*
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
-			*/
 			this.hotspot = Board.HOTSPOT_QUIT;
 		}else if(this.hotspot == Board.HOTSPOT_QUIT){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 				this.powerUp.addListener("down");
 				this.hotspot = Board.HOTSPOT_POWERUP;
-				/*
 				this.displayMenuButton(false);
 				this.displayQuitButton(false);
-				*/
 			}else{
-				/*
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
-				*/
 				this.hotspot = Board.HOTSPOT_MENU;
 			}
 		}
@@ -2922,7 +2911,7 @@ Board.prototype.handleUpArrow = function() {
 				row = board.creatureTileMatrix[col].length - 1;
 			}
 			tileUp = board.creatureTileMatrix[col][row];
-		}while(tileUp == null)
+		}while(tileUp === null);
 		if( tileUp && !board.navigationLock) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
@@ -3069,7 +3058,7 @@ Board.prototype.nullifyEmptyPoints = function(emptyPoints) {
 	_.each(emptyPoints, function(emptyPoint){
 		tileMatrix[emptyPoint[0]][emptyPoint[1]] = null;
 	});
-}
+}; //Board.prototype.nullifyEmptyPoints()
 
 Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board, changedPoints;
@@ -3142,7 +3131,7 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 			return loweredPoint;
 		}
 	}
-}
+}; //Board.prototype.getLeftRightFallingPoint()
 
 Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 	var changedPoints= [];
@@ -3169,13 +3158,13 @@ Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 		}
 	});
 	return changedPoints;
-}
+}; //Board.prototype.fillEmptyPoints()
 
 Board.prototype.pointEligibleForGeneration = function(point) {
 	var tileLeftUp =  this.getNeighborFromPoint(point, [-1, -1]);
 	var tileRightUp =  this.getNeighborFromPoint(point, [1, -1]);
-	return (tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain());
-}
+	return (tileLeftUp !== null && !tileLeftUp.isPlain()) || (tileRightUp !==null && !tileRightUp.isPlain());
+}; //Board.prototype.pointEligibleForGeneration()
 
 // run an animation removing a matching tile triplet
 Board.prototype.removeTriplets = function(tileTriplets) {
@@ -3189,7 +3178,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 		board.clearTiles(tileTriplet, true);
 	});
 	return this; //chainable
-}; //Board.prototype.removeTriplets
+}; //Board.prototype.removeTriplets()
 
 Board.prototype.removeTiles = function(tiles) {
 	var board;
@@ -3197,7 +3186,7 @@ Board.prototype.removeTiles = function(tiles) {
 	_.each( tiles, function(tile) {
 		board.removeTile(tile);
 	});
-}
+}; //Board.prototype.removeTiles()
 
 Board.prototype.clearTiles = function(tiles, sparkles) {
 	var board;
@@ -3217,7 +3206,7 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 	}else{
 		draw();
 	}
-}
+}; //Board.prototype.clearTiles()
 
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {
 	var tempCoordinates/*, deferred*/;
@@ -3950,33 +3939,40 @@ function ReshuffleService(board){
 }
 
 ReshuffleService.prototype.start = function() {
-	var reshuffleService = this;
-	var board = this.board
+	var reshuffleService, board, swapForTripletInfo, validMoveFound, powerActive, initialTile, swapTile;
+	reshuffleService = this;
+	board = this.board;
 	if( !this.reshuffleInterval) {
 		this.reshuffleInterval = setInterval(function(){
-			var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
-			var validMoveFound = swapForTripletInfo.tipInfo.initialTile != null;
-			var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
+			swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			validMoveFound = swapForTripletInfo.tipInfo.initialTile !== null;
+			powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 			if(validMoveFound){
-				var initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
-				var swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
+				initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
+				swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
 				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
 					board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
-					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
+					Galapago.delay(5000).done(function() {
+						board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Make Matches') );
+					});
 				}
 			}
 			if(powerActive && !validMoveFound){
 				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
-				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
+				Galapago.delay(5000).done(function() {
+					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Use PowerUps') );
+				});
 			}
 			if(!powerActive && !validMoveFound){
 				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
 				Galapago.audioPlayer.playReshuffle();
 				reshuffleService.board.shuffleBoard();
 				console.log("reshuffled");
-				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
+				Galapago.delay(5000).done(function() {
+					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Shuffling Board') );
+				});
 			}
 		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
 		this.isStarted = true;
@@ -4022,13 +4018,13 @@ MatchFinder.findMatch = function(board, withGoldTile) {
 			        }
 		        }
 		    });
-		};
+		}
 	});
   	return swapForTripletInfo;
-}
+}; //MatchFinder.findMatch()
 
 MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeReplaced, withGoldTile){
-	if(tileToBeReplaced && (tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend())){
+	if( tileToBeReplaced && ( tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend() ) ){
  		var tile = new Tile(this, tileToBeMoved.blob, tileToBeReplaced.coordinates, tileToBeMoved.spriteNumber);
  		var matchingTilesSets = board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved);
  		if(withGoldTile && matchingTilesSets.length){
@@ -4038,14 +4034,14 @@ MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeRepla
 				if(goldTiles.length){
 					goldFound = true;
 				}
-			})
+			});
  			return goldFound;
  		}else{
  			return matchingTilesSets.length > 0;
  		}
  	}
  	return false;
-}
+}; //MatchFinder.checkIfSwapMakesMatch()
 
 // see @Tyler Whitehouse's answer at http://stackoverflow.com/a/11196395/567525
 function PauseableInterval(func, delay , sender){
@@ -4060,47 +4056,41 @@ function PauseableInterval(func, delay , sender){
     this.getTimeLeft = function(){
         var now = new Date();
         return this.delay - ((now - this.triggerSetAt) % this.delay);
-    }
+    };
     this.pause = function(){
         this.paused_timeLeft = this.getTimeLeft();
             //console.log('pause  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
         window.clearInterval(this.i);
         this.i = null;
                 //window.setTimeout(this.resume, 4000);
-    }
- 
+    };
     this.reset = function(sender){
         window.clearInterval(this.i);
         this.i = null;
         this.i = window.setInterval(this.func, this.delay,sender);
-    }
- 
+    };
     this.restart = function(sender){
         sender.i = window.setInterval(sender.func, sender.delay,sender);
-    }
- 
+    };
     this.callAndRestart = function(sender){
       sender.restart(sender);
       //console.log('callAndRestart function called : ' +' now : '+new Date().getTime());
       sender.func();
-    }
- 
+    };
     this.resume = function(){
-        if (this.i == null){
+        if (this.i === null){
            // console.log('resume  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
             this.i = window.setTimeout(this.callAndRestart, this.paused_timeLeft, this);
         }
-    }
- 
+    };
     this.clearInterval = function(){
            window.clearInterval(this.i);
-      }
-	  
-	 this.isRunning = function(){
-	     if(this.i != null)
-		   return true;
+    };
+	this.isRunning = function(){
+		if(this.i !== null)
+			return true;
 		return false;
-     }	 
+	};
 } //function PauseableInterval()
 
 function replaceAll(str, find, replace) {

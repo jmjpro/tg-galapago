@@ -28,7 +28,7 @@ html, body {
 	padding: 0;
 }
 
-canvas, div {
+canvas, div, li {
 	background-repeat: no-repeat;
 	background-position: top left;
 	background-size: 100% 100%;
@@ -210,7 +210,7 @@ div.dialog-title {
 }
 
 #dialog-game-menu ul.vertical-button-nav {
-	margin-top: -50px; /* jj: either we need this or buttons some of the transparent space around them removed; */
+	margin-top: 40px;
 }
 
 #dialog-level-won {
@@ -249,57 +249,45 @@ div.dialog-title {
 
 .button-huge {
 	width: 388px;
-	height: 94px;
 	vertical-align: middle;
-	line-height: 79px;
+	height: 94px;
+	line-height: 79px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	font-size: 27px;
 }
 
 .button-big {
 	width: 388px;
-	height: 90px;
 	vertical-align: middle;
-	line-height: 45px;
+	height: 90px;
+	line-height: 76px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 }
 
 .button-medium {
 	width: 164px;
-	height: 55px;
-	line-height: 33px;
 	vertical-align: middle;
-	font-size: 22px;
-}
-
-.button-medium-hilight {
-	width: 164px;
 	height: 55px;
-	line-height: 33px;
+	line-height: 46px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
+	font-size: 22px;
 }
 
 .button-small {
 	width: 140px;
-	height: 102px;
 	vertical-align: middle;
-	line-height: 102px;
+	height: 102px;
+	line-height: 86px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 }
 
 .button-regular {
 	width: 184px;
-	height: 108px;
 	vertical-align: middle;
-	line-height: 108px;
+	height: 108px;
+	line-height: 91px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	display: inline-block;
 }
 
 .game-option-arrow {
 	position: relative;
 	top: 5px;
-}
-
-.button-regular-hilight {
-}
-
-.button-small-hilight {
 }
 
 ul.vertical-button-nav {
