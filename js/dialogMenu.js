@@ -391,6 +391,25 @@ DialogMenu.prototype.registerEventHandlers = function() {
 				case 'dialog-game-over':
 					dialogMenu.dialogGameOverSelect();
 					break;
+				case 'dialog-game-menu':
+					dialogMenu.hide();
+					board = dialogMenu.callingObject;
+					board.displayMenuButton(false);
+					board.hotspot = null;
+					board.display();
+					if(board.level.dangerBar){
+						board.level.dangerBar.resume();
+					}
+					board.reshuffleService.start();				
+					break;
+				case 'dialog-reset-game':
+					Galapago.levelMap.cleanup();
+					LevelMap.show(dialogMenu.callingObject.hotspotLevel);
+					dialogMenu.hide();				
+					break;
+				case 'dialog-time-out':
+					dialogMenu.selectHandler(dialogMenu);
+					break;					
 			}
 			evt.stopPropagation();
 			evt.preventDefault();		
@@ -406,10 +425,12 @@ DialogMenu.prototype.registerEventHandlers = function() {
 }; //DialogMenu.prototype.registerEventHandlers()
 
 DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
-	this.hide();
+	/*this.hide();
 	board.displayMenuButton(false);
 	board.hotspot = null;
-	board.display();
+	board.display();*/
+	this.hide();
+	new DialogMenu('screen-game', board, 'dialog-game-menu');
 }; //DialogMenu.prototype.dialogNewGameOptionNo()
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
