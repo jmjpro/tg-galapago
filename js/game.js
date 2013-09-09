@@ -1113,11 +1113,10 @@ Level.prototype.quit = function(){
 	this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 }; //Level.prototype.quit()
 
-Level.prototype.cleanup = function(isPreserveGridLayer){
-	if( isPreserveGridLayer ) {
-		this.board.hideGoldAndCreatures();	
-	}
-	else {
+Level.prototype.cleanup = function(isBonusFrenzyOn){
+	if(isBonusFrenzyOn) {
+		this.board.hideGameScreenLayersForBonusFrenzy();
+	}else{
 		this.board.screenDiv.hide();		
 	}
 	this.bubbleTip.hideBubbleTip();
@@ -1176,7 +1175,6 @@ Level.registerEventHandlers = function() {
 		board.handleClickOrTap(evt);
 	});
 	
-	//$('#layer-bonus-frenzy').click(function(evt){
 	window.onclick = function(evt){
 		board.handleMouseClickEvent(evt);
 		evt.preventDefault();
@@ -1373,12 +1371,6 @@ Level.prototype.styleCanvas = function() {
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
-	console.debug('styling bonus frenzy canvas');
-	var canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
-	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
-	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
-	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
-	canvasBonusFrenzy.css('top', '0px');
 
 	console.debug('styling score canvas');
 	canvasScore = $('#' + Level.LAYER_SCORE);
@@ -1489,7 +1481,6 @@ function Board() {
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
-	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
 
@@ -1530,18 +1521,21 @@ Board.prototype.quit = function() {
 	return this; //chainable
 }; //Board.prototype.quit()
 
-Board.prototype.hideGoldAndCreatures = function() {
+Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
 	$('#' + Level.LAYER_GOLD).hide();
-	$('#' + Level.LAYER_CREATURE).hide();
-}; //Board.protoype.hideBoardLayer()
+	$('#' + Level.LAYER_HILIGHT).hide();
+	$('#' + Level.LAYER_GAME_ANIMATION).hide();
+	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
+}; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
-Board.prototype.showGoldAndCreatures = function() {
+Board.prototype.showGameScreenLayers = function() {
 	$('#' + Level.LAYER_GOLD).show();
-	$('#' + Level.LAYER_CREATURE).show();
-}; //Board.protoype.showBoardLayer()
+	$('#' + Level.LAYER_HILIGHT).show();
+	$('#' + Level.LAYER_GAME_ANIMATION).show();
+	$('#' + Level.LAYER_GAME_LIGHTNING).show();
+}; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
-	//this.showGoldAndCreatures();
 	this.creatureLayer.canvas.focus();
 	this.level.levelAnimation.initBobCervantes(this.backgroundLayer);
 	this.reshuffleService.start();
@@ -2479,7 +2473,7 @@ Board.prototype.setComplete = function() {
 		$('#score').html( totalScore );
 		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.showGoldAndCreatures();
+		this.showGameScreenLayers();
 	}
 } //Board.prototype.setComplete()
 
