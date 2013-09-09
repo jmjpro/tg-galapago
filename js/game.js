@@ -565,11 +565,11 @@ LevelMap.prototype.cleanup = function() {
 	var el = document.getElementById('layer-map');
 	el.width = el.height = 1;
 
-	el = document.getElementById('layer-map-other-animation');
-	el.width = el.height = 1;
+	//el = document.getElementById('layer-map-other-animation');
+	//el.width = el.height = 1;
 
-	el = document.getElementById('layer-map-animation');
-	el.width = el.height = 1;
+	//el = document.getElementById('layer-map-animation');
+	//el.width = el.height = 1;
 
 	LoadingScreen.gal.unload('bg-map-screen');
 
