@@ -246,12 +246,9 @@
 					orderedFilesArray[j] = el;
 				}
 			}
-			console.log("y");
-
 			for (i = orderedFilesArray.length - 1; i >= 0; i--) {
 				list.unshift(orderedFilesArray[i].toString());
 			}
-			console.log("z");
 
 			return this.mergeFiles(list, ';\n');
 		},
