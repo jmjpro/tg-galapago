@@ -787,7 +787,7 @@ Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
 Level.LAYER_GRID = 'layer-grid'; // need to convert to DOM divs
 Level.LAYER_GOLD = 'layer-gold'; // need to convert to DOM divs
 Level.LAYER_CREATURE = 'layer-creature';
-Level.LAYER_HILIGHT = 'layer-hilight';
+Level.DIV_HILIGHT = 'div-hilight';
 Level.LAYER_SCORE = 'layer-score';
 // TODO: for next 3 canvases need to create one canvas or convert to using DOM divs
 Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy'; // need to eliminate
@@ -1022,12 +1022,12 @@ Level.prototype.display = function() {
 	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
-	level.styleCanvas();
-	level.board.drawScore();
 	$('#screen-game').show();
 	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
+		level.styleCanvas();
+		level.board.drawScore();
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.putInAnimationQ = true;
 		level.board.build( level.levelConfig.blobPositions );
@@ -1336,7 +1336,7 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation, hilightDiv;
 	console.debug('entering Level.prototype.styleCanvas()');
 	console.debug('styling background canvas');
 	// TODO: IGOR: changed all layer-background canvas usage to one root canvas with the same id
@@ -1408,6 +1408,11 @@ Level.prototype.styleCanvas = function() {
     canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;
 
 	console.debug('exiting Level.prototype.styleCanvas()');
+	hilightDiv = this.board.hilightDiv;
+	hilightDiv.css('width', Board.TILE_WIDTH + 'px');
+	hilightDiv.css('height', Board.TILE_HEIGHT + 'px');
+	hilightDiv.css('background-size', 'cover');
+	hilightDiv.css('background-image', 'url('+ this.gameImages.tile_selected.src + ')');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1479,7 +1484,7 @@ function Board() {
 	//this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
 	//this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
-	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
+	this.hilightDiv = $('#' + Level.DIV_HILIGHT);
 	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
@@ -3600,22 +3605,19 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	
-	var layer, x, y, width, height, offset;
-	layer = this.board.hilightLayer;
-	offset = 1;
-	x = Tile.getXCoord(this.coordinates[0])/* - offset*/;
-	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
-	width = Board.TILE_WIDTH/* + 2 * offset*/;
-	height = Board.TILE_HEIGHT/* + 2 * offset*/;
-	layer.drawImage( this.board.level.gameImages.tile_selected, x, y, width, height );
+	var div, x, y, width, height;
+	div = this.board.hilightDiv;
+	x = Tile.getXCoord(this.coordinates[0]) + Board.GRID_LEFT;
+	y = Tile.getYCoord(this.coordinates[1]) + Board.GRID_TOP;
+	div.css('left', + x + 'px');
+	div.css('top', y + 'px');
+	div.show();
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.eraseHilight = function() {	
-	var x, y;
-	x = Tile.getXCoord(this.coordinates[0]);
-	y = Tile.getYCoord(this.coordinates[1]);
-	this.board.hilightLayer.clearRect( x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.hilightDiv.hide();
 }; //Tile.prototype.drawHilight()
+
 
 Tile.prototype.getXCoord = function() {	
 	return Tile.getXCoord(this.coordinates[0]);
