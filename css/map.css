@@ -1,0 +1,54 @@
+#layer-map {
+	position: absolute;
+	left: 218px;
+	top: 0px;
+}
+
+ul#map-nav {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	position: absolute;
+	left: 252px;
+	top: 642px;
+}
+
+ul#map-nav>li {
+	display:inline-block;
+	margin-right:8px;
+	padding:0;
+	width: 150px;
+	height: 55px;
+	vertical-align: top;
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+img#map-nav-cursor {
+	position:relative;
+}
+
+div.vertical-align-shiv {
+	position: relative;
+}
+
+div.nav-button {
+	position:absolute;
+	display: table; 
+	width: 150px;
+	height: 55px;
+}
+
+.nav-button p {
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
+	font-family: 'JungleFever';
+	font-size: 17px;
+	color: rgb(107,45,0);
+}

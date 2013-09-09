@@ -205,8 +205,10 @@ Galapago.delay = function(delayMs) {
 };
 /* end class Galapago */
 
-LevelMap.WIDTH = 1279;
+LevelMap.WIDTH = 960;
 LevelMap.HEIGHT = 640;
+LevelMap.LAVA_LEFT = 425; //643-218
+LevelMap.LAVA_TOP = 0;
 LevelMap.LEVEL_STATUS_X = 985;
 LevelMap.LEVEL_STATUS_Y = 75;
 LevelMap.LEVEL_NAV_X = 257;
@@ -233,13 +235,15 @@ function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
-	this.canvas.width = 1279;
-	this.canvas.height = 670;
+	this.canvas.width = LevelMap.WIDTH;
+	this.canvas.height = LevelMap.HEIGHT;
+	this.layer = this.canvas.getContext('2d');
 
+	/*
 	this.animationCanvas = $('#' + 'layer-map-animation')[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
-	this.layer = this.canvas.getContext('2d');
 	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
+	*/
 	this.hotspotPointsArray = [];
 	this.images = [];
 	this.levelCounter = 0;
@@ -261,15 +265,20 @@ LevelMap.prototype.display = function() {
 			}
 			that.screenDiv.css( 'display', 'block');
 			that.canvas.focus();
+			/*
 			var otherAnimationCanvas = that.otherAnimationCanvas;
 			otherAnimationCanvas.width = LevelMap.WIDTH;
 			otherAnimationCanvas.height = LevelMap.HEIGHT;
+			*/
 			var levelAnimation = that;
+			/*
 			otherAnimationCanvas.onclick = function(evt) {
 				levelAnimation.canvas.focus();
 			};
+			*/
 			if(!Level.isComplete("1")){
-				that.levelAnimation.animateGameStartArrow(that.otherAnimationLayer);
+				that.levelAnimation.animateGameStartArrow(that.layer);
+				//that.levelAnimation.animateGameStartArrow(that.otherAnimationLayer);
 			}
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 			lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
@@ -277,9 +286,11 @@ LevelMap.prototype.display = function() {
 
 			var completedLevelIds = LevelMap.getLevelsCompleted();
 			if(completedLevelIds.length){
-				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.otherAnimationLayer);
+				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
+				//that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.otherAnimationLayer);
 			}
-			that.levelAnimation.animateBombs(that.otherAnimationLayer);
+			that.levelAnimation.animateBombs(that.layer);
+			//that.levelAnimation.animateBombs(that.otherAnimationLayer);
 
 			that.drawHotspots();
 			that.registerEventHandlers();
@@ -322,7 +333,8 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 		});
 	}
 	if(nextLevelArrowsInfo.length){
-		levelMap.levelAnimation.animateNextLevelArrows(levelMap.otherAnimationLayer, nextLevelArrowsInfo);
+		levelMap.levelAnimation.animateNextLevelArrows(levelMap.layer, nextLevelArrowsInfo);
+		//levelMap.levelAnimation.animateNextLevelArrows(levelMap.otherAnimationLayer, nextLevelArrowsInfo);
 	}
 }; //LevelMap.prototype.drawBlinkingArrows()
 
@@ -333,17 +345,19 @@ LevelMap.prototype.animate = function(assetPath){
 	that=this;
 	sprite = sprites[xIndex];
 	sprite = CanvasUtil.magnifyImage( sprite, 2 );
+	/*
 	this.animationCanvas.onclick = function(evt) {
 		that.canvas.focus();
-	};
+	};	
 	this.animationCanvas.width = sprite.width;
 	this.animationCanvas.height = sprite.height;
-	this.animationLayer =  this.animationCanvas.getContext('2d');	
+	this.animationLayer =  this.animationCanvas.getContext('2d');
+	*/
 	function cycleSprite(){
 		sprite = sprites[xIndex];
 		sprite = CanvasUtil.magnifyImage( sprite, 2 );
-		that.animationLayer.clearRect(0,0,sprite.width,sprite.height);
-		that.animationLayer.drawImage(sprite, 0, 0, sprite.width, sprite.height);
+		that.layer.clearRect(0,0,sprite.width,sprite.height);
+		that.layer.drawImage(sprite, LevelMap.LAVA_LEFT, LevelMap.LAVA_TOP, sprite.width, sprite.height);
 		xIndex++;
 		if( xIndex > sprites.length - 1 ){
 			xIndex=0;
@@ -539,8 +553,10 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
+	/*
     this.animationLayer=null;
 	this.animationCanvas.onclick=null;
+	*/
 	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
 	this.screenDiv.css('background-image',"");
@@ -615,7 +631,7 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 		//this.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
-		this.updateLevelStatus();
+		//this.updateLevelStatus();
 	}
 }; //LevelMap.prototype.setHotspotLevel()
 
@@ -1293,14 +1309,11 @@ function changeCanvasState(stateName) {
 			c("layer-progress-bar");
 			//c("layer-background");
 			c("layer-map");
-			c("layer-map-other-animation");
-			c("layer-map-animation");
+			//c("layer-map-other-animation");
+			//c("layer-map-animation");
 			break;
 	}
-
-
-
-}
+} //changeCanvasState()
 
 function findAllPixels(element, deep, pixels, prevId) {
 	if(typeof deep === 'undefined') {

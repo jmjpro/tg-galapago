@@ -276,6 +276,14 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
 }; //LevelAnimation.prototype.animateBonFire()
 
+LevelAnimation.BOMB_LEFT_ONE_LEFT = 338; //556-218
+LevelAnimation.BOMB_LEFT_ONE_TOP_START = 305;
+LevelAnimation.BOMB_LEFT_TWO_LEFT = 328; //556-218
+LevelAnimation.BOMB_LEFT_TWO_TOP_START = 295;
+LevelAnimation.BOMB_MID_LEFT = 497; //715-218
+LevelAnimation.BOMB_MID_TOP_START = 386;
+LevelAnimation.BOMB_RIGHT_LEFT = 526; //744-218
+LevelAnimation.BOMB_RIGHT_TOP_START = 295;
 LevelAnimation.prototype.animateBombs = function(layer){
 	var levelAnimation = this;
 	function animateBomb(callback){
@@ -284,19 +292,19 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		switch( randomBombId ) {
 			case 1:
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-one-strip.png');
-				coordinates = [556, 305 - bombImageSpriteSheet[0].height];
+				coordinates = [LevelAnimation.BOMB_LEFT_ONE_LEFT, LevelAnimation.BOMB_LEFT_ONE_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 2:
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-two-strip.png');
-				coordinates = [546, 295 - bombImageSpriteSheet[0].height];
+				coordinates = [LevelAnimation.BOMB_LEFT_TWO_LEFT, LevelAnimation.BOMB_LEFT_TWO_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 3:
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-mid-strip.png');
-				coordinates = [715, 386 - bombImageSpriteSheet[0].height];
+				coordinates = [LevelAnimation.BOMB_MID_LEFT, LevelAnimation.BOMB_MID_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 4:
 				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-right-strip.png');				
-				coordinates = [744 , 295 - bombImageSpriteSheet[0].height];
+				coordinates = [LevelAnimation.BOMB_RIGHT_LEFT , LevelAnimation.BOMB_RIGHT_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 		} //switch( randomBombId ) {
 		if(levelAnimation.bombAnimation){
