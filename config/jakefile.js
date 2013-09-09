@@ -191,21 +191,15 @@
 			if (config.js) {
 				// merge files
 				var mergedCode = myTools.mergeJSFiles(config);
-				console.log("HERE!");
 				p = path.join(buildPath, '/' + config.js.javaScriptConcatenatedFileName);
-				console.log(p);
 				jake.mkdirP(path.dirname(p));
 				fs.writeFileSync(p, mergedCode, 'utf8');
 
 				//minify
 				var minifiedCode = uglify(mergedCode, UGLIFY_OPTIONS);
-				console.log("SS");
 				p = path.join(buildPath, '/' + config.js.javaScriptMinifiedFileName);
-				console.log("SS2");
 				jake.mkdirP(path.dirname(p));
-				console.log("SS3");
 				fs.writeFileSync(p, minifiedCode, 'utf8');
-				console.log("SS4");
 			}
 
 			// copy resources

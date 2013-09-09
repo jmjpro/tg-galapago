@@ -1,4 +1,4 @@
-﻿/* begin class Galapago */
+/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
