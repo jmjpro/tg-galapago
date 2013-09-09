@@ -203,6 +203,22 @@ Galapago.delay = function(delayMs) {
 	});
 	return deferred.promise;
 };
+
+Galapago.eraseProfile = function(profile) {
+	var keyIt;
+	var keyList = new  Array();
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
+		if(keyIt.indexOf(profile)>0){ // reset all the local storage of current Profile only.
+			//store.removeItem(keyIt);
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		store.removeItem(keyList[i]);
+	}
+};
 /* end class Galapago */
 
 LevelMap.WIDTH = 1279;
@@ -376,7 +392,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 		}
 	}
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
+	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
 		this.layer.font = LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
 		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
@@ -496,7 +512,7 @@ LevelMap.prototype.quit = function() {
 
 // erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.reset = function() {
-	localStorage.clear();
+	store.clear();
 	console.debug('reset map');
 	return this; //chainable
 }; //LevelMap.prototype.reset
@@ -694,8 +710,9 @@ LevelMap.getHighestLevelCompleted = function() {
 	var highestLevelCompletedId, keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	highestLevelCompletedId = 0;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			_.each(Level.findById(levelId).unlocksLevels, function( unlockedLevelId ) {
@@ -714,8 +731,9 @@ LevelMap.getHighestLevelCompleted = function() {
 LevelMap.getLevelsCompleted = function() {
 	var levelsCompleted = [], keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			levelsCompleted.push(parseInt(levelId,10));
@@ -751,18 +769,7 @@ LevelMap.getNextLevel = function() {
 }; //LevelMap.getNextLevel()
 
 LevelMap.reset = function() {
-	var keyIt, keyList, i;
-	keyList = new  Array();
-	for (i = 0; i < localStorage.length; i++) {
-		keyIt = localStorage.key(i);
-		if(keyIt.indexOf(Galapago.profile)>0){ // reset all the local storage of current Profile only.
-			//localStorage.removeItem(keyIt);
-			keyList.push(keyIt);
-		}
-	}
-	for (i = 0; i < keyList.length; i++) {
-		localStorage.removeItem(keyList[i]);
-	}
+	Galapago.eraseProfile(Galapago.profile);
 }; //LevelMap.reset()
 
 /* end class LevelMap */
@@ -1047,7 +1054,7 @@ Level.prototype.display = function() {
 			}
 			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			if (Galapago.isTimedMode) {
-				var restoreLookupString = localStorage.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
+				var restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				var restoreLookup , dangerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 			if(restoreLookupString !== 'undefined'){
@@ -1067,7 +1074,7 @@ Level.prototype.display = function() {
 			level.board.displayQuitButton(false);
 			level.board.display();
 			level.board.setActiveTile();
-			localStorage.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
+			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
 			console.debug('exiting Level.prototype.display()');
 			return level; //chainable
 		});
@@ -1099,7 +1106,7 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 Level.prototype.won = function(){
 	var timedMode, level;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
     level.cleanup();
@@ -1452,13 +1459,13 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 
 Level.prototype.isNew = function() {
 	var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	var levelPlayed = localStorage.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
+	var levelPlayed = store.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
 	return !levelPlayed;
 };
 
 Level.isComplete = function(id) {
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	return localStorage.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
+	return store.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
 };
 /* end class Level */
 
@@ -1821,7 +1828,7 @@ Board.prototype.build = function(tilePositions) {
 	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup, key, tile;
 	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-    restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+    restoreLookupString = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	if(restoreLookupString){
 		restoreLookup = JSON.parse(restoreLookupString);
 		this.score = restoreLookup['score'];
@@ -2465,9 +2472,9 @@ Board.prototype.setComplete = function() {
 		this.displayScore();
 		this.level.isCompleted = true;
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
-		levelHighestScore = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		var totalScore = localStorage.getItem( timedMode + Galapago.profile + ".totalScore" );
+		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
+		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
+		var totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
 		if(totalScore){
 			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
 				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
@@ -2475,17 +2482,17 @@ Board.prototype.setComplete = function() {
 			else {
 				totalScore=Number(totalScore)+this.score;
 			}
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		else {
 			totalScore=this.score;
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
 		}
 		else if(!levelHighestScore){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
 		$('#bonus-frenzy').html( this.bonusFrenzy.getScore() );
 		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
@@ -2758,7 +2765,7 @@ Board.prototype.dangerBarEmptied = function() {
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
@@ -2821,7 +2828,7 @@ Board.prototype.saveBoard = function() {
 		restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
 	}
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
+	store.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
 }; //Board.prototype.saveBoard()
 
 Board.prototype.handleKeyboardSelect = function() {
@@ -4263,3 +4270,96 @@ function PauseableInterval(func, delay , sender){
 function replaceAll(str, find, replace) {
   return str.replace(new RegExp(find, 'g'), replace);
 } //function replaceAll()
+
+window.store = new Store(); 
+
+function Store(){
+}
+
+Store.prototype.localStoreSupport = function() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+        return false;
+    }
+};
+
+Store.prototype.setItem = function(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else {
+        var expires = "";
+    }
+    if( this.localStoreSupport() ) {
+        localStorage.setItem(name, value);
+    }
+    else {
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+};
+
+Store.prototype.getItem = function(name) {
+    if( this.localStoreSupport() ) {
+        return localStorage.getItem(name);
+    }
+    else {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+};
+
+Store.prototype.getKeys = function(name) {
+	var keys = [];
+    if( this.localStoreSupport() ) {
+        for (var i = 0; i < localStorage.length; i++){
+			keys.push(localStorage.key(i));
+		}
+    }
+    else {
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	keys.push(c.substring(0, eqIndex));
+            }
+        }
+    }
+    return keys;
+};
+ 
+Store.prototype.removeItem = function(name) {
+    if( this.localStoreSupport() ) {
+        localStorage.removeItem(name);
+    }
+    else {
+        this.setItem(name,"",-1);
+    }
+};
+
+Store.prototype.clear = function(){
+	if( this.localStoreSupport() ) {
+        localStorage.clear();
+    }
+    else {
+    	var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	this.setItem(c.substring(0, eqIndex), "", -1);
+            }
+        }
+    }	
+};

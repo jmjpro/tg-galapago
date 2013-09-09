@@ -132,7 +132,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			this.hide();
 			board.level.cleanup();
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-			localStorage.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
+			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
 			Galapago.setLevel(board.level.id);
 			break;
 		case 'new-game-option-no' :
