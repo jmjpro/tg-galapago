@@ -61,6 +61,7 @@
 				'js/.htaccess',
 				'js/loadingScreen.manifest',
 				'js/levels.json',
+				'js/audioPriority.json',
 				'locales/**/*.*',
 				'res/**/*.*',
 				'index.build.html'
@@ -85,6 +86,7 @@
 				'js/.htaccess',
 				'js/loadingScreen.manifest',
 				'js/levels.json',
+				'js/audioPriority.json',
 				'locales/**/*.*',
 				'res/**/*.*',
 				'index.build.html'
