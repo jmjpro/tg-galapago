@@ -28,6 +28,12 @@ html, body {
 	padding: 0;
 }
 
+canvas, div, li {
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: 100% 100%;
+}
+
 /* disable visual effects on focused elements;
 see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsing/ */
 *:focus {
@@ -49,8 +55,6 @@ canvas {
 	border: 0px solid #d3d3d3;
 	width: 1279px;
 	height: 720px;
-	background-repeat: no-repeat;
-	background-position: top left;
 	display: none;
 }
 
@@ -168,9 +172,6 @@ div.nav-button {
 }
 
 #dialog-quit {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 590px;
 	/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
@@ -198,9 +199,6 @@ div.dialog-title {
 }
 
 #dialog-game-menu {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 690px;
 	left: 281px; /*(1279-717/2)*/
@@ -212,13 +210,10 @@ div.dialog-title {
 }
 
 #dialog-game-menu ul.vertical-button-nav {
-	margin-top: -50px; /* jj: either we need this or buttons some of the transparent space around them removed; */
+	margin-top: 40px;
 }
 
 #dialog-level-won {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -253,79 +248,46 @@ div.dialog-title {
 
 
 .button-huge {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 388px;
-	height: 94px;
 	vertical-align: middle;
-	line-height: 79px;
+	height: 94px;
+	line-height: 79px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	font-size: 27px;
 }
 
 .button-big {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 388px;
-	height: 90px;
 	vertical-align: middle;
-	line-height: 45px;
+	height: 90px;
+	line-height: 76px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 }
 
 .button-medium {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 164px;
-	height: 55px;
-	line-height: 33px;
 	vertical-align: middle;
+	height: 55px;
+	line-height: 46px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	font-size: 22px;
 }
 
-.button-medium-hilight {
-	width: 164px;
-	height: 55px;
-	line-height: 33px;
-}
-
 .button-small {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 140px;
-	height: 102px;
 	vertical-align: middle;
-	line-height: 102px;
+	height: 102px;
+	line-height: 86px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 }
 
 .button-regular {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 184px;
-	height: 108px;
 	vertical-align: middle;
-	line-height: 108px;
+	height: 108px;
+	line-height: 91px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	display: inline-block;
 }
 
 .game-option-arrow {
 	position: relative;
 	top: 5px;
-}
-
-.button-regular-hilight {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-}
-
-.button-small-hilight {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 }
 
 ul.vertical-button-nav {
@@ -340,9 +302,6 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-game-over {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 247px;
 	left: 281px; /*(1279-717/2)*/
@@ -350,9 +309,6 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-leaderboards {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 1081px;
 	height: 625px;
 	left: 99px; /*(1279-1081/2)*/
@@ -365,8 +321,6 @@ ul.vertical-button-nav > li {
 
 #dialog-leaderboards div.dialog-content table {
 	display: inline-block;
-	background-repeat: no-repeat;
-	background-position: top left;
 	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
 	font-size: 24px;
 	color: rgb(13,97,132);
@@ -389,9 +343,6 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-time-out {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -403,9 +354,6 @@ ul.vertical-button-nav > li {
 }
 
 #dialog-you-won {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -425,9 +373,6 @@ span#final-score {
 }
 
 #dialog-loading {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 543px;
 	height: 268px;
 	left: 368px;
@@ -436,9 +381,6 @@ span#final-score {
 }
 
 #dialog-new-game {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 590px;
 	left: 281px; /*(1279-717/2)*/
@@ -447,9 +389,6 @@ span#final-score {
 }
 
 #dialog-game-options {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -457,9 +396,6 @@ span#final-score {
 }
 
 #dialog-profile-delete {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 590px;
 	left: 281px; /*(1279-717/2)*/
@@ -472,9 +408,6 @@ span#final-score {
 }
 
 #dialog-profile-create {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -493,16 +426,14 @@ span#final-score {
 }
 
 .profile-name {
-	background: url('../res/img/dialog/profiles-name-area.png') no-repeat left top;
-	background-size: 100%;
+	background-image: url(../res/img/dialog/profiles-name-area.png);
 	width: 280px;
 	height: 48px;
 	border: none;
 }
 
 #keypad {
-	background: url('../res/img/dialog/keyboard/keypad-regular.png') no-repeat left top;
-	background-size: 100%;
+	background-image: url(../res/img/dialog/keyboard/keypad-regular.png);
 	width: 376px;
 	height: 238px;
 }
@@ -510,9 +441,6 @@ span#final-score {
 ul.galapago-drop-down {
 	list-style-type: none;
 	text-align: left;
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 326px;
 	height: 177px;
 	padding: 10px 0px 0px 20px;
@@ -526,9 +454,6 @@ ul.galapago-drop-down {
 
 #dialog-profile-create-init
  {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 1081px;
 	height: 625px;
 	left: 99px; /*(1279-1081/2)*/
@@ -536,9 +461,6 @@ ul.galapago-drop-down {
 }
 
 #dialog-profile-list {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -555,9 +477,6 @@ ul.galapago-drop-down {
 }
 
 #dialog-reset-game {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -569,9 +488,6 @@ ul.galapago-drop-down {
 }
 
 #dialog-help {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
 	width: 717px;
 	height: 626px;
 	left: 281px;
@@ -656,6 +572,46 @@ ul.galapago-drop-down {
 	border-width: 13px;
 	left: 4%;
 	margin-left: -13px;
+}
+
+#current-score {
+	position: absolute;
+	/*left: 500px; yj: left is dynamically positioned by .js code to align with left side of game board */
+	top: 60px;
+	width: 100px;
+	height: 25px;
+	font-family: 'JungleFever';
+	font-size: 26px;
+	color: rgba(255,255,255, 100);
+}
+
+#level-name {
+	position: absolute;
+	left: 600px;
+	top: 60px;
+	width: 400px;
+	height: 30px;
+	font-family: 'JungleFever';
+	font-size: 30px;
+	color: rgba(19, 19, 197, 100);
+	text-align: top;
+}
+
+#game-nav {
+	position: absolute;
+	left: 124px;
+	top: 600px;
+}
+
+#game-nav .game-nav-button {
+	width: 116px;
+	height: 42px;
+}
+
+#layer-bob-cervantes {
+	position: absolute;
+	left: 0px;
+	top: 0px;
 }
 #layerGrid{
 	left: 325px; 
