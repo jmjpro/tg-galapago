@@ -1125,7 +1125,10 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	if(isBonusFrenzyOn) {
 		this.board.hideGameScreenLayersForBonusFrenzy();
 	}else{
-		this.board.screenDiv.hide();		
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
 	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
@@ -1139,11 +1142,6 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
-
-	$("#screen-game").children("canvas").each(function() {
-		this.width = this.height = 1;
-	});
-
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
@@ -1549,14 +1547,14 @@ Board.prototype.quit = function() {
 
 Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
 	$('#' + Level.LAYER_GOLD).hide();
-	$('#' + Level.LAYER_HILIGHT).hide();
+	this.hilightDiv.hide();
 	$('#' + Level.LAYER_GAME_ANIMATION).hide();
 	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
 }; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
 Board.prototype.showGameScreenLayers = function() {
 	$('#' + Level.LAYER_GOLD).show();
-	$('#' + Level.LAYER_HILIGHT).show();
+	this.hilightDiv.show();
 	$('#' + Level.LAYER_GAME_ANIMATION).show();
 	$('#' + Level.LAYER_GAME_LIGHTNING).show();
 }; //Board.protoype.showGameScreenLayers()
@@ -2446,7 +2444,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
-	if(this.bonusFrenzy === 'undefined'){
+	if(!this.bonusFrenzy){
 		window.onkeydown= null;
 		window.onclick = null;
 		window.onmousemove = null;
