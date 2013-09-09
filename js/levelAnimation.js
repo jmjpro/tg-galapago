@@ -31,23 +31,24 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 		return;
 	}
 	var headsBase, canvasBC, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
-	headsBase = LoadingScreen.gal.get( Galapago.GAME_SCREEN_GAL_PREFIX + "heads-base.png" );
-	headsBase = CanvasUtil.magnifyImage( headsBase, 2 );
+	headsBase = LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + "heads-base.png");
+	headsBase = CanvasUtil.magnifyImage( headsBase, 2);
 	canvasBC = $('#layer-bob-cervantes');
 	canvasBC[0].width = headsBase.width;
 	canvasBC[0].height = headsBase.height;
-	canvasBC.css( 'background-image', 'url(' + headsBase.src + ')' );
+	canvasBC.css('left','0px');
+	canvasBC.css('top', '0px');
 	layerBobCervantes = canvasBC[0].getContext('2d');
-	//layer.drawImage(headsBase, 0, 0, headsBase.width, headsBase.height);
+	layer.drawImage(headsBase, 0, 0, headsBase.width, headsBase.height);
 	bcLeftHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-left-eyes-strip.png");
 	bcRightHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-right-eyes-strip.png");
 	bcMouthImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-mouth-strip.png");
 	imgLeftHeadEyes = bcLeftHeadImageSprites[0];
-	layerBobCervantes.drawImage(imgLeftHeadEyes, 33, 155, imgLeftHeadEyes.width * 1.1, imgLeftHeadEyes.height* 1.1);
+	layer.drawImage(imgLeftHeadEyes, 33, 155, imgLeftHeadEyes.width * 1.1, imgLeftHeadEyes.height* 1.1);
 	imgRightHeadEyes = bcRightHeadImageSprites[0];
-	layerBobCervantes.drawImage(imgRightHeadEyes, 113, 125, imgRightHeadEyes.width* 1.1, imgRightHeadEyes.height* 1.1);		
+	layer.drawImage(imgRightHeadEyes, 113, 125, imgRightHeadEyes.width* 1.1, imgRightHeadEyes.height* 1.1);		
 	imgRightHeadMouth = bcMouthImageSprites[0];
-	layerBobCervantes.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width* 2, imgRightHeadMouth.height* 2);
+	layer.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width* 2, imgRightHeadMouth.height* 2);
 	LevelAnimation.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites);
 }
 

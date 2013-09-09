@@ -1,17 +1,11 @@
 {
-  // == Enforcing Options ===============================================
   "undef" : true,
   "unused" : true,
-
-  // == Relaxing Options ================================================
-  "smarttabs" : true,
 
   // == Environments ====================================================
   "browser" : true,
   "devel" : true,
   "jquery" : true,
 
-  "globals": { "_" : false, "Q" : false, "imgpreload" : false, "LoadingScreen" : false, "MainMenuScreen" : false, "CanvasUtil" : false, "DialogMenu" : false, "i18n" : false, "Powerup" : false, "Score" : false, "LevelAnimation" : false, "MapScreen" : false, "BubbleTip" : false, "AudioPlayer" : false, "QueryString" : false, "ImageCollage" : false, "sdkApi"  : false, "toggleDebugConsole" : false, "BlobCollection" : false, "BonusFrenzy" : false, "TilesEventProcessor" : false },
-
-  "maxerr" : 400
+  "globals": { "_" : false, "Q" : false, "imgpreload" : false }
 }

@@ -12,10 +12,7 @@ BonusFrenzy.START_MOVING_DELAY_MS = 800;
 function BonusFrenzy(board) {
 	var rows, cols;
 	this.board = board;	
-	this.layer = board.creatureLayer;
-	this.layer.canvas.height = Board.GRID_TOP + this.layer.canvas.height;
-	$('#' + Level.LAYER_CREATURE).css('top', '0px');
-	
+	this.layer = board.bonusFrenzyLayer;
 	rows = board.level.levelConfig.blobPositions.length;
 
 	BonusFrenzy.Y_MAX = BonusFrenzy.Y_MIN + ((rows-1)* Board.TILE_HEIGHT) + (2*Board.TILE_HEIGHT);

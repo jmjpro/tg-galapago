@@ -2,8 +2,9 @@
 <html lang="en">
 	<head>
 		<script>document.writeln('<title>' + document.domain + ': Galapago</title>');</script>
-		<link rel="stylesheet" type="text/css" href="css/galapago.min.css"/>
-
+		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
+		<link rel="stylesheet" type="text/css" href="css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
 		<!--<script type="text/javascript" src="http://192.168.40.100:8082/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://192.168.40.100:8082/addons/console.js"></script>
 		<script type="text/javascript" src="http://192.168.40.100:8082/addons/socket.js"></script>
@@ -17,9 +18,33 @@
 		<link type="text/css" media="all" href="http://192.168.40.100:8082/resources/console.css" />-->
 
 		<!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
-
+		<script src="ext/lodash.min.js"></script>
+		<script src="ext/imgpreload.js"></script>
+		<script src="ext/queryString.js"></script>
+		<script src="ext/q.min.js"></script>
+		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
+		<script src="ext/zepto-1.0.min.js"></script>
+		<script src="ext/zepto-touch-1.0.js"></script>
+		<script src="ext/gal.js"></script>
+		<script src="ext/i18next-1.6.3.min.js"></script>
 		<script src="../sdk/tgh5.js"></script>
-		<script src="js/galapago.js"></script>
+		<script src="js/game.js"></script>
+		<script src="js/dialogMenu.js"></script>
+		<script src="js/dialogHelp.js"></script>
+		<script src="js/mainMenuScreen.js"></script>
+		<script src="js/score.js"></script>
+		<script src="js/blobCollection.js"></script>
+		<script src="js/tilesEventProcessor.js"></script>
+		<script src="js/imageCollage.js"></script>
+		<script src="js/mapScreen.js"></script>
+		<script src="js/levelAnimation.js"></script>
+		<script src="js/loadingScreen.js"></script>
+		<script src="js/canvasUtil.js"></script>
+		<script src="js/powerUp.js"></script>
+		<script src="js/bonusFrenzy.js"></script>
+		<script src="js/bubbleTip.js"></script>
+		<script src="js/audioPlayer.js"></script>
+		<script src="js/priorityQueue.js"></script>
 		
 		<script>
 			var sdkApi, galapagoVersion;
