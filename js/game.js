@@ -143,6 +143,7 @@ Galapago.setLevel = function(levelId) {
 	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
+	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
 	theme = this.level.bgTheme;
 	subTheme = this.level.bgSubTheme;
@@ -1793,6 +1794,7 @@ Board.prototype.init = function(tilePositions) {
 	}*/
 	var left = 0;
 	var top =100;
+	$('#layerGrid').html('');
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
 		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
