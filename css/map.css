@@ -1,6 +1,6 @@
 #layer-map {
 	position: absolute;
-	left: 218px;
+	left: 150px; /* old 218px */
 	top: 0px;
 }
 
@@ -51,4 +51,47 @@ div.nav-button {
 	font-family: 'JungleFever';
 	font-size: 17px;
 	color: rgb(107,45,0);
+}
+
+#map-level-info {
+	position: relative;
+	left: 985px;
+	top: 75px;
+	width: 235px;
+	height: 151px;
+	font-family: 'JungleFever';
+	color: rgb(19,97,197);
+}
+
+#map-level-name {
+	position: absolute;
+	left: 10px;
+	top: 15px;
+	font-size: 15px;
+}
+
+#map-level-complete-indicator {
+	position: absolute;
+	left: 10px;
+	top: 63px;
+}
+
+#map-difficulty-level {
+	position: absolute;
+	left: 51px;
+	top: 53px;
+}
+
+#map-level-score-label {
+	position: absolute;
+	left: 70px;
+	top: 80px;
+	font-size: 17px;
+}
+
+#map-level-score {
+	position: absolute;
+	left: 70px;
+	top: 105px;
+	font-size: 22px;
 }
