@@ -71,7 +71,7 @@
 				javaScriptConcatenatedFileName : "js/galapago.js",
 				javaScriptMinifiedFileName : "js/galapago.min.js",
 				includeDirectories : [ 'js', 'ext' ],
-				excludeFiles       : [  ]
+				excludeFiles       : [ 'imageFilters.js', 'jserrlog-min.js', 'profiler.js', 'stacktrace-min-0.4.js' ]
 			},
 
 			css : {
@@ -96,7 +96,7 @@
 				javaScriptConcatenatedFileName : "js/galapago.js",
 				javaScriptMinifiedFileName : "js/galapago.min.js",
 				includeDirectories : [ 'js', 'ext' ],
-				excludeFiles       : [  ]
+				excludeFiles       : [ 'imageFilters.js', 'jserrlog-min.js', 'profiler.js', 'stacktrace-min-0.4.js' ]
 			},
 
 			css : {
