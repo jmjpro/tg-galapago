@@ -11,9 +11,26 @@ LevelAnimation.JUMP_SUFFIX = '-jump';
 LevelAnimation.LEVEL_1_CENTER = [200, 265];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
-	
+LevelAnimation.BOMB_COUNT = 4;
+
+//mf = magnificationFactor
+LevelAnimation.ANIMATION_CONFIG = [
+	{ id: "collage/map-lava-strip.png", frameInterval: "300", initLeft: "643", initTop: "0", mf: "2", isContinuous : "true" },
+	{ id: "collage/map-bomb-left-one-strip.png", frameInterval: "100", initLeft: "556", initTop: "200", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "100", initLeft: "556", initTop: "174", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "100", initLeft: "715", initTop: "262", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-right-strip.png", frameInterval: "100", initLeft: "744", initTop: "197", mf: "2", isContinuous : "false" },
+	{ id: "screen-map/next-level-arrow-down.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-left-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-right-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-left-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-right-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-left.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-right.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" }
+];
+
 function LevelAnimation(layer){
-	this.collageDirectory = Galapago.collageDirectory;
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -24,6 +41,8 @@ function LevelAnimation(layer){
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
 	this.initLightning();
+	this.blinkingImages = [];
+	this.animationSprites = [];
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -39,9 +58,9 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	canvasBC.css( 'background-image', 'url(' + headsBase.src + ')' );
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	//layer.drawImage(headsBase, 0, 0, headsBase.width, headsBase.height);
-	bcLeftHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-left-eyes-strip.png");
-	bcRightHeadImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-right-eyes-strip.png");
-	bcMouthImageSprites = ImageCollage.getSprites(this.collageDirectory + "heads-mouth-strip.png");
+	bcLeftHeadImageSprites = ImageCollage.getSprites(Galapago.collageDirectory + "heads-left-eyes-strip.png");
+	bcRightHeadImageSprites = ImageCollage.getSprites(Galapago.collageDirectory + "heads-right-eyes-strip.png");
+	bcMouthImageSprites = ImageCollage.getSprites(Galapago.collageDirectory + "heads-mouth-strip.png");
 	imgLeftHeadEyes = bcLeftHeadImageSprites[0];
 	layerBobCervantes.drawImage(imgLeftHeadEyes, 33, 155, imgLeftHeadEyes.width * 1.1, imgLeftHeadEyes.height* 1.1);
 	imgRightHeadEyes = bcRightHeadImageSprites[0];
@@ -132,7 +151,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	}
 	if(rolloverImageSpriteSheet){
 		if(markTile){ 
-			tileMarkSprites	= LoadingScreen.gal.getSprites(this.collageDirectory + 'game-tile-mark-strip.png');
+			tileMarkSprites	= LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'game-tile-mark-strip.png');
 		}
 		this.rolloverAnimation = new RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites);
 		this.rolloverAnimation.start();
@@ -276,36 +295,116 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
 }; //LevelAnimation.prototype.animateBonFire()
 
+LevelAnimation.BOMB_LEFT_ONE_LEFT = 556;
+LevelAnimation.BOMB_LEFT_ONE_TOP_START = 305;
+LevelAnimation.BOMB_LEFT_TWO_LEFT = 546;
+LevelAnimation.BOMB_LEFT_TWO_TOP_START = 295;
+LevelAnimation.BOMB_MID_LEFT = 715;
+LevelAnimation.BOMB_MID_TOP_START = 386;
+LevelAnimation.BOMB_RIGHT_LEFT = 744;
+LevelAnimation.BOMB_RIGHT_TOP_START = 295;
 LevelAnimation.prototype.animateBombs = function(layer){
-	var levelAnimation = this;
+	var levelAnimation = this, spriteFrame;
+
+	spriteFrame = new Image();
+	spriteFrame.style.position = 'absolute';
+	spriteFrame.style.display = 'block';
+	$('#screen-map').append(spriteFrame);
+
 	function animateBomb(callback){
 		var randomBombId = Math.ceil( Math.random() * 4);
 		var coordinates, image, bombImageSpriteSheet;
 		switch( randomBombId ) {
 			case 1:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-one-strip.png');
-				coordinates = [556, 305 - bombImageSpriteSheet[0].height];
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png');
+				coordinates = [LevelAnimation.BOMB_LEFT_ONE_LEFT, LevelAnimation.BOMB_LEFT_ONE_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 2:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-left-two-strip.png');
-				coordinates = [546, 295 - bombImageSpriteSheet[0].height];
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png');
+				coordinates = [LevelAnimation.BOMB_LEFT_TWO_LEFT, LevelAnimation.BOMB_LEFT_TWO_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 3:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-mid-strip.png');
-				coordinates = [715, 386 - bombImageSpriteSheet[0].height];
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png');
+				coordinates = [LevelAnimation.BOMB_MID_LEFT, LevelAnimation.BOMB_MID_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 			case 4:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(MapScreen.GAL_PREFIX + 'bomb-right-strip.png');				
-				coordinates = [744 , 295 - bombImageSpriteSheet[0].height];
+				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png');				
+				coordinates = [LevelAnimation.BOMB_RIGHT_LEFT , LevelAnimation.BOMB_RIGHT_TOP_START - bombImageSpriteSheet[0].height];
 				break;
 		} //switch( randomBombId ) {
 		if(levelAnimation.bombAnimation){
 			levelAnimation.bombAnimation.stop();
 		}
-		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer,callback);		
+
+		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, layer,callback);		
 		bombAnimation.start();
 		levelAnimation.bombAnimation = bombAnimation;
 	} //function animateBomb(callback)()
+	animateBomb(animateBomb);
+}; //LevelAnimation.prototype.animateBombs()
+
+LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, callback){
+	var animationSprite, sprites, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
+	if( animationConfig ) {
+		sprites = LoadingScreen.gal.getSprites(galAssetPath);
+		if( sprites ) {
+			frameInterval = animationConfig.frameInterval;			
+			initLeft = animationConfig.initLeft;
+			initTop = animationConfig.initTop;
+			magnificationFactor = animationConfig.mf;
+			isContinuous = ( animationConfig.isContinuous === 'true' );
+			animationSprite = new AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback);
+			if( animationSprite ) {
+				animationSprite.start(isContinuous);
+			}
+		}
+		else {
+			console.error( 'unable to load image ' + galAssetPath );
+		}
+	}
+	else {
+		console.error( 'unable to find animationConfig for ' + galAssetPath );
+	}
+	this.animationSprites.push( animationSprite );
+	return;
+}; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
+	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
+	if( animationConfig ) {
+		image = LoadingScreen.gal.get(galAssetPath);
+		if( image ) {
+			frameInterval = animationConfig.frameInterval;			
+			initLeft = initLeft ? initLeft : animationConfig.initLeft;
+			initTop = initTop ? initTop : animationConfig.initTop;
+			magnificationFactor = animationConfig.mf;
+			isContinuous = ( animationConfig.isContinuous === 'true' );
+			blinkingImage = new BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback);
+			if( blinkingImage ) {
+				blinkingImage.start(isContinuous);
+			}
+		}
+		else {
+			console.error( 'unable to load image ' + galAssetPath );
+		}
+	}
+	else {
+		console.error( 'unable to find animationConfig for ' + galAssetPath );
+	}
+	this.blinkingImages.push( blinkingImage );
+	return;
+}; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.animateBombs2 = function(parentElement){
+	var that = this;
+	function animateBomb( callback ) {
+		var randomBombId;
+		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
+		that.bombAnimation = new BombAnimation2(that, randomBombId, parentElement);
+		that.bombAnimation.start(callback);
+	} //function getRandomBombId()
 	animateBomb(animateBomb);
 }; //LevelAnimation.prototype.animateBombs()
 
@@ -387,22 +486,20 @@ LevelAnimation.prototype.stopPowerActivated = function(){
 	}
 }
 
-LevelAnimation.prototype.animateNextLevelArrows = function(layer, arrowInfo, arrowDirection){
-	var nextLevelArrowAnimation = new NextLevelArrowAnimation(layer, arrowInfo);
-	this.nextLevelArrowAnimation = nextLevelArrowAnimation;
-	nextLevelArrowAnimation.start();
-};
-
-LevelAnimation.prototype.stopNextLevelArrows = function(){
-	if(this.nextLevelArrowAnimation){
-		this.nextLevelArrowAnimation.stop();
-		this.nextLevelArrowAnimation = null;
-	}
-};
+LevelAnimation.prototype.animateNextLevelArrows = function(parentElement, arrowsInfo){
+	var that, animationImage, assetPath, initLeft, initTop;
+	that = this;
+	_.each( arrowsInfo, function( arrowInfo ) {
+		assetPath = arrowInfo.assetPath;
+		initLeft = arrowInfo.xCoord;
+		initTop = arrowInfo.yCoord;
+		that.animateBlink( parentElement, assetPath, initLeft, initTop );
+	});
+}; //LevelAnimation.prototype.animateNextLevelArrows()
 
 LevelAnimation.prototype.animateMakeMatch = function(layer, initialTile, swapTile){
 	var galAssetPath, rolloverImageSpriteSheet, sprite, spriteRotated, imgCnt, validArray = true, imageArray = [];
-	galAssetPath = this.collageDirectory + "game-hint-strip.png";
+	galAssetPath = Galapago.collageDirectory + "game-hint-strip.png";
 	var rolloverImageSpriteSheet = ImageCollage.getSprites( galAssetPath );
 	if( !rolloverImageSpriteSheet ) {
 		console.error( 'unable to load image ' + galAssetPath);
@@ -486,7 +583,7 @@ LevelAnimation.makeLightningFunction = function(sprite) {
 }
 
 LevelAnimation.prototype.animateStars = function(x, y, imageId, blobCollection) {
-	var starsAnimation = new StarsAnimation(x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( this.collageDirectory + 'cocoon-removed-strip.png' ));
+	var starsAnimation = new StarsAnimation(x, y, blobCollection.blobCollection[imageId].x - Board.GRID_LEFT, BlobCollection.COLLECTION_Y - Board.GRID_TOP , LoadingScreen.gal.getSprites( Galapago.collageDirectory + 'cocoon-removed-strip.png' ));
 	starsAnimation.start();	
 }
 
@@ -509,7 +606,7 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 }
 
 LevelAnimation.prototype.animateSparkles = function(x, y){
-	var sparklesAnimation = new SparklesAnimation(x, y, LoadingScreen.gal.getSprites( this.collageDirectory + 'sparkle-strip.png' ));
+	var sparklesAnimation = new SparklesAnimation(x, y, LoadingScreen.gal.getSprites( Galapago.collageDirectory + 'sparkle-strip.png' ));
 	sparklesAnimation.start();
 };
 
@@ -520,6 +617,18 @@ LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLa
 
 
 LevelAnimation.prototype.stopAllAnimations = function(){
+	if( this.animationSprites && this.animationSprites.length > 0 ) {
+		_.each( this.animationSprites, function( animationSprite ) {
+			animationSprite.stop();
+		});
+	}
+
+	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
+		_.each( this.blinkingImages, function( blinkingImage ) {
+			blinkingImage.stop();
+		});
+	}
+
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -543,10 +652,6 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.gameStartArrowAnimation = null;
 	}
 
-	if(this.nextLevelArrowAnimation){
-		this.nextLevelArrowAnimation.stop();
-		this.nextLevelArrowAnimation = null;
-	}
 	if(this.makeMatchAnimation){
 		this.makeMatchAnimation.stop();
 		this.makeMatchAnimation = null;
@@ -666,13 +771,14 @@ BonFireAnimation.prototype.animate = function(){
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
-function BombAnimation(coordinates, bombImageSpriteSheet, layer, callback){
+function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, layer, callback){
 	this.bombImageSpriteSheet = bombImageSpriteSheet;
 	this.interval = null;
 	this.bombSpriteId = 0;
 	this.coordinates = coordinates;
 	this.layer = layer;
 	this.callback = callback;
+	this.spriteFrame = spriteFrame;
 }
 
 BombAnimation.prototype.start = function(){
@@ -686,26 +792,63 @@ BombAnimation.prototype.start = function(){
 BombAnimation.prototype.stop = function(){
 	if(this.interval){
 		clearInterval(this.interval);
-		var bombAnimation = this;
-		bombAnimation.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+		//var bombAnimation = this;
+		this.bombImageSpriteSheet = null;
+		//this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
 	}
 };
 
 BombAnimation.prototype.animate = function(){
 	//var image = this.bombImageSpriteSheet.getSprite([this.bombSpriteId, 0]);
-	var image = this.bombImageSpriteSheet[this.bombSpriteId];
-	image = CanvasUtil.magnifyImage( image, 2 );
-	this.imageHeight = image.naturalHeight;
-	this.imageWidth = image.naturalWidth;
-	this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
-	this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
+	var sprite = this.bombImageSpriteSheet[this.bombSpriteId];
+	sprite = CanvasUtil.magnifyImage( sprite, 2 );
+	//this.imageHeight = image.naturalHeight;
+	//this.imageWidth = image.naturalWidth;
+	//this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+	this.spriteFrame.src = sprite.src;
+	this.spriteFrame.style.left = this.coordinates[0] + 'px';
+	this.spriteFrame.style.top = this.coordinates[1] + 'px';
+	this.spriteFrame.width = sprite.naturalWidth;
+	this.spriteFrame.height = sprite.naturalHeight;
+	//this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
 	this.bombSpriteId++;
 	if(this.bombSpriteId >= this.bombImageSpriteSheet.length-1){
 		this.callback(this.callback);
 	}
 };
 
-//
+//begin class BombAnimation
+function BombAnimation2(levelAnimation, bombId, parentElement){
+	this.levelAnimation = levelAnimation;
+	this.bombId = bombId;
+	this.parentElement = parentElement;
+	this.animationImage = null;
+} //BombAnimation constructor
+
+BombAnimation2.prototype.start = function(callback){
+	switch( this.bombId ) {
+		case 1:
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-one-strip.png', callback);
+			break;
+		case 2:
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-two-strip.png', callback);
+			break;
+		case 3:
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-mid-strip.png', callback);
+			break;
+		case 4:
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-right-strip.png', callback);
+			break;
+	}
+}; //BombAnimation.prototype.start()
+
+BombAnimation2.prototype.stop = function(){
+	if( this.interval ) {
+		clearInterval( this.interval );
+		this.animationImage.stop();
+	}
+}; //BombAnimation.prototype.stop()
+//end class BombAnimation
 
 GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
 function GameStartArrowAnimation(coordinates, sprites, layer ,callback){
@@ -751,45 +894,7 @@ GameStartArrowAnimation.prototype.animate = function(){
 		this.spriteId=0;
 	}
 };
-
-NextLevelArrowAnimation.ROLLOVER_TIME_INTERVAL=330;
-function NextLevelArrowAnimation(layer, arrowsInfo){
-	this.layer = layer;
-	this.arrowsInfo = arrowsInfo;
-	this.interval = null;
-	this.rolloverSpriteId = 0;
-}
-
-NextLevelArrowAnimation.prototype.start = function(){
-	this.rolloverSpriteId = 0;
-	var rolloverAnimation = this;
-	this.interval = setInterval(function(){
-		rolloverAnimation.animate(rolloverAnimation);},
-		RolloverAnimation.ROLLOVER_TIME_INTERVAL);
-};
-
-NextLevelArrowAnimation.prototype.stop = function(){
-	clearInterval(this.interval);
-	var nextLevelArrowAnimation = this;
-	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
-	_.each(arrowsInfo, function(arrowInfo){
-		nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.naturalWidth, arrowInfo.image.naturalHeight);	
-	});
-};
-
-NextLevelArrowAnimation.prototype.animate = function(){
-	var nextLevelArrowAnimation = this;
-	var arrowsInfo = nextLevelArrowAnimation.arrowsInfo;
-	_.each(arrowsInfo, function(arrowInfo){
-		if(nextLevelArrowAnimation.rolloverSpriteId == 1){
-			nextLevelArrowAnimation.layer.clearRect(arrowInfo.xCoord, arrowInfo.yCoord, arrowInfo.image.naturalWidth, arrowInfo.image.naturalHeight);	
-		}else{
-			nextLevelArrowAnimation.layer.drawImage(arrowInfo.image, arrowInfo.xCoord, arrowInfo.yCoord);
-		}
-	});
-	this.rolloverSpriteId++;
-	this.rolloverSpriteId = this.rolloverSpriteId % 2;
-};
+// end class GameStartArrowAnimation
 
 MakeMatchAnimation.ROLLOVER_TIME_INTERVAL=100;
 function MakeMatchAnimation(layer, initialTile, swapTile, imageArray, x, y, degreesToRotate){
@@ -1145,3 +1250,152 @@ AnimationDiv.prototype.addBackground = function(image){
 AnimationDiv.prototype.destroy = function(url){
 	this.div.remove();
 }
+
+/*
+	begin class AnimationSprites
+	assumes an array of sprites of equal dimensions
+*/
+function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
+	var spritesMagnified;
+	this.parentElement = parentElement;
+	if( magnificationFactor ) {
+		spritesMagnified = [];
+		_.each( sprites, function(sprite) {
+			spritesMagnified.push( CanvasUtil.magnifyImage( sprite, magnificationFactor ) );
+		});
+		this.sprites = spritesMagnified;
+	}
+	else {
+		this.sprites = sprites;
+	}
+	this.frameInterval = frameInterval;
+	this.initLeft = initLeft;
+	this.initTop = initTop;
+	this.spriteId = 0;
+	this.currentSprite = this.initSprite();
+	this.callback = callback;
+} //AnimationSprites constructor
+
+AnimationSprites.prototype.initSprite = function() {
+	var sprite;
+	sprite = this.sprites[this.spriteId];
+	this.currentSprite = new Image(sprite.width, sprite.height); //jj use of naturalWidth and naturalHeight here will return non-magnified values
+	this.currentSprite.src = sprite.src;
+	this.currentSprite.style.position = 'absolute';
+	this.currentSprite.style.left = this.initLeft + 'px';
+	this.currentSprite.style.top = this.initTop + 'px';
+	$(this.parentElement).append(this.currentSprite);
+	return this.currentSprite;
+}; //AnimationSprites.prototype.initSprite()
+
+AnimationSprites.prototype.destroy = function(url){
+	$(this.parentElement).remove(this.currentSprite);
+	this.currentSprite = null;
+	return this;
+}; //AnimationSprites.prototype.destroy
+
+AnimationSprites.prototype.start = function(isContinuous){
+	var that = this;
+	if(that.interval){
+		that.stop();
+	}
+	that.interval = setInterval(function() {
+		that.animate(isContinuous);
+	}, that.frameInterval);
+	return this;
+}; //AnimationSprites.prototype.start()
+
+AnimationSprites.prototype.stop = function(){
+	if(this.interval) {
+		this.destroy();
+		clearInterval(this.interval);
+	}
+	return this;
+}; //AnimationSprites.prototype.stop()
+
+AnimationSprites.prototype.animate = function(isContinuous){
+	var nextSprite;
+	this.spriteId++;
+	if(this.spriteId >= this.sprites.length){
+		if( isContinuous ) {
+			this.spriteId = 0; 	// cycle back to first frame to repeat animation
+		}
+		else {
+			this.stop();
+			if( this.callback ) {
+				this.callback(this.callback);
+			}
+		}
+	}
+	else {
+		nextSprite = this.sprites[this.spriteId];
+		this.currentSprite.src = nextSprite.src;
+		this.currentSprite.id = nextSprite.id;
+	}
+	return this;
+}; //AnimationSprites.prototype.animate()
+
+function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback) {
+	var imageMagnified;
+	this.parentElement = parentElement;
+	if( magnificationFactor ) {
+		this.image = CanvasUtil.magnifyImage( image, magnificationFactor );
+	}
+	else {
+		this.image = image;
+	}
+	this.frameInterval = frameInterval;
+	this.initLeft = initLeft;
+	this.initTop = initTop;
+	this.image.style.position = 'absolute';
+	this.image.style.display = 'block';
+	this.image.style.left = this.initLeft + 'px';
+	this.image.style.top = this.initTop + 'px';
+	$(this.parentElement).append(this.image);
+	this.callback = callback;
+} //BlinkingImage constructor
+
+BlinkingImage.prototype.destroy = function(url){
+	$(this.parentElement).remove(this.image);
+	//this.image = null;
+	return this;
+}; //AnimationSprites.prototype.destroy
+
+
+AnimationSprites.prototype.animateAndMove = function(moveInterval, moveLeft, moveTop){
+	return this;
+}; //AnimationSprites.prototype.animateAndMove()
+// end class AnimationSprites
+
+//begin class BlinkingImage
+BlinkingImage.prototype.start = function(isContinuous){
+	var that = this;
+	if(that.interval){
+		that.stop();
+	}
+	that.interval = setInterval(function() {
+		that.animate(isContinuous);
+	}, that.frameInterval);
+	return this;
+}; //BlinkingImage.prototype.start()
+
+BlinkingImage.prototype.stop = function(){
+	if(this.interval) {
+		this.destroy();
+		clearInterval(this.interval);
+	}
+	return this;
+}; //BlinkingImage.prototype.stop()
+
+BlinkingImage.prototype.animate = function(isContinuous){
+	var isDisplayed;
+	isDisplayed = this.image.style.display === 'block';
+	if( isDisplayed ) {
+		this.image.style.display = 'none';
+	}
+	else {
+		this.image.style.display = 'block';
+	}
+	return this;
+}; //BlinkingImage.prototype.animate()
+//end class BlinkingImage

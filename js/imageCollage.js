@@ -320,7 +320,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]
 	},
 	{
-		"collageId": "screen-map/bomb-left-one-strip.png",
+		"collageId": "collage/map-bomb-left-one-strip.png",
 		"imageCoordinateArray": [
 			 {"cell": [0, 0 ,73 , 105]},
 			 {"cell": [73, 0,73 , 105]}, 
@@ -337,7 +337,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]	
 	},
 	{
-		"collageId": "screen-map/bomb-left-two-strip.png",
+		"collageId": "collage/map-bomb-left-two-strip.png",
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 80 , 121]},
 			 {"cell": [80, 0, 80 , 121]}, 
@@ -354,7 +354,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]	
 	},
 	{
-		"collageId": "screen-map/bomb-mid-strip.png",
+		"collageId": "collage/map-bomb-mid-strip.png",
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 15.5 , 124]},
 			 {"cell": [15.5, 0, 15.5 , 124]}, 
@@ -367,7 +367,7 @@ ImageCollage.COLLAGE_ARRAY = [
 		]	
 	},
 	{
-		"collageId": "screen-map/bomb-right-strip.png",
+		"collageId": "collage/map-bomb-right-strip.png",
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 69.27, 98 ]},
 			 {"cell": [69.27, 0, 69.27, 98]}, 
@@ -1260,14 +1260,6 @@ ImageCollage.loadByName = function (collageId){
 }; //ImageCollage.loadByName()
 
 ImageCollage.findByName = function( collageId ) {
-	/*
-	if( collageId.indexOf('rollover-strip.png') >= 0 ) {
-		collageId = 'creatures/rollover-strip.png';
-	}
-	else if( collageId.indexOf('jump-strip.png') >= 0 ) {
-		collageId = 'creatures/jump-strip.png';
-	}
-	*/
 	return _.find( ImageCollage.COLLAGE_ARRAY, {'collageId' : collageId} );
 }; //ImageCollage.findByName()
 
