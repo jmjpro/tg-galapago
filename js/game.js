@@ -265,8 +265,7 @@ LevelMap.prototype.display = function() {
 			that.canvas.focus();
 
 			if(!Level.isComplete("1")){
-				that.levelAnimation.animateGameStartArrow(that.layer);
-				//that.levelAnimation.animateGameStartArrow(that.otherAnimationLayer);
+				that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
 			}
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
@@ -274,7 +273,6 @@ LevelMap.prototype.display = function() {
 			var completedLevelIds = LevelMap.getLevelsCompleted();
 			if(completedLevelIds.length){
 				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
-				//that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.otherAnimationLayer);
 			}
 			that.levelAnimation.animateBombs(that.layer);
 			//that.levelAnimation.animateBombs2(that.screenDiv.selector);

@@ -8,7 +8,6 @@ LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
 LevelAnimation.JUMP_SUFFIX = '-jump';
-LevelAnimation.LEVEL_1_CENTER = [200, 265];
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
 LevelAnimation.bobCervantesAnimation = null;
 LevelAnimation.BOMB_COUNT = 4;
@@ -27,7 +26,8 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "screen-map/next-level-arrow-right-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-left.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-right.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
-	{ id: "screen-map/next-level-arrow-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" }
+	{ id: "screen-map/next-level-arrow-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "collage/map-start-arrow-strip.png", frameInterval: "100", initLeft: "200", initTop: "265", mf: "1", isContinuous : "true" }
 ];
 
 function LevelAnimation(layer){
@@ -412,7 +412,7 @@ LevelAnimation.prototype.animateGameStartArrow = function(layer){
 	var levelAnimation = this;
 	function animateGameStartArrow(){
 		var coordinates, sprites, galAssetPath;
-		galAssetPath = levelAnimation.collageDirectory + 'map-start-arrow-strip.png';
+		galAssetPath = Galapago.collageDirectory + 'map-start-arrow-strip.png';
 		sprites = LoadingScreen.gal.getSprites( galAssetPath );
 		coordinates = LevelAnimation.LEVEL_1_CENTER;
 		if(levelAnimation.gameStartArrowAnimation){
@@ -851,7 +851,7 @@ BombAnimation2.prototype.stop = function(){
 //end class BombAnimation
 
 GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
-function GameStartArrowAnimation(coordinates, sprites, layer ,callback){
+function GameStartArrowAnimation(coordinates, sprites, spriteFrame, layer ,callback){
 	//this.imageSpriteSheet = imageSpriteSheet;
 	this.sprites = sprites;
 	this.interval = null;
