@@ -295,16 +295,22 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
 }; //LevelAnimation.prototype.animateBonFire()
 
-LevelAnimation.BOMB_LEFT_ONE_LEFT = 406; //556-150
+LevelAnimation.BOMB_LEFT_ONE_LEFT = 556;
 LevelAnimation.BOMB_LEFT_ONE_TOP_START = 305;
-LevelAnimation.BOMB_LEFT_TWO_LEFT = 396; //546-150
+LevelAnimation.BOMB_LEFT_TWO_LEFT = 546;
 LevelAnimation.BOMB_LEFT_TWO_TOP_START = 295;
-LevelAnimation.BOMB_MID_LEFT = 565; //715-150
+LevelAnimation.BOMB_MID_LEFT = 715;
 LevelAnimation.BOMB_MID_TOP_START = 386;
-LevelAnimation.BOMB_RIGHT_LEFT = 494; //744-150
+LevelAnimation.BOMB_RIGHT_LEFT = 744;
 LevelAnimation.BOMB_RIGHT_TOP_START = 295;
 LevelAnimation.prototype.animateBombs = function(layer){
-	var levelAnimation = this;
+	var levelAnimation = this, spriteFrame;
+
+	spriteFrame = new Image();
+	spriteFrame.style.position = 'absolute';
+	spriteFrame.style.display = 'block';
+	$('#screen-map').append(spriteFrame);
+
 	function animateBomb(callback){
 		var randomBombId = Math.ceil( Math.random() * 4);
 		var coordinates, image, bombImageSpriteSheet;
@@ -329,7 +335,8 @@ LevelAnimation.prototype.animateBombs = function(layer){
 		if(levelAnimation.bombAnimation){
 			levelAnimation.bombAnimation.stop();
 		}
-		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet,layer,callback);		
+
+		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, layer,callback);		
 		bombAnimation.start();
 		levelAnimation.bombAnimation = bombAnimation;
 	} //function animateBomb(callback)()
@@ -395,7 +402,7 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 	function animateBomb( callback ) {
 		var randomBombId;
 		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
-		that.bombAnimation = new BombAnimation(that, randomBombId, parentElement);
+		that.bombAnimation = new BombAnimation2(that, randomBombId, parentElement);
 		that.bombAnimation.start(callback);
 	} //function getRandomBombId()
 	animateBomb(animateBomb);
@@ -764,13 +771,14 @@ BonFireAnimation.prototype.animate = function(){
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
-function BombAnimation(coordinates, bombImageSpriteSheet, layer, callback){
+function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, layer, callback){
 	this.bombImageSpriteSheet = bombImageSpriteSheet;
 	this.interval = null;
 	this.bombSpriteId = 0;
 	this.coordinates = coordinates;
 	this.layer = layer;
 	this.callback = callback;
+	this.spriteFrame = spriteFrame;
 }
 
 BombAnimation.prototype.start = function(){
@@ -784,19 +792,25 @@ BombAnimation.prototype.start = function(){
 BombAnimation.prototype.stop = function(){
 	if(this.interval){
 		clearInterval(this.interval);
-		var bombAnimation = this;
-		bombAnimation.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+		//var bombAnimation = this;
+		this.bombImageSpriteSheet = null;
+		//this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
 	}
 };
 
 BombAnimation.prototype.animate = function(){
 	//var image = this.bombImageSpriteSheet.getSprite([this.bombSpriteId, 0]);
-	var image = this.bombImageSpriteSheet[this.bombSpriteId];
-	image = CanvasUtil.magnifyImage( image, 2 );
-	this.imageHeight = image.naturalHeight;
-	this.imageWidth = image.naturalWidth;
-	this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
-	this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
+	var sprite = this.bombImageSpriteSheet[this.bombSpriteId];
+	sprite = CanvasUtil.magnifyImage( sprite, 2 );
+	//this.imageHeight = image.naturalHeight;
+	//this.imageWidth = image.naturalWidth;
+	//this.layer.clearRect(this.coordinates[0], this.coordinates[1], this.imageWidth, this.imageHeight);
+	this.spriteFrame.src = sprite.src;
+	this.spriteFrame.style.left = this.coordinates[0] + 'px';
+	this.spriteFrame.style.top = this.coordinates[1] + 'px';
+	this.spriteFrame.width = sprite.naturalWidth;
+	this.spriteFrame.height = sprite.naturalHeight;
+	//this.layer.drawImage(image, this.coordinates[0], this.coordinates[1] , this.imageWidth, this.imageHeight);
 	this.bombSpriteId++;
 	if(this.bombSpriteId >= this.bombImageSpriteSheet.length-1){
 		this.callback(this.callback);

@@ -203,6 +203,9 @@ Galapago.delay = function(delayMs) {
 
 LevelMap.WIDTH = 1018;
 LevelMap.HEIGHT = 640;
+LevelMap.STAR_WIDTH = 40;
+LevelMap.MAX_DIFFICULTY = 5;
+/*
 LevelMap.LEVEL_NAV_X = 257;
 LevelMap.LEVEL_NAV_Y = 647;
 LevelMap.LEVEL_NAV_BUTTON_WIDTH = 145;
@@ -222,7 +225,7 @@ LevelMap.LEVEL_COMPLETE_INDICATOR_X = LevelMap.LEVEL_STATUS_X + 10;
 LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
-LevelMap.MAX_DIFFICULTY = 5;
+*/
 
 /* begin class LevelMap */
 function LevelMap(level) {
@@ -324,40 +327,19 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 }; //LevelMap.prototype.drawBlinkingArrows()
 
 LevelMap.prototype.updateLevelStatus = function() {
-	var text, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock, levelDifficultyPrevLeft, levelDifficultyLeft;
+	var text, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock, levelDifficulty;
 	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-silver.png');
 	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-gold.png');
 	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green-v.png');
 	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
-
-	$('#map-difficulty-level').css( 'backgroundImage', 'url(' + level_stars_silver.src + ')');
-	/*
-	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
-	this.layer.font = LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
-	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
-	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
-	*/
+	levelDifficulty = this.hotspotLevel.difficulty;
+	
+	$('#map-difficulty-level-gray').css( 'backgroundImage', 'url(' + level_stars_silver.src + ')' );
+	$('#map-difficulty-level-gold').css( 'backgroundImage', 'url(' + level_stars_gold.src + ')' );
+	$('#map-difficulty-level-gold').css( 'width', LevelMap.STAR_WIDTH * levelDifficulty + 'px' );
 	$('#map-level-name').html(text);
-	var levelDifficulty = this.hotspotLevel.difficulty;
-	for(var cnt=0;cnt<5;cnt++){
-		levelDifficultyPrevLeft = $('#map-difficulty-level').css( 'left' );
-		if((cnt  + 1 ) <= levelDifficulty ){
-			levelDifficultyLeft = levelDifficultyPrevLeft.replace('px', '') + cnt*level_stars_silver.width;
-			$('#map-difficulty-level').css( 'left', levelDifficultyLeft)
-			$('#map-difficulty-level').src = level_stars_gold.src;
-			//this.layer.drawImage(level_stars_gold, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );
-		}else{
-			//this.layer.drawImage(level_stars_silver, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
-			var fraction = levelDifficulty - cnt;
-			if(fraction > 0 && fraction < 1){
-				levelDifficultyLeft = levelDifficultyPrevLeft.replace('px', '') + cnt*level_stars_silver.width;
-				$('#map-difficulty-level').css( 'left', levelDifficultyLeft)
-				$('#map-difficulty-level').src = level_stars_silver.src;
-				this.layer.drawImage(level_stars_gold, 0, 0, level_stars_gold.width * fraction, level_stars_gold.height, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y, level_stars_gold.width * fraction, level_stars_gold.height);
-			}
-		}
-	}
+
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
