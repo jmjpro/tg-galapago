@@ -1204,7 +1204,19 @@ Level.registerEventHandlers = function() {
 		//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
-			case 13: // enter
+			case 51:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					ns.frameWork.debug.profiler.clear();
+				}
+				break;
+			case 52:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					var report = ns.frameWork.debug.profiler.getPreparedReport();
+					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+						console.log(report[i].id + ": " + report[i].own.total);
+					}
+				}
+				break;			case 13: // enter
 				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow

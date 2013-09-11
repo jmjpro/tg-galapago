@@ -982,6 +982,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 TGModuleLoader.resolve();
 
 (function() {
+	return;
 	var p = ns.frameWork.debug.profiler;
 	//p.profileObject('window', window, true);
 	p.profileFunction('Galapago', window, true);
