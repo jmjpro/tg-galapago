@@ -408,31 +408,6 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 	animateBomb(animateBomb);
 }; //LevelAnimation.prototype.animateBombs()
 
-LevelAnimation.prototype.animateGameStartArrow = function(layer){
-	var levelAnimation = this;
-	function animateGameStartArrow(){
-		var coordinates, sprites, galAssetPath;
-		galAssetPath = Galapago.collageDirectory + 'map-start-arrow-strip.png';
-		sprites = LoadingScreen.gal.getSprites( galAssetPath );
-		coordinates = LevelAnimation.LEVEL_1_CENTER;
-		if(levelAnimation.gameStartArrowAnimation){
-			levelAnimation.gameStartArrowAnimation.stop();
-		}
-		var gameStartArrowAnimation = new GameStartArrowAnimation( coordinates, sprites, layer, animateGameStartArrow );
-		gameStartArrowAnimation.start();
-		levelAnimation.gameStartArrowAnimation = gameStartArrowAnimation;
-	}
-	animateGameStartArrow();
-};
-
-LevelAnimation.prototype.stopGameStartArrow = function(){
-	if(this.gameStartArrowAnimation){
-		this.gameStartArrowAnimation.stop();
-		this.gameStartArrowAnimation = null;
-	}
-};
-
-/////
 LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation = this;
 	var powerAchievedAnimation;
