@@ -139,6 +139,7 @@ Galapago.setLevel = function(levelId) {
 	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
+	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
 	theme = this.level.bgTheme;
 	subTheme = this.level.bgSubTheme;
@@ -875,7 +876,7 @@ Level.prototype.setBoard = function(board) {
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
 	goldImagePaths = [];
-	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + Level.BLOB_IMAGE_EXTENSION;
+	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
 
@@ -1082,7 +1083,7 @@ Level.prototype.quit = function(){
 	this.cleanup();
 	//this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 	this.board.scoreElement.hide();
-	this.board.nameElement.hide();
+	this.board.levelNameElement.hide();
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
@@ -1687,6 +1688,7 @@ Board.prototype.init = function(tilePositions) {
 	board = this;
 	var left = 0;
 	var top =100;
+	$('#layerGrid').html('');
 	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
 		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
 		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
