@@ -61,7 +61,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(isTimedMode) {
-	var levelTemp, level, levelIt;
+	var levelTemp, level, levelIt, timedMode, gameTipsSelection, gameTipsSelectionEle;
 	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
@@ -70,6 +70,12 @@ Galapago.init = function(isTimedMode) {
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
+	timedMode = isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	gameTipsSelection = localStorage.getItem( timedMode + Galapago.profile + "gameTipsSelection" );
+	gameTipsSelectionEle = $('#gameTipsSelection')[0];
+	if(gameTipsSelection){
+		gameTipsSelectionEle.innerHTML = gameTipsSelection;
+	}
 	console.log( 'Galapago.isTimedMode: ' + Galapago.isTimedMode );
 	console.log( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -2728,7 +2734,7 @@ Board.prototype.handleKeyboardSelect = function() {
 			}
 			board.reshuffleService.stop();
 			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			new DialogMenu('screen-game', this, 'dialog-game-menu');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	

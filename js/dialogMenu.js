@@ -16,6 +16,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-reset-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-help", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"}
 ];
+DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
 /* begin DialogMenu.SELECT_HANDLERS[] */
 DialogMenu.SELECT_HANDLERS = [];
@@ -351,6 +352,13 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
+		case 37: // left arrow
+			switch ( dialogMenu.dialogId ) {
+				case 'dialog-game-menu':
+					dialogMenu.handleGameMenuLeftRightNavigation();
+				break;
+			}
+			break;
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
@@ -361,6 +369,13 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			}
 			evt.stopPropagation();
 			evt.preventDefault();
+			break;
+		case 39: // right arrow
+			switch ( dialogMenu.dialogId ) {
+				case 'dialog-game-menu':
+					dialogMenu.handleGameMenuLeftRightNavigation();
+				break;
+			}
 			break;
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
@@ -404,6 +419,22 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	});
 	*/
 }; //DialogMenu.prototype.registerEventHandlers()
+
+DialogMenu.prototype.handleGameMenuLeftRightNavigation = function() {
+	var timedMode, gameTipsSelectionEle;
+	switch(this.currentNavItem[0].id) {
+		case 'option-game-tip':
+			gameTipsSelectionEle = $('#gameTipsSelection')[0];
+			if(gameTipsSelectionEle.innerHTML === 'On'){
+				gameTipsSelectionEle.innerHTML = 'Off';
+			}else{
+				gameTipsSelectionEle.innerHTML = 'On';
+			}
+			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			localStorage.setItem( timedMode + Galapago.profile + "gameTipsSelection", gameTipsSelectionEle.innerHTML);
+		break;
+	}
+};
 
 DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
 	this.hide();
@@ -475,3 +506,10 @@ DialogMenu.getButtonClass = function(dialogId) {
 	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} )
 	return dialogDescriptor['button-class'];
 }; //DialogMenu.getButtonClass()
+
+DialogMenu.loadImages = function(imageIds){
+	_.each(imageIds, function(imageId){
+		var imgElementID = '#' + imageId;
+		$(imgElementID)[0].src = LoadingScreen.gal.get(DialogMenu.IMAGE_PATH_PREFIX + imageId + '.png').src;
+	});
+};
