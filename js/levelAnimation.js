@@ -1265,7 +1265,6 @@ AnimationSprites.prototype.initSprite = function() {
 }; //AnimationSprites.prototype.initSprite()
 
 AnimationSprites.prototype.destroy = function(url){
-	this.currentSprite.remove();
 	this.currentSprite = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
@@ -1332,7 +1331,6 @@ function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, m
 } //BlinkingImage constructor
 
 BlinkingImage.prototype.destroy = function(url){
-	this.image.remove();
 	this.image = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
