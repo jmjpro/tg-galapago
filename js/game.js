@@ -71,7 +71,7 @@ Galapago.init = function(isTimedMode) {
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
 	timedMode = isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	gameTipsSelection = localStorage.getItem( timedMode + Galapago.profile + "gameTipsSelection" );
+	gameTipsSelection = store.getItem( timedMode + Galapago.profile + "gameTipsSelection" );
 	gameTipsSelectionEle = $('#gameTipsSelection')[0];
 	if(gameTipsSelection){
 		gameTipsSelectionEle.innerHTML = gameTipsSelection;
