@@ -165,26 +165,6 @@ Galapago.setLevel = function(levelId) {
 			}
 		});
 
-	LoadingScreen.gal.onLoaded( Galapago.RESOURCE_BUNDLE_BOARD_COMMON, function(result) {
-		if (result.success) {
-			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
-			LoadingScreen.gal.download(themeBundle);
-		}
-	});
-	
-	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
-		if (result.success) {
-			//LoadingScreen.gal.clearOnLoaded(theme);
-			LoadingScreen.gal.clearOnLoaded(themeBundle);
-			console.debug(themeBundle + ' resource bundle loaded');
-			Galapago.level.levelAnimation = new LevelAnimation();
-			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-			Galapago.level.display();
-			Level.registerEventHandlers();
-		}
-	});
-
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
@@ -506,27 +486,12 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
-	/*
-    this.animationLayer=null;
-	this.animationCanvas.onclick=null;
-	*/
 	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
-	this.screenDiv.css('background-image',"");
+	this.screenDiv.css('background-image','');
 	this.canvas.width = this.canvas.height = 1;
-
-	var el = $('#layer-map');
-	el.width = el.height = 1;
-
-	el = $('#layer-map-other-animation');
-	el.width = el.height = 1;
-
-	el = $('#layer-map-animation');
-	el.width = el.height = 1;
-
 	LoadingScreen.gal.unload('bg-map-screen');
-
-	this.screenDiv.css('display', 'none');
+	this.screenDiv.hide();
 	this.cleanupAnimationAndSound();
 }; //LevelMap.prototype.cleanup()
 
@@ -1085,12 +1050,11 @@ Level.prototype.won = function(){
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
-	//this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
-	this.board.scoreElement.hide();
-	this.board.levelNameElement.hide();
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
+	this.board.scoreElement.hide();
+	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
 		this.board.hideGameScreenLayersForBonusFrenzy();
 	}else{
@@ -2346,7 +2310,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
-	if(this.bonusFrenzy === 'undefined'){
+	if(typeof this.bonusFrenzy === 'undefined'){
 		window.onkeydown= null;
 		window.onclick = null;
 		window.onmousemove = null;

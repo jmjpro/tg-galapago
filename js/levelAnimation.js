@@ -1222,8 +1222,9 @@ AnimationDiv.prototype.addBackground = function(image){
 	this.div.css('background-image', "url('"+image.src+"')");
 }
 
-AnimationDiv.prototype.destroy = function(url){
+AnimationDiv.prototype.destroy = function(){
 	this.div.remove();
+	this.div = null;
 }
 
 /*
@@ -1264,7 +1265,7 @@ AnimationSprites.prototype.initSprite = function() {
 }; //AnimationSprites.prototype.initSprite()
 
 AnimationSprites.prototype.destroy = function(url){
-	$(this.parentElement).remove(this.currentSprite);
+	this.currentSprite.remove();
 	this.currentSprite = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
@@ -1331,8 +1332,8 @@ function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, m
 } //BlinkingImage constructor
 
 BlinkingImage.prototype.destroy = function(url){
-	$(this.parentElement).remove(this.image);
-	//this.image = null;
+	this.image.remove();
+	this.image = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
 
