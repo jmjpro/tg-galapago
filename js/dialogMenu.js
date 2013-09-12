@@ -464,7 +464,7 @@ DialogMenu.prototype.handleGameMenuLeftRightNavigation = function() {
 				gameTipsSelectionEle.innerHTML = 'On';
 			}
 			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-			localStorage.setItem( timedMode + Galapago.profile + "gameTipsSelection", gameTipsSelectionEle.innerHTML);
+			store.setItem( timedMode + Galapago.profile + "gameTipsSelection", gameTipsSelectionEle.innerHTML);
 		break;
 	}
 };
