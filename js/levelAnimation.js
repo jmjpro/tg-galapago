@@ -2,8 +2,6 @@ LevelAnimation.CREATURE_DROPPING_INTERVAL=300;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
-LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
-LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
@@ -562,7 +560,7 @@ LevelAnimation.prototype.animateStars = function(x, y, imageId, blobCollection) 
 	starsAnimation.start();	
 }
 
-LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
+LevelAnimation.prototype.animateLightning = function(matchingTilesSet) {
 	var x, y, previousTile, lightningAnimation, horizontal = true;
 	_.each(matchingTilesSet, function(tile){
 		x = tile.getXCoord();
@@ -573,9 +571,9 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 		previousTile = tile;
 	});
 	if(horizontal){
-		lightningAnimation = new LightningAnimation(layer, y , horizontal);
+		lightningAnimation = new LightningAnimation(y , horizontal);
 	}else{
-		lightningAnimation = new LightningAnimation(layer, x , horizontal);
+		lightningAnimation = new LightningAnimation(x , horizontal);
 	}
 	lightningAnimation.start();	
 }
@@ -585,8 +583,8 @@ LevelAnimation.prototype.animateSparkles = function(x, y){
 	sparklesAnimation.start();
 };
 
-LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLayer, tileMatrix, callback){
-	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, animationLayer, tileMatrix, callback);
+LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, tileMatrix, callback){
+	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, tileMatrix, callback);
 	boardBuildAnimation.start();
 }
 
@@ -912,8 +910,7 @@ MakeMatchAnimation.prototype.animate = function(){
 
 BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
 BoardBuildAnimation.HEIGHT_OFFSET = 15;
-function BoardBuildAnimation(creatureLayer, layer, tileMatrix, callback){
-	this.creatureLayer = creatureLayer;
+function BoardBuildAnimation(layer, tileMatrix, callback){
 	this.layer = layer;
 	this.tileMatrix = tileMatrix;
 	this.noOfRows = 1;
@@ -959,7 +956,7 @@ BoardBuildAnimation.prototype.animate = function(){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
 				tile = this.tileMatrix[col][row];
 				if(tile && tile.blob){
-					this.creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+					this.layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
 				}
 			}
 		}
@@ -1107,24 +1104,31 @@ StarsAnimation.prototype.animate = function(){
 };
 
 LightningAnimation.ROLLOVER_TIME_INTERVAL=100;
-function LightningAnimation(layer, coordinate, horizontal){
-	this.layer = layer;
+function LightningAnimation(coordinate, horizontal){
 	this.coordinate = coordinate;
 	this.horizontal = horizontal;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
+	this.div1 = null;
+	this.div2 = null;
 }
 
 LightningAnimation.prototype.start = function(){
 	if(this.interval){
 		this.stop();
 	}
-	var lightningAnimation = this;
+	var imgWidth, imgHeight, xCoord, yCoord, lightningAnimation = this;
+	imgWidth = 2 * LevelAnimation.lightningImages.rightHorizontal[0].naturalWidth;
+	imgHeight = 2 * LevelAnimation.lightningImages.rightHorizontal[0].naturalHeight;
 	if(this.horizontal){
-		this.coordinate = (this.coordinate + Board.TILE_HEIGHT / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
-		this.coordinate = Board.GRID_TOP - this.layer.canvas.offsetTop + this.coordinate;
+		yCoord = Board.GRID_TOP + (this.coordinate + (Board.TILE_HEIGHT / 2)) - (imgHeight/2) ;
+		xCoord = (Board.GRID_LEFT + (Board.GRID_WIDTH) / 2) - imgWidth;
+		this.div1 = new AnimationDiv(xCoord, yCoord, imgWidth , imgHeight);
+		this.div2 = new AnimationDiv(xCoord + imgWidth, yCoord, imgWidth, imgHeight);
 	}else{
-		this.coordinate = (this.coordinate + Board.TILE_WIDTH / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
-		this.coordinate =  Board.GRID_LEFT - this.layer.canvas.offsetLeft  + this.coordinate;
+		xCoord = Board.GRID_LEFT + (this.coordinate + (Board.TILE_WIDTH / 2)) - (imgHeight/2) ;
+		yCoord = (Board.GRID_TOP + (Board.GRID_HEIGHT) / 2) - imgWidth;
+		this.div1 = new AnimationDiv(xCoord, yCoord, imgHeight, imgWidth);
+		this.div2 = new AnimationDiv(xCoord, yCoord + imgWidth, imgHeight, imgWidth);
 	}
 	this.interval = setInterval(function() {
 		lightningAnimation.animate();
@@ -1133,6 +1137,8 @@ LightningAnimation.prototype.start = function(){
 
 LightningAnimation.prototype.stop = function(){
 	if(this.interval){
+		this.div1.destroy();
+		this.div2.destroy();
 		clearInterval(this.interval);
 	}
 };
@@ -1140,65 +1146,46 @@ LightningAnimation.prototype.stop = function(){
 LightningAnimation.prototype.animate = function(){
 	var image;
 	if(this.horizontal){
-		if(this.rolloverSpriteId < LevelAnimation.lightningSprites.length){ 
-			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];
+		if(this.spriteId < LevelAnimation.lightningSprites.length){ 
+			image = LevelAnimation.lightningImages.leftHorizontal[this.spriteId];
 			if( image ) {
-			this.layer.clearRect(0, this.coordinate, 4*image.naturalWidth, 2*image.naturalHeight);
-			this.layer.drawImage(image, 0, this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+				this.div1.addBackground(image);
 			}
 			else {
 				console.error( 'no left horizontal lightning image');
 			}
-			image = LevelAnimation.lightningImages.rightHorizontal[this.rolloverSpriteId];
-			this.rolloverSpriteId++;
+			image = LevelAnimation.lightningImages.rightHorizontal[this.spriteId];
 			if( image ) {
-				this.layer.drawImage(image, 2*image.naturalWidth , this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+				this.div2.addBackground(image);
 			}
 			else {
 				console.error( 'no right horizontal lightning image');
 			}
+			this.spriteId++;
 		}else{
-			this.rolloverSpriteId--;
-			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];;
-			if( image ) {
-				this.layer.clearRect(0, this.coordinate, 4 * image.naturalWidth, 2*image.naturalHeight);
-			}
-			else {
-				console.error( 'no left horizontal lightning image');
-			}
 			this.stop();
 		}
 	}else{
-		if(this.rolloverSpriteId != LevelAnimation.lightningSprites.length){ 
-			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];
+		if(this.spriteId != LevelAnimation.lightningSprites.length){ 
+			image = LevelAnimation.lightningImages.topVertical[this.spriteId];
 			if( image ) {
-				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
-				this.layer.drawImage(image, this.coordinate, 0, 2 * image.naturalWidth, 2 * image.naturalHeight);
+				this.div1.addBackground(image);
 			}
 			else {
 				console.error( 'no top vertical lightning image');
 			}
-			image = LevelAnimation.lightningImages.bottomVertical[this.rolloverSpriteId];
-			this.rolloverSpriteId++;
+			image = LevelAnimation.lightningImages.bottomVertical[this.spriteId];
+			this.spriteId++;
 			if( image ) {
-				this.layer.drawImage(image, this.coordinate, 2* image.naturalHeight, 2 * image.naturalWidth, 2 * image.naturalHeight);
+				this.div2.addBackground(image);
 			}
 			else {
 				console.error( 'no bottom vertical lightning image');
 			}
 		}else{
-			this.rolloverSpriteId--;
-			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];;
-			if( image ) {
-				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
-			}
-			else {
-				console.error( 'no top vertical lightning image');
-			}
 			this.stop();
 		}
 	}
-	
 };
 
 function AnimationDiv(left, top, width, height){
@@ -1234,20 +1221,16 @@ AnimationDiv.prototype.destroy = function(){
 function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var spritesMagnified;
 	this.parentElement = parentElement;
-	if( magnificationFactor ) {
-		spritesMagnified = [];
-		_.each( sprites, function(sprite) {
-			spritesMagnified.push( CanvasUtil.magnifyImage( sprite, magnificationFactor ) );
-		});
-		this.sprites = spritesMagnified;
-	}
-	else {
-		this.sprites = sprites;
-	}
+	this.sprites = sprites;
 	this.frameInterval = frameInterval;
 	this.initLeft = initLeft;
 	this.initTop = initTop;
 	this.spriteId = 0;
+	if(magnificationFactor){
+		this.magnificationFactor = magnificationFactor;
+	}else{
+		this.magnificationFactor = 1;
+	}
 	this.currentSprite = this.initSprite();
 	this.callback = callback;
 } //AnimationSprites constructor
@@ -1255,7 +1238,7 @@ function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initT
 AnimationSprites.prototype.initSprite = function() {
 	var sprite;
 	sprite = this.sprites[this.spriteId];
-	this.currentSprite = new Image(sprite.width, sprite.height); //jj use of naturalWidth and naturalHeight here will return non-magnified values
+	this.currentSprite = new Image(sprite.width * this.magnificationFactor, sprite.height * this.magnificationFactor); //jj use of naturalWidth and naturalHeight here will return non-magnified values
 	this.currentSprite.src = sprite.src;
 	this.currentSprite.style.position = 'absolute';
 	this.currentSprite.style.left = this.initLeft + 'px';
