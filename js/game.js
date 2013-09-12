@@ -1310,7 +1310,7 @@ Level.prototype.styleCanvas = function() {
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
-		layer.height = LoadingScreen.STAGE_HEIGHT;
+		layer.height = Board.GRID_HEIGHT;
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
