@@ -45,7 +45,6 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	mainMenuScreen.setInitialNavItem();
 	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
 		if (result.success) {
 			//LoadingScreen.gal.un
@@ -58,6 +57,7 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 			 }
 			 */
 			mainMenuScreen.setImages();
+			mainMenuScreen.setInitialNavItem();
 			mainMenuScreen.show();
 
 			mainMenuScreen.windowKeyHandler = window.onkeydown;
@@ -226,7 +226,7 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	if( this.isFirstTimeShown() ) {
 		navItem = $('#button-timed');
 	}
-	else if( callingScreen ) {
+	else if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
 				navItem = $('#button-relaxed');
