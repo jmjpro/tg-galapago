@@ -1,5 +1,6 @@
 /* begin DialogHelp.SELECT_HANDLERS[] */
 DialogHelp.SELECT_HANDLERS = [];
+DialogHelp.MAX_PAGE =7;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
@@ -27,6 +28,7 @@ function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.windowKeyHandler= window.onkeydown;
 	this.dialogHelpDOM = $('#' + dialogId);
 	this.scrollDiv = $('#help-text-scroll');
+	this.currentPage=1;
 	this.dialogNav = this.dialogHelpDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
@@ -48,7 +50,9 @@ function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
 		//sdkApi.reportPageView(sdkReportingPage);
 	}
+	this.scrollDiv[0].scrollTop=0;
 	this.updateScrollDivPages();
+	this.scrollDiv[0].focus();
 	/*
 	if( callback ) {
 		this.callback = callback;
@@ -115,7 +119,7 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-			if( dialogHelp.currentNavItem.index() > 0 ) {
+			/*if( dialogHelp.currentNavItem.index() > 0 ) {
 				dialogHelp.setNavItem(dialogHelp.currentNavItem.prev('li'));
 				console.debug(dialogHelp.currentNavItem[0]);
 			}
@@ -123,10 +127,32 @@ DialogHelp.prototype.registerEventHandlers = function() {
 				dialogHelp.setNavItem(dialogHelp.dialogNav.children(lastItemSelector));
 			}
 			evt.stopPropagation();
-			evt.preventDefault();
+			evt.preventDefault();*/
+				if(dialogHelp.currentPage != 1){
+					if(dialogHelp.scrollDiv[0].scrollByPages){
+						dialogHelp.scrollDiv[0].scrollByPages(-1);
+					}
+					dialogHelp.currentPage = dialogHelp.currentPage - 1;
+				}else{
+					dialogHelp.currentPage=DialogHelp.MAX_PAGE;
+					if(dialogHelp.scrollDiv[0].scrollByPages){
+						dialogHelp.scrollDiv[0].scrollByPages( DialogHelp.MAX_PAGE);
+					}
+				}
 			break;
 		case 40: // down arrow
-			if( dialogHelp.currentNavItem.index() < lastIndex - 1 ) {
+				if(dialogHelp.currentPage < DialogHelp.MAX_PAGE){
+					if(dialogHelp.scrollDiv[0].scrollByPages){
+						dialogHelp.scrollDiv[0].scrollByPages(1);
+					}
+					dialogHelp.currentPage = dialogHelp.currentPage + 1;
+				}else{
+					dialogHelp.currentPage=1;
+					if(dialogHelp.scrollDiv[0].scrollByPages){
+						dialogHelp.scrollDiv[0].scrollByPages(-1* DialogHelp.MAX_PAGE);
+					}
+				}
+			/*if( dialogHelp.currentNavItem.index() < lastIndex - 1 ) {
 				dialogHelp.setNavItem(dialogHelp.currentNavItem.next('li'));
 				console.debug(dialogHelp.currentNavItem[0]);
 			}
@@ -134,7 +160,7 @@ DialogHelp.prototype.registerEventHandlers = function() {
 				dialogHelp.setNavItem(dialogHelp.dialogNav.children(firstItemSelector));
 			}
 			evt.stopPropagation();
-			evt.preventDefault();
+			evt.preventDefault();*/
 			break;
 		}
 	};
@@ -162,20 +188,14 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	var scrollDiv, currentPage, pageCount;
 	scrollDiv = this.scrollDiv[0];
 	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
-	if( scrollDiv.scrollTop + scrollDiv.clientHeight >= scrollDiv.scrollHeight ) { //on last page
-		this.setNavItem( $( this.dialogHelpDOM.selector + ' #option-close' ) );
-	}
-	else {
-		this.setNavItem( $( this.dialogHelpDOM.selector + ' #option-scroll' ) );
-	}
-	pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
-	currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(currentPage);
-	$('#page-count').html(pageCount);
-	if( currentPage === 1) {
+	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
+	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
+	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
+	$('#page-count').html(DialogHelp.MAX_PAGE);
+	//if( currentPage === 1) {
 		$('#version').html(galapagoVersion);
-	}
-	else {
-		$('#version').html('&nbsp');
-	}
+	//}
+	//else {
+	//	$('#version').html('&nbsp');
+	//}
 };

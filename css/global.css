@@ -473,12 +473,15 @@ ul.galapago-drop-down {
 #dialog-help #paging {
 	font-family: 'Helvetica';
 	font-size: 14px;
+	width:150px;
+	margin-top: 10px;
 }
 
 #dialog-help #version {
 	font-family: 'Helvetica';
 	font-size: 14px;
-	text-align: left;
+	width:150px;
+	margin-top:10px;
 }
 
 #dialog-help .button-medium {
