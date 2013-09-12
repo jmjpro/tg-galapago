@@ -1445,14 +1445,12 @@ Board.prototype.quit = function() {
 }; //Board.prototype.quit()
 
 Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
-	$('#' + Level.LAYER_GOLD).hide();
 	this.hilightDiv.hide();
 	$('#' + Level.LAYER_GAME_ANIMATION).hide();
 	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
 }; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
 Board.prototype.showGameScreenLayers = function() {
-	$('#' + Level.LAYER_GOLD).show();
 	this.hilightDiv.show();
 	$('#' + Level.LAYER_GAME_ANIMATION).show();
 	$('#' + Level.LAYER_GAME_LIGHTNING).show();
