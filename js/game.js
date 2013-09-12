@@ -730,10 +730,6 @@ Level.LAYER_GOLD = 'layer-gold'; // need to convert to DOM divs
 Level.LAYER_CREATURE = 'layer-creature';
 Level.DIV_HILIGHT = 'div-hilight';
 Level.LAYER_SCORE = 'layer-score';
-// TODO: for next 3 canvases need to create one canvas or convert to using DOM divs
-Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy'; // need to eliminate
-Level.LAYER_GAME_ANIMATION = 'layer-game-animation'; // need to eliminate
-Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning'; // need to eliminate
 Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
@@ -981,7 +977,7 @@ Level.prototype.display = function() {
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.putInAnimationQ = false;
 		level.board.animationQ = [];
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.gameAnimationLayer, level.board.creatureTileMatrix, function () {
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function () {
 			level.board.displayBlobCollections();
 			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
 				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
@@ -1291,7 +1287,7 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, canvasNav, themeComplete, resourcePath, backgroundImage, canvasGameAnimation, canvasBonusFrenzy, canvasGameLightning;
+	var screenDivElement, canvasNav, themeComplete, resourcePath, backgroundImage, canvasBonusFrenzy;
 	console.debug('entering Level.prototype.styleCanvas()');
 	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
 	resourcePath = 'background/' + themeComplete + '.jpg';
@@ -1314,7 +1310,7 @@ Level.prototype.styleCanvas = function() {
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
-		layer.height = Board.GRID_HEIGHT;
+		layer.height = LoadingScreen.STAGE_HEIGHT;
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
@@ -1333,21 +1329,6 @@ Level.prototype.styleCanvas = function() {
 			}
 		}
 	}
-
-	console.debug('styling game animation canvas');
-	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
-	canvasGameAnimation[0].width = Board.GRID_WIDTH;
-	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
-	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
-	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
-
-	console.debug('styling lightning canvas');
-	var canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
-	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
-    canvasGameLightning.css('top', top + 'px');  
-    canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
-    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;
 
 	console.debug('exiting Level.prototype.styleCanvas()');
 	hilightDiv = this.board.hilightDiv;
@@ -1415,14 +1396,9 @@ Board.NAV_BUTTON_LABEL_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
-	//this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
 	this.navLayer = $('#' + Level.LAYER_NAV)[0].getContext('2d');
-	//this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightDiv = $('#' + Level.DIV_HILIGHT);
-	//this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
-	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
-	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
 	this.scoreElement = $('#current-score');
 	this.levelNameElement = $('#level-name');
 
@@ -1465,14 +1441,10 @@ Board.prototype.quit = function() {
 
 Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
 	this.hilightDiv.hide();
-	$('#' + Level.LAYER_GAME_ANIMATION).hide();
-	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
 }; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
 Board.prototype.showGameScreenLayers = function() {
 	this.hilightDiv.show();
-	$('#' + Level.LAYER_GAME_ANIMATION).show();
-	$('#' + Level.LAYER_GAME_LIGHTNING).show();
 }; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
@@ -3304,7 +3276,7 @@ Board.prototype.animateLightningStrikeAsync = function(matchingTilesSet) {
 	var board = this;
 	function draw(){
 		Galapago.audioPlayer.playLightningStrike();
-		board.level.levelAnimation.animateLightning(board.gameLightningLayer, matchingTilesSet);
+		board.level.levelAnimation.animateLightning(matchingTilesSet);
 	}
 	if(this.putInAnimationQ){
 		this.animationQ.push(draw);
