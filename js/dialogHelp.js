@@ -215,10 +215,10 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
 	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
 	$('#page-count').html(DialogHelp.MAX_PAGE);
-	//if( currentPage === 1) {
+	if( this.currentPage === 1) {
 		$('#version').html(galapagoVersion);
-	//}
-	//else {
-	//	$('#version').html('&nbsp');
-	//}
+	}
+	else {
+		$('#version').html('&nbsp');
+	}
 };
