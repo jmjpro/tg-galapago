@@ -1,20 +1,20 @@
 DialogMenu.BACKGROUNDS_AND_BUTTONS = [
-	{"id" : "dialog-quit", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-game-menu", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-quit", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-game-menu", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-time-out", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-you-won", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-you-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-leaderboards", "background" : "dialog-large.png", "button-class" : "button-big-hilight"},
-	{"id" : "dialog-level-won", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-level-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-loading", "background" : "dialog-small-no-title.png", "button-class" : ""},
-	{"id" : "dialog-new-game", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-new-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-game-options", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-delete", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create-init", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-reset-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-help", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"}
 ];
 DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
@@ -52,7 +52,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 };
 
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
-	var optionId, board, mainCanvasId, bgImage;
+	var optionId, board, mainCanvasId;
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
@@ -75,21 +75,13 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png');
-			if( bgImage ) {
-				$('#dialog-new-game').css('background-image','url(' + bgImage.src + ')');
-			}			
 			new DialogMenu(mainCanvasId, board, 'dialog-new-game');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png');
-			if( bgImage ) {
-				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');				
-			}
-			new DialogHelp(mainCanvasId, board, 'dialog-help',TGH5.Reporting.Page.Help);
+			new DialogHelp(mainCanvasId, board);
 			break;
 		case 'option-options' :
 			this.hide();
@@ -250,7 +242,10 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.hilightClass = DialogMenu.getButtonClass( dialogId );
 	this.hilightImageName = "button-hilight";
 	this.buttonImageName = "button-regular";
-	var menuButtonSize = this.dialogNav.children().length;
+
+	this.setDialogBackgroundImage();
+
+	menuButtonSize = this.dialogNav.children().length;
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (this.dialogNav.children()[i]);
 		galBgImagePath = DialogMenu.DIALOG_PREFIX + this.buttonImageName+'.png';
@@ -286,6 +281,25 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 		this.callback.call();
 	}
 } //function DialogMenu()
+
+DialogMenu.prototype.setDialogBackgroundImage = function() {
+	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
+	dialogSpec = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : this.dialogId} );
+	if( dialogSpec ) {
+		backgroundFileName = dialogSpec.background;
+		if( backgroundFileName ) {
+			galBackgroundPath = 'background/' + backgroundFileName;
+			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
+			if( backgroundImage ) {
+				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+			}
+		}
+	}
+	else {
+		console.error( 'unable to find dialog spec for ' + this.dialogId );
+	}
+	return this;
+}; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
 	this.dialogMenuDOM.show();
@@ -504,23 +518,6 @@ DialogMenu.prototype.unregisterEventHandlers = function() {
 		liElement.onclick = null;
 	}
 }; //MapScreen.prototype.unregisterEventHandlers()
-
-/* initialize the backgrounds for all the dialog boxes */
-DialogMenu.setBackgrounds = function() {
-	var dialogId, bgImageId, galImagePath, bgImage;
-	_.each( DialogMenu.BACKGROUNDS_AND_BUTTONS, function( dialogDescriptor ) {
-		dialogId = dialogDescriptor.id;
-		bgImageId = dialogDescriptor.background;
-		galImagePath = Galapago.BACKGROUND_GAL_PREFIX + bgImageId;
-		bgImage = LoadingScreen.gal.get( galImagePath );
-		if( bgImage ) {
-			$( '#' + dialogId ).css( 'background-image', 'url(' + bgImage.src + ')' );
-		}
-		else {
-			console.error( "unable to find image " + galImagePath);
-		}
-	});
-};
 
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;

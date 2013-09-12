@@ -539,7 +539,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		this.levelAnimation.stopGameStartArrow();
+		//this.levelAnimation.stopGameStartArrow();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
@@ -682,7 +682,7 @@ LevelMap.getNextLevel = function() {
 	var highestLevelCompleted, nextLevel, unlockedLevelIds, unlockedLevels, nextLevelId;
 	unlockedLevels = [];
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
-	if( typeof highestLevelCompleted === 'undefined' ) {
+	if( typeof highestLevelCompleted === 'undefined' || highestLevelCompleted.id === Galapago.NUM_LEVELS ) {
 		nextLevel = Level.findById(1);
 	}
 	else {
@@ -2370,7 +2370,6 @@ Board.prototype.setComplete = function() {
 		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
-		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 		new DialogMenu('screen-game', this, 'dialog-level-won');
 		this.showGameScreenLayers();
 	}
@@ -2651,11 +2650,10 @@ Board.prototype.dangerBarEmptied = function() {
 	 });
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
-	if(sdkApi.inDemoMode()){
-			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
+	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
-	}else{
-			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+	}
+	else{
 			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
 }; //Board.prototype.dangerBarEmptied
@@ -2707,12 +2705,11 @@ Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			//sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			//sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2721,7 +2718,6 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough

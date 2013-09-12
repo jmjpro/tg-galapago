@@ -147,15 +147,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png';
-			bgImage = LoadingScreen.gal.get( galImagePath );
-			if( bgImage ) {
-				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');
-			}
-			else {
-				console.error( 'unable to find ' + galImagePath );
-			}
-			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Screen.Help);
+			new DialogHelp('main-menu-screen', this);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
@@ -170,7 +162,6 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
@@ -181,7 +172,7 @@ MainMenuScreen.prototype.show = function() {
 	this.registerEventHandlers();
 	this.mainMenuDOM.show();
 	this.callingScreen && this.callingScreen.hide();
-	//sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
+	//sdkApi.reportPageView(TGH5.Reporting.Screen.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
