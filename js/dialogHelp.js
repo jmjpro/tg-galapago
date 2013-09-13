@@ -31,6 +31,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.setDialogBackgroundImage();
 	this.scrollDiv = $('#help-text-scroll');
 	this.currentPage=1;
+	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
 	this.regularImageName = "button-regular";
