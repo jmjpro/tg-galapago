@@ -922,6 +922,7 @@ function BoardBuildAnimation(layer, tileMatrix, callback){
 BoardBuildAnimation.prototype.start = function(){
 	var boardBuildAnimation = this;
 	this.interval = setInterval(function(){
+		boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
 		boardBuildAnimation.animate()}, 
 		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
 };
@@ -951,6 +952,7 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 	}
 	if(complete){
+		this.layer.canvas.height = Board.GRID_HEIGHT;
 		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
 		for(col = 0; col < this.tileMatrix.length; col++){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
