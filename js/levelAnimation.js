@@ -15,10 +15,10 @@ LevelAnimation.BOMB_COUNT = 4;
 //mf = magnificationFactor
 LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/map-lava-strip.png", frameInterval: "300", initLeft: "643", initTop: "0", mf: "2", isContinuous : "true" },
-	{ id: "collage/map-bomb-left-one-strip.png", frameInterval: "100", initLeft: "556", initTop: "200", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "100", initLeft: "556", initTop: "174", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "100", initLeft: "715", initTop: "262", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-right-strip.png", frameInterval: "100", initLeft: "744", initTop: "197", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-left-one-strip.png", frameInterval: "200", initLeft: "550", initTop: "130", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "200", initLeft: "536", initTop: "80", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "200", initLeft: "715", initTop: "162", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-right-strip.png", frameInterval: "200", initLeft: "754", initTop: "142", mf: "2", isContinuous : "false" },
 	{ id: "screen-map/next-level-arrow-down.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-left-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-right-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
@@ -42,7 +42,7 @@ function LevelAnimation(layer){
 	this.sparklesAnimation = null;
 	this.initLightning();
 	this.blinkingImages = [];
-	this.animationSprites = [];
+	this.animationSprites = {};
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -366,9 +366,16 @@ LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, 
 	else {
 		console.error( 'unable to find animationConfig for ' + galAssetPath );
 	}
-	this.animationSprites.push( animationSprite );
+	this.animationSprites[galAssetPath] = animationSprite;
 	return;
 }; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
+	var animationSprite = this.animationSprites[galAssetPath];
+	if(animationSprite){
+		animationSprite.stop();
+	}
+}
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
@@ -592,12 +599,9 @@ LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLa
 
 
 LevelAnimation.prototype.stopAllAnimations = function(){
-	if( this.animationSprites && this.animationSprites.length > 0 ) {
-		_.each( this.animationSprites, function( animationSprite ) {
-			animationSprite.stop();
-		});
+	for(key in this.animationSprites){
+		this.animationSprites[key].stop();
 	}
-
 	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
 		_.each( this.blinkingImages, function( blinkingImage ) {
 			blinkingImage.stop();
@@ -1234,20 +1238,16 @@ AnimationDiv.prototype.destroy = function(){
 function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var spritesMagnified;
 	this.parentElement = parentElement;
-	if( magnificationFactor ) {
-		spritesMagnified = [];
-		_.each( sprites, function(sprite) {
-			spritesMagnified.push( CanvasUtil.magnifyImage( sprite, magnificationFactor ) );
-		});
-		this.sprites = spritesMagnified;
-	}
-	else {
-		this.sprites = sprites;
-	}
+	this.sprites = sprites;
 	this.frameInterval = frameInterval;
 	this.initLeft = initLeft;
 	this.initTop = initTop;
 	this.spriteId = 0;
+	if(magnificationFactor){
+		this.magnificationFactor = magnificationFactor;
+	}else{
+		this.magnificationFactor = 1;
+	}
 	this.currentSprite = this.initSprite();
 	this.callback = callback;
 } //AnimationSprites constructor
@@ -1255,8 +1255,10 @@ function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initT
 AnimationSprites.prototype.initSprite = function() {
 	var sprite;
 	sprite = this.sprites[this.spriteId];
-	this.currentSprite = new Image(sprite.width, sprite.height); //jj use of naturalWidth and naturalHeight here will return non-magnified values
+	this.currentSprite = new Image(); 
 	this.currentSprite.src = sprite.src;
+	this.currentSprite.width = sprite.naturalWidth * this.magnificationFactor;
+	this.currentSprite.height = sprite.naturalHeight * this.magnificationFactor;
 	this.currentSprite.style.position = 'absolute';
 	this.currentSprite.style.left = this.initLeft + 'px';
 	this.currentSprite.style.top = this.initTop + 'px';
@@ -1265,6 +1267,9 @@ AnimationSprites.prototype.initSprite = function() {
 }; //AnimationSprites.prototype.initSprite()
 
 AnimationSprites.prototype.destroy = function(url){
+	if(this.currentSprite){
+		this.currentSprite.remove();
+	}
 	this.currentSprite = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
@@ -1331,6 +1336,9 @@ function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, m
 } //BlinkingImage constructor
 
 BlinkingImage.prototype.destroy = function(url){
+	if(this.image){
+		this.image.remove();
+	}
 	this.image = null;
 	return this;
 }; //AnimationSprites.prototype.destroy

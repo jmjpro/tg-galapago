@@ -86,9 +86,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.currentNavItem.css( 'background-image','');
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			if(!Level.isComplete('1')){
-				levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
-			}
+			levelMap.aimateStartArrowIfNeeded();
 			levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;
