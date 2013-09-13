@@ -2846,6 +2846,7 @@ Board.prototype.handleLeftArrow = function() {
 	} else if(!board.navigationLock){
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
+		//board.level.levelAnimation.rolloverAnimation.stop();
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();

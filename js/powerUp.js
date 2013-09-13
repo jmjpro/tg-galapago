@@ -27,6 +27,7 @@ Powerup.IMAGE_PATH_SUFFIX = '.png';
 Powerup.IMAGE_MAGNIFICATION = 2;
 Powerup.LEFT_ADJUSTMENT = 15;
 Powerup.TOP_ADJUSTMENT = 10;
+Powerup.ANIMATION_LEFT = 11;
 
 
 Powerup.gameImageNames = [
@@ -83,7 +84,8 @@ Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 	 }else if(!this.shufflerPowerAchieved){
 		this.shufflerPowerAchieved = true;
 	 }
-	 this.update();
+	 this.score += Powerup.POWER_POINTS;
+	 this.updatePowerAchieved();
 };
 
 Powerup.prototype.addListener = function(arrowKey){
@@ -187,18 +189,27 @@ Powerup.prototype.powerUsed = function(){
 };
 
 Powerup.prototype.handleSelect = function(){
+	var levelAnimation, gameBoardSelector, powerupActivatedImagePath, posLeft;
+	levelAnimation = this.board.level.levelAnimation;
+	gameBoardSelector = this.board.screenDiv.selector;
+	powerupActivatedImagePath = Galapago.collageDirectory + 'powerup-activated-strip.png'
+	posLeft = Powerup.LEFT + 5;
+
 	if(this.currentFocus == Powerup.FLIPFLOP_SELECTED){
 		this.powerSelected = Powerup.FLIPFLOP_SELECTED;
 		this.drawFlipFlop(Powerup.POWER_PRESSED);
-		this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,25]); 
+		//this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,25]); 
+		levelAnimation.animateSprites(gameBoardSelector, Galapago.collageDirectory + 'powerup-activated-strip.png', posLeft, Powerup.TOP + 25);
 		
 	}else if(this.currentFocus == Powerup.FIRE_SELECTED){
         this.powerSelected = Powerup.FIRE_SELECTED;	
 		this.drawFire(Powerup.POWER_PRESSED);
-		this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,100]);
+		//this.board.level.levelAnimation.animatePowerActivated(this.animationLayer, [5,100]);
+		levelAnimation.animateSprites(gameBoardSelector, Galapago.collageDirectory + 'powerup-activated-strip.png', posLeft, Powerup.TOP + 100);
 	}else if(this.currentFocus == Powerup.SHUFFLER_SELECTED){
 	    this.powerSelected = Powerup.SHUFFLER_SELECTED;
 		this.drawShuffler(Powerup.POWER_PRESSED);
+		//jj no animation here? levelAnimation.animateSprites(gameBoardSelector, Galapago.collageDirectory + 'powerup-activated-strip.png', posLeft, Powerup.TOP + 180);
 		Galapago.audioPlayer.playShufflePowerUsed();
 		this.powerUsed();
 		this.board.shuffleBoard();
@@ -430,17 +441,25 @@ Powerup.prototype.animatePowerStatus = function(){
 };
 
 Powerup.prototype.updatePowerAchieved = function(){
-    var flagPowerUpdated = false;
+    var flagPowerUpdated, powerupGainedImage, levelAnimation, gameBoardSelector, posleft;
+    flagPowerUpdated = false;
+    powerupGainedImagePath = Galapago.collageDirectory + 'powerup-gained-strip.png';
+	levelAnimation = this.board.level.levelAnimation;
+	gameBoardSelector = this.board.screenDiv.selector;
+	posleft = Powerup.LEFT + 11;
 
 	while(this.score >= Powerup.POWER_POINTS){
 		if(!this.flipflopPowerAchieved){
 		    this.flipflopPowerAchieved = true;
+			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 25);
 			this.flipflopAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,25]); //[115,222]//[124,262]
 		}else if(!this.firePowerAchieved){
 			this.firePowerAchieved = true;
+			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 100);
 			this.fireAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,100]); //343
 		}else if(!this.shufflerPowerAchieved){
 			this.shufflerPowerAchieved = true;
+			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 180);
 			this.shufflerAnimator =this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,180]);//424
 		}
 		this.score -= Powerup.POWER_POINTS;
