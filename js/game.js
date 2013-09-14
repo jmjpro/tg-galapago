@@ -725,8 +725,6 @@ MapCell.prototype.toString = function() {
 /* begin class Level */
 Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
-Level.LAYER_NAV = 'layer-nav';
-Level.LAYER_GOLD = 'layer-gold'; // need to convert to DOM divs
 Level.LAYER_CREATURE = 'layer-creature';
 Level.DIV_HILIGHT = 'div-hilight';
 Level.LAYER_SCORE = 'layer-score';
@@ -747,9 +745,6 @@ Level.NAV_MARGIN_BOTTOM = 10;
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 */
-Level.NAV_BUTTON_WIDTH = 116;
-Level.NAV_BUTTON_HEIGHT = 42;
-Level.NAV_BUTTON_HILIGHT_THICKNESS = 1;
 Level.POWER_UP_SCORE =0;
 Level.SUPER_FRIEND_SUFFIX = '-friend';
 
@@ -1291,7 +1286,7 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, canvasNav, themeComplete, resourcePath, backgroundImage, canvasGameAnimation, canvasBonusFrenzy, canvasGameLightning;
+	var screenDivElement, themeComplete, resourcePath, backgroundImage, canvasGameAnimation, canvasBonusFrenzy, canvasGameLightning;
 	console.debug('entering Level.prototype.styleCanvas()');
 	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
 	resourcePath = 'background/' + themeComplete + '.jpg';
@@ -1301,16 +1296,7 @@ Level.prototype.styleCanvas = function() {
 		console.debug('setting background to ' + resourcePath);
 		this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
-	canvasNav = this.board.navLayer.canvas;
-	canvasNav.width = Level.NAV_BUTTON_WIDTH;
-	canvasNav.height = Level.NAV_BUTTON_HEIGHT * 2 + Level.NAV_MARGIN_BOTTOM;
-	canvasNav.style.left = Level.NAV_LEFT + 'px';
-	canvasNav.style.top = Level.NAV_TOP + 'px';
-	this.board.navLayer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
-	this.board.navLayer.fillStyle = Board.NAV_BUTTON_LABEL_COLOR;
-	this.board.navLayer.textAlign = 'center';
-	this.board.navLayer.textBaseline = 'middle';
-
+	
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
@@ -1411,16 +1397,11 @@ Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
 Board.BUTTON_FONT_SIZE = '17px';
 Board.BUTTON_FONT_NAME = 'JungleFever';
-Board.NAV_BUTTON_LABEL_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
-	//this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
-	this.navLayer = $('#' + Level.LAYER_NAV)[0].getContext('2d');
-	//this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
 	this.hilightDiv = $('#' + Level.DIV_HILIGHT);
-	//this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
 	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
 	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
 	this.scoreElement = $('#current-score');
@@ -1495,41 +1476,35 @@ Board.prototype.displayLevelName = function() {
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var layer, menuButtonImage, gameButtonCursor;
-	layer = this.navLayer;
+	var menuButtonImage, gameButtonCursor;
 	menuButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
+	$("#div-menu").css("background-image","url('"+menuButtonImage.src+"')");
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
-		layer.drawImage(menuButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, 0, 0, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		$("#div-menucursor").css("background-image","url('"+gameButtonCursor.src +"')");
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(0, 0, Level.NAV_BUTTON_WIDTH + Level.NAV_BUTTON_HILIGHT_THICKNESS * 2, Level.NAV_BUTTON_HEIGHT + Level.NAV_BUTTON_HILIGHT_THICKNESS * 2);
-		layer.drawImage(menuButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		$("#div-menucursor").css("background-image","");
 	}
-	layer.fillText( 'MENU', Level.NAV_BUTTON_WIDTH/2, (Level.NAV_BUTTON_HEIGHT/2) + Level.NAV_BUTTON_HILIGHT_THICKNESS );
 }; //Board.protoype.displayMenuButton()
 	
 Board.prototype.displayQuitButton = function(isActive) {
-	var layer, quitButtonImage, gameButtonCursor;
+	var quitButtonImage, gameButtonCursor;
 	layer = this.navLayer;
 	quitButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
-	var quitImageTop = Level.NAV_BUTTON_HEIGHT + Level.NAV_MARGIN_BOTTOM;
+	$("#div-quit").css("background-image","url('"+quitButtonImage.src+"')");
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
-		layer.drawImage(quitButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, 0, quitImageTop, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		$("#div-quitcursor").css("background-image","url('"+gameButtonCursor.src +"')");
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(0, quitImageTop, Level.NAV_BUTTON_WIDTH + 2 * Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_HEIGHT + 2 * Level.NAV_BUTTON_HILIGHT_THICKNESS);
-		layer.drawImage(quitButtonImage, Level.NAV_BUTTON_HILIGHT_THICKNESS, quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS, Level.NAV_BUTTON_WIDTH, Level.NAV_BUTTON_HEIGHT);
+		$("#div-quitcursor").css("background-image","");
 	}
-	layer.fillText( 'QUIT', Level.NAV_BUTTON_WIDTH/2, (Level.NAV_BUTTON_HEIGHT/2) + quitImageTop + Level.NAV_BUTTON_HILIGHT_THICKNESS );
 }; //Board.protoype.displayQuitButton()
 
 Board.prototype.addPowerups = function() {
