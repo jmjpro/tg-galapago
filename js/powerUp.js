@@ -77,15 +77,8 @@ function Powerup(board ,powerupPoints) {
 
 Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 	console.log('Powerup CheatCode used');
-	if(!this.flipflopPowerAchieved){
-		this.flipflopPowerAchieved = true;
-	 }else if(!this.firePowerAchieved){
-		this.firePowerAchieved = true;
-	 }else if(!this.shufflerPowerAchieved){
-		this.shufflerPowerAchieved = true;
-	 }
-	 this.score += Powerup.POWER_POINTS;
-	 this.updatePowerAchieved();
+	this.score += Powerup.POWER_POINTS;
+	this.updatePowerAchieved();
 };
 
 Powerup.prototype.addListener = function(arrowKey){

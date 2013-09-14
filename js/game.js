@@ -2859,8 +2859,6 @@ Board.prototype.handleLeftArrow = function() {
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
-		board.displayMenuButton(true);
-		this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow
