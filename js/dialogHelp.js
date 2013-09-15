@@ -53,6 +53,14 @@ function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.scrollDiv[0].scrollTop=0;
 	this.updateScrollDivPages();
 	this.scrollDiv[0].focus();
+	$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
+	$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
+	$('#down').css('width',"40px;");
+	$('#down').css('height',"50px;");
+	$('#down').css('margin-left',0);
+	$('#up').css('width',"30px;");
+	$('#up').css('height',"40px;");
+	$('#up').css('margin-left',5);
 	/*
 	if( callback ) {
 		this.callback = callback;
@@ -119,26 +127,31 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-			/*if( dialogHelp.currentNavItem.index() > 0 ) {
-				dialogHelp.setNavItem(dialogHelp.currentNavItem.prev('li'));
-				console.debug(dialogHelp.currentNavItem[0]);
-			}
-			else { //loop back to last item
-				dialogHelp.setNavItem(dialogHelp.dialogNav.children(lastItemSelector));
-			}
-			evt.stopPropagation();
-			evt.preventDefault();*/
 				if(dialogHelp.currentPage != 1){
 					if(dialogHelp.scrollDiv[0].scrollByPages){
 						dialogHelp.scrollDiv[0].scrollByPages(-1);
 					}
 					dialogHelp.currentPage = dialogHelp.currentPage - 1;
+					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-highlight.png').src + ')');
+					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-disable.png').src + ')');
+					$('#up').css('width',"40px;");
+					$('#up').css('height',"50px;");
+					$('#up').css('margin-left',0);
+					$('#down').css('width',"30px;");
+					$('#down').css('height',"40px;");
+					$('#down').css('margin-left',5);
 				}else{
-					dialogHelp.currentPage=DialogHelp.MAX_PAGE;
-					if(dialogHelp.scrollDiv[0].scrollByPages){
-						dialogHelp.scrollDiv[0].scrollByPages( DialogHelp.MAX_PAGE);
-					}
+					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
+					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
+					$('#down').css('width',"40px;");
+					$('#down').css('height',"50px;");
+					$('#down').css('margin-left',0);
+					$('#up').css('width',"30px;");
+					$('#up').css('height',"40px;");
+					$('#up').css('margin-left',5);
 				}
+
+
 			break;
 		case 40: // down arrow
 				if(dialogHelp.currentPage < DialogHelp.MAX_PAGE){
@@ -146,21 +159,27 @@ DialogHelp.prototype.registerEventHandlers = function() {
 						dialogHelp.scrollDiv[0].scrollByPages(1);
 					}
 					dialogHelp.currentPage = dialogHelp.currentPage + 1;
+					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
+					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
+					$('#down').css('width',"40px;");
+					$('#down').css('height',"50px;");
+					$('#down').css('margin-left',0);
+					$('#up').css('width',"30px;");
+					$('#up').css('height',"40px;");
+					$('#up').css('margin-left',5);
 				}else{
-					dialogHelp.currentPage=1;
-					if(dialogHelp.scrollDiv[0].scrollByPages){
-						dialogHelp.scrollDiv[0].scrollByPages(-1* DialogHelp.MAX_PAGE);
-					}
+					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-highlight.png').src + ')');
+					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-disable.png').src + ')');
+					$('#up').css('width',"40px;");
+					$('#up').css('height',"50px;");
+					$('#up').css('margin-left',0);
+					$('#down').css('width',"30px;");
+					$('#down').css('height',"40px;");
+					$('#down').css('margin-left',5);
 				}
-			/*if( dialogHelp.currentNavItem.index() < lastIndex - 1 ) {
-				dialogHelp.setNavItem(dialogHelp.currentNavItem.next('li'));
-				console.debug(dialogHelp.currentNavItem[0]);
-			}
-			else { //loop back to first item
-				dialogHelp.setNavItem(dialogHelp.dialogNav.children(firstItemSelector));
-			}
-			evt.stopPropagation();
-			evt.preventDefault();*/
+
+
+
 			break;
 		}
 	};

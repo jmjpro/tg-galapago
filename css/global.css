@@ -484,6 +484,22 @@ ul.galapago-drop-down {
 	margin-top:10px;
 }
 
+#up-down{
+	width:40px;
+	left: 220px;
+	position: absolute;
+    top: 450px;
+}
+#up{
+	width:40px;
+	height:50px;
+}
+
+#down{
+	width:40px;
+	height:50px;
+}
+
 #dialog-help .button-medium {
 	height: 61px;
 	margin-top: -10px;
