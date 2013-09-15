@@ -116,7 +116,6 @@ ul.menu li {
 }
 */
 
-<<<<<<< HEAD
 .vertical-align-helper {
     display: inline-block;
     vertical-align: middle;
@@ -489,7 +488,7 @@ ul.galapago-drop-down {
 	width:40px;
 	left: 220px;
 	position: absolute;
-    top: 450px;
+    top: 435px;
 }
 #up{
 	width:40px;
@@ -506,8 +505,6 @@ ul.galapago-drop-down {
 	margin-top: -10px;
 }
 
-=======
->>>>>>> ebe78a956036ff91dc99ec53f2490b70c2797861
 .bubbleTip {
 	width:700px;
 	font-family: 'JungleFever';
