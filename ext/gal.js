@@ -46,17 +46,24 @@
 	 * manifest.
 	 */
 	GAL.prototype.init = function (callback) {
-		var that = this;
+		var that, manifest;
+		that = this;
 		if (this.online()) {
 			// Fetch the manifest.
 			fetchJSON_(this.manifestUrl, function (manifest) {
 				// Save the manifest for offline use.
-				localStorage.setItem(that.manifestUrl, JSON.stringify(manifest));
+				if( localStorage ) {
+					localStorage.setItem(that.manifestUrl, JSON.stringify(manifest));
+				}
 				finishInit_.call(that, manifest, callback);
 			});
-		} else {
-			var manifest = JSON.parse(localStorage.getItem(this.manifestUrl));
-			finishInit_.call(that, manifest, callback);
+		}
+		else if( localStorage ) {
+				manifest = JSON.parse(localStorage.getItem(this.manifestUrl));
+				finishInit_.call(that, manifest, callback);
+		}
+		else {
+			console.error( 'could not load manifest ' + this.manifestUrl );
 		}
 	};
 

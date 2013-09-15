@@ -18,18 +18,20 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 };
 /* end DialogHelp.SELECT_HANDLERS[] */
 
-function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, callback) {
+function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) {
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
+	this.dialogId = 'dialog-help';
 	this.mouseClickHandler = window.onclick;
 	this.mouseMoveHandler = window.onmousemove;
 	window.onclick =null;
 	window.onmousemove = null;
 	this.windowKeyHandler= window.onkeydown;
-	this.dialogHelpDOM = $('#' + dialogId);
+	this.dialogMenuDOM = $('#' + this.dialogId);
+	this.setDialogBackgroundImage();
 	this.scrollDiv = $('#help-text-scroll');
 	this.currentPage=1;
-	this.dialogNav = this.dialogHelpDOM.find('ul');
+	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
 	this.regularImageName = "button-regular";
@@ -45,10 +47,10 @@ function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
 	this.show();
-	this.selectHandler = DialogHelp.SELECT_HANDLERS[dialogId];
+	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
-		//sdkApi.reportPageView(sdkReportingPage);
+		//sdkApi.reportPageView(TGH5.Reporting.Screen.Help);
 	}
 	this.scrollDiv[0].scrollTop=0;
 	this.updateScrollDivPages();
@@ -69,14 +71,33 @@ function DialogHelp(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	*/
 } //function DialogHelp()
 
+DialogHelp.prototype.setDialogBackgroundImage = function() {
+	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
+	dialogSpec = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : this.dialogId} );
+	if( dialogSpec ) {
+		backgroundFileName = dialogSpec.background;
+		if( backgroundFileName ) {
+			galBackgroundPath = 'background/' + backgroundFileName;
+			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
+			if( backgroundImage ) {
+				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+			}
+		}
+	}
+	else {
+		console.error( 'unable to find dialog spec for ' + this.dialogId );
+	}
+	return this;
+}; //DialogHelp.prototype.setDialogBackgroundImage()
+
 DialogHelp.prototype.show = function() {
-	this.dialogHelpDOM.show();
+	this.dialogMenuDOM.show();
 	this.callingScreen.addClass('transparent');
 }; //DialogHelp.prototype.show()
 
 DialogHelp.prototype.hide = function() {
 	this.unregisterEventHandlers();
-	this.dialogHelpDOM.hide();
+	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
@@ -180,6 +201,9 @@ DialogHelp.prototype.registerEventHandlers = function() {
 
 
 
+			break;
+		case 8: // backspace
+			dialogHelp.hide();
 			break;
 		}
 	};

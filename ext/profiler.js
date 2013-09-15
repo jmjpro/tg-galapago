@@ -441,7 +441,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 			 * @public
 			 * @type {number}
 			 */
-			this.rows = 2;
+			this.rows = 20;
 
 			/**
 			 * @public
@@ -517,14 +517,14 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 			/**
 			 * Total SELF execution time since last clear(), milliseconds
 			 * @public
-			 * @type {number}
+			 * @type {ProfilerTimings}
 			 */
 			this.own = new ProfilerTimings();
 
 			/**
 			 * Total execution time including all internal calls since last clear(), milliseconds
 			 * @public
-			 * @type {number}
+			 * @type {ProfilerTimings}
 			 */
 			this.all = new ProfilerTimings();
 
@@ -555,8 +555,8 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 	var isWidgetAttached = false,
 		widgetId = "profilerWidgetV1.4",
 		widgetIntervalId = null,
-		widgetConfiguration = new ProfilerWidgetConfiguration(),
-		profilerErrorLogText = "";
+		widgetConfiguration = new ProfilerWidgetConfiguration();
+		//profilerErrorLogText = "";
 
 	var timeStack = [];
 
@@ -693,6 +693,19 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 		 */
 		widgetSortMethods : profilerWidgetSortMethods,
 
+		getPreparedReport : function() {
+			var report = ns.frameWork.debug.profiler.getReport(function (record) {
+					return record.calls > 0;
+				});
+
+			// sort by total execution time
+			if (widgetConfiguration.sortMethod) {
+				report.sort(widgetConfiguration.sortMethod);
+			}
+
+			return report;
+		},
+
 		/**
 		 * @public
 		 * @param {number} updateInterval
@@ -787,16 +800,16 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 			el.appendChild(elTable);
 			updateTableCoordinates();
 
-			var elLogText = document.createElement('textarea');
+			/*var elLogText = document.createElement('textarea');
 			elLogText.id = widgetId + ".logText";
-			elLogText.rows = 127;
-			elLogText.cols = 120;
+			elLogText.rows = 10;
+			elLogText.columns = 100;
 			elLogText.disabled = true;
 			elLogText.readonly = true;
 			elLogText.style.fontSize = '16px';
 			elLogText.style.color = '#FFFFFF';
 			elLogText.style.backgroundColor = '#444444';
-			el.appendChild(elLogText);
+			el.appendChild(elLogText); */
 
 			// widget handler/updater
 			widgetIntervalId = setInterval(function () {
@@ -845,9 +858,9 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 					}
 				}
 
-				el = document.getElementById(widgetId + ".logText");
-				el.innerHTML = profilerErrorLogText;
-				el.scrollTop = el.scrollHeight;
+				//el = document.getElementById(widgetId + ".logText");
+				//el.innerHTML = profilerErrorLogText;
+				//el.scrollTop = el.scrollHeight;
 			}, updateInterval);
 		},
 
@@ -885,13 +898,14 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 				try {
 					result = originalFunction.apply(this, arguments);
 				} catch(e) {
-					var s = printStackTrace();
+					console.error(e);
+					//var s = printStackTrace();
 					/*for(var i = s.length - 1; i >= 0; i--) {
 						if(s[i].indexOf('profiler.js') >= 0) {
 							s.splice(i, 1);
 						}
 					} */
-					profilerErrorLogText += e + "\n" + /*"[" + start + "] " + e + "\n" + */s.join("\n") + "\n";
+					//profilerErrorLogText += e + "\n" + /*"[" + start + "] " + e + "\n" + */s.join("\n") + "\n";
 					throw e;
 				}
 
@@ -946,8 +960,8 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 		// You can view the information in an alert to see things working
 		// like so:
 		//alert("Error: " + msg + "\nurl: " + url + "\nline #: " + line);
-		profilerErrorLogText += "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "\n";
-
+		//profilerErrorLogText += "Error: " + msg + "\nurl: " + url + "\nline #: " + line + "\n";
+		console.log("window.onerror: " + msg + "\nurl: " + url + "\nline #: " + line + "\n");
 		// TODO: Report this error via ajax so you can keep track
 		//       of what pages have JS issues
 
@@ -968,6 +982,7 @@ TGModuleLoader.add( [ 'ns.frameWork.utils', 'ns.frameWork.Class' ], function () 
 TGModuleLoader.resolve();
 
 (function() {
+	return;
 	var p = ns.frameWork.debug.profiler;
 	//p.profileObject('window', window, true);
 	p.profileFunction('Galapago', window, true);

@@ -50,7 +50,6 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-reset-map' :
 			//console.log( 'selected reset map button');
-			$('#dialog-reset-game').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
@@ -59,7 +58,6 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}

@@ -1,4 +1,4 @@
-﻿/* begin class Galapago */
+/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
@@ -61,7 +61,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(isTimedMode) {
-	var levelTemp, level, levelIt;
+	var levelTemp, level, levelIt, timedMode, gameTipsSelection, gameTipsSelectionEle;
 	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
@@ -70,6 +70,12 @@ Galapago.init = function(isTimedMode) {
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
+	timedMode = isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	gameTipsSelection = store.getItem( timedMode + Galapago.profile + "gameTipsSelection" );
+	gameTipsSelectionEle = $('#gameTipsSelection')[0];
+	if(gameTipsSelection){
+		gameTipsSelectionEle.innerHTML = gameTipsSelection;
+	}
 	console.log( 'Galapago.isTimedMode: ' + Galapago.isTimedMode );
 	console.log( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -159,26 +165,6 @@ Galapago.setLevel = function(levelId) {
 			}
 		});
 
-	LoadingScreen.gal.onLoaded( Galapago.RESOURCE_BUNDLE_BOARD_COMMON, function(result) {
-		if (result.success) {
-			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
-			LoadingScreen.gal.download(themeBundle);
-		}
-	});
-	
-	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
-		if (result.success) {
-			//LoadingScreen.gal.clearOnLoaded(theme);
-			LoadingScreen.gal.clearOnLoaded(themeBundle);
-			console.debug(themeBundle + ' resource bundle loaded');
-			Galapago.level.levelAnimation = new LevelAnimation();
-			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-			Galapago.level.display();
-			Level.registerEventHandlers();
-		}
-	});
-
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
@@ -199,6 +185,22 @@ Galapago.delay = function(delayMs) {
 		deferred.resolve();
 	});
 	return deferred.promise;
+};
+
+Galapago.eraseProfile = function(profile) {
+	var keyIt;
+	var keyList = new  Array();
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
+		if(keyIt.indexOf(profile)>0){ // reset all the local storage of current Profile only.
+			//store.removeItem(keyIt);
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		store.removeItem(keyList[i]);
+	}
 };
 /* end class Galapago */
 
@@ -340,7 +342,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	$('#map-level-name').html(text);
 
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
+	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
 		$('#map-level-score-label').html('Score');
 		$('#map-level-score').html(levelScore);
@@ -458,7 +460,7 @@ LevelMap.prototype.quit = function() {
 
 // erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.reset = function() {
-	localStorage.clear();
+	store.clear();
 	console.debug('reset map');
 	return this; //chainable
 }; //LevelMap.prototype.reset
@@ -500,27 +502,12 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
-	/*
-    this.animationLayer=null;
-	this.animationCanvas.onclick=null;
-	*/
 	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
-	this.screenDiv.css('background-image',"");
+	this.screenDiv.css('background-image','');
 	this.canvas.width = this.canvas.height = 1;
-
-	var el = $('#layer-map');
-	el.width = el.height = 1;
-
-	el = $('#layer-map-other-animation');
-	el.width = el.height = 1;
-
-	el = $('#layer-map-animation');
-	el.width = el.height = 1;
-
 	LoadingScreen.gal.unload('bg-map-screen');
-
-	this.screenDiv.css('display', 'none');
+	this.screenDiv.hide();
 	this.cleanupAnimationAndSound();
 }; //LevelMap.prototype.cleanup()
 
@@ -552,7 +539,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		this.levelAnimation.stopGameStartArrow();
+		//this.levelAnimation.stopGameStartArrow();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
@@ -657,8 +644,9 @@ LevelMap.getHighestLevelCompleted = function() {
 	var highestLevelCompletedId, keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	highestLevelCompletedId = 0;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			_.each(Level.findById(levelId).unlocksLevels, function( unlockedLevelId ) {
@@ -677,8 +665,9 @@ LevelMap.getHighestLevelCompleted = function() {
 LevelMap.getLevelsCompleted = function() {
 	var levelsCompleted = [], keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			levelsCompleted.push(parseInt(levelId,10));
@@ -693,7 +682,7 @@ LevelMap.getNextLevel = function() {
 	var highestLevelCompleted, nextLevel, unlockedLevelIds, unlockedLevels, nextLevelId;
 	unlockedLevels = [];
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
-	if( typeof highestLevelCompleted === 'undefined' ) {
+	if( typeof highestLevelCompleted === 'undefined' || highestLevelCompleted.id === Galapago.NUM_LEVELS ) {
 		nextLevel = Level.findById(1);
 	}
 	else {
@@ -714,18 +703,7 @@ LevelMap.getNextLevel = function() {
 }; //LevelMap.getNextLevel()
 
 LevelMap.reset = function() {
-	var keyIt, keyList, i;
-	keyList = new  Array();
-	for (i = 0; i < localStorage.length; i++) {
-		keyIt = localStorage.key(i);
-		if(keyIt.indexOf(Galapago.profile)>0){ // reset all the local storage of current Profile only.
-			//localStorage.removeItem(keyIt);
-			keyList.push(keyIt);
-		}
-	}
-	for (i = 0; i < keyList.length; i++) {
-		localStorage.removeItem(keyList[i]);
-	}
+	Galapago.eraseProfile(Galapago.profile);
 }; //LevelMap.reset()
 
 /* end class LevelMap */
@@ -1010,7 +988,7 @@ Level.prototype.display = function() {
 			}
 			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			if (Galapago.isTimedMode) {
-				var restoreLookupString = localStorage.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
+				var restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				var restoreLookup , dangerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
 			if(restoreLookupString !== 'undefined'){
@@ -1030,7 +1008,7 @@ Level.prototype.display = function() {
 			level.board.displayQuitButton(false);
 			level.board.display();
 			level.board.setActiveTile();
-			localStorage.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
+			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
 			console.debug('exiting Level.prototype.display()');
 			return level; //chainable
 		});
@@ -1062,7 +1040,7 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 Level.prototype.won = function(){
 	var timedMode, level;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
     level.cleanup();
@@ -1079,16 +1057,18 @@ Level.prototype.won = function(){
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
-	//this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
-	this.board.scoreElement.hide();
-	this.board.levelNameElement.hide();
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
+	this.board.scoreElement.hide();
+	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
 		this.board.hideGameScreenLayersForBonusFrenzy();
 	}else{
-		this.board.screenDiv.hide();		
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
 	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
@@ -1102,11 +1082,6 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
-
-	$("#screen-game").children("canvas").each(function() {
-		this.width = this.height = 1;
-	});
-
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
@@ -1167,7 +1142,19 @@ Level.registerEventHandlers = function() {
 		//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
-			case 13: // enter
+			case 51:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					ns.frameWork.debug.profiler.clear();
+				}
+				break;
+			case 52:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					var report = ns.frameWork.debug.profiler.getPreparedReport();
+					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+						console.log(report[i].id + ": " + report[i].own.total);
+					}
+				}
+				break;			case 13: // enter
 				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow
@@ -1390,13 +1377,13 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 
 Level.prototype.isNew = function() {
 	var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	var levelPlayed = localStorage.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
+	var levelPlayed = store.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
 	return !levelPlayed;
 };
 
 Level.isComplete = function(id) {
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	return localStorage.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
+	return store.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
 };
 /* end class Level */
 
@@ -1477,15 +1464,13 @@ Board.prototype.quit = function() {
 }; //Board.prototype.quit()
 
 Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
-	$('#' + Level.LAYER_GOLD).hide();
-	$('#' + Level.LAYER_HILIGHT).hide();
+	this.hilightDiv.hide();
 	$('#' + Level.LAYER_GAME_ANIMATION).hide();
 	$('#' + Level.LAYER_GAME_LIGHTNING).hide();
 }; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
 Board.prototype.showGameScreenLayers = function() {
-	$('#' + Level.LAYER_GOLD).show();
-	$('#' + Level.LAYER_HILIGHT).show();
+	this.hilightDiv.show();
 	$('#' + Level.LAYER_GAME_ANIMATION).show();
 	$('#' + Level.LAYER_GAME_LIGHTNING).show();
 }; //Board.protoype.showGameScreenLayers()
@@ -1715,7 +1700,7 @@ Board.prototype.build = function(tilePositions) {
 	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup, key, tile;
 	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-    restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+    restoreLookupString = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	if(restoreLookupString){
 		restoreLookup = JSON.parse(restoreLookupString);
 		this.score = restoreLookup['score'];
@@ -2340,7 +2325,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
-	if(this.bonusFrenzy === 'undefined'){
+	if(!this.bonusFrenzy){
 		window.onkeydown= null;
 		window.onclick = null;
 		window.onmousemove = null;
@@ -2359,9 +2344,9 @@ Board.prototype.setComplete = function() {
 		this.displayScore();
 		this.level.isCompleted = true;
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
-		levelHighestScore = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		var totalScore = localStorage.getItem( timedMode + Galapago.profile + ".totalScore" );
+		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
+		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
+		var totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
 		if(totalScore){
 			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
 				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
@@ -2369,23 +2354,22 @@ Board.prototype.setComplete = function() {
 			else {
 				totalScore=Number(totalScore)+this.score;
 			}
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		else {
 			totalScore=this.score;
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
 		}
 		else if(!levelHighestScore){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
 		$('#bonus-frenzy').html( this.bonusFrenzy.getScore() );
 		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
-		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
 		new DialogMenu('screen-game', this, 'dialog-level-won');
 		this.showGameScreenLayers();
 	}
@@ -2652,7 +2636,7 @@ Board.prototype.dangerBarEmptied = function() {
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
@@ -2666,11 +2650,10 @@ Board.prototype.dangerBarEmptied = function() {
 	 });
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
-	if(sdkApi.inDemoMode()){
-			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
+	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
-	}else{
-			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+	}
+	else{
 			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
 }; //Board.prototype.dangerBarEmptied
@@ -2715,20 +2698,19 @@ Board.prototype.saveBoard = function() {
 		restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
 	}
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
+	store.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
 }; //Board.prototype.saveBoard()
 
 Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			//sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			//sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			new DialogMenu('screen-game', this, 'dialog-game-menu');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
@@ -2736,7 +2718,6 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
@@ -4157,3 +4138,96 @@ function PauseableInterval(func, delay , sender){
 function replaceAll(str, find, replace) {
   return str.replace(new RegExp(find, 'g'), replace);
 } //function replaceAll()
+
+window.store = new Store(); 
+
+function Store(){
+}
+
+Store.prototype.localStoreSupport = function() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+        return false;
+    }
+};
+
+Store.prototype.setItem = function(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else {
+        var expires = "";
+    }
+    if( this.localStoreSupport() ) {
+        localStorage.setItem(name, value);
+    }
+    else {
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+};
+
+Store.prototype.getItem = function(name) {
+    if( this.localStoreSupport() ) {
+        return localStorage.getItem(name);
+    }
+    else {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+};
+
+Store.prototype.getKeys = function(name) {
+	var keys = [];
+    if( this.localStoreSupport() ) {
+        for (var i = 0; i < localStorage.length; i++){
+			keys.push(localStorage.key(i));
+		}
+    }
+    else {
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	keys.push(c.substring(0, eqIndex));
+            }
+        }
+    }
+    return keys;
+};
+ 
+Store.prototype.removeItem = function(name) {
+    if( this.localStoreSupport() ) {
+        localStorage.removeItem(name);
+    }
+    else {
+        this.setItem(name,"",-1);
+    }
+};
+
+Store.prototype.clear = function(){
+	if( this.localStoreSupport() ) {
+        localStorage.clear();
+    }
+    else {
+    	var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	this.setItem(c.substring(0, eqIndex), "", -1);
+            }
+        }
+    }	
+};

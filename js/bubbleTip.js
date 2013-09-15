@@ -1,10 +1,11 @@
 function BubbleTip(levelAnimation) {
 	this.levelAnimation = levelAnimation;
+	this.gameTipsSelectionEle = $('#gameTipsSelection')[0];
 }
 BubbleTip.prototype.showBubbleTip = function (text) {
     this.content = text;
     var bubbleTip = $('#bubbleTip')[0];
-	if(this.content!=''){
+	if(this.content!='' && this.gameTipsSelectionEle.innerHTML === 'On'){
 		this.levelAnimation.animateBobCervantes();
 		bubbleTip.innerHTML=this.content;
 		bubbleTip.style.display='block';

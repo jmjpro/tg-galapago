@@ -4,21 +4,10 @@
 		<script>document.writeln('<title>' + document.domain + ': Galapago</title>');</script>
 		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
 		<link rel="stylesheet" type="text/css" href="css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="css/dialogMenu.css"/>
 		<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
 		<link rel="stylesheet" type="text/css" href="css/map.css"/>
-		<!--<script type="text/javascript" src="http://192.168.40.100:8082/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="http://192.168.40.100:8082/addons/console.js"></script>
-		<script type="text/javascript" src="http://192.168.40.100:8082/addons/socket.js"></script>
-		<script type="text/javascript" src="http://192.168.40.100:8082/addons/web.js"></script>
-		<script type="text/javascript" src="http://192.168.40.100:8082/addons/inject.js?url=http://192.168.40.100:8082"></script>
-		<script>
-			window.onerror = function(errorMsg, url, lineNumber) {
-				console.error("errorMsg: " + errorMsg + ", url: " + url + ", lineNumber: " + lineNumber);
-			};
-		</script>
-		<link type="text/css" media="all" href="http://192.168.40.100:8082/resources/console.css" />-->
 
-		<!--script src="http://jserrlog.appspot.com/jserrlog.js"></script-->
 		<script src="ext/lodash.min.js"></script>
 		<script src="ext/imgpreload.js"></script>
 		<script src="ext/queryString.js"></script>
@@ -45,7 +34,9 @@
 		<script src="js/bubbleTip.js"></script>
 		<script src="js/audioPlayer.js"></script>
 		<script src="js/priorityQueue.js"></script>
-		
+		<!--script src="ext/profiler.js"--></script>
+		<!-- <script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script> -->
+
 		<script>
 			var sdkApi, galapagoVersion;
 			galapagoVersion = 'Ver. 1.9.2';
@@ -92,10 +83,6 @@
 			<canvas id="layer-map" width="1" height="1" tabindex="1"></canvas>
 			<div id="lava-animation"></div>
 			<div id="bombs-animation"></div>
-			<!--
-			<canvas id="layer-map-other-animation" width="1" height="1" style="z-index: 3;" tabindex="3"></canvas>
-			<canvas id="layer-map-animation" width="1" height="1" style="z-index: 4;" tabindex="4"></canvas>
-			-->
 			<div id="map-level-info">
 				<span id="map-level-name"></span>
 				<img id="map-level-complete-indicator"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
@@ -113,11 +100,8 @@
 
 		<div id="screen-game" class="canvas-fullscreen">
 			<div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div>
-			<!--<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>-->
-			<!--<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>-->
 			<canvas id="layer-creature" width="1" height="1" class="layer-board" style="z-index: 4;"></canvas>
 			<div id="div-hilight" style="z-index: 5;position: absolute" tabindex="1"></div>
-			<!--<canvas id="layer-score" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>-->
 			<div id="current-score" style="z-index: 2;" tabindex="2"></div><div id="level-name"></div>
 			<canvas id="layer-power-up" width="1" height="1" style="z-index: 2;" tabindex="3"></canvas>
 			<canvas id="layer-danger-bar" width="1" height="1" style="z-index: 2;"></canvas>
@@ -229,7 +213,11 @@
 					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
 					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
 					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
-					<li id="option-game-tip" class="button-huge">Game Tips<!--<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialog/arrow-left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialog/arrow-right.png" class="game-option-arrow" width="37" height="27"></div>--></li>
+					Game Tips &nbsp;&nbsp;&nbsp;<li id="option-game-tip" class="button-regular"> 
+						<img id="arrow-left" src="" class="game-option-arrow" width="37" height="27">
+							<span id='gameTipsSelection'>On</span>
+						<img id="arrow-right" src="" class="game-option-arrow" width="37" height="27">
+					</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -289,7 +277,7 @@
 					explore Galapago whenever you like.<br/>
 					The creatures of Galapago are forever grateful to you, and will bring
 					peace and prosperity for the rest of your days.<br/>
-					Final Score: <span id="finalScore"></span><br/>
+					Final Score: <span id="total-score"></span><br/>
 				</span>
 				<ul class="vertical-button-nav">
 					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
