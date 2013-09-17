@@ -1242,9 +1242,9 @@ AnimationDiv.prototype.destroy = function(){
 	begin class AnimationSprites
 	assumes an array of sprites of equal dimensions
 */
-function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
+function AnimationSprites(parentElementSelector, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var spritesMagnified;
-	this.parentElement = parentElement;
+	this.parentElementSelector = parentElementSelector;
 	if( magnificationFactor ) {
 		spritesMagnified = [];
 		_.each( sprites, function(sprite) {
@@ -1271,13 +1271,16 @@ AnimationSprites.prototype.initSprite = function() {
 	this.currentSprite.style.position = 'absolute';
 	this.currentSprite.style.left = this.initLeft + 'px';
 	this.currentSprite.style.top = this.initTop + 'px';
-	$(this.parentElement).append(this.currentSprite);
+	$(this.parentElementSelector).append(this.currentSprite);
 	return this.currentSprite;
 }; //AnimationSprites.prototype.initSprite()
 
 AnimationSprites.prototype.destroy = function(url){
-	//$( '#' + this.currentSprite.id ).remove();
+	//yj: since this.currentSprite.id often has a foward slash "/" and that seems to be creating problems for zepto.js
+	$( this.parentElementSelector )[0].removeChild(this.currentSprite);
+	//$( this.parentElementSelector + ' #' + this.currentSprite.id ).remove();
 	this.currentSprite = null;
+	this = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
 
