@@ -3502,7 +3502,7 @@ Tile.prototype.clear = function() {
 	if(this.board.getGoldTile(this)){
 		this.board.creatureLayer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}else{
-		this.board.creatureLayer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		this.board.creatureLayer.drawImage(this.board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	//this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
