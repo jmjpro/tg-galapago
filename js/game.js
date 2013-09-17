@@ -3502,9 +3502,18 @@ Tile.prototype.setUnselected = function() {
 };
 
 Tile.prototype.clear = function() {
+	var goldAssetPath, imageGold, tileActive;
+	tileActive = this.board.tileActive;
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	if(this.board.getGoldTile(this)){
-		this.board.creatureLayer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		goldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
+		imageGold = LoadingScreen.gal.get(goldAssetPath);
+		if( imageGold ) {
+			this.board.creatureLayer.drawImage(imageGold, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
+		else {
+			console.error( 'unable to find gold image ' + goldAssetPath );
+		}
 	}else{
 		this.board.creatureLayer.drawImage(this.board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
