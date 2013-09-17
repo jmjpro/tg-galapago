@@ -3354,10 +3354,11 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
-Tile.prototype.drawComplete = function() {
-	var galGoldAssetPath, imageGold, layer, tile;
+Tile.prototype.drawComplete = function(y) {
+	var galGoldAssetPath, imageGold, layer, tile, creatureY;
 	tile = this;
 	layer = this.board.creatureLayer;
+	creatureY = y ? y : tile.getYCoord();
 	if( this.board.getGoldTile(tile) ) {
 		galGoldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
 		imageGold = LoadingScreen.gal.get(galGoldAssetPath);
@@ -3371,7 +3372,7 @@ Tile.prototype.drawComplete = function() {
 	else{
 		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+	layer.drawImage(tile.blob.image, tile.getXCoord(), creatureY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 };
 
