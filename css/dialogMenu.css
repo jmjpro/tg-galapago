@@ -327,6 +327,22 @@ ul.galapago-drop-down {
 	top: 15px;
 }
 
+#up-down{
+	width:34px;
+	left: 220px;
+	position: absolute;
+    top: 435px;
+}
+#up{
+	width:34px;
+	height:34px;
+}
+
+#down{
+	width:34px;
+	height:34px;
+}
+
 #dialog-help .dialog-title {
 	left: 20px;
 }

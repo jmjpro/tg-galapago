@@ -55,14 +55,8 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.scrollDiv[0].scrollTop=0;
 	this.updateScrollDivPages();
 	this.scrollDiv[0].focus();
-	$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
-	$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
-	$('#down').css('width',"40px;");
-	$('#down').css('height',"50px;");
-	$('#down').css('margin-left',0);
-	$('#up').css('width',"30px;");
-	$('#up').css('height',"40px;");
-	$('#up').css('margin-left',5);
+	this.setArrow( 'down', true);
+	this.setArrow( 'up', false);
 	/*
 	if( callback ) {
 		this.callback = callback;
@@ -148,59 +142,44 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-				if(dialogHelp.currentPage != 1){
-					if(dialogHelp.scrollDiv[0].scrollByPages){
-						dialogHelp.scrollDiv[0].scrollByPages(-1);
-					}
-					dialogHelp.currentPage = dialogHelp.currentPage - 1;
-					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-highlight.png').src + ')');
-					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-disable.png').src + ')');
-					$('#up').css('width',"40px;");
-					$('#up').css('height',"50px;");
-					$('#up').css('margin-left',0);
-					$('#down').css('width',"30px;");
-					$('#down').css('height',"40px;");
-					$('#down').css('margin-left',5);
-				}else{
-					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
-					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
-					$('#down').css('width',"40px;");
-					$('#down').css('height',"50px;");
-					$('#down').css('margin-left',0);
-					$('#up').css('width',"30px;");
-					$('#up').css('height',"40px;");
-					$('#up').css('margin-left',5);
+			evt.stopPropagation();
+			evt.preventDefault();
+			if( dialogHelp.currentPage === 1 ) {
+				break;
+			}
+			dialogHelp.currentPage--;
+			dialogHelp.setArrow('down', true);
+			if( dialogHelp.currentPage >= 1 ) {
+				if(dialogHelp.scrollDiv[0].scrollByPages){
+					dialogHelp.scrollDiv[0].scrollByPages(-1);
 				}
-
-
+			}
+			if( dialogHelp.currentPage === 1 ) {
+				dialogHelp.setArrow('up', false);
+			}
+			else {
+				dialogHelp.setArrow('up', true);
+			}
 			break;
 		case 40: // down arrow
-				if(dialogHelp.currentPage < DialogHelp.MAX_PAGE){
-					if(dialogHelp.scrollDiv[0].scrollByPages){
-						dialogHelp.scrollDiv[0].scrollByPages(1);
-					}
-					dialogHelp.currentPage = dialogHelp.currentPage + 1;
-					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-highlight.png').src + ')');
-					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-disable.png').src + ')');
-					$('#down').css('width',"40px;");
-					$('#down').css('height',"50px;");
-					$('#down').css('margin-left',0);
-					$('#up').css('width',"30px;");
-					$('#up').css('height',"40px;");
-					$('#up').css('margin-left',5);
-				}else{
-					$('#up').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-up-highlight.png').src + ')');
-					$('#down').css('background-image','url(' + LoadingScreen.gal.get(DialogMenu.DIALOG_PREFIX+'arrow-button-down-disable.png').src + ')');
-					$('#up').css('width',"40px;");
-					$('#up').css('height',"50px;");
-					$('#up').css('margin-left',0);
-					$('#down').css('width',"30px;");
-					$('#down').css('height',"40px;");
-					$('#down').css('margin-left',5);
+			evt.stopPropagation();
+			evt.preventDefault();
+			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
+				break;
+			}
+			dialogHelp.currentPage++;
+			dialogHelp.setArrow('up', true);
+			if( dialogHelp.currentPage <= DialogHelp.MAX_PAGE ) {
+				if(dialogHelp.scrollDiv[0].scrollByPages){
+					dialogHelp.scrollDiv[0].scrollByPages(1);
 				}
-
-
-
+			}
+			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
+				dialogHelp.setArrow('down', false);
+			}
+			else {
+				dialogHelp.setArrow('down', true);
+			}
 			break;
 		case 8: // backspace
 			dialogHelp.hide();
@@ -241,4 +220,25 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	else {
 		$('#version').html('&nbsp');
 	}
-};
+}; //DialogHelp.prototype.updateScrollDivPages()
+
+DialogHelp.prototype.setArrow = function(direction, isEnabled) {
+	var arrowSelector, galResourcePath, imageArrow;
+	arrowSelector = '#' + direction;
+	galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-';
+	if( isEnabled ) {
+		galResourcePath += 'hilight';
+	}
+	else {
+		galResourcePath += 'disable';
+	}
+	galResourcePath += '.png';
+	imageArrow = LoadingScreen.gal.get(galResourcePath);
+	if( imageArrow ) {
+		$(arrowSelector)[0].src = imageArrow.src;
+	}
+	else {
+		console.error( 'unable to load arrow ' + galResourcePath);
+	}
+	return this;
+}; //DialogHelp.prototype.setArrow()
