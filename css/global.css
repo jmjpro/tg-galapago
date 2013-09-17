@@ -216,3 +216,17 @@ ul.menu li {
 	margin:0px;
 	position:absolute; 
 }
+
+.gameNav{
+	position:absolute;
+	left:124px;
+	height:42px;
+	line-height:42px;
+	width:116px;
+	text-align:center;
+	z-index: 9999;
+	font-family: 'JungleFever';
+	font-size: 17px;
+	color: rgb(107,45,0); 
+	vertical-align:middle;
+}
