@@ -86,9 +86,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.currentNavItem.css( 'background-image','');
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			if(!Level.isComplete('1')){
-				levelMap.levelAnimation.animateSprites(levelMap.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
-			}
+			levelMap.aimateStartArrowIfNeeded();
 			levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;

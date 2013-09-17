@@ -266,9 +266,7 @@ LevelMap.prototype.display = function() {
 			that.screenDiv.css( 'display', 'block');
 			that.canvas.focus();
 
-			if(!Level.isComplete("1")){
-				that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
-			}
+			that.aimateStartArrowIfNeeded();
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
@@ -276,8 +274,8 @@ LevelMap.prototype.display = function() {
 			if(completedLevelIds.length){
 				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
 			}
-			that.levelAnimation.animateBombs(that.layer);
-			//that.levelAnimation.animateBombs2(that.screenDiv.selector);
+			//that.levelAnimation.animateBombs(that.layer);
+			that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
 			that.drawHotspots();
 			that.registerEventHandlers();
@@ -286,6 +284,16 @@ LevelMap.prototype.display = function() {
 	});
 	LoadingScreen.gal.download('bg-map-screen');
 }; //LevelMap.prototype.display()
+
+LevelMap.prototype.aimateStartArrowIfNeeded = function(){
+	if(!Level.isComplete("1")){
+		this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
+	}
+}	
+
+LevelMap.prototype.stopStartArrowAnimation = function(){
+	this.levelAnimation.stopAnimateSprite(Galapago.collageDirectory + 'map-start-arrow-strip.png');
+}
 
 LevelMap.prototype.drawHotspots = function(level){
 	var levelMap = this;
@@ -539,7 +547,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		this.levelAnimation.stopSprites( Galapago.collageDirectory + 'map-start-arrow-strip.png' );
+		this.stopStartArrowAnimation();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
