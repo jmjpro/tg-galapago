@@ -142,6 +142,11 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
 		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		if(board.getGoldTile(tileActive)){
+			layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}else{
+			layer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
 		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		if(board.tileSelected == tileActive){
 			tileActive.setSelectedAsync().then( function() {
@@ -229,7 +234,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				if(rolloverImageSpriteSheet1){
 					image1 = imageArray1[imgCnt];
 				}
-				layer.clearRect(x, y, width, height);
+				layer.clearRect(x +3 , y +3, width -2, height -2);
 				if(tileUpSelected){
 					if(image && image.naturalWidth){
 						layer.drawImage(image, x, y);
@@ -247,7 +252,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= rolloverImageSpriteSheet.length){
+				if((rolloverImageSpriteSheet && imgCnt >= rolloverImageSpriteSheet.length) || (rolloverImageSpriteSheet1 && imgCnt >= rolloverImageSpriteSheet1.length)){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -920,8 +925,10 @@ MakeMatchAnimation.prototype.stop = function(){
 
 MakeMatchAnimation.prototype.animate = function(){
 	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	var image = this.imageArray[this.rolloverSpriteId];
 	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
@@ -1273,9 +1280,10 @@ AnimationSprites.prototype.initSprite = function() {
 	return this.currentSprite;
 }; //AnimationSprites.prototype.initSprite()
 
-AnimationSprites.prototype.destroy = function(url){
+AnimationSprites.prototype.destroy = function(){
 	if(this.currentSprite){
-		this.currentSprite.remove();
+		//this.currentSprite.remove();
+		this.currentSprite.parentNode.removeChild(this.currentSprite);
 	}
 	this.currentSprite = null;
 	return this;
@@ -1346,7 +1354,7 @@ function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, m
 
 BlinkingImage.prototype.destroy = function(url){
 	if(this.image){
-		this.image.remove();
+		this.image.parentNode.removeChild(this.image);
 	}
 	this.image = null;
 	return this;
