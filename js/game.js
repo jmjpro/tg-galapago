@@ -539,7 +539,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		//this.levelAnimation.stopGameStartArrow();
+		this.levelAnimation.stopSprites( Galapago.collageDirectory + 'map-start-arrow-strip.png' );
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
@@ -2846,6 +2846,7 @@ Board.prototype.handleLeftArrow = function() {
 	} else if(!board.navigationLock){
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
+		//board.level.levelAnimation.rolloverAnimation.stop();
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
@@ -2858,8 +2859,6 @@ Board.prototype.handleLeftArrow = function() {
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
-		board.displayMenuButton(true);
-		this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow

@@ -27,7 +27,9 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "screen-map/next-level-arrow-left.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-right.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
-	{ id: "collage/map-start-arrow-strip.png", frameInterval: "100", initLeft: "200", initTop: "265", mf: "1", isContinuous : "true" }
+	{ id: "collage/map-start-arrow-strip.png", frameInterval: "100", initLeft: "200", initTop: "265", mf: "1", isContinuous : "true" },
+	{ id: "collage/powerup-gained-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" },
+	{ id: "collage/powerup-activated-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" }
 ];
 
 function LevelAnimation(layer){
@@ -343,18 +345,18 @@ LevelAnimation.prototype.animateBombs = function(layer){
 	animateBomb(animateBomb);
 }; //LevelAnimation.prototype.animateBombs()
 
-LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, callback){
+LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var animationSprite, sprites, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		sprites = LoadingScreen.gal.getSprites(galAssetPath);
 		if( sprites ) {
 			frameInterval = animationConfig.frameInterval;			
-			initLeft = animationConfig.initLeft;
-			initTop = animationConfig.initTop;
+			initLeft = initLeft ? initLeft : animationConfig.initLeft;
+			initTop = initTop ? initTop : animationConfig.initTop;
 			magnificationFactor = animationConfig.mf;
 			isContinuous = ( animationConfig.isContinuous === 'true' );
-			animationSprite = new AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback);
+			animationSprite = new AnimationSprites(parentElement, galAssetPath, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback);
 			if( animationSprite ) {
 				animationSprite.start(isContinuous);
 			}
@@ -369,6 +371,17 @@ LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, 
 	this.animationSprites.push( animationSprite );
 	return;
 }; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.stopSprites = function(spriteSheetId) {
+	var animationSprites;
+	animationSprites = _.remove( this.animationSprites, function( animationSprites ) {
+		if( animationSprites.spriteSheetId === spriteSheetId ) {
+			return animationSprites;
+		}
+	});
+	animationSprites[0].stop();
+	animationSprites[0] = null;
+} //LevelAnimation.prototype.stopSprites()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
@@ -409,10 +422,14 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 }; //LevelAnimation.prototype.animateBombs()
 
 LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
-	var levelAnimation = this;
-	var powerAchievedAnimation;
-	var   powerAchievedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-gained-strip.png"); 
-	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,layer,animatePowerAchieved);	
+	var levelAnimation, powerAchievedAnimation, powerAchievedImageSpriteSheet, spriteFrame;
+	levelAnimation = this;
+	powerAchievedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-gained-strip.png"); 
+	spriteFrame = new Image();
+	spriteFrame.style.position = 'absolute';
+	spriteFrame.style.display = 'block';
+	$('#screen-game').append(spriteFrame);
+	powerAchievedAnimation = new GameStartArrowAnimation(coordinates, powerAchievedImageSpriteSheet,spriteFrame,layer,animatePowerAchieved);
 	function animatePowerAchieved(){
 		powerAchievedAnimation.start();
 		if(!levelAnimation.powerAchievedAnimation){
@@ -443,10 +460,15 @@ LevelAnimation.prototype.stopAllPowerAchieved = function(){
 }
 ////
 LevelAnimation.prototype.animatePowerActivated = function(layer ,coordinates){
-	var levelAnimation = this;
-	var powerActivatedAnimation;
-	var  powerActivatedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-activated-strip.png");
-	powerActivatedAnimation = new GameStartArrowAnimation(coordinates, powerActivatedImageSpriteSheet,layer,animatePowerActivated);	
+	var levelAnimation, powerActivatedAnimation, powerActivatedImageSpriteSheet, spriteFrame;
+	levelAnimation = this;
+	powerActivatedAnimation;
+	powerActivatedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-activated-strip.png");
+	spriteFrame = new Image();
+	spriteFrame.style.position = 'absolute';
+	spriteFrame.style.display = 'block';
+	$('#screen-game').append(spriteFrame);
+	powerActivatedAnimation = new GameStartArrowAnimation(coordinates, powerActivatedImageSpriteSheet,spriteFrame,layer,animatePowerActivated);
 	function animatePowerActivated(){
 		powerActivatedAnimation.start();
 		levelAnimation.powerActivatedAnimation = powerActivatedAnimation;
@@ -640,6 +662,16 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	}
 };
 
+/*
+LevelAnimation.prototype.findAnimationSpritesBySpriteSheetId = function(spriteSheetId){
+	return _.find(this.animationSprites, function(animationSprites) {
+		if( animationSprites.spriteSheetId === spriteSheetId ) {
+			return animationSprites;
+		}
+	});
+}; //LevelAnimation.findAnimationSpritesBySpriteSheetId()
+*/
+
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	var minx =100000, miny=100000, maxx=0, maxy=0, x, y;
 	_.each(hotspotPointsArray, function(hotspotPoint){
@@ -652,6 +684,8 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	y = miny + Math.floor((maxy - miny) / 2);
 	return [x,y];	
 };
+
+/* end class LevelAnimation */
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
 function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites){
@@ -1231,9 +1265,10 @@ AnimationDiv.prototype.destroy = function(){
 	begin class AnimationSprites
 	assumes an array of sprites of equal dimensions
 */
-function AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
+function AnimationSprites(parentElementSelector, spriteSheetId, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var spritesMagnified;
-	this.parentElement = parentElement;
+	this.parentElementSelector = parentElementSelector;
+	this.spriteSheetId = spriteSheetId;
 	if( magnificationFactor ) {
 		spritesMagnified = [];
 		_.each( sprites, function(sprite) {
@@ -1260,11 +1295,16 @@ AnimationSprites.prototype.initSprite = function() {
 	this.currentSprite.style.position = 'absolute';
 	this.currentSprite.style.left = this.initLeft + 'px';
 	this.currentSprite.style.top = this.initTop + 'px';
-	$(this.parentElement).append(this.currentSprite);
+	$(this.parentElementSelector).append(this.currentSprite);
 	return this.currentSprite;
 }; //AnimationSprites.prototype.initSprite()
 
 AnimationSprites.prototype.destroy = function(url){
+	//yj: since this.currentSprite.id often has a foward slash "/" and that seems to be creating problems for zepto.js
+	if( this.currentSprite ) {
+		$( this.parentElementSelector )[0].removeChild(this.currentSprite);
+		//$( this.parentElementSelector + ' #' + this.currentSprite.id ).remove();
+	}
 	this.currentSprite = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
@@ -1309,6 +1349,8 @@ AnimationSprites.prototype.animate = function(isContinuous){
 	}
 	return this;
 }; //AnimationSprites.prototype.animate()
+
+/* end class AnimationSprites */
 
 function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var imageMagnified;
