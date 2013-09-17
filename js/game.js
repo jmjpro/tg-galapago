@@ -274,8 +274,8 @@ LevelMap.prototype.display = function() {
 			if(completedLevelIds.length){
 				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
 			}
-			//that.levelAnimation.animateBombs(that.layer);
-			that.levelAnimation.animateBombs2(that.screenDiv.selector);
+			that.levelAnimation.animateBombs();
+			//that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
 			that.drawHotspots();
 			that.registerEventHandlers();
