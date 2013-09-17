@@ -1301,8 +1301,10 @@ AnimationSprites.prototype.initSprite = function() {
 
 AnimationSprites.prototype.destroy = function(url){
 	//yj: since this.currentSprite.id often has a foward slash "/" and that seems to be creating problems for zepto.js
-	$( this.parentElementSelector )[0].removeChild(this.currentSprite);
-	//$( this.parentElementSelector + ' #' + this.currentSprite.id ).remove();
+	if( this.currentSprite ) {
+		$( this.parentElementSelector )[0].removeChild(this.currentSprite);
+		//$( this.parentElementSelector + ' #' + this.currentSprite.id ).remove();
+	}
 	this.currentSprite = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
