@@ -3242,7 +3242,8 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 		}
 		_.each( pointsArray, function(point) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-
+			var tile = board.getCreatureTilesFromPoints( [point] )[0];
+			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		});
 	}
 	if(this.putInAnimationQ){
@@ -3471,7 +3472,7 @@ Tile.prototype.setSelectedAsync = function() {
 		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
 		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-
+		this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	
 	Galapago.audioPlayer.playTileSelect();
@@ -3485,11 +3486,11 @@ Tile.prototype.setUnselected = function() {
 	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	
 	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	if(!this.board.getGoldTile(this)){
 		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
+		this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-
+		this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	return this; // chainable
 };
@@ -3501,7 +3502,7 @@ Tile.prototype.clear = function() {
 	}else{
 		this.board.creatureLayer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	
+	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	//this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 };
 

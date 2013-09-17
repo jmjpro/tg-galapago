@@ -5,7 +5,7 @@ LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
 LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
 LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
-LevelAnimation.JUMP_TIME_INTERVAL=10;
+LevelAnimation.JUMP_TIME_INTERVAL=100;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
 LevelAnimation.JUMP_SUFFIX = '-jump';
 LevelAnimation.lightningImages = {rightHorizontal:[], leftHorizontal:[], bottomVertical:[], topVertical:[]};
@@ -236,7 +236,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 				if(rolloverImageSpriteSheet1){
 					image1 = imageArray1[imgCnt];
 				}
-				layer.clearRect(x, y, width, height);
+				layer.clearRect(x +3 , y +3, width -2, height -2);
 				if(tileUpSelected){
 					if(image && image.naturalWidth){
 						layer.drawImage(image, x, y);
@@ -254,7 +254,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 					}	
 				}
 				imgCnt++;
-				if(imgCnt >= rolloverImageSpriteSheet.length){
+				if((rolloverImageSpriteSheet && imgCnt >= rolloverImageSpriteSheet.length) || (rolloverImageSpriteSheet1 && imgCnt >= rolloverImageSpriteSheet1.length)){
 					clearInterval(interval);
 					//board.animateSwapCreaturesAsync( tile, tilePrev );
 					callback();
@@ -934,8 +934,10 @@ MakeMatchAnimation.prototype.stop = function(){
 
 MakeMatchAnimation.prototype.animate = function(){
 	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
 	var image = this.imageArray[this.rolloverSpriteId];
 	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
