@@ -972,7 +972,7 @@ BoardBuildAnimation.prototype.animate = function(){
 					break;
 				}
 				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				this.layer.drawImage(tile.blob.image, tile.getXCoord(), y, this.width, this.height);
+				tile.drawComplete();
 			}
 		}
 		if(complete){
@@ -986,7 +986,7 @@ BoardBuildAnimation.prototype.animate = function(){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
 				tile = this.tileMatrix[col][row];
 				if(tile && tile.blob){
-					this.layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+					tile.drawComplete();
 				}
 			}
 		}

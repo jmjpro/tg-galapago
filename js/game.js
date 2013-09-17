@@ -3354,6 +3354,27 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
+Tile.prototype.drawComplete = function() {
+	var galGoldAssetPath, imageGold, layer, tile;
+	tile = this;
+	layer = this.board.creatureLayer;
+	if( this.board.getGoldTile(tile) ) {
+		galGoldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
+		imageGold = LoadingScreen.gal.get(galGoldAssetPath);
+		if( imageGold ) {
+			layer.drawImage(imageGold, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
+		else {
+			console.error( 'unable to find gold image ' + galGoldAssetPath );
+		}
+	}
+	else{
+		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+	layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+};
+
 Tile.prototype.toString = function() {
 	var output, tileType;
 	if( this.blob === null || this.blob.creatureType === null ) {
@@ -3455,6 +3476,8 @@ Tile.prototype.clear = function() {
 	var goldAssetPath, imageGold, tileActive;
 	tileActive = this.board.tileActive;
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.drawComplete();
+	/*
 	if(this.board.getGoldTile(this)){
 		goldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
 		imageGold = LoadingScreen.gal.get(goldAssetPath);
@@ -3468,6 +3491,7 @@ Tile.prototype.clear = function() {
 		this.board.creatureLayer.drawImage(this.board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	*/
 	//this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 };
 
