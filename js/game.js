@@ -539,7 +539,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		//this.levelAnimation.stopGameStartArrow();
+		this.levelAnimation.stopSprites( Galapago.collageDirectory + 'map-start-arrow-strip.png' );
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;

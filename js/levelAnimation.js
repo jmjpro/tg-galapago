@@ -356,7 +356,7 @@ LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, 
 			initTop = initTop ? initTop : animationConfig.initTop;
 			magnificationFactor = animationConfig.mf;
 			isContinuous = ( animationConfig.isContinuous === 'true' );
-			animationSprite = new AnimationSprites(parentElement, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback);
+			animationSprite = new AnimationSprites(parentElement, galAssetPath, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback);
 			if( animationSprite ) {
 				animationSprite.start(isContinuous);
 			}
@@ -371,6 +371,17 @@ LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, 
 	this.animationSprites.push( animationSprite );
 	return;
 }; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.stopSprites = function(spriteSheetId) {
+	var animationSprites;
+	animationSprites = _.remove( this.animationSprites, function( animationSprites ) {
+		if( animationSprites.spriteSheetId === spriteSheetId ) {
+			return animationSprites;
+		}
+	});
+	animationSprites[0].stop();
+	animationSprites[0] = null;
+} //LevelAnimation.prototype.stopSprites()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
@@ -651,6 +662,16 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	}
 };
 
+/*
+LevelAnimation.prototype.findAnimationSpritesBySpriteSheetId = function(spriteSheetId){
+	return _.find(this.animationSprites, function(animationSprites) {
+		if( animationSprites.spriteSheetId === spriteSheetId ) {
+			return animationSprites;
+		}
+	});
+}; //LevelAnimation.findAnimationSpritesBySpriteSheetId()
+*/
+
 LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	var minx =100000, miny=100000, maxx=0, maxy=0, x, y;
 	_.each(hotspotPointsArray, function(hotspotPoint){
@@ -663,6 +684,8 @@ LevelAnimation.getMapHotspotRegionCentroid = function(hotspotPointsArray){
 	y = miny + Math.floor((maxy - miny) / 2);
 	return [x,y];	
 };
+
+/* end class LevelAnimation */
 
 RolloverAnimation.ROLLOVER_TIME_INTERVAL=330;
 function RolloverAnimation(layer, tileActive, rolloverImageSpriteSheet, stopCallback, tileMarkSprites){
@@ -1242,9 +1265,10 @@ AnimationDiv.prototype.destroy = function(){
 	begin class AnimationSprites
 	assumes an array of sprites of equal dimensions
 */
-function AnimationSprites(parentElementSelector, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
+function AnimationSprites(parentElementSelector, spriteSheetId, sprites, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var spritesMagnified;
 	this.parentElementSelector = parentElementSelector;
+	this.spriteSheetId = spriteSheetId;
 	if( magnificationFactor ) {
 		spritesMagnified = [];
 		_.each( sprites, function(sprite) {
@@ -1280,7 +1304,6 @@ AnimationSprites.prototype.destroy = function(url){
 	$( this.parentElementSelector )[0].removeChild(this.currentSprite);
 	//$( this.parentElementSelector + ' #' + this.currentSprite.id ).remove();
 	this.currentSprite = null;
-	this = null;
 	return this;
 }; //AnimationSprites.prototype.destroy
 
@@ -1324,6 +1347,8 @@ AnimationSprites.prototype.animate = function(isContinuous){
 	}
 	return this;
 }; //AnimationSprites.prototype.animate()
+
+/* end class AnimationSprites */
 
 function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback) {
 	var imageMagnified;
