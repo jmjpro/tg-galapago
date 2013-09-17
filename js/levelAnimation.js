@@ -13,10 +13,10 @@ LevelAnimation.BOMB_COUNT = 4;
 //mf = magnificationFactor
 LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/map-lava-strip.png", frameInterval: "300", initLeft: "643", initTop: "0", mf: "2", isContinuous : "true" },
-	{ id: "collage/map-bomb-left-one-strip.png", frameInterval: "200", initLeft: "556", initTop: "305", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "200", initLeft: "546", initTop: "295", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "200", initLeft: "715", initTop: "386", mf: "2", isContinuous : "false" },
-	{ id: "collage/map-bomb-right-strip.png", frameInterval: "200", initLeft: "744", initTop: "295", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-left-one-strip.png", frameInterval: "200", initLeft: "550", initTop: "130", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "200", initLeft: "536", initTop: "80", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "200", initLeft: "715", initTop: "162", mf: "2", isContinuous : "false" },
+	{ id: "collage/map-bomb-right-strip.png", frameInterval: "200", initLeft: "754", initTop: "142", mf: "2", isContinuous : "false" },
 	{ id: "screen-map/next-level-arrow-down.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-left-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-right-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
@@ -822,16 +822,16 @@ function BombAnimation2(levelAnimation, bombId, parentElement){
 BombAnimation2.prototype.start = function(callback){
 	switch( this.bombId ) {
 		case 1:
-			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-one-strip.png', callback);
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-one-strip.png', null, null, callback);
 			break;
 		case 2:
-			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-two-strip.png', callback);
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-left-two-strip.png', null, null, callback);
 			break;
 		case 3:
-			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-mid-strip.png', callback);
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-mid-strip.png', null, null, callback);
 			break;
 		case 4:
-			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-right-strip.png', callback);
+			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-right-strip.png', null, null, callback);
 			break;
 	}
 }; //BombAnimation.prototype.start()
