@@ -25,7 +25,7 @@ function LoadingScreen() {
 }
 
 LoadingScreen.init = function() {
-	//sdkApi.reportPageView(TGH5.Reporting.Page.Loading);
+	//sdkApi.reportPageView(TGH5.Reporting.Screen.Loading);
 	LoadingScreen.localization();
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.screenDiv = $('#screen-loading');
@@ -74,8 +74,27 @@ LoadingScreen.hide = function(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();		
 	}
-	this.screenDiv.hide();
+
 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+
+
+	// TODO: remove/hide/shrink not needed elements
+	this.screenDiv[0].parentNode.removeChild(this.screenDiv[0]);
+
+	// remove all divs
+	this.screenDiv.hide();
+
+	var backgroundCanvas;
+	backgroundCanvas = $('#layer-background')[0];
+	backgroundCanvas.width = backgroundCanvas.height = 1;
+	backgroundCanvas.style.display = 'none';
+
+	this.screenDiv = null;
+	this.canvas = null;
+	this.layer = null;
+	backgroundCanvas = null;
+
+	LoadingScreen.gal.unload('screen-loading');
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){
@@ -113,7 +132,7 @@ function ProgressBar(){
 
 ProgressBar.prototype.drawImages = function() {
 	var backgroundCanvas, backgroundLayer
-	backgroundCanvas = $('#screen-loading #layer-background')[0];
+	backgroundCanvas = $('#layer-background')[0];
 	backgroundLayer = backgroundCanvas.getContext('2d');
 	backgroundCanvas.width = this.canvas.width;
 	backgroundCanvas.height = this.canvas.height;

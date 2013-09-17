@@ -28,6 +28,12 @@ html, body {
 	padding: 0;
 }
 
+canvas, div, li {
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: 100% 100%;
+}
+
 /* disable visual effects on focused elements;
 see http://dev.opera.com/articles/view/tweaking-spatial-navigation-for-tv-browsing/ */
 *:focus {
@@ -49,8 +55,6 @@ canvas {
 	border: 0px solid #d3d3d3;
 	width: 1279px;
 	height: 720px;
-	background-repeat: no-repeat;
-	background-position: top left;
 	display: none;
 }
 
@@ -112,513 +116,6 @@ ul.menu li {
 }
 */
 
-ul#map-nav {
-	list-style-type:none;
-	margin:0;
-	padding:0;
-	position: absolute;
-	left: 252px;
-	top: 642px;
-}
-
-ul#map-nav>li {
-	display:inline-block;
-	margin-right:8px;
-	padding:0;
-	width: 150px;
-	height: 55px;
-	vertical-align: top;
-	cursor: pointer;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: -moz-none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-img#map-nav-cursor {
-	position:relative;
-}
-
-div.vertical-align-shiv {
-	position: relative;
-}
-
-div.nav-button {
-	position:absolute;
-	display: table; 
-	width: 150px;
-	height: 55px;
-}
-
-.nav-button p {
-	display: table-cell; 
-	vertical-align: middle; 
-	text-align: center; 
-	font-family: 'JungleFever';
-	font-size: 17px;
-	color: rgb(107,45,0);
-}
-
-.vertical-align-helper {
-    display: inline-block;
-    vertical-align: middle;
-    height: 100%;
-}
-
-#dialog-quit {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 590px;
-	/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
-	left: 281px; /*(1279-717/2)*/
-	top: 65px; /*(720-590/2)*/
-
-}
-
-div.dialog-content {
-	display: inline-block;
-	vertical-align: middle;
-	margin: auto;
-	white-space: normal;
-}
-
-#dialog-quit div.dialog-content {
- 	width: 388px;
-}
-
-div.dialog-title {
-	position: relative;
-	font-size: 28px;
-	color: rgb(141,122,46);
-	top: 50px;
-}
-
-#dialog-game-menu {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 690px;
-	left: 281px; /*(1279-717/2)*/
-	top: 15px; /*(720-690/2)*/
-}
-
-#dialog-game-menu div.dialog-content {
- 	width: 388px;
-}
-
-#dialog-game-menu ul.vertical-button-nav {
-	margin-top: -50px; /* jj: either we need this or buttons some of the transparent space around them removed; */
-}
-
-#dialog-level-won {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-level-won div.dialog-content {
- 	width: 350px;
- 	font-size: 27px;
-}
-
-#dialog-level-won>div ul {
-	display: inline-block;
-}
-
-#dialog-level-won table {
-	font-size: inherit;
-	color: inherit;
-	margin-top: 20px;
-}
-
-#dialog-level-won table th {
-	color: inherit;
-	text-align: left;
-	white-space: nowrap;
-}
-
-#dialog-level-won table td {
-	color: rgb(243,209,111);
-	padding-left: 10px;
-}
-
-
-.button-huge {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 388px;
-	height: 94px;
-	vertical-align: middle;
-	line-height: 79px;
-	font-size: 27px;
-}
-
-.button-big {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 388px;
-	height: 90px;
-	vertical-align: middle;
-	line-height: 45px;
-}
-
-.button-medium {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 164px;
-	height: 55px;
-	line-height: 33px;
-	vertical-align: middle;
-	font-size: 22px;
-}
-
-.button-medium-hilight {
-	width: 164px;
-	height: 55px;
-	line-height: 33px;
-}
-
-.button-small {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 140px;
-	height: 102px;
-	vertical-align: middle;
-	line-height: 102px;
-}
-
-.button-regular {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 184px;
-	height: 108px;
-	vertical-align: middle;
-	line-height: 108px;
-	display: inline-block;
-}
-
-.game-option-arrow {
-	position: relative;
-	top: 5px;
-}
-
-.button-regular-hilight {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-}
-
-.button-small-hilight {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-}
-
-ul.vertical-button-nav {
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	text-align: center;
-	display: inline-block;
-}
-
-ul.vertical-button-nav > li {
-	list-style-type: none;
-}
-
-#dialog-game-over {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 247px;
-	left: 281px; /*(1279-717/2)*/
-	top: 236px; /*(720-247/2)*/
-}
-
-#dialog-leaderboards {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 1081px;
-	height: 625px;
-	left: 99px; /*(1279-1081/2)*/
-	top: 48px; /*(720-625/2)*/
-}
-
-#dialog-leaderboards div.dialog-content {	
-	width: 900px;
-}
-
-#dialog-leaderboards div.dialog-content table {
-	display: inline-block;
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
-	font-size: 24px;
-	color: rgb(13,97,132);
-	text-align: center;
-	margin-top: 50px;
-	padding-bottom: 15px;
-}
-
-#dialog-leaderboards div.dialog-content table {
-	line-height: 22px;
-}
-
-#dialog-leaderboards div.dialog-content table>caption {
-	color: rgb(255,255,179);
-	height: 75px;
-}
-
-#dialog-leaderboards div.dialog-content table th {
-	color: rgb(141,122,46);
-}
-
-#dialog-time-out {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-time-out div.dialog-content {
- 	width: 500px;
-}
-
-#dialog-you-won {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-you-won div.dialog-content {
- 	width: 500px;
-}
-
-#dialog-you-won div.dialog-content p {
- 	font-size: 23px;
-}
-
-span#final-score {
-	color: rgb(243,209,111);
-}
-
-#dialog-loading {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 543px;
-	height: 268px;
-	left: 368px;
-	top: 220px;
-	font-size: 28px;
-}
-
-#dialog-new-game {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 590px;
-	left: 281px; /*(1279-717/2)*/
-	top: 65px; /*(720-590/2)*/
-	font-size: 27px;
-}
-
-#dialog-game-options {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-profile-delete {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 590px;
-	left: 281px; /*(1279-717/2)*/
-	top: 65px; /*(720-590/2)*/
-}
-
-
-#dialog-profile-delete div.dialog-content {
-	width: 375px;
-}
-
-#dialog-profile-create {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-	font-size: 27px;
-}
-
-#dialog-profile-create #keypad {
-	font-family: 'Helvetica';
-	font-size: 17px;
-}
-
-#dialog-profile-create .dialog-title {
-	top: 35px;
-	left: 20px;
-}
-
-.profile-name {
-	background: url('../res/img/dialog/profiles-name-area.png') no-repeat left top;
-	background-size: 100%;
-	width: 280px;
-	height: 48px;
-	border: none;
-}
-
-#keypad {
-	background: url('../res/img/dialog/keyboard/keypad-regular.png') no-repeat left top;
-	background-size: 100%;
-	width: 376px;
-	height: 238px;
-}
-
-ul.galapago-drop-down {
-	list-style-type: none;
-	text-align: left;
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 326px;
-	height: 177px;
-	padding: 10px 0px 0px 20px;
-	margin: -20px 0px 0px 20px;
-	/*visibility: hidden;*/
-}
-
-#button-game-tips, #button-off {
-	display: inline-block;
-}
-
-#dialog-profile-create-init
- {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 1081px;
-	height: 625px;
-	left: 99px; /*(1279-1081/2)*/
-	top: 48px; /*(720-625/2)*/
-}
-
-#dialog-profile-list {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-	font-size: 18px;
-}
-
-#dialog-profile-list #option-save {
-	height: 150px;
-	background-size: 388px 150px;
-	line-height: 27px;
-	padding-top: 45px;
-	font-size: 21px;
-}
-
-#dialog-reset-game {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-reset-game div.dialog-content {
-	width: 500px;
-}
-
-#dialog-help {
-	background-repeat: no-repeat;
-	background-position: top left;
-	background-size: 100%;
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
-}
-
-#dialog-help .dialog-title {
-	left: 20px;
-}
-
-#dialog-help div.dialog-content {
-	width: 500px;
-}
-
-#help-text-scroll {
-	overflow-y: scroll;
-	height: 300px;
-	margin-top: 20px;
-	padding: 0px 20px 0px 50px;
-	font-family: 'Helvetica';
-	text-align: left;
-}
-
-#dialog-help div.dialog-content h4 {
-	margin: 0px;
-}
-
-#dialog-help div.dialog-content p {
-	font-size: 14px;
-}
-
-#dialog-help #paging {
-	font-family: 'Helvetica';
-	font-size: 14px;
-}
-
-#dialog-help #version {
-	font-family: 'Helvetica';
-	font-size: 14px;
-	text-align: left;
-}
-
-#dialog-help .button-medium {
-	height: 61px;
-	margin-top: -10px;
-}
-
 .bubbleTip {
 	width:700px;
 	font-family: 'JungleFever';
@@ -656,4 +153,80 @@ ul.galapago-drop-down {
 	border-width: 13px;
 	left: 4%;
 	margin-left: -13px;
+}
+
+#current-score {
+	position: absolute;
+	/*left: 500px; yj: left is dynamically positioned by .js code to align with left side of game board */
+	top: 60px;
+	width: 100px;
+	height: 25px;
+	font-family: 'JungleFever';
+	font-size: 26px;
+	color: rgba(255,255,255, 100);
+}
+
+#level-name {
+	position: absolute;
+	left: 600px;
+	top: 60px;
+	width: 400px;
+	height: 30px;
+	font-family: 'JungleFever';
+	font-size: 30px;
+	color: rgba(19, 19, 197, 100);
+	text-align: top;
+}
+
+#game-nav {
+	position: absolute;
+	left: 124px;
+	top: 600px;
+}
+
+#game-nav .game-nav-button {
+	width: 116px;
+	height: 42px;
+}
+
+#layer-bob-cervantes {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+#layerGrid{
+	left: 325px; 
+	top:100px;
+	z-index:2; 
+	position:absolute; 
+	border-collapse: collapse;
+}
+
+.rowDiv{
+	height:47px;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	border-spacing:0px;
+}
+.columnSpan{
+	height:47px;
+	width:47px;
+	padding:0px;
+	margin:0px;
+	position:absolute; 
+}
+
+.gameNav{
+	position:absolute;
+	left:124px;
+	height:42px;
+	line-height:42px;
+	width:116px;
+	text-align:center;
+	z-index: 9999;
+	font-family: 'JungleFever';
+	font-size: 17px;
+	color: rgb(107,45,0); 
+	vertical-align:middle;
 }

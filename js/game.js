@@ -1,4 +1,4 @@
-﻿/* begin class Galapago */
+/* begin class Galapago */
 Galapago.MODE_TIMED = "MODE_TIMED";
 Galapago.MODE_RELAXED = "MODE_RELAXED";
 Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
@@ -17,14 +17,10 @@ Galapago.gameImageNames = [
 	'bracket-left',
 	'bracket-right',
 	'button-regular',
-	'button-cursor',
+	'button-cursor'
 ];
 Galapago.dangerBarImageNames = [
 	'danger-bar',
-	/*'danger_bar_cap_bottom01',
-	'danger_bar_cap_bottom02',
-	'danger_bar_cap_top01',
-	'danger_bar_cap_top02',*/
 	'danger-bar-fill-1',
 	'danger-bar-fill-2'
 ];
@@ -65,7 +61,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 }; //Galapago.setLevelsFromJson()
 
 Galapago.init = function(isTimedMode) {
-	var levelTemp, level, levelIt;
+	var levelTemp, level, levelIt, timedMode, gameTipsSelection, gameTipsSelectionEle;
 	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
 	Galapago.audioPlayer = new AudioPlayer(QueryString.isAudioEnabled === 'true' ? true : false);
@@ -74,6 +70,12 @@ Galapago.init = function(isTimedMode) {
 	Galapago.isTimedMode = isTimedMode;
 	Galapago.profile = 'profile';
 	Galapago.levels = [];
+	timedMode = isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+	gameTipsSelection = store.getItem( timedMode + Galapago.profile + "gameTipsSelection" );
+	gameTipsSelectionEle = $('#gameTipsSelection')[0];
+	if(gameTipsSelection){
+		gameTipsSelectionEle.innerHTML = gameTipsSelection;
+	}
 	console.log( 'Galapago.isTimedMode: ' + Galapago.isTimedMode );
 	console.log( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 	for( levelIt = 0; levelIt < Galapago.NUM_LEVELS; levelIt++ ){
@@ -143,7 +145,8 @@ Galapago.setLevel = function(levelId) {
 	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
-	console.log( 'levelName: ' + this.level.id );
+	this.level.levelCompleted = false;
+	console.log( 'level id: ' + this.level.id );
 	theme = this.level.bgTheme;
 	subTheme = this.level.bgSubTheme;
 	backgroundBundle = theme + '-' + subTheme;
@@ -161,26 +164,6 @@ Galapago.setLevel = function(levelId) {
 				Level.registerEventHandlers();
 			}
 		});
-
-	LoadingScreen.gal.onLoaded( Galapago.RESOURCE_BUNDLE_BOARD_COMMON, function(result) {
-		if (result.success) {
-			LoadingScreen.gal.clearOnLoaded(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-			console.debug( Galapago.RESOURCE_BUNDLE_BOARD_COMMON + ' resource bundle loaded' );
-			LoadingScreen.gal.download(themeBundle);
-		}
-	});
-	
-	LoadingScreen.gal.onLoaded(themeBundle, function(result) {
-		if (result.success) {
-			//LoadingScreen.gal.clearOnLoaded(theme);
-			LoadingScreen.gal.clearOnLoaded(themeBundle);
-			console.debug(themeBundle + ' resource bundle loaded');
-			Galapago.level.levelAnimation = new LevelAnimation();
-			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-			Galapago.level.display();
-			Level.registerEventHandlers();
-		}
-	});
 
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
@@ -203,16 +186,40 @@ Galapago.delay = function(delayMs) {
 	});
 	return deferred.promise;
 };
+
+Galapago.eraseProfile = function(profile) {
+	var keyIt;
+	var keyList = new  Array();
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
+		if(keyIt.indexOf(profile)>0){ // reset all the local storage of current Profile only.
+			//store.removeItem(keyIt);
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		store.removeItem(keyList[i]);
+	}
+};
 /* end class Galapago */
 
-LevelMap.WIDTH = 1279;
+LevelMap.WIDTH = 1018;
 LevelMap.HEIGHT = 640;
-LevelMap.LEVEL_STATUS_X = 985;
-LevelMap.LEVEL_STATUS_Y = 75;
+LevelMap.STAR_WIDTH = 40;
+LevelMap.MAX_DIFFICULTY = 5;
+/*
 LevelMap.LEVEL_NAV_X = 257;
 LevelMap.LEVEL_NAV_Y = 647;
 LevelMap.LEVEL_NAV_BUTTON_WIDTH = 145;
 LevelMap.LEVEL_NAV_BUTTON_MARGIN = 16;
+LevelMap.LEVEL_STATUS_X = 985;
+LevelMap.LEVEL_STATUS_Y = 75;
+LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE = '15px';
+LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE = '17px';
+LevelMap.LEVEL_STATUS_SCORE_SIZE = '22px';
+LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
+LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
 LevelMap.LEVEL_STATUS_WIDTH = 235;
 LevelMap.LEVEL_STATUS_HEIGHT = 151;
 LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
@@ -221,22 +228,22 @@ LevelMap.LEVEL_COMPLETE_INDICATOR_X = LevelMap.LEVEL_STATUS_X + 10;
 LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
 LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
 LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
-LevelMap.MAX_DIFFICULTY = 5;
-LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE = '15px';
-LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE = '17px';
-LevelMap.LEVEL_STATUS_SCORE_SIZE = '22px';
-LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
-LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
+*/
 
 /* begin class LevelMap */
 function LevelMap(level) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
+	this.canvas.width = LevelMap.WIDTH;
+	this.canvas.height = LevelMap.HEIGHT;
+	this.layer = this.canvas.getContext('2d');
+
+	/*
 	this.animationCanvas = $('#' + 'layer-map-animation')[0];
 	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
-	this.layer = this.canvas.getContext('2d');
 	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
+	*/
 	this.hotspotPointsArray = [];
 	this.images = [];
 	this.levelCounter = 0;
@@ -247,37 +254,46 @@ function LevelMap(level) {
 } //LevelMap constructor
 
 LevelMap.prototype.display = function() {
-	var backgroundImage, lavaAssetPath;
-	backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-	if( backgroundImage ) {
-		this.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-	}
-	this.screenDiv.css( 'display', 'block');
-	this.canvas.focus();
-	var otherAnimationCanvas = this.otherAnimationCanvas;
-	otherAnimationCanvas.width = LevelMap.WIDTH;
-	otherAnimationCanvas.height = LevelMap.HEIGHT;
-	var levelAnimation = this;
-	otherAnimationCanvas.onclick = function(evt) {
-		levelAnimation.canvas.focus();
-	};
-	if(!Level.isComplete("1")){
-	  this.levelAnimation.animateGameStartArrow(this.otherAnimationLayer);
-	}
-	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-	lavaAssetPath = Galapago.collageDirectory + 'map-lava-strip.png';
-	this.animate(lavaAssetPath);
-	
-	var completedLevelIds = LevelMap.getLevelsCompleted();
-	if(completedLevelIds.length){
-		this.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, this.otherAnimationLayer);
-	}
-	this.levelAnimation.animateBombs(this.otherAnimationLayer);
-	
-	this.drawHotspots();
-	this.registerEventHandlers();
-	Galapago.audioPlayer.playVolcanoLoop();
+	var that = this;
+
+	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
+		if (result.success) {
+			var backgroundImage;
+			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+			if( backgroundImage ) {
+				that.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+			}
+			that.screenDiv.css( 'display', 'block');
+			that.canvas.focus();
+
+			that.aimateStartArrowIfNeeded();
+			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+
+			var completedLevelIds = LevelMap.getLevelsCompleted();
+			if(completedLevelIds.length){
+				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
+			}
+			//that.levelAnimation.animateBombs();
+			that.levelAnimation.animateBombs2(that.screenDiv.selector);
+
+			that.drawHotspots();
+			that.registerEventHandlers();
+			Galapago.audioPlayer.playVolcanoLoop();
+		}
+	});
+	LoadingScreen.gal.download('bg-map-screen');
 }; //LevelMap.prototype.display()
+
+LevelMap.prototype.aimateStartArrowIfNeeded = function(){
+	if(!Level.isComplete("1")){
+		this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
+	}
+}	
+
+LevelMap.prototype.stopStartArrowAnimation = function(){
+	this.levelAnimation.stopAnimateSprite(Galapago.collageDirectory + 'map-start-arrow-strip.png');
+}
 
 LevelMap.prototype.drawHotspots = function(level){
 	var levelMap = this;
@@ -300,88 +316,54 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 			for(levelId in unlockLevelArrow){
 				if(!Level.isComplete(levelId)){
 					levelInfo = unlockLevelArrow[levelId];
-					for(arrow in levelInfo){
-						var img = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png');
+					for(arrow in levelInfo){						
+						var assetPath = MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png';
+						//var img = LoadingScreen.gal.get(MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png');
 						var coordinates = levelInfo[arrow];
 						var x = coordinates[0];
 						var y = coordinates[1];
-						nextLevelArrowsInfo.push({"image":img,"xCoord":x,"yCoord":y});
+						nextLevelArrowsInfo.push({"assetPath":assetPath,"xCoord":x,"yCoord":y});
+						//nextLevelArrowsInfo.push({"image":img,"xCoord":x,"yCoord":y});
 					}
 				}
 			}
 		});
 	}
 	if(nextLevelArrowsInfo.length){
-		levelMap.levelAnimation.animateNextLevelArrows(levelMap.otherAnimationLayer, nextLevelArrowsInfo);
+		levelMap.levelAnimation.animateNextLevelArrows(this.screenDiv.selector, nextLevelArrowsInfo);
+		//levelMap.levelAnimation.animateNextLevelArrows(levelMap.layer, nextLevelArrowsInfo);
 	}
 }; //LevelMap.prototype.drawBlinkingArrows()
 
-LevelMap.prototype.animate = function(assetPath){
-	var xIndex, that, sprites, sprite;
-	sprites = LoadingScreen.gal.getSprites(assetPath);
-	xIndex =0;
-	that=this;
-	sprite = sprites[xIndex];
-	sprite = CanvasUtil.magnifyImage( sprite, 2 );
-	this.animationCanvas.onclick = function(evt) {
-		that.canvas.focus();
-	};
-	this.animationCanvas.width = sprite.width;
-	this.animationCanvas.height = sprite.height;
-	this.animationLayer =  this.animationCanvas.getContext('2d');	
-	function cycleSprite(){
-	    sprite = sprites[xIndex];
-	    sprite = CanvasUtil.magnifyImage( sprite, 2 );
-	    that.animationLayer.clearRect(0,0,sprite.width,sprite.height);
-		that.animationLayer.drawImage(sprite, 0, 0, sprite.width, sprite.height);
-		xIndex++;
-		if( xIndex > sprites.length - 1 ){
-		  xIndex=0;
-		}
-	}
-	this.handle =window.setInterval(cycleSprite,300);
-}; //LevelMap.prototype.animate()
-
 LevelMap.prototype.updateLevelStatus = function() {
-	var text, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock;
+	var text, levelScore, level_stars_silver, level_stars_gold, green_v, level_lock, levelDifficulty;
 	level_stars_silver = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-silver.png');
 	level_stars_gold = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-stars-gold.png');
 	green_v = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'green-v.png');
 	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
-	this.layer.clearRect( LevelMap.LEVEL_STATUS_X, LevelMap.LEVEL_STATUS_Y, LevelMap.LEVEL_STATUS_WIDTH, LevelMap.LEVEL_STATUS_HEIGHT);
-	this.layer.font = LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
-	this.layer.fillStyle = LevelMap.LEVEL_STATUS_FONT_COLOR;
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
-	this.layer.fillText(text, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y);
-	var levelDifficulty = this.hotspotLevel.difficulty;
-	for(var cnt=0;cnt<5;cnt++){
-		if((cnt  + 1 ) <= levelDifficulty ){
-			this.layer.drawImage(level_stars_gold, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
-		}else{
-			this.layer.drawImage(level_stars_silver, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y );	
-			var fraction = levelDifficulty - cnt;
-			if(fraction > 0 && fraction < 1){
-				this.layer.drawImage(level_stars_gold, 0, 0, level_stars_gold.width * fraction, level_stars_gold.height, LevelMap.DIFFICULTY_STARS_X + cnt*level_stars_silver.width, LevelMap.DIFFICULTY_STARS_Y, level_stars_gold.width * fraction, level_stars_gold.height);
-			}
-		}
-	}
+	levelDifficulty = this.hotspotLevel.difficulty;
+	
+	$('#map-difficulty-level-gray').css( 'backgroundImage', 'url(' + level_stars_silver.src + ')' );
+	$('#map-difficulty-level-gold').css( 'backgroundImage', 'url(' + level_stars_gold.src + ')' );
+	$('#map-difficulty-level-gold').css( 'width', LevelMap.STAR_WIDTH * levelDifficulty + 'px' );
+	$('#map-level-name').html(text);
+
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	levelScore = localStorage.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
+	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
-		this.layer.font = LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
-		this.layer.fillText('Score:', LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+80);
-		this.layer.font = LevelMap.LEVEL_STATUS_SCORE_SIZE + ' ' + LevelMap.LEVEL_STATUS_FONT_NAME;
-		this.layer.fillText(levelScore, LevelMap.LEVEL_STATUS_LEVEL_TEXT_X+70, LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y+105);
+		$('#map-level-score-label').html('Score');
+		$('#map-level-score').html(levelScore);
 	}
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
-		this.layer.drawImage(green_v, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, green_v.width, green_v.height);
+		$('#map-level-complete-indicator')[0].src = green_v.src;
 	}
 	else if( this.hotspotLevel.isUnlocked ) {
-		//don't draw anything
+		$('#map-level-complete-indicator').src = null;
 	}
 	else {
-		this.layer.drawImage(level_lock, LevelMap.LEVEL_COMPLETE_INDICATOR_X, LevelMap.LEVEL_COMPLETE_INDICATOR_Y, level_lock.width, level_lock.height);
+		$('	#map-level-complete-indicator')[0].src = level_lock.src;
 	}
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
@@ -486,7 +468,7 @@ LevelMap.prototype.quit = function() {
 
 // erase per-level high scores and completed indicators and set hotspot to level 1
 LevelMap.prototype.reset = function() {
-	localStorage.clear();
+	store.clear();
 	console.debug('reset map');
 	return this; //chainable
 }; //LevelMap.prototype.reset
@@ -519,8 +501,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
-	    this.cleanup();
-		//$( 'ul#map-nav' ).css( 'display', 'none' );
+		this.cleanup();
 		Galapago.setLevel(this.hotspotLevel.id);
 	}
 	else {
@@ -529,10 +510,12 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
-    this.animationLayer=null;
-	this.animationCanvas.onclick=null;
 	this.unregisterEventHandlers();
-	this.screenDiv.css('display', 'none');
+	// TODO: IGOR: LevelMap: added cleanup
+	this.screenDiv.css('background-image','');
+	this.canvas.width = this.canvas.height = 1;
+	LoadingScreen.gal.unload('bg-map-screen');
+	this.screenDiv.hide();
 	this.cleanupAnimationAndSound();
 }; //LevelMap.prototype.cleanup()
 
@@ -564,7 +547,7 @@ LevelMap.prototype.handleDownArrow = function() {
 	}
 	else {
 		this.unregisterEventHandlers();
-		this.levelAnimation.stopGameStartArrow();
+		this.stopStartArrowAnimation();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
@@ -586,7 +569,7 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 			this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		}
 		this.hotspotLevel = level;
-		console.info("hotspot on level " + this.hotspotLevel.id);
+		console.debug("hotspot on level " + this.hotspotLevel.id);
 		//this.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
@@ -669,8 +652,9 @@ LevelMap.getHighestLevelCompleted = function() {
 	var highestLevelCompletedId, keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	highestLevelCompletedId = 0;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			_.each(Level.findById(levelId).unlocksLevels, function( unlockedLevelId ) {
@@ -689,8 +673,9 @@ LevelMap.getHighestLevelCompleted = function() {
 LevelMap.getLevelsCompleted = function() {
 	var levelsCompleted = [], keyIt, levelId, matchResult;
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	for (var i = 0; i < localStorage.length; i++){
-		keyIt = localStorage.key(i);
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
 		if( matchResult = keyIt.match("^"+timedMode + Galapago.profile+"level(\\d+)\\.completed$") ) {
 			levelId = matchResult[1];
 			levelsCompleted.push(parseInt(levelId,10));
@@ -702,10 +687,10 @@ LevelMap.getLevelsCompleted = function() {
 // we want to know the level unlocked by the highest level completed;
 // when the highest level completed unlocks multiple levels return the minimum of those levels
 LevelMap.getNextLevel = function() {
-	var highestLevelCompleted, unlockedLevelIds, unlockedLevels, nextLevelId;
+	var highestLevelCompleted, nextLevel, unlockedLevelIds, unlockedLevels, nextLevelId;
 	unlockedLevels = [];
 	highestLevelCompleted = LevelMap.getHighestLevelCompleted();
-	if( typeof highestLevelCompleted === 'undefined' ) {
+	if( typeof highestLevelCompleted === 'undefined' || highestLevelCompleted.id === Galapago.NUM_LEVELS ) {
 		nextLevel = Level.findById(1);
 	}
 	else {
@@ -726,18 +711,7 @@ LevelMap.getNextLevel = function() {
 }; //LevelMap.getNextLevel()
 
 LevelMap.reset = function() {
-	var keyIt;
-	var keyList = new  Array();
-	for (var i = 0; i < localStorage.length; i++) {
-		keyIt = localStorage.key(i);
-		if(keyIt.indexOf(Galapago.profile)>0){ // reset all the local storage of current Profile only.
-			//localStorage.removeItem(keyIt);
-			keyList.push(keyIt);
-		}
-	}
-	for (var i = 0; i < keyList.length; i++) {
-		localStorage.removeItem(keyList[i]);
-	}
+	Galapago.eraseProfile(Galapago.profile);
 }; //LevelMap.reset()
 
 /* end class LevelMap */
@@ -759,24 +733,22 @@ MapCell.prototype.toString = function() {
 /* begin class Level */
 Level.BLOB_IMAGE_EXTENSION = '.png';
 Level.CREATURE_SPRITE_NUMBERS = ['1', '2', '3'];
-Level.LAYER_GRID = 'layer-grid';
-Level.LAYER_GOLD = 'layer-gold';
 Level.LAYER_CREATURE = 'layer-creature';
-Level.LAYER_HILIGHT = 'layer-hilight';
+Level.DIV_HILIGHT = 'div-hilight';
 Level.LAYER_SCORE = 'layer-score';
-Level.LAYER_BONUS_FRENZY = 'layer-bonus-frenzy';
-Level.LAYER_GAME_ANIMATION = 'layer-game-animation';
-Level.LAYER_GAME_LIGHTNING = 'layer-game-lightning';
 Level.BG_THEME_BEACH_CREATURES = ["blue-crab", "green-turtle", "pink-frog", "red-starfish", "teal-blob", "violet-crab", "yellow-fish"];
 Level.BG_THEME_FOREST_CREATURES = ["blue-beetle", "green-butterfly", "pink-lizard", "red-beetle", "teal-bug", "violet-moth", "yellow-frog"];
 Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "red-beetle", "teal-flyer", "violet-lizard", "yellow-bug"];
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
+Level.NAV_LEFT = 124;
+Level.NAV_TOP = 600;
+Level.NAV_MARGIN_BOTTOM = 10;
+/*
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
-Level.BUTTON_WIDTH = 116;
-Level.BUTTON_HEIGHT = 42;
+*/
 Level.POWER_UP_SCORE =0;
 Level.SUPER_FRIEND_SUFFIX = '-friend';
 
@@ -879,7 +851,7 @@ Level.prototype.setBoard = function(board) {
 Level.prototype.buildGoldImagePaths = function() {
 	var goldImagePaths;
 	goldImagePaths = [];
-	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'tile_gold_1' + Level.BLOB_IMAGE_EXTENSION;
+	goldImagePaths[0] = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1' + Level.BLOB_IMAGE_EXTENSION;
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
 
@@ -905,7 +877,7 @@ Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
 			case 'beach':
- 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_BEACH_CREATURES);
+				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_BEACH_CREATURES);
 				break;
 			case 'forest':
 				Galapago.creatureImages[bgTheme] = this.loadImageSprites(bgTheme, Level.BG_THEME_FOREST_CREATURES);
@@ -996,52 +968,53 @@ Level.prototype.display = function() {
 	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
-	level.styleCanvas();
-	level.board.drawScore();
+	level.board.displayScore();
 	$('#screen-game').show();
 	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
+		level.styleCanvas();
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.putInAnimationQ = true;
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.putInAnimationQ = false;
 		level.board.animationQ = [];
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.gameAnimationLayer, level.board.creatureTileMatrix, function(){
-		level.board.displayBlobCollections();
-		if( !MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix) ) {
-			throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
-		}
-		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		if( Galapago.isTimedMode ) {
-			var restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + level.id + "restore" );
-			var restoreLookup ,dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(level.layerBackground, level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-			if(restoreLookupString != undefined){
-			   restoreLookup = JSON.parse(restoreLookupString);
-			   dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-			   if(dangerBarTimeRemaining != undefined){
-				  level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
-				  level.dangerBar.start();
-			   }
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function () {
+			level.board.displayBlobCollections();
+			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
+				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 			}
-		}
-		console.debug(level.toString());
+			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			if (Galapago.isTimedMode) {
+				var restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
+				var restoreLookup , dangerBarTimeRemaining = null;
+			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			if(restoreLookupString !== 'undefined'){
+				restoreLookup = JSON.parse(restoreLookupString);
+				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+				if(dangerBarTimeRemaining !== 'undefined'){
+					level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
+					level.dangerBar.start();
+				}
+				}
+			}
+			console.debug(level.toString());
 
-		level.board.addPowerups();
-		level.board.displayLevelName();
-		level.board.displayMenuButton(false);
-		level.board.displayQuitButton(false);
-		level.board.display();
-		level.board.setActiveTile();
-		localStorage.setItem(timedMode+Galapago.profile+"level"+level.id+".levelPlayed" ,"1" );
-		console.debug( 'exiting Level.prototype.display()');
-		return level; //chainable
+			level.board.addPowerups();
+			level.board.displayLevelName();
+			level.board.displayMenuButton(false);
+			level.board.displayQuitButton(false);
+			level.board.display();
+			level.board.setActiveTile();
+			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
+			console.debug('exiting Level.prototype.display()');
+			return level; //chainable
 		});
 	}
-	else {
-		console.debug( 'exiting Level.prototype.display()');
+	else
+	{
+		console.debug('exiting Level.prototype.display()');
 		return level; //chainable
 	}
 }; //Level.prototype.display()
@@ -1066,7 +1039,7 @@ Level.prototype.getCreatureTypesByTheme = function(bgTheme) {
 Level.prototype.won = function(){
 	var timedMode, level;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
     level.cleanup();
@@ -1083,28 +1056,32 @@ Level.prototype.won = function(){
 Level.prototype.quit = function(){
 	this.board.saveBoard();
 	this.cleanup();
-	this.board.backgroundLayer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
 }; //Level.prototype.quit()
 
-Level.prototype.cleanup = function(isPreserveGridLayer){
-	if( isPreserveGridLayer ) {
-		this.board.hideGoldAndCreatures();
-	}
-	else {
-		this.board.screenDiv.hide();		
+Level.prototype.cleanup = function(isBonusFrenzyOn){
+	this.board.scoreElement.hide();
+	this.board.levelNameElement.hide();
+	if(isBonusFrenzyOn) {
+		this.board.hideGameScreenLayersForBonusFrenzy();
+	}else{
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
 	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
 	}
     this.board.powerUp.timer.clearInterval();
- 	this.levelAnimation.stopAllAnimations();
+	this.levelAnimation.stopAllAnimations();
+	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
 		this.levelAnimation.stopAllPowerAchieved();
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
- 	this.board.reshuffleService.stop();
- 	Galapago.audioPlayer.stop();
+	this.board.reshuffleService.stop();
+	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
 Level.prototype.getCreatureSubset = function(creatureTypes) {
@@ -1143,7 +1120,6 @@ Level.registerEventHandlers = function() {
 		board.handleClickOrTap(evt);
 	});
 	
-	//$('#layer-bonus-frenzy').click(function(evt){
 	window.onclick = function(evt){
 		board.handleMouseClickEvent(evt);
 		evt.preventDefault();
@@ -1165,7 +1141,19 @@ Level.registerEventHandlers = function() {
 		//board.creatureLayer.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
-			case 13: // enter
+			case 51:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					ns.frameWork.debug.profiler.clear();
+				}
+				break;
+			case 52:
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					var report = ns.frameWork.debug.profiler.getPreparedReport();
+					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+						console.log(report[i].id + ": " + report[i].own.total);
+					}
+				}
+				break;			case 13: // enter
 				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow
@@ -1228,31 +1216,91 @@ Level.prototype.unregisterEventHandlers = function() {
 	document.onclick = null;
 	$('#layer-grid').off('click');
 	$('#layer-grid').off('tap');
+	window.onclick = null;
+	window.onmousemove = null;
 	window.onkeydown = null;
 }; //Level.prototype.unregisterEventHandlers()
 
+function changeCanvasState(stateName) {
+	function c(name) {
+		var el = document.getElementById(name);
+		if(el) {
+			el.width = 1;
+			el.height = 1;
+			el.style.width = "1px";
+			el.style.height = "1px";
+		}
+		/*if(el && el.parentNode) {
+			el.parentNode.removeChild(el);
+		}
+		el = null;*/
+	}
+
+	switch(stateName) {
+		case "gameScreen":
+			//c("layer-background");
+			c("layer-progress-bar");
+			//c("layer-background");
+			c("layer-map");
+			//c("layer-map-other-animation");
+			//c("layer-map-animation");
+			break;
+	}
+} //changeCanvasState()
+
+function findAllPixels(element, deep, pixels, prevId) {
+	if(typeof deep === 'undefined') {
+		deep = 0;
+		pixels = 0;
+	}
+	var child, next;
+	child = element.firstElementChild;
+	while (child) {
+		if(child.nodeName.toLocaleLowerCase() === 'canvas') {
+			console.log("Found canvas id = " + child.id + ", pixels: " + (child.width * child.height) + " in div id = " + prevId);
+			pixels += child.width * child.height;
+		}
+		if(typeof child.style !== 'undefined' && typeof child.style.backgroundImage !== 'undefined' &&
+			child.style.backgroundImage !== null && child.style.backgroundImage !== "") {
+			var w = parseInt(window.getComputedStyle(child, null).width);
+			var h = parseInt(window.getComputedStyle(child, null).height);
+			if(w*h > 0) {
+				console.log("Found background-image of ELEMENT id = " + child.id + ", pixels: " + (w*h) + " in div id = " + prevId);
+				pixels += w*h;
+				//child.parentNode.removeChild(child);
+			}
+		}
+		if(child.nodeName.toLowerCase() === 'img' && child.naturalWidth !== 0) {
+			var im = child;
+			console.log("Found IMG id = " + child.id + ", pixels: " + (im.naturalWidth * child.naturalHeight) + " in div id = " + prevId);
+			pixels += im.naturalWidth * child.naturalHeight;
+		}
+
+		next = child.nextElementSibling;
+		deep++;
+		pixels = findAllPixels(child, deep, pixels, child.id);
+		deep--;
+		child = next;
+	}
+
+	if(deep === 0) {
+		console.log("Total number of pixels in canvases: " + pixels);
+	}
+	return pixels;
+}
+
 Level.prototype.styleCanvas = function() {
-	var canvasBackground, themeComplete, resourcePath, backgroundImage, canvasScore, canvasGameAnimation;
+	var screenDivElement, themeComplete, resourcePath, backgroundImage, canvasBonusFrenzy;
 	console.debug('entering Level.prototype.styleCanvas()');
-	console.debug('styling background canvas');
-	canvasBackground = $(this.board.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND);
-	console.debug( 'canvasBackground: ' + canvasBackground.selector );
 	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
 	resourcePath = 'background/' + themeComplete + '.jpg';
-	backgroundImage = LoadingScreen.gal.get(resourcePath);
+	backgroundImage = LoadingScreen.gal.get(resourcePath);	
+
 	if( backgroundImage ) {
-	console.debug('setting background to ' + resourcePath);
-	canvasBackground.css( 'background-image','url(' + LoadingScreen.gal.get(resourcePath).src + ')' );
+		console.debug('setting background to ' + resourcePath);
+		this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 	}
-	/*
-	console.debug('before changing canvas width and height');
-	canvasBackground[0].width = LoadingScreen.STAGE_WIDTH;
-	canvasBackground[0].height = LoadingScreen.STAGE_HEIGHT;
-	console.debug('after changing canvas width and height');
-	*/
-	canvasBackground.css('left', '0px');
-	canvasBackground.css('top', '0px');
-	this.layerBackground = canvasBackground[0].getContext('2d');
+	
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
@@ -1260,36 +1308,28 @@ Level.prototype.styleCanvas = function() {
 		layer.style.left = Board.GRID_LEFT + 'px';
 		layer.style.top = Board.GRID_TOP + 'px';
 	});
-	console.debug('styling bonus frenzy canvas');
-	canvasBonusFrenzy = $('#' + Level.LAYER_BONUS_FRENZY);
-	canvasBonusFrenzy[0].width = Board.GRID_WIDTH;
-	canvasBonusFrenzy[0].height = Board.GRID_HEIGHT + Board.GRID_TOP;
-	canvasBonusFrenzy.css('left', Board.GRID_LEFT + 'px');
-	canvasBonusFrenzy.css('top', '0px');
 
-	console.debug('styling score canvas');
-	canvasScore = $('#' + Level.LAYER_SCORE);
-	canvasScore[0].width = Score.MAX_WIDTH;
-	canvasScore[0].height = Score.MAX_HEIGHT;
-	canvasScore.css('left', Board.GRID_LEFT + 'px');
-	canvasScore.css('top', Score.Y + 'px');
+	this.board.scoreElement.css('left', Board.GRID_LEFT + 'px');
 
-	console.debug('styling game animation canvas');
-	canvasGameAnimation = $('#' + Level.LAYER_GAME_ANIMATION);
-	canvasGameAnimation[0].width = Board.GRID_WIDTH;
-	canvasGameAnimation[0].height = LoadingScreen.STAGE_HEIGHT - Board.GRID_TOP;
-	canvasGameAnimation.css('left', Board.GRID_LEFT + 'px');
-	canvasGameAnimation.css('top', Board.GRID_TOP + 'px');
-
-	console.debug('styling lightning canvas');
-	canvasGameLightning = $('#' + Level.LAYER_GAME_LIGHTNING);
-	canvasGameLightning.css('left', (Board.GRID_LEFT + (Board.GRID_WIDTH/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2) + 'px');
-	var top = (Board.GRID_TOP + (Board.GRID_HEIGHT/2)) - (LevelAnimation.LIGHTNING_IMAGE_WIDTH/2);  
-    canvasGameLightning.css('top', top + 'px');  
-    canvasGameLightning[0].width = LevelAnimation.LIGHTNING_IMAGE_WIDTH;  
-    canvasGameLightning[0].height = LoadingScreen.STAGE_HEIGHT - top;  
+	findAllPixels(document.body);
+	var t = LoadingScreen.gal.lookupTable;
+	//t['background/main-menu.jpg'] = null;
+	//t['background/map.jpg'] = null;
+	for(var k in t) {
+		if(t.hasOwnProperty(k)) {
+			var i = t[k];
+			if(i && i.src && i.src.indexOf('data:') < 0) {
+				console.log("incorrect image found: " + k + "," + i.id + ", size: " + i.naturalWidth * i.naturalHeight);
+			}
+		}
+	}
 
 	console.debug('exiting Level.prototype.styleCanvas()');
+	hilightDiv = this.board.hilightDiv;
+	hilightDiv.css('width', Board.TILE_WIDTH + 'px');
+	hilightDiv.css('height', Board.TILE_HEIGHT + 'px');
+	hilightDiv.css('background-size', 'cover');
+	hilightDiv.css('background-image', 'url('+ this.gameImages.tile_selected.src + ')');
 }; //Level.prototype.styleCanvas()
 
 // returns a JS Image object
@@ -1312,13 +1352,13 @@ Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 
 Level.prototype.isNew = function() {
 	var	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	var levelPlayed = localStorage.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
+	var levelPlayed = store.getItem(timedMode+Galapago.profile+"level"+this.id+".levelPlayed");	
 	return !levelPlayed;
 };
 
 Level.isComplete = function(id) {
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	return localStorage.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
+	return store.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
 };
 /* end class Level */
 
@@ -1344,28 +1384,15 @@ Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
-Board.LEVEL_NAME_X = 600;
-Board.LEVEL_NAME_Y = 60;
-Board.LEVEL_NAME_MAX_WIDTH = 400;
-Board.LEVEL_NAME_MAX_HEIGHT = 30;
-Board.LEVEL_NAME_FONT_SIZE = '30px';
-Board.LEVEL_NAME_FONT_NAME = 'JungleFever';
-Board.LEVEL_NAME_FONT_COLOR = 'rgb(19,19,197)';
 Board.BUTTON_FONT_SIZE = '17px';
 Board.BUTTON_FONT_NAME = 'JungleFever';
-Board.BUTTON_FONT_COLOR = 'rgb(107,45,0)';
 
 function Board() {
 	this.screenDiv = $('#screen-game');
-	this.backgroundLayer = $(this.screenDiv.selector + ' #' + Galapago.LAYER_BACKGROUND)[0].getContext('2d');
-	this.gridLayer = $('#' + Level.LAYER_GRID)[0].getContext('2d');
-	this.goldLayer = $('#' + Level.LAYER_GOLD)[0].getContext('2d');
 	this.creatureLayer = $('#' + Level.LAYER_CREATURE)[0].getContext('2d');
-	this.hilightLayer = $('#' + Level.LAYER_HILIGHT)[0].getContext('2d');
-	this.scoreLayer = $('#' + Level.LAYER_SCORE)[0].getContext('2d');
-	this.bonusFrenzyLayer = $('#' + Level.LAYER_BONUS_FRENZY)[0].getContext('2d');
-	this.gameAnimationLayer = $('#' + Level.LAYER_GAME_ANIMATION)[0].getContext('2d');
-	this.gameLightningLayer = $('#' + Level.LAYER_GAME_LIGHTNING)[0].getContext('2d');
+	this.hilightDiv = $('#' + Level.DIV_HILIGHT);
+	this.scoreElement = $('#current-score');
+	this.levelNameElement = $('#level-name');
 
 	this.score = 0;
 	this.hotspot = null;
@@ -1381,7 +1408,7 @@ function Board() {
 	this.buttonActive = null;
 	this.rotateAngle = 0;
 	this.creatureYOffset = 0;
-	this.blobCollection = new BlobCollection(this.gridLayer);
+	this.blobCollection = new BlobCollection();
 
 	this.creatureCounter = 0;
 	this.chainReactionCounter = 0;
@@ -1404,20 +1431,17 @@ Board.prototype.quit = function() {
 	return this; //chainable
 }; //Board.prototype.quit()
 
-Board.prototype.hideGoldAndCreatures = function() {
-	$('#' + Level.LAYER_GOLD).hide();
-	$('#' + Level.LAYER_CREATURE).hide();
-}; //Board.protoype.hideBoardLayer()
+Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
+	this.hilightDiv.hide();
+}; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
 
-Board.prototype.showGoldAndCreatures = function() {
-	$('#' + Level.LAYER_GOLD).show();
-	$('#' + Level.LAYER_CREATURE).show();
-}; //Board.protoype.showBoardLayer()
+Board.prototype.showGameScreenLayers = function() {
+	this.hilightDiv.show();
+}; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
-	//this.showGoldAndCreatures();
 	this.creatureLayer.canvas.focus();
-	this.level.levelAnimation.initBobCervantes(this.backgroundLayer);
+	this.level.levelAnimation.initBobCervantes(/*this.backgroundLayer*/);
 	this.reshuffleService.start();
 }; //Board.protoype.display()
 
@@ -1427,59 +1451,44 @@ Board.prototype.displayBlobCollections = function() {
 };
 
 Board.prototype.displayLevelName = function() {
-	var layer, levelNameText;
-	layer = this.backgroundLayer;
-	layer.clearRect(Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y, Board.LEVEL_NAME_MAX_WIDTH, Board.LEVEL_NAME_MAX_HEIGHT);
-	layer.textBaseline = 'top';
-	layer.font = Board.LEVEL_NAME_FONT_SIZE + ' ' + Board.LEVEL_NAME_FONT_NAME;
-	layer.fillStyle = Board.LEVEL_NAME_FONT_COLOR;
-	levelNameText =  i18n.t('levels.'+this.level.id) ;
+	var levelNameElement, levelNameText;
+	levelNameElement = this.levelNameElement;
+	levelNameText =  i18n.t( 'levels.' + this.level.id ) ;
 	levelNameText += ' ' + this.level.id; //TODO for debugging only remove before production!!!
-	layer.fillText(levelNameText, Board.LEVEL_NAME_X, Board.LEVEL_NAME_Y);
+	levelNameElement.html( levelNameText );
 }; //Board.protoype.displayLevelName()
 
 Board.prototype.displayMenuButton = function(isActive) {
-	var textColor, layer, menuButtonImage, gameButtonCursor;
-	layer = this.backgroundLayer;
+	var menuButtonImage, gameButtonCursor;
 	menuButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
+	$("#div-menu").css("background-image","url('"+menuButtonImage.src+"')");
 	if( isActive ) {
 		this.buttonActive = 'menuButton';
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		$("#div-menucursor").css("background-image","url('"+gameButtonCursor.src +"')");
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(Level.MENU_BUTTON_X - 1, Level.MENU_BUTTON_Y - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
-		layer.drawImage(menuButtonImage, Level.MENU_BUTTON_X, Level.MENU_BUTTON_Y, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		$("#div-menucursor").css("background-image","");
 	}
-	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
-	layer.fillStyle = Board.BUTTON_FONT_COLOR;
-	layer.fillText('MENU', Level.MENU_BUTTON_X+33, Level.MENU_BUTTON_Y+10);
 }; //Board.protoype.displayMenuButton()
-
+	
 Board.prototype.displayQuitButton = function(isActive) {
-	var textColor, layer, quitButtonImage, gameButtonCursor;
-	layer = this.backgroundLayer;
+	var quitButtonImage, gameButtonCursor;
+	layer = this.navLayer;
 	quitButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
-	var quitImageX = Level.MENU_BUTTON_X;
-	var quitImageY = (Level.MENU_BUTTON_Y + Level.BUTTON_HEIGHT +10);
+	$("#div-quit").css("background-image","url('"+quitButtonImage.src+"')");
 	
 	if( isActive ) {
 		this.buttonActive = 'quitButton';
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
-		layer.drawImage(gameButtonCursor, quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		$("#div-quitcursor").css("background-image","url('"+gameButtonCursor.src +"')");
 	}
 	else {
 		this.buttonActive = null;
-		layer.clearRect(quitImageX - 1, quitImageY - 1, Level.BUTTON_WIDTH + 2, Level.BUTTON_HEIGHT + 2);
-		layer.drawImage(quitButtonImage, quitImageX, quitImageY, Level.BUTTON_WIDTH, Level.BUTTON_HEIGHT);
+		$("#div-quitcursor").css("background-image","");
 	}
-	layer.font = Board.BUTTON_FONT_SIZE + ' '  + Board.BUTTON_FONT_NAME;
-	layer.fillStyle = Board.BUTTON_FONT_COLOR;
-	layer.fillText('QUIT', Level.MENU_BUTTON_X+35, quitImageY+10);
-}; //Board.protoype.displayMenuButton()
+}; //Board.protoype.displayQuitButton()
 
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.POWER_UP_SCORE);
@@ -1492,17 +1501,16 @@ As default, the cursor is shown on the top leftmost creature on board. However, 
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
-	var markTile;
-	var timedMode, tileActive, col, row;
+	var markTile, tileActive, col, row, key;
 	if(tile) {
 		tileActive = tile;
 	}
 	
 	else if(!tile &&  _.contains(Galapago.ACTIVE_TILE_LOGIC_LEVELS, this.level.id) && this.initialSwapForTripletInfo) {
-	    col = this.initialSwapForTripletInfo.tipInfo.initialTile[0];
+		col = this.initialSwapForTripletInfo.tipInfo.initialTile[0];
 		row = this.initialSwapForTripletInfo.tipInfo.initialTile[1];
 		tileActive = this.creatureTileMatrix[col][row];
-		var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
+		key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip1';
 		this.level.bubbleTip.showBubbleTip(i18n.t(key));
 		this.bubbleInitialTile = this.initialSwapForTripletInfo.tipInfo.initialTile;
 		this.initialSwapForTripletInfo.tipInfo.initialTile = 'shown';
@@ -1549,7 +1557,7 @@ Board.prototype.getLayer = function(blobType) {
 	var layer;
 	switch( blobType ) {
 		case 'GOLD':
-			layer = this.goldLayer;
+			layer = this.creatureLayer;
 			break;
 		case 'CREATURE':
 			layer = this.creatureLayer;
@@ -1609,28 +1617,6 @@ Board.prototype.drawFlyingCreatures = function () {
 	//ctx.restore(); 
 }; //Board.prototype.drawFlyingCreatures()
 
-/*
-Board.prototype.drawRotatedCreatures = function (angle) { 
-	var ctx, rowIt, colIt, tile;
-	ctx = this.creatureLayer;
-	// save the current co-ordinate system before we screw with it
-	ctx.save();
-	// draw it up and to the left by half the width and height of the image
-	for( rowIt = 0; rowIt < this.creatureTileMatrix.length; rowIt++ ) {
-		for( colIt = 0; colIt < this.creatureTileMatrix[rowIt].length; colIt++ ) {
-			// move to the middle of where we want to draw our image
-			ctx.translate(x, y);
-			// rotate around that point, converting our angle from degrees to radians 
-			ctx.rotate(angle * TO_RADIANS);
-			tile = this.creatureTileMatrix[colIt][rowIt];
-			ctx.drawImage(tile.blob.image, -(Board.TILE_WIDTH/2), -(Board.TILE_HEIGHT/2));
-		}
-	}
-	// and restore the co-ords to how they were when we began
-	ctx.restore(); 
-};
-*/
-
 Board.prototype.toString = function() {
 	var output;
 	output = 'creatureTileMatrix: ' + this.creatureTileMatrix + ', ' +
@@ -1641,6 +1627,22 @@ Board.prototype.toString = function() {
 Board.prototype.init = function(tilePositions) {
 	var board, tileMatrix, colIt, rowIt;
 	board = this;
+	var left = 0;
+	var top =100;
+	/*$('#layerGrid').html('');
+	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
+		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
+		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
+		$("#div_"+rowIt).css('top',top);
+		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
+			$("#div_"+rowIt).append("<span class='columnSpan' id='span_"+rowIt+"_"+colIt+"'></span>");
+			var spanId = 'span_'+rowIt+'_'+colIt;
+			$("#"+spanId).css('left',left);
+			left+=47;
+		}
+		top+=47;
+		left=0;
+	}*/
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
@@ -1656,16 +1658,16 @@ Board.prototype.build = function(tilePositions) {
 	var timedMode, colIt, rowIt, coordinates, cellId, cellObject, spriteNumber, restoreLookupString, restoreLookup, key, tile;
 	console.debug( 'entering Board.prototype.build()' );
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-    restoreLookupString = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
-	if(restoreLookupString != undefined){
+    restoreLookupString = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	if(restoreLookupString){
 		restoreLookup = JSON.parse(restoreLookupString);
 		this.score = restoreLookup['score'];
-		this.drawScore();
+		this.displayScore();
 		var nilCollection = restoreLookup['nilCollection'];
 		var image ;
 		var id;
 		for(key in nilCollection){
-		    image=null;
+			image=null;
 			id=null;
 			if(nilCollection[key] in this.level.creatureImages){
 				id = nilCollection[key];
@@ -1674,12 +1676,12 @@ Board.prototype.build = function(tilePositions) {
 				id = nilCollection[key];
 				image = this.level.superFriendImages[id];
 			}else{
-			    for(var creatureKey in this.level.goldImages){
+				for(var creatureKey in this.level.goldImages){
 					id = this.level.goldImages[creatureKey].id;
-				  	if(id == nilCollection[key]){
-				    	image = this.level.goldImages[creatureKey];
-				    	break;
-				  	}
+					if(id == nilCollection[key]){
+						image = this.level.goldImages[creatureKey];
+						break;
+					}
 				}
 			}
 			var blobItem = new BlobItem(image, 0);
@@ -1700,7 +1702,7 @@ Board.prototype.build = function(tilePositions) {
 			if(restoreLookup ){
 				key = colIt+'_'+rowIt;
 				if(cellObject.gold && restoreLookup[key]){
-				    cellObject = this.parseCell(restoreLookup[key]);
+					cellObject = this.parseCell(restoreLookup[key]);
 				}else if((cellObject.gold || cellObject.blocking || cellObject.cocoon || cellObject.hasTileOnly || cellObject.superFriend) && !restoreLookup[key]){
 					cellObject = this.parseCell('1');
 					//this.blobCollection.addBlobItem(tile);
@@ -1808,7 +1810,7 @@ Board.prototype.parseCell = function(cellId) {
 //add a new tile or update the position of an existing tile
 //synchronizes coordinate and position information with the tile object
 Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, tile) {
-	var layer, tileMatrix, col, row, x, y, width, height, imageName, previousX, previousY;
+	var layer, tileMatrix, col, row, x, y, width, height, imageName, previousX, previousY,board;
 
 	tileMatrix = this.getTileMatrix(blobType);
 	layer = this.getLayer(blobType);
@@ -1818,7 +1820,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	y = Tile.getYCoord(row);
 	width = Board.TILE_WIDTH;
 	height = Board.TILE_HEIGHT;
-	
+	board = this;
 	if( tile ) {
 		imageName = tile.blob.creatureType;
 		console.debug( 'moving existing tile ' + imageName + ' to ' + MatrixUtil.coordinatesToString(coordinates));
@@ -1828,12 +1830,23 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		tileMatrix[col][row] = tile;	
 		function drawReplace(){
 			layer.clearRect( x, y, width, height );
+			if(board.getGoldTile(tile)){
+				layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+			}else{
+				layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+			}
+
 			layer.drawImage(tile.blob.image, x, y, width, height);
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		if(this.putInAnimationQ){
 			this.animationQ.push(function(){
 				layer.clearRect( previousX, previousY, width, height );
+				/*if(board.getGoldTile(tile)){
+					layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), x, y, width, height );
+				}else{
+					layer.drawImage(board.level.gameImages.tile_regular, x, y, width, height);
+				}*/
 				drawReplace();
 			});
 		}else{
@@ -1857,6 +1870,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			}
 			tileMatrix[col][row] = tile;
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+			layer.drawImage(board.level.gameImages.tile_regular, x, y, width, height);
 		}		
 		else if( blob.blobType === 'GOLD' || blob.blobType === 'SUPER_FRIEND' ) {
 			imageName = blob.blobType;
@@ -1868,8 +1882,15 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
 		if( blob && blob.image ) {
 			function draw(){
-				layer.clearRect( x, y, width, height );
-				layer.drawImage(blob.image, x, y, width, height);
+				if(!layer){
+					//var spanId = 'span_'+row+'_'+col;
+					//$('#'+spanId).css('backgroundImage','');
+					//$('#'+spanId).css('backgroundImage','url('+blob.image.src+')');
+				}else{
+					layer.clearRect( x, y, width, height );
+					layer.drawImage(board.level.gameImages.tile_regular, x, y, width, height);
+					layer.drawImage(blob.image, x, y, width, height);
+				}
 			}
 			if(this.putInAnimationQ && blob.blobType != 'GOLD'){
 				this.animationQ.push(draw);
@@ -1926,7 +1947,7 @@ Board.prototype.getNonMatchingCreatureTile = function(tile) {
 	}
 	while( this.tilesEventProcessor.getMatchingTilesSets(tile).length > 0 );
 	return tile;
-} //Board.prototype.getNonMatchingCreatureTile()
+}; //Board.prototype.getNonMatchingCreatureTile()
 
 Board.prototype.removeTile = function(tile) {
 	var layer, tileMatrix, col, row;
@@ -1969,10 +1990,10 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 				board.powerUp.addListener();
 				board.isPowerUpFocused = true;
 			}
-			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
 			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
 					//alert('flipflop power up');
 					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
 					board.powerUp.focus();
@@ -1991,27 +2012,26 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			}
 			
 		}else if(board.isPowerUpFocused){
-				  board.isPowerUpFocused =false
-			      board.powerUp.update();
-				  board.powerUp.currentFocus=0;
-				  board.powerUp.nextFocus=0;
-				  window.onkeydown=null;
-				  board.powerUp.focusOn= 0;
-				  //board.powerUp.canvas.onfocus=null;
+			board.isPowerUpFocused =false;
+			board.powerUp.update();
+			board.powerUp.currentFocus=0;
+			board.powerUp.nextFocus=0;
+			window.onkeydown=null;
+			board.powerUp.focusOn= 0;
+			//board.powerUp.canvas.onfocus=null;
 			window.onkeydown = board.powerUp.boardKeyHandler;
 		}
 	}
 	
 	if(board.blobCollection && board.blobCollection.button_regular){
 		var menuButtonImage = board.blobCollection.button_regular;
-		var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-		var quitButtonImage = board.blobCollection.button_regular;
-		if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
+		if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
+		}else if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
@@ -2043,7 +2063,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 					var currentY = tile.getYCoord()+100;
 					
 					if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> currentY && y< (currentY+ Board.TILE_HEIGHT )){
-					   if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
+						if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
 							var icol = board.bubbleInitialTile[0];
 							var irow = board.bubbleInitialTile[1];
 							if(icol != col || irow != row){
@@ -2067,7 +2087,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 				}
 			}
 			if(found) {
-			    break;
+				break;
 		}
 		}	
 		this.handleMouseClickForMenuAndQuit(x,y);
@@ -2076,17 +2096,17 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 }; //Board.prototype.handleMouseClickEvent()
 
 Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
-	var board = this;
-	var menuButtonImage = board.blobCollection.button_regular;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+menuButtonImage.width) && y>Level.MENU_BUTTON_Y && y< (Level.MENU_BUTTON_Y+menuButtonImage.height)){
+	var board, menuButtonImage, quitButtonY
+	board = this;
+	menuButtonImage = board.blobCollection.button_regular;
+	if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 			board.handleKeyboardSelect();
 	}
-	var quitButtonY = Level.MENU_BUTTON_Y + menuButtonImage.height+10;
-	var quitButtonImage = board.blobCollection.button_regular;
-	if(x> Level.MENU_BUTTON_X && x< (Level.MENU_BUTTON_X+Level.BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.BUTTON_HEIGHT)){
+	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
+	if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;
@@ -2099,22 +2119,22 @@ Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
 		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
 			//alert('power up cliecked'+ x +"  "+ y);
-			var absFlipFlowTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop	   = Powerup.TOP +Powerup.FIRE_TOP ;
+			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
+			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
 			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlowTop  && y< (absFlipFlowTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
+			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
 					//alert('flipflop power up');
 					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 				
 			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
 					//alert('fire power up');
 					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 				
 				
 			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
@@ -2122,7 +2142,7 @@ Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
 					board.powerUp.focusOn= 1;
 					board.powerUp.handleSelect();
-					powerup.board.isPowerUpFocused = false;
+					board.isPowerUpFocused = false;
 			}
 			
 		}
@@ -2141,7 +2161,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 	if( tileTriplets && tileTriplets.length > 0 ) {
 		board.reshuffleService.stop();
 		var validMatchWithCollection = false;
-	    this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
+		this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		board.removeTriplets(tileTriplets);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
@@ -2215,7 +2235,7 @@ Board.prototype.animateStars = function(tiles){
 	var board = this;
 	function draw(){
 		_.each(tiles, function(tile){
-			board.level.levelAnimation.animateStars(board.gameAnimationLayer, tile.getXCoord(), tile.getYCoord(), tile.blob.image.id, board.blobCollection);
+			board.level.levelAnimation.animateStars(tile.getXCoord(), tile.getYCoord(), tile.blob.image.id, board.blobCollection);
 		});
 	}
 	if(this.putInAnimationQ){
@@ -2223,7 +2243,7 @@ Board.prototype.animateStars = function(tiles){
 	}else{
 		draw();
 	}
-}
+}; //Board.prototype.animateStars()
 
 Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
 	var board = this;
@@ -2237,7 +2257,7 @@ Board.prototype.handleChangedPointsArray = function(changedPointsArray) {
 		});
 		this.handleTriplets(changedTiles);
 	}
-}
+}; //Board.prototype.handleChangedPointsArray()
 
 Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 	var verticalPointsSets = [];
@@ -2270,34 +2290,34 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 		verticalPointsSets.push(verticalPointsSet);
 	});	
 	return verticalPointsSets;
-}
+}; //Board.getVerticalPointsSets()
 
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
-	if(this.bonusFrenzy == undefined){
+	if(!this.bonusFrenzy){
 		window.onkeydown= null;
 		window.onclick = null;
 		window.onmousemove = null;
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
-	    Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
+		Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.isTimedMode ) {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
-			$('#timeBonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
+			$('#time-bonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
 			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 		} else {
-			$('#row-timeBonus').hide();
+			$('#row-time-bonus').hide();
 		}
-		this.drawScore();
+		this.displayScore();
 		this.level.isCompleted = true;
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-		localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
-		levelHighestScore = localStorage.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		var totalScore = localStorage.getItem( timedMode + Galapago.profile + ".totalScore" );
+		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
+		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
+		var totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
 		if(totalScore){
 			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
 				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
@@ -2305,27 +2325,26 @@ Board.prototype.setComplete = function() {
 			else {
 				totalScore=Number(totalScore)+this.score;
 			}
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		else {
 			totalScore=this.score;
-			localStorage.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
 		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
 		}
 		else if(!levelHighestScore){
-			localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
-		$('#bonusFrenzy').html( this.bonusFrenzy.getScore() );
-		$('#bonusPoints').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
-		$('#levelScore').html( this.score );
-		$('#score').html( totalScore );
-		$('#dialog-level-won').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+		$('#bonus-frenzy').html( this.bonusFrenzy.getScore() );
+		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
+		$('#level-score').html( this.score );
+		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.showGoldAndCreatures();
+		this.showGameScreenLayers();
 	}
-} //Board.prototype.setComplete()
+}; //Board.prototype.setComplete()
 
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
@@ -2440,7 +2459,7 @@ Board.prototype.handleTileSelect = function(tile) {
 			this.blobCollection.removeBlobItems([goldTile]);
 		}
 		if(tile.isBlocked() || tile.isCocooned()){
-		    this.blobCollection.removeBlobItems([tile]);
+			this.blobCollection.removeBlobItems([tile]);
 		}
 		var tileSet = [[tile]];
 		if(tile.hasSuperFriend()){
@@ -2487,8 +2506,8 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	var board = this;
 	board.updateScore();
 	if(board.collectionModified || board.powerAchieved){
-	   board.saveBoard();
-	   board.collectionModified = false;
+		board.saveBoard();
+		board.collectionModified = false;
 	}
 	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
 	board.tileActive.setActiveAsync().done();
@@ -2500,7 +2519,7 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 		board.setComplete();
 	}
 	}
-}
+}; //Board.prototype.updateScoreAndCollections()
 
 Board.prototype.shuffleBoard = function() {
 	var tileMatrix = this.creatureTileMatrix;
@@ -2512,24 +2531,24 @@ Board.prototype.shuffleBoard = function() {
 	if(dangerBar){
 		dangerBar.pause();
 	}
-	var originalLockedTiles = []
+	var originalLockedTiles = [];
 	var changedPointsArray =[];
 	for (var col = tileMatrix.length - 1; col >= 0; col--) {
 		for (var row = tileMatrix[col].length - 1; row >= 0; row--) {
-	        var tile = tileMatrix[col][row];
-	        if(tile && !tile.isPlain()){
-	        	var coordinates, temp, fallingPoint, fallingPointOther;
-	        	changedPointsArray.push(tile.coordinates);
-	        	fallingPoint = null;
-	        	do{
-			        var randomIt = Math.floor(Math.random() * ((col * tileMatrix[col].length) + row + 1));
-			        var newCol = Math.floor(randomIt/tileMatrix[col].length);
-			        var newRow = randomIt%tileMatrix[col].length;
-			        temp = tileMatrix[newCol][newRow];
-			    }while(!temp || temp.isPlain())
-			    var handled = board.handleLockedTilesForShuffle(tile, temp, changedPointsArray, originalLockedTiles);
-			    handled = board.handleLockedTilesForShuffle(temp, tile, changedPointsArray, originalLockedTiles) || handled;
-			    if(!handled){
+			var tile = tileMatrix[col][row];
+			if(tile && !tile.isPlain()){
+				var coordinates, temp, fallingPoint, fallingPointOther;
+				changedPointsArray.push(tile.coordinates);
+				fallingPoint = null;
+				do{
+					var randomIt = Math.floor(Math.random() * ((col * tileMatrix[col].length) + row + 1));
+					var newCol = Math.floor(randomIt/tileMatrix[col].length);
+					var newRow = randomIt%tileMatrix[col].length;
+					temp = tileMatrix[newCol][newRow];
+				}while(!temp || temp.isPlain());
+				var handled = board.handleLockedTilesForShuffle(tile, temp, changedPointsArray, originalLockedTiles);
+				handled = board.handleLockedTilesForShuffle(temp, tile, changedPointsArray, originalLockedTiles) || handled;
+				if(!handled){
 			    	coordinates = temp.coordinates;
 			    	board.addTile(tile.coordinates, null, null, null, temp);
 			    	board.addTile(coordinates, null, null, null, tile);
@@ -2561,9 +2580,8 @@ Board.prototype.shuffleBoard = function() {
   	var coords = board.tileActive.coordinates; 
   	board.tileActive = board.creatureTileMatrix[coords[0]][coords[1]];
   	board.tileActive.setActiveAsync().done();
-  	board.reshuffleService.start();	
-	
-}
+  	board.reshuffleService.start();
+}; //Board.prototype.shuffleBoard()
 
 Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPointsArray, originalLockedTiles) {
 	var board = this;
@@ -2582,14 +2600,14 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
     	return true;
    }
    return false;
-} //Board.prototype.handleLockedTilesForShuffle
+}; //Board.prototype.handleLockedTilesForShuffle
 
 Board.prototype.dangerBarEmptied = function() {
 	var timedMode, tileMatrix, gameboard;
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
+	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
@@ -2599,18 +2617,17 @@ Board.prototype.dangerBarEmptied = function() {
 				  
 				}
 			  }
-		})
+		});
 	 });
 	window.onkeydown=null;	
 	$('#final-score').html(gameboard.score);
-	if(sdkApi.inDemoMode()){
-			$('#dialog-game-over').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-small.png').src + ')');
+	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
-	}else{
-			$('#dialog-time-out').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
+	}
+	else{
 			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
-} //Board.prototype.dangerBarEmptied
+}; //Board.prototype.dangerBarEmptied
 
 Board.prototype.saveBoard = function() {
 	var restoreLookup, originalblogPositions, tileMatrix, gameboard, x, y, key, originalBlogconfig, timedMode;
@@ -2638,13 +2655,13 @@ Board.prototype.saveBoard = function() {
 					restoreLookup[key]= tile.blobConfig;
 				}
 			  }
-		})
+		});
  });
 	restoreLookup['score'] = gameboard.score;
 	blogColl = gameboard.blobCollection.blobCollection;
 	nilcollections = [];
     for(var key in blogColl){
-		if(blogColl[key].count == 0 )
+		if(blogColl[key].count === 0 )
 		  nilcollections.push(key);
 	}
 	restoreLookup['nilCollection'] =  nilcollections; 	
@@ -2652,20 +2669,19 @@ Board.prototype.saveBoard = function() {
 		restoreLookup['dangerBarTimeRemaining'] =  gameboard.level.dangerBar.timeRemainingMs; 
 	}
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-	localStorage.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
-} //Board.prototype.saveBoard()
+	store.setItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" , JSON.stringify(restoreLookup) );
+}; //Board.prototype.saveBoard()
 
 Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			//sdkApi.reportPageView(TGH5.Reporting.Page.GameMenu);
+			//sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-game-menu').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png').src + ')');
-			new DialogMenu('screen-game', this, 'dialog-game-menu');
+			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
 		case Board.HOTSPOT_QUIT:	
@@ -2673,10 +2689,9 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
-		case null:
+		case null: //Fallthrough
 		default:
 			this.handleTileSelect(this.tileActive);
 			if(this.initialSwapForTripletInfo){
@@ -2695,7 +2710,9 @@ Board.prototype.handleKeyboardSelect = function() {
 				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
 					this.level.bubbleTip.showBubbleTip(i18n.t(key));
-					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t(key))});
+					Galapago.delay(5000).done(function(){
+						board.level.bubbleTip.clearBubbleTip( i18n.t(key) );
+					});
 				}
 			}
 			break;
@@ -2728,7 +2745,7 @@ Board.prototype.handleRightArrow = function() {
 			}
 		}
 		tileRight = board.creatureTileMatrix[col][row];
-	}while(tileRight == null)
+	}while(tileRight === null);
 	if( tileRight && !this.navigationLock) {
 		board.navigationLock = true;
 		if(board.hotspot){
@@ -2783,7 +2800,7 @@ Board.prototype.handleLeftArrow = function() {
 			}
 		}
 		tileLeft = board.creatureTileMatrix[col][row];
-	}while(tileLeft == null)
+	}while(tileLeft === null);
 	if( tileLeft && !board.navigationLock) {
 		board.navigationLock=true;
 		if(board.hotspot){
@@ -2800,6 +2817,7 @@ Board.prototype.handleLeftArrow = function() {
 	} else if(!board.navigationLock){
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
+		//board.level.levelAnimation.rolloverAnimation.stop();
 	    console.log("isPowerAchieved :  "+this.powerUp.isPowerAchieved());
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			//this.powerUp.focus();
@@ -2812,8 +2830,6 @@ Board.prototype.handleLeftArrow = function() {
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
-		//board.displayMenuButton(true);
-		//this.hotspot = Board.HOTSPOT_MENU;
 	}
 	return this; //chainable
 }; //Board.prototype.handleLeftArrow
@@ -2835,7 +2851,7 @@ Board.prototype.handleDownArrow = function() {
 				row = 0;
 			}
 			tileDown = board.creatureTileMatrix[col][row];
-		}while(tileDown == null)
+		}while(tileDown === null);
 		if( tileDown && !board.navigationLock) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
@@ -2888,7 +2904,7 @@ Board.prototype.handleUpArrow = function() {
 				row = board.creatureTileMatrix[col].length - 1;
 			}
 			tileUp = board.creatureTileMatrix[col][row];
-		}while(tileUp == null)
+		}while(tileUp === null);
 		if( tileUp && !board.navigationLock) {
 			board.navigationLock=true;
 			board.tileActive.setInactiveAsync().then(function() {
@@ -3035,7 +3051,7 @@ Board.prototype.nullifyEmptyPoints = function(emptyPoints) {
 	_.each(emptyPoints, function(emptyPoint){
 		tileMatrix[emptyPoint[0]][emptyPoint[1]] = null;
 	});
-}
+}; //Board.prototype.nullifyEmptyPoints()
 
 Board.prototype.lowerTiles = function(tiles, numRows) {
 	var loweredPoint, board, changedPoints;
@@ -3108,7 +3124,7 @@ Board.prototype.getLeftRightFallingPoint = function(loweredPoint, col, row) {
 			return loweredPoint;
 		}
 	}
-}
+}; //Board.prototype.getLeftRightFallingPoint()
 
 Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 	var changedPoints= [];
@@ -3135,13 +3151,13 @@ Board.prototype.fillEmptyPoints = function(emptyPoints, nonFirstRowPoints) {
 		}
 	});
 	return changedPoints;
-}
+}; //Board.prototype.fillEmptyPoints()
 
 Board.prototype.pointEligibleForGeneration = function(point) {
 	var tileLeftUp =  this.getNeighborFromPoint(point, [-1, -1]);
 	var tileRightUp =  this.getNeighborFromPoint(point, [1, -1]);
-	return (tileLeftUp != null && !tileLeftUp.isPlain()) || (tileRightUp !=null && !tileRightUp.isPlain());
-}
+	return (tileLeftUp !== null && !tileLeftUp.isPlain()) || (tileRightUp !==null && !tileRightUp.isPlain());
+}; //Board.prototype.pointEligibleForGeneration()
 
 // run an animation removing a matching tile triplet
 Board.prototype.removeTriplets = function(tileTriplets) {
@@ -3155,7 +3171,7 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 		board.clearTiles(tileTriplet, true);
 	});
 	return this; //chainable
-}; //Board.prototype.removeTriplets
+}; //Board.prototype.removeTriplets()
 
 Board.prototype.removeTiles = function(tiles) {
 	var board;
@@ -3163,7 +3179,7 @@ Board.prototype.removeTiles = function(tiles) {
 	_.each( tiles, function(tile) {
 		board.removeTile(tile);
 	});
-}
+}; //Board.prototype.removeTiles()
 
 Board.prototype.clearTiles = function(tiles, sparkles) {
 	var board;
@@ -3172,10 +3188,12 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 	function draw(){
 		if(sparkles){
 			var centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
-			board.level.levelAnimation.animateSparkles(board.gameAnimationLayer, Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
+			board.level.levelAnimation.animateSparkles(Tile.getXCoord(centerPoint[0]), Tile.getYCoord(centerPoint[1]));
 		}
 		_.each( pointsArray, function(point) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+			var tile = board.getCreatureTilesFromPoints( [point] )[0];
+			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		});
 	}
 	if(this.putInAnimationQ){
@@ -3183,7 +3201,7 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 	}else{
 		draw();
 	}
-}
+}; //Board.prototype.clearTiles()
 
 Board.prototype.swapCreatures = function(tileSrc, tileDest) {
 	var tempCoordinates/*, deferred*/;
@@ -3232,7 +3250,7 @@ Board.prototype.getGoldTile = function(creatureTile) {
 	creatureTileCol = creatureTile.coordinates[0];
 	creatureTileRow = creatureTile.coordinates[1];
 	return this.goldTileMatrix[creatureTileCol][creatureTileRow];
-};
+}; //Board.prototype.getGoldTile()
 
 Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	var /*deferred,*/ board;
@@ -3241,25 +3259,29 @@ Board.prototype.animateGoldRemovalAsync = function(goldTiles) {
 	Galapago.audioPlayer.playGoldOrBlockingMatch();
 	_.each(goldTiles, function(tile) {
 		board.removeTile(tile);
-		board.goldLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		board.creatureLayer.clearRect( tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		//var spanId = 'span_'+tile.coordinates[1]+'_'+tile.coordinates[0];
+		//$('#'+spanId).css('backgroundImage','url('+board.level.gameImages.tile_regular.src+')');
+		board.creatureLayer.drawImage( board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+
 	});
 	//deferred.resolve();
 	//return deferred.promise;
 	return;
-};
+}; //Board.prototype.animateGoldRemovalAsync()
 
 Board.prototype.animateLightningStrikeAsync = function(matchingTilesSet) {
 	var board = this;
 	function draw(){
 		Galapago.audioPlayer.playLightningStrike();
-		board.level.levelAnimation.animateLightning(board.gameLightningLayer, matchingTilesSet);
+		board.level.levelAnimation.animateLightning(matchingTilesSet);
 	}
 	if(this.putInAnimationQ){
 		this.animationQ.push(draw);
 	}else{
 		draw();
 	}
-};
+}; //Board.prototype.animateLightningStrikeAsync()
 
 //generate a random number r between 0 and creatureTypes.length - 1
 //return a creature image with the rth creature type from the list
@@ -3270,24 +3292,18 @@ Board.prototype.randomCreature = function(creatureTypes) {
 	creatureImage = this.level.getCreatureImage(creatureType, Level.CREATURE_SPRITE_NUMBERS[0]);
 	creature  = new Creature(creatureType, creatureImage);
 	return creature;
-};
+}; //Board.prototype.randomCreature()
 
 Board.prototype.updateScore = function() {
 	this.score += Score.consolidateScores(this.scoreEvents);
-	this.drawScore();
+	this.displayScore();
+	return this; //chainable
 }; //Board.prototype.updateScore
 
-Board.prototype.drawScore = function() {
-	var layer;
-	layer = this.scoreLayer;
-	//layer = this.backgroundLayer;
-	layer.clearRect( 0, 0, Score.MAX_WIDTH, Score.MAX_HEIGHT);
-	layer.textBaseline = 'top';
-	layer.font = Score.FONT_SIZE + 'px ' + Score.FONT_NAME;
-	layer.fillStyle = Score.COLOR;//Board.LEVEL_NAME_FONT_COLOR;
-	layer.fillText(this.score, 0, 0);
+Board.prototype.displayScore = function() {
+	this.scoreElement.html( this.score );
 	return this; //chainable
-}; //Board.prototype.drawScore()
+}; //Board.prototype.displayScore()
 
 Board.prototype.handleClickOrTap = function(evt) {
 	var col, row, tile, matrix, message, board;
@@ -3337,6 +3353,28 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.coordinates = coordinates;
 	this.spriteNumber = spriteNumber;
 }
+
+Tile.prototype.drawComplete = function(y) {
+	var galGoldAssetPath, imageGold, layer, tile, creatureY;
+	tile = this;
+	layer = this.board.creatureLayer;
+	creatureY = y ? y : tile.getYCoord();
+	if( this.board.getGoldTile(tile) ) {
+		galGoldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
+		imageGold = LoadingScreen.gal.get(galGoldAssetPath);
+		if( imageGold ) {
+			layer.drawImage(imageGold, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
+		else {
+			console.error( 'unable to find gold image ' + galGoldAssetPath );
+		}
+	}
+	else{
+		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+	layer.drawImage(tile.blob.image, tile.getXCoord(), creatureY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+};
 
 Tile.prototype.toString = function() {
 	var output, tileType;
@@ -3397,8 +3435,20 @@ Tile.prototype.setSelectedAsync = function() {
 	var deferred;
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	
+	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	var goldTile = this.board.getGoldTile(this)
+		//$('#'+spanId).css('background-size','cover');
+		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
+	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	if(goldTile){
+		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );	
+	}
+	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3406,18 +3456,49 @@ Tile.prototype.setSelectedAsync = function() {
 }; //Tile.prototype.setSelectedAsync()
 
 Tile.prototype.setUnselected = function() {
-	this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	
+	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	var goldTile = this.board.getGoldTile(this);
+	
+		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
+	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	if(goldTile){
+		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+
 	return this; // chainable
 };
 
 Tile.prototype.clear = function() {
+	var goldAssetPath, imageGold, tileActive;
+	tileActive = this.board.tileActive;
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.drawComplete();
+	/*
+	if(this.board.getGoldTile(this)){
+		goldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
+		imageGold = LoadingScreen.gal.get(goldAssetPath);
+		if( imageGold ) {
+			this.board.creatureLayer.drawImage(imageGold, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
+		else {
+			console.error( 'unable to find gold image ' + goldAssetPath );
+		}
+	}else{
+		this.board.creatureLayer.drawImage(this.board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+	*/
+	//this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
 	var layer, x, y, width, height, offset;
-	layer = this.board.gridLayer;
+	layer = this.board.creatureLayer;
 	x = Tile.getXCoord(this.coordinates[0]);
 	y = Tile.getYCoord(this.coordinates[1]);
 	layer.strokeStyle = color;
@@ -3425,27 +3506,31 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	offset = 1;
 	width = Board.TILE_WIDTH * offset;
 	height = Board.TILE_HEIGHT * offset;
-	layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
+	//layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
+	
+	/*var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
+	$('#'+spanId).css('border', '1px solid '+color);
+	if(!$('#'+spanId).css('backgroundImage')){
+		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
+	}*/
+	
 }; //Tile.prototype.drawBorder()
 
 Tile.prototype.drawHilight = function() {	
-	var layer, x, y, width, height, offset;
-	layer = this.board.hilightLayer;
-	offset = 1;
-	x = Tile.getXCoord(this.coordinates[0])/* - offset*/;
-	y = Tile.getYCoord(this.coordinates[1])/* - offset*/;
-	width = Board.TILE_WIDTH/* + 2 * offset*/;
-	height = Board.TILE_HEIGHT/* + 2 * offset*/;
-	layer.drawImage( this.board.level.gameImages.tile_selected, x, y, width, height );
+	var div, x, y, width, height;
+	div = this.board.hilightDiv;
+	x = Tile.getXCoord(this.coordinates[0]) + Board.GRID_LEFT;
+	y = Tile.getYCoord(this.coordinates[1]) + Board.GRID_TOP;
+	div.css('left', + x + 'px');
+	div.css('top', y + 'px');
+	div.show();
 }; //Tile.prototype.drawHilight()
 
 Tile.prototype.eraseHilight = function() {	
-	var x, y;
-	x = Tile.getXCoord(this.coordinates[0]);
-	y = Tile.getYCoord(this.coordinates[1]);
-	this.board.hilightLayer.clearRect( x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.hilightDiv.hide();
 }; //Tile.prototype.drawHilight()
+
 
 Tile.prototype.getXCoord = function() {	
 	return Tile.getXCoord(this.coordinates[0]);
@@ -3738,8 +3823,8 @@ DangerBar.IMAGE_MAGNIFICATION = 2;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(layerBackground, imageArray, initialTimeMs) {
-	this.layerBackground = layerBackground;
+function DangerBar(imageArray, initialTimeMs) {
+	//this.layerBackground = layerBackground;
 	this.initImages(imageArray);
 	this.canvas = $('#layer-danger-bar');
 	this.canvas[0].width = this.danger_bar.width;
@@ -3777,7 +3862,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.layerBackground.drawImage( this.danger_bar, DangerBar.LEFT, DangerBar.DANGER_BAR_TOP, this.danger_bar.width, this.danger_bar.height )
+	this.layer.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
 	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
@@ -3924,33 +4009,40 @@ function ReshuffleService(board){
 }
 
 ReshuffleService.prototype.start = function() {
-	var reshuffleService = this;
-	var board = this.board
+	var reshuffleService, board, swapForTripletInfo, validMoveFound, powerActive, initialTile, swapTile;
+	reshuffleService = this;
+	board = this.board;
 	if( !this.reshuffleInterval) {
 		this.reshuffleInterval = setInterval(function(){
-			var swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
-			var validMoveFound = swapForTripletInfo.tipInfo.initialTile != null;
-			var powerActive = reshuffleService.board.powerUp.isPowerAchieved();
+			swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			validMoveFound = swapForTripletInfo.tipInfo.initialTile !== null;
+			powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 			if(validMoveFound){
-				var initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
-				var swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
+				initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
+				swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
 				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
 					board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
-					Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Make Matches'))});
+					Galapago.delay(5000).done(function() {
+						board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Make Matches') );
+					});
 				}
 			}
 			if(powerActive && !validMoveFound){
 				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
-				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Use PowerUps'))});
+				Galapago.delay(5000).done(function() {
+					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Use PowerUps') );
+				});
 			}
 			if(!powerActive && !validMoveFound){
 				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
 				Galapago.audioPlayer.playReshuffle();
 				reshuffleService.board.shuffleBoard();
 				console.log("reshuffled");
-				Galapago.delay(5000).done(function(){board.level.bubbleTip.clearBubbleTip(i18n.t('Game Tips.Shuffling Board'))});
+				Galapago.delay(5000).done(function() {
+					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Shuffling Board') );
+				});
 			}
 		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
 		this.isStarted = true;
@@ -3996,13 +4088,13 @@ MatchFinder.findMatch = function(board, withGoldTile) {
 			        }
 		        }
 		    });
-		};
+		}
 	});
   	return swapForTripletInfo;
-}
+}; //MatchFinder.findMatch()
 
 MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeReplaced, withGoldTile){
-	if(tileToBeReplaced && (tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend())){
+	if( tileToBeReplaced && ( tileToBeReplaced.isCreatureOnly() || tileToBeReplaced.hasSuperFriend() ) ){
  		var tile = new Tile(this, tileToBeMoved.blob, tileToBeReplaced.coordinates, tileToBeMoved.spriteNumber);
  		var matchingTilesSets = board.tilesEventProcessor.getMatchingTilesSets(tile, tileToBeMoved);
  		if(withGoldTile && matchingTilesSets.length){
@@ -4012,14 +4104,14 @@ MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeRepla
 				if(goldTiles.length){
 					goldFound = true;
 				}
-			})
+			});
  			return goldFound;
  		}else{
  			return matchingTilesSets.length > 0;
  		}
  	}
  	return false;
-}
+}; //MatchFinder.checkIfSwapMakesMatch()
 
 // see @Tyler Whitehouse's answer at http://stackoverflow.com/a/11196395/567525
 function PauseableInterval(func, delay , sender){
@@ -4034,49 +4126,136 @@ function PauseableInterval(func, delay , sender){
     this.getTimeLeft = function(){
         var now = new Date();
         return this.delay - ((now - this.triggerSetAt) % this.delay);
-    }
+    };
     this.pause = function(){
         this.paused_timeLeft = this.getTimeLeft();
             //console.log('pause  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
         window.clearInterval(this.i);
         this.i = null;
                 //window.setTimeout(this.resume, 4000);
-    }
- 
+    };
     this.reset = function(sender){
         window.clearInterval(this.i);
         this.i = null;
         this.i = window.setInterval(this.func, this.delay,sender);
-    }
- 
+    };
     this.restart = function(sender){
         sender.i = window.setInterval(sender.func, sender.delay,sender);
-    }
- 
+    };
     this.callAndRestart = function(sender){
       sender.restart(sender);
       //console.log('callAndRestart function called : ' +' now : '+new Date().getTime());
       sender.func();
-    }
- 
+    };
     this.resume = function(){
-        if (this.i == null){
+        if (this.i === null){
            // console.log('resume  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
             this.i = window.setTimeout(this.callAndRestart, this.paused_timeLeft, this);
         }
-    }
- 
+    };
     this.clearInterval = function(){
            window.clearInterval(this.i);
-      }
-	  
-	 this.isRunning = function(){
-	     if(this.i != null)
-		   return true;
+    };
+	this.isRunning = function(){
+		if(this.i !== null)
+			return true;
 		return false;
-     }	 
+	};
 } //function PauseableInterval()
 
 function replaceAll(str, find, replace) {
   return str.replace(new RegExp(find, 'g'), replace);
 } //function replaceAll()
+
+window.store = new Store(); 
+
+function Store(){
+}
+
+Store.prototype.localStoreSupport = function() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+        return false;
+    }
+};
+
+Store.prototype.setItem = function(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else {
+        var expires = "";
+    }
+    if( this.localStoreSupport() ) {
+        localStorage.setItem(name, value);
+    }
+    else {
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+};
+
+Store.prototype.getItem = function(name) {
+    if( this.localStoreSupport() ) {
+        return localStorage.getItem(name);
+    }
+    else {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+};
+
+Store.prototype.getKeys = function(name) {
+	var keys = [];
+    if( this.localStoreSupport() ) {
+        for (var i = 0; i < localStorage.length; i++){
+			keys.push(localStorage.key(i));
+		}
+    }
+    else {
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	keys.push(c.substring(0, eqIndex));
+            }
+        }
+    }
+    return keys;
+};
+ 
+Store.prototype.removeItem = function(name) {
+    if( this.localStoreSupport() ) {
+        localStorage.removeItem(name);
+    }
+    else {
+        this.setItem(name,"",-1);
+    }
+};
+
+Store.prototype.clear = function(){
+	if( this.localStoreSupport() ) {
+        localStorage.clear();
+    }
+    else {
+    	var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            var eqIndex = c.indexOf("=");
+            if (eqIndex > -1){ 
+            	this.setItem(c.substring(0, eqIndex), "", -1);
+            }
+        }
+    }	
+};

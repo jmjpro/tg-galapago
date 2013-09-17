@@ -45,20 +45,26 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
-	/*
-	if( callingScreenId == 'screen-loading') {
-		mainMenuScreen.registerImageLoadEvents();
-	}
-	else {
-		mainMenuScreen.setInitialNavItem();
-	}
-	*/
-	mainMenuScreen.setImages();
-	mainMenuScreen.setInitialNavItem();
-	mainMenuScreen.show();
+	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
+		if (result.success) {
+			//LoadingScreen.gal.un
+			/*
+			 if( callingScreenId == 'screen-loading') {
+			 mainMenuScreen.registerImageLoadEvents();
+			 }
+			 else {
+			 mainMenuScreen.setInitialNavItem();
+			 }
+			 */
+			mainMenuScreen.setImages();
+			mainMenuScreen.setInitialNavItem();
+			mainMenuScreen.show();
 
-	mainMenuScreen.windowKeyHandler= window.onkeydown;
-	mainMenuScreen.addMouseListener();
+			mainMenuScreen.windowKeyHandler = window.onkeydown;
+			mainMenuScreen.addMouseListener();
+		}
+	});
+	LoadingScreen.gal.download('bg-main-menu');
 }; //MainMenuScreen.init()
 
 MainMenuScreen.prototype.addMouseListener = function(){
@@ -91,7 +97,7 @@ MainMenuScreen.prototype.registerMouseOverEvent = function(id){
 MainMenuScreen.prototype.setInitialNavItem = function(){
 	this.currentNavItem = null;
 	this.setNavItem(this.getNavItem(null, this.callingScreen));
-	console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
+	//console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
@@ -141,19 +147,11 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-how-to-play' :
 			this.unregisterEventHandlers();
-			galImagePath = MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png';
-			bgImage = LoadingScreen.gal.get( galImagePath );
-			if( bgImage ) {
-				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');
-			}
-			else {
-				console.error( 'unable to find ' + galImagePath );
-			}
-			new DialogHelp('main-menu-screen', this, 'dialog-help', TGH5.Reporting.Page.Help);
+			new DialogHelp('main-menu-screen', this);
 			break;
 		case 'button-top-scores' :
 			this.unregisterEventHandlers();
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Page.Leaderboards);
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Screen.Leaderboards);
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -164,7 +162,6 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-quit' :
 			this.unregisterEventHandlers();
-			$('#dialog-quit').css('background-image','url(' + LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png').src + ')');
 			new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
@@ -175,12 +172,20 @@ MainMenuScreen.prototype.show = function() {
 	this.registerEventHandlers();
 	this.mainMenuDOM.show();
 	this.callingScreen && this.callingScreen.hide();
-	//sdkApi.reportPageView(TGH5.Reporting.Page.MainMenu);
+	//sdkApi.reportPageView(TGH5.Reporting.Screen.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
 	this.unregisterEventHandlers();
 	this.mainMenuDOM.hide();
+
+	// TODO: IGOR: MainMenuScreen: cleanup
+	_.each( _.keys(MainMenuScreen.IMAGE_MAP), function(selector) {
+		$(selector).css( 'background-image','');
+	});
+
+	LoadingScreen.gal.unload('bg-main-menu');
+
 	/*
 	if( this.callingObject.registerEventHandlers ){
 		this.callingObject.registerEventHandlers();
@@ -204,7 +209,7 @@ MainMenuScreen.prototype.isFirstTimeShown = function() {
 
 MainMenuScreen.prototype.getLastSelectedMode = function() {
 	//TODO read from local storage
-	return '#button-timed';
+	return '#button-relaxed';
 }; //MainMenuScreen.prototype.getLastSelectedMode()
 
 MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
@@ -212,7 +217,7 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	if( this.isFirstTimeShown() ) {
 		navItem = $('#button-timed');
 	}
-	else if( callingScreen ) {
+	else if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
 				navItem = $('#button-relaxed');

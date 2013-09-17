@@ -1,21 +1,22 @@
 DialogMenu.BACKGROUNDS_AND_BUTTONS = [
-	{"id" : "dialog-quit", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-game-menu", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-quit", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-game-menu", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-time-out", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-you-won", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-you-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-leaderboards", "background" : "dialog-large.png", "button-class" : "button-big-hilight"},
-	{"id" : "dialog-level-won", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-level-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-loading", "background" : "dialog-small-no-title.png", "button-class" : ""},
-	{"id" : "dialog-new-game", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-new-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-game-options", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-delete", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create-init", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-reset-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-help", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"}
 ];
+DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
 /* begin DialogMenu.SELECT_HANDLERS[] */
 DialogMenu.SELECT_HANDLERS = [];
@@ -51,7 +52,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 };
 
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
-	var optionId, board, mainCanvasId, bgImage;
+	var optionId, board, mainCanvasId;
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
@@ -74,21 +75,13 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-new-game' :
 			this.hide();
-			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular-no-title.png');
-			if( bgImage ) {
-				$('#dialog-new-game').css('background-image','url(' + bgImage.src + ')');
-			}			
 			new DialogMenu(mainCanvasId, board, 'dialog-new-game');
 			break;
 		case 'option-how-to-play' :
 			this.hide();
 			board.displayMenuButton(false);
 			board.hotspot = null;
-			bgImage = LoadingScreen.gal.get(MainMenuScreen.DIALOG_PREFIX+'dialog-regular.png');
-			if( bgImage ) {
-				$('#dialog-help').css('background-image','url(' + bgImage.src + ')');				
-			}
-			new DialogHelp(mainCanvasId, board, 'dialog-help',TGH5.Reporting.Page.Help);
+			new DialogHelp(mainCanvasId, board);
 			break;
 		case 'option-options' :
 			this.hide();
@@ -132,7 +125,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			this.hide();
 			board.level.cleanup();
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-			localStorage.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
+			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
 			Galapago.setLevel(board.level.id);
 			break;
 		case 'new-game-option-no' :
@@ -249,7 +242,10 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.hilightClass = DialogMenu.getButtonClass( dialogId );
 	this.hilightImageName = "button-hilight";
 	this.buttonImageName = "button-regular";
-	var menuButtonSize = this.dialogNav.children().length;
+
+	this.setDialogBackgroundImage();
+
+	menuButtonSize = this.dialogNav.children().length;
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (this.dialogNav.children()[i]);
 		galBgImagePath = DialogMenu.DIALOG_PREFIX + this.buttonImageName+'.png';
@@ -285,6 +281,25 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 		this.callback.call();
 	}
 } //function DialogMenu()
+
+DialogMenu.prototype.setDialogBackgroundImage = function() {
+	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
+	dialogSpec = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : this.dialogId} );
+	if( dialogSpec ) {
+		backgroundFileName = dialogSpec.background;
+		if( backgroundFileName ) {
+			galBackgroundPath = 'background/' + backgroundFileName;
+			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
+			if( backgroundImage ) {
+				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+			}
+		}
+	}
+	else {
+		console.error( 'unable to find dialog spec for ' + this.dialogId );
+	}
+	return this;
+}; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
 	this.dialogMenuDOM.show();
@@ -351,6 +366,13 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
+		case 37: // left arrow
+			switch ( dialogMenu.dialogId ) {
+				case 'dialog-game-menu':
+					dialogMenu.handleGameMenuLeftRightNavigation();
+				break;
+			}
+			break;
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
@@ -361,6 +383,13 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			}
 			evt.stopPropagation();
 			evt.preventDefault();
+			break;
+		case 39: // right arrow
+			switch ( dialogMenu.dialogId ) {
+				case 'dialog-game-menu':
+					dialogMenu.handleGameMenuLeftRightNavigation();
+				break;
+			}
 			break;
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
@@ -391,6 +420,25 @@ DialogMenu.prototype.registerEventHandlers = function() {
 				case 'dialog-game-over':
 					dialogMenu.dialogGameOverSelect();
 					break;
+				case 'dialog-game-menu':
+					dialogMenu.hide();
+					board = dialogMenu.callingObject;
+					board.displayMenuButton(false);
+					board.hotspot = null;
+					board.display();
+					if(board.level.dangerBar){
+						board.level.dangerBar.resume();
+					}
+					board.reshuffleService.start();				
+					break;
+				case 'dialog-reset-game':
+					Galapago.levelMap.cleanup();
+					LevelMap.show(dialogMenu.callingObject.hotspotLevel);
+					dialogMenu.hide();				
+					break;
+				case 'dialog-time-out':
+					dialogMenu.selectHandler(dialogMenu);
+					break;					
 			}
 			evt.stopPropagation();
 			evt.preventDefault();		
@@ -405,11 +453,29 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	*/
 }; //DialogMenu.prototype.registerEventHandlers()
 
+DialogMenu.prototype.handleGameMenuLeftRightNavigation = function() {
+	var timedMode, gameTipsSelectionEle;
+	switch(this.currentNavItem[0].id) {
+		case 'option-game-tip':
+			gameTipsSelectionEle = $('#gameTipsSelection')[0];
+			if(gameTipsSelectionEle.innerHTML === 'On'){
+				gameTipsSelectionEle.innerHTML = 'Off';
+			}else{
+				gameTipsSelectionEle.innerHTML = 'On';
+			}
+			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			store.setItem( timedMode + Galapago.profile + "gameTipsSelection", gameTipsSelectionEle.innerHTML);
+		break;
+	}
+};
+
 DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
-	this.hide();
+	/*this.hide();
 	board.displayMenuButton(false);
 	board.hotspot = null;
-	board.display();
+	board.display();*/
+	this.hide();
+	new DialogMenu('screen-game', board, 'dialog-game-menu');
 }; //DialogMenu.prototype.dialogNewGameOptionNo()
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
@@ -453,25 +519,15 @@ DialogMenu.prototype.unregisterEventHandlers = function() {
 	}
 }; //MapScreen.prototype.unregisterEventHandlers()
 
-/* initialize the backgrounds for all the dialog boxes */
-DialogMenu.setBackgrounds = function() {
-	var dialogId, bgImageId, galImagePath, bgImage;
-	_.each( DialogMenu.BACKGROUNDS_AND_BUTTONS, function( dialogDescriptor ) {
-		dialogId = dialogDescriptor.id;
-		bgImageId = dialogDescriptor.background;
-		galImagePath = Galapago.BACKGROUND_GAL_PREFIX + bgImageId;
-		bgImage = LoadingScreen.gal.get( galImagePath );
-		if( bgImage ) {
-			$( '#' + dialogId ).css( 'background-image', 'url(' + bgImage.src + ')' );
-		}
-		else {
-			console.error( "unable to find image " + galImagePath);
-		}
-	});
-};
-
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;
 	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} )
 	return dialogDescriptor['button-class'];
 }; //DialogMenu.getButtonClass()
+
+DialogMenu.loadImages = function(imageIds){
+	_.each(imageIds, function(imageId){
+		var imgElementID = '#' + imageId;
+		$(imgElementID)[0].src = LoadingScreen.gal.get(DialogMenu.IMAGE_PATH_PREFIX + imageId + '.png').src;
+	});
+};
