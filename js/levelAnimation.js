@@ -144,6 +144,11 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
 		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		if(board.getGoldTile(tileActive)){
+			layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}else{
+			layer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
 		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		if(board.tileSelected == tileActive){
 			tileActive.setSelectedAsync().then( function() {
