@@ -3467,13 +3467,15 @@ Tile.prototype.setSelectedAsync = function() {
 	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	
 	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	if(!this.board.getGoldTile(this)){
+	var goldTile = this.board.getGoldTile(this)
 		//$('#'+spanId).css('background-size','cover');
 		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
-		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	if(goldTile){
+		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );	
 	}
+	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
