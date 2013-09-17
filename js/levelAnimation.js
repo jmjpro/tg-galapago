@@ -1298,9 +1298,10 @@ AnimationSprites.prototype.initSprite = function() {
 	return this.currentSprite;
 }; //AnimationSprites.prototype.initSprite()
 
-AnimationSprites.prototype.destroy = function(url){
+AnimationSprites.prototype.destroy = function(){
 	if(this.currentSprite){
-		this.currentSprite.remove();
+		//this.currentSprite.remove();
+		this.currentSprite.parentNode.removeChild(this.currentSprite);
 	}
 	this.currentSprite = null;
 	return this;
@@ -1371,7 +1372,7 @@ function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, m
 
 BlinkingImage.prototype.destroy = function(url){
 	if(this.image){
-		this.image.remove();
+		this.image.parentNode.removeChild(this.image);
 	}
 	this.image = null;
 	return this;
