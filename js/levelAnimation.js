@@ -2,8 +2,6 @@ LevelAnimation.CREATURE_DROPPING_INTERVAL=300;
 LevelAnimation.BONFIRE_TIME_INTERVAL=2000;
 LevelAnimation.BONFIRE_IMAGE_WIDTH=21;
 LevelAnimation.BONFIRE_IMAGE_HEIGHT=36;
-LevelAnimation.LIGHTNING_IMAGE_WIDTH=984;
-LevelAnimation.LIGHTNING_IMAGE_HEIGHT=115;
 LevelAnimation.BOMB_TIME_INTERVAL=3500;
 LevelAnimation.JUMP_TIME_INTERVAL=10;
 LevelAnimation.ROLLOVER_SUFFIX = '-rollover';
@@ -48,16 +46,13 @@ function LevelAnimation(layer){
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
-	if(LevelAnimation.bobCervantesAnimation){
-		return;
-	}
 	var headsBase, canvasBC, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
 	headsBase = LoadingScreen.gal.get( Galapago.GAME_SCREEN_GAL_PREFIX + "heads-base.png" );
-	headsBase = CanvasUtil.magnifyImage( headsBase, 2 );
 	canvasBC = $('#layer-bob-cervantes');
-	canvasBC[0].width = headsBase.width;
-	canvasBC[0].height = headsBase.height;
+	canvasBC[0].width = headsBase.width * 2;
+	canvasBC[0].height = headsBase.height * 2;
 	canvasBC.css( 'background-image', 'url(' + headsBase.src + ')' );
+	canvasBC.css( 'background-size', '100%' );
 	layerBobCervantes = canvasBC[0].getContext('2d');
 	//layer.drawImage(headsBase, 0, 0, headsBase.width, headsBase.height);
 	bcLeftHeadImageSprites = ImageCollage.getSprites(Galapago.collageDirectory + "heads-left-eyes-strip.png");
@@ -69,6 +64,9 @@ LevelAnimation.prototype.initBobCervantes = function(layer) {
 	layerBobCervantes.drawImage(imgRightHeadEyes, 113, 125, imgRightHeadEyes.width* 1.1, imgRightHeadEyes.height* 1.1);		
 	imgRightHeadMouth = bcMouthImageSprites[0];
 	layerBobCervantes.drawImage(imgRightHeadMouth, 82, 140, imgRightHeadMouth.width* 2, imgRightHeadMouth.height* 2);
+	if(LevelAnimation.bobCervantesAnimation){
+		return;
+	}
 	LevelAnimation.bobCervantesAnimation = new BobCervantesAnimation(layerBobCervantes, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites);
 }
 
@@ -582,7 +580,7 @@ LevelAnimation.prototype.animateStars = function(x, y, imageId, blobCollection) 
 	starsAnimation.start();	
 }
 
-LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
+LevelAnimation.prototype.animateLightning = function(matchingTilesSet) {
 	var x, y, previousTile, lightningAnimation, horizontal = true;
 	_.each(matchingTilesSet, function(tile){
 		x = tile.getXCoord();
@@ -593,9 +591,9 @@ LevelAnimation.prototype.animateLightning = function(layer, matchingTilesSet) {
 		previousTile = tile;
 	});
 	if(horizontal){
-		lightningAnimation = new LightningAnimation(layer, y , horizontal);
+		lightningAnimation = new LightningAnimation(y , horizontal);
 	}else{
-		lightningAnimation = new LightningAnimation(layer, x , horizontal);
+		lightningAnimation = new LightningAnimation(x , horizontal);
 	}
 	lightningAnimation.start();	
 }
@@ -605,8 +603,8 @@ LevelAnimation.prototype.animateSparkles = function(x, y){
 	sparklesAnimation.start();
 };
 
-LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, animationLayer, tileMatrix, callback){
-	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, animationLayer, tileMatrix, callback);
+LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, tileMatrix, callback){
+	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, tileMatrix, callback);
 	boardBuildAnimation.start();
 }
 
@@ -933,8 +931,7 @@ MakeMatchAnimation.prototype.animate = function(){
 
 BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
 BoardBuildAnimation.HEIGHT_OFFSET = 15;
-function BoardBuildAnimation(creatureLayer, layer, tileMatrix, callback){
-	this.creatureLayer = creatureLayer;
+function BoardBuildAnimation(layer, tileMatrix, callback){
 	this.layer = layer;
 	this.tileMatrix = tileMatrix;
 	this.noOfRows = 1;
@@ -946,6 +943,7 @@ function BoardBuildAnimation(creatureLayer, layer, tileMatrix, callback){
 BoardBuildAnimation.prototype.start = function(){
 	var boardBuildAnimation = this;
 	this.interval = setInterval(function(){
+		boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
 		boardBuildAnimation.animate()}, 
 		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
 };
@@ -975,12 +973,13 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 	}
 	if(complete){
+		this.layer.canvas.height = Board.GRID_HEIGHT;
 		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
 		for(col = 0; col < this.tileMatrix.length; col++){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
 				tile = this.tileMatrix[col][row];
 				if(tile && tile.blob){
-					this.creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+					this.layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
 				}
 			}
 		}
@@ -1128,24 +1127,31 @@ StarsAnimation.prototype.animate = function(){
 };
 
 LightningAnimation.ROLLOVER_TIME_INTERVAL=100;
-function LightningAnimation(layer, coordinate, horizontal){
-	this.layer = layer;
+function LightningAnimation(coordinate, horizontal){
 	this.coordinate = coordinate;
 	this.horizontal = horizontal;
-	this.rolloverSpriteId = 0;
+	this.spriteId = 0;
+	this.div1 = null;
+	this.div2 = null;
 }
 
 LightningAnimation.prototype.start = function(){
 	if(this.interval){
 		this.stop();
 	}
-	var lightningAnimation = this;
+	var imgWidth, imgHeight, xCoord, yCoord, lightningAnimation = this;
+	imgWidth = 2 * LevelAnimation.lightningImages.rightHorizontal[0].naturalWidth;
+	imgHeight = 2 * LevelAnimation.lightningImages.rightHorizontal[0].naturalHeight;
 	if(this.horizontal){
-		this.coordinate = (this.coordinate + Board.TILE_HEIGHT / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
-		this.coordinate = Board.GRID_TOP - this.layer.canvas.offsetTop + this.coordinate;
+		yCoord = Board.GRID_TOP + (this.coordinate + (Board.TILE_HEIGHT / 2)) - (imgHeight/2) ;
+		xCoord = (Board.GRID_LEFT + (Board.GRID_WIDTH) / 2) - imgWidth;
+		this.div1 = new AnimationDiv(xCoord, yCoord, imgWidth , imgHeight);
+		this.div2 = new AnimationDiv(xCoord + imgWidth, yCoord, imgWidth, imgHeight);
 	}else{
-		this.coordinate = (this.coordinate + Board.TILE_WIDTH / 2) - (LevelAnimation.LIGHTNING_IMAGE_HEIGHT/2) ;
-		this.coordinate =  Board.GRID_LEFT - this.layer.canvas.offsetLeft  + this.coordinate;
+		xCoord = Board.GRID_LEFT + (this.coordinate + (Board.TILE_WIDTH / 2)) - (imgHeight/2) ;
+		yCoord = (Board.GRID_TOP + (Board.GRID_HEIGHT) / 2) - imgWidth;
+		this.div1 = new AnimationDiv(xCoord, yCoord, imgHeight, imgWidth);
+		this.div2 = new AnimationDiv(xCoord, yCoord + imgWidth, imgHeight, imgWidth);
 	}
 	this.interval = setInterval(function() {
 		lightningAnimation.animate();
@@ -1154,6 +1160,8 @@ LightningAnimation.prototype.start = function(){
 
 LightningAnimation.prototype.stop = function(){
 	if(this.interval){
+		this.div1.destroy();
+		this.div2.destroy();
 		clearInterval(this.interval);
 	}
 };
@@ -1161,65 +1169,46 @@ LightningAnimation.prototype.stop = function(){
 LightningAnimation.prototype.animate = function(){
 	var image;
 	if(this.horizontal){
-		if(this.rolloverSpriteId < LevelAnimation.lightningSprites.length){ 
-			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];
+		if(this.spriteId < LevelAnimation.lightningSprites.length){ 
+			image = LevelAnimation.lightningImages.leftHorizontal[this.spriteId];
 			if( image ) {
-			this.layer.clearRect(0, this.coordinate, 4*image.naturalWidth, 2*image.naturalHeight);
-			this.layer.drawImage(image, 0, this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+				this.div1.addBackground(image);
 			}
 			else {
 				console.error( 'no left horizontal lightning image');
 			}
-			image = LevelAnimation.lightningImages.rightHorizontal[this.rolloverSpriteId];
-			this.rolloverSpriteId++;
+			image = LevelAnimation.lightningImages.rightHorizontal[this.spriteId];
 			if( image ) {
-				this.layer.drawImage(image, 2*image.naturalWidth , this.coordinate, 2*image.naturalWidth, 2*image.naturalHeight);
+				this.div2.addBackground(image);
 			}
 			else {
 				console.error( 'no right horizontal lightning image');
 			}
+			this.spriteId++;
 		}else{
-			this.rolloverSpriteId--;
-			image = LevelAnimation.lightningImages.leftHorizontal[this.rolloverSpriteId];;
-			if( image ) {
-				this.layer.clearRect(0, this.coordinate, 4 * image.naturalWidth, 2*image.naturalHeight);
-			}
-			else {
-				console.error( 'no left horizontal lightning image');
-			}
 			this.stop();
 		}
 	}else{
-		if(this.rolloverSpriteId != LevelAnimation.lightningSprites.length){ 
-			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];
+		if(this.spriteId != LevelAnimation.lightningSprites.length){ 
+			image = LevelAnimation.lightningImages.topVertical[this.spriteId];
 			if( image ) {
-				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
-				this.layer.drawImage(image, this.coordinate, 0, 2 * image.naturalWidth, 2 * image.naturalHeight);
+				this.div1.addBackground(image);
 			}
 			else {
 				console.error( 'no top vertical lightning image');
 			}
-			image = LevelAnimation.lightningImages.bottomVertical[this.rolloverSpriteId];
-			this.rolloverSpriteId++;
+			image = LevelAnimation.lightningImages.bottomVertical[this.spriteId];
+			this.spriteId++;
 			if( image ) {
-				this.layer.drawImage(image, this.coordinate, 2* image.naturalHeight, 2 * image.naturalWidth, 2 * image.naturalHeight);
+				this.div2.addBackground(image);
 			}
 			else {
 				console.error( 'no bottom vertical lightning image');
 			}
 		}else{
-			this.rolloverSpriteId--;
-			image = LevelAnimation.lightningImages.topVertical[this.rolloverSpriteId];;
-			if( image ) {
-				this.layer.clearRect(this.coordinate, 0, 2 * image.naturalWidth, 4 * image.naturalHeight);
-			}
-			else {
-				console.error( 'no top vertical lightning image');
-			}
 			this.stop();
 		}
 	}
-	
 };
 
 function AnimationDiv(left, top, width, height){
