@@ -60,7 +60,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 	});
 }; //Galapago.setLevelsFromJson()
 
-Galapago.init = function(isTimedMode) {
+Galapago.init = function(isTimedMode, onDialogOpenedCallBack) {
 	var levelTemp, level, levelIt, timedMode, gameTipsSelection, gameTipsSelectionEle;
 	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
@@ -84,14 +84,14 @@ Galapago.init = function(isTimedMode) {
 	}
 	var configFilePath = QueryString.levels === 'ya' ? Galapago.CONFIG_FILE_PATH_YA : Galapago.CONFIG_FILE_PATH;
 	console.debug( 'configFilePath: ' + configFilePath );
-	Galapago.loadJsonAsync(configFilePath).then(function(data) {
+	Galapago.loadJsonAsync(configFilePath).then(function (data) {
 		Galapago.setLevelsFromJson(data);
 		level = LevelMap.getNextLevel();
-		Galapago.levelMap = new LevelMap(level);
-	}, function(status) {
+		Galapago.levelMap = new LevelMap(level, onDialogOpenedCallBack);
+	}, function (status) {
 		console.log('failed to load JSON level config with status ' + status);
 	})/*.then(function() {
-		//Galapago.setLevel(levelName);
+	 //Galapago.setLevel(levelName);
 	})*/.done();
 	//level 1 is always unlocked
 	Level.findById(1).isUnlocked = true;
@@ -141,7 +141,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 	//Galapago.levels = Galapago.levelsFromJson(Level.LEVELS_JSON);
 }; //Galapago.loadJsonAsync
 
-Galapago.setLevel = function(levelId) {
+Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
@@ -160,7 +160,7 @@ Galapago.setLevel = function(levelId) {
 				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-				Galapago.level.display();
+				Galapago.level.display(onDialogOpenedCallBack);
 				Level.registerEventHandlers();
 			}
 		});
@@ -231,7 +231,7 @@ LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 */
 
 /* begin class LevelMap */
-function LevelMap(level) {
+function LevelMap(level, onDialogOpenedCallBack) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
@@ -249,11 +249,11 @@ function LevelMap(level) {
 	this.levelCounter = 0;
 	//this.setImages(LoadingScreen.mapScreenImageNames);
 	this.levelAnimation = new LevelAnimation();
-	this.display();
+	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
 } //LevelMap constructor
 
-LevelMap.prototype.display = function() {
+LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
@@ -265,6 +265,10 @@ LevelMap.prototype.display = function() {
 			}
 			that.screenDiv.css( 'display', 'block');
 			that.canvas.focus();
+
+			if(typeof onDialogOpenedCallBack !== 'undefined') {
+				onDialogOpenedCallBack();
+			}
 
 			that.aimateStartArrowIfNeeded();
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
@@ -502,7 +506,7 @@ LevelMap.prototype.handleSelect = function(evt) {
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
 		this.cleanup();
-		Galapago.setLevel(this.hotspotLevel.id);
+		Galapago.setLevel(this.hotspotLevel.id, function() {});
 	}
 	else {
 		console.debug( 'level ' + this.hotspotLevel.id + ' is locked');
@@ -617,8 +621,8 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 	this.layer.fillText( x + ',' + y, x, y );
 }; //LevelMap.prototype.debugDisplayMapCoordinates
 
-LevelMap.show = function(level){
-	Galapago.levelMap = new LevelMap(level);
+LevelMap.show = function(level, onDialogOpenedCallBack){
+	Galapago.levelMap = new LevelMap(level, onDialogOpenedCallBack);
 	Galapago.levelMap.canvas.focus();
 	Galapago.levelMap.registerEventHandlers();
 }; //LevelMap.show()
@@ -1042,14 +1046,16 @@ Level.prototype.won = function(){
 	store.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
-    level.cleanup();
 	if( sdkApi ) {
 		sdkApi.requestModalAd("inGame").done( function() {
-			LevelMap.show( LevelMap.getNextLevel() );
+			LevelMap.show( LevelMap.getNextLevel(), function() {
+				level.cleanup();
+			});
 		});
 	}
 	else {
-		LevelMap.show( LevelMap.getNextLevel() );
+		// TODO: IGOR: Do we need cleanup here?!
+		LevelMap.show( LevelMap.getNextLevel(), function() {} );
 	}
 }; //Level.prototypepx()
 
@@ -1177,8 +1183,9 @@ Level.registerEventHandlers = function() {
 				evt.stopPropagation();
 				break;
 			case 8: // back/backspace key
-				level.quit();
-				LevelMap.show(level);				
+				LevelMap.show(level, function() {
+					level.quit();
+				});
 				evt.stopPropagation();
 				evt.preventDefault();		
 				break;

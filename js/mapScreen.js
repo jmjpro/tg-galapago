@@ -116,8 +116,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 }; //MapScreen.prototype.registerEventHandlers()
 
 MapScreen.prototype.toMainMenuScreen = function(levelMap) {
-	levelMap.cleanup();
-	MainMenuScreen.init('screen-map', levelMap);
+	MainMenuScreen.init('screen-map', levelMap, function() {
+		levelMap.cleanup();
+	});
 }; //MapScreen.prototype.toMainMenuScreen()
 
 MapScreen.prototype.unregisterEventHandlers = function() {

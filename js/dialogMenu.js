@@ -52,7 +52,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 };
 
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
-	var optionId, board, mainCanvasId;
+	var optionId, board, mainCanvasId, that;
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
@@ -69,9 +69,15 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			board.reshuffleService.start();
 			break;
 		case 'option-main-menu' :
+			that = this;
 			this.hide();
 			board.level.quit();
-			MainMenuScreen.init('screen-game', board.level);
+			// TODO: IGOR not fixed - strange behaviour
+			MainMenuScreen.init('screen-game', board.level, function() {
+				if (that !== null) {
+					that = null;
+				}
+			});
 			break;
 		case 'option-new-game' :
 			this.hide();
@@ -105,12 +111,16 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
-	var level;
+	var level, that = this;
 	level = dialogMenu.callingObject.level;
-	this.hide();
-	level.cleanup();
     sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level);
+		LevelMap.show(level, function() {
+			if(that !== null) {
+				that.hide();
+				level.cleanup();
+				that = null;
+			}
+		});
 		//level.showLevelMap();
 	});
 	//show map screen;
@@ -126,7 +136,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			board.level.cleanup();
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
-			Galapago.setLevel(board.level.id);
+			Galapago.setLevel(board.level.id, function() {});
 			break;
 		case 'new-game-option-no' :
 			this.hide();
@@ -497,12 +507,16 @@ DialogMenu.prototype.dialogLevelWonSelect = function() {
 }; //DialogMenu.prototype.dialogLevelWonSelect()
 
 DialogMenu.prototype.dialogGameOverSelect = function() {
-	var level;
+	var level, that = this;
 	level = this.callingObject.level;
-	this.hide();
-	level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level);
+		LevelMap.show(level, function() {
+			if(that !== null) {
+				that.hide();
+				level.cleanup();
+				that = null;
+			}
+		});
 	});
 	//show map screen;
 };
