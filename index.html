@@ -98,19 +98,18 @@
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div>
+			<!--div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div-->
 			<canvas id="layer-creature" width="1" height="1" class="layer-board" style="z-index: 4;"></canvas>
 			<div id="div-hilight" style="z-index: 5;position: absolute" tabindex="1"></div>
 			<div id="current-score" style="z-index: 2;" tabindex="2"></div><div id="level-name"></div>
 			<canvas id="layer-power-up" width="1" height="1" style="z-index: 2;" tabindex="3"></canvas>
 			<canvas id="layer-danger-bar" width="1" height="1" style="z-index: 2;"></canvas>
 			<canvas id="layer-collection-key" width="1" height="1" style="z-index: 2;"></canvas>
-			<canvas id="layer-game-animation" width="1" height="1" style="z-index: 5;"></canvas>
 			<canvas id="layer-power-up-animation" width="1" height="1" style="z-index: 5;"></canvas>
-			<canvas id="layer-game-lightning" width="1" height="1" style="z-index: 5;"></canvas>
 			<canvas id="layer-bob-cervantes" width="1" height="1" style="z-index: 9;"></canvas>
-			<canvas id="layer-nav" style="z-index: 9;" tabindex="4"></canvas>
-			<div id="layerGrid" class='layerGrid'></div>
+			<div id="div-menu" class='gameNav' style="z-index: 9; top: 600px; " tabindex="4"><div id="div-menucursor">MENU</div></div>
+			<div id="div-quit" class='gameNav' style="z-index: 9; top: 652px; " tabindex="4"><div id="div-quitcursor">QUIT</div></div>
+			<!--<div id="layerGrid" class='layerGrid'></div>-->
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
@@ -363,9 +362,10 @@
 				</div>
 
 				<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>
+				<div id="up-down"><img id="up"/><img id="down"/></div>
 				<ul class="vertical-button-nav">
-					<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
-					<li id="option-help-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
+					<!--<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li> -->
+					<li id="option-help-close" data-i18n="Dialog Help.Close" class="button-medium button-medium-hilight">Close</li>
 				</ul>
 				<div id="version"></div>		
 			</div>
