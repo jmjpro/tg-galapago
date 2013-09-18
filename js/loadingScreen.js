@@ -106,7 +106,6 @@ LoadingScreen.localization = function(){
 /// end LoadingScreen class
 
 /// progress bar
-ProgressBar.WIDTH = 0;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
 ProgressBar.MESSAGE_TOP = 28;
@@ -129,7 +128,6 @@ function ProgressBar(){
 	this.layer.fillStyle = 'rgb(255,255,255)';
 	this.layer.textAlign = 'center';
 	this.layer.font = '27px HelveticaBold';
-	ProgressBar.WIDTH = this.loadingProgressBar.naturalWidth - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth;
 	//this.drawImages();
 	this.updateProgressBar(0);
 	this.isLoadingComplete = false;
@@ -142,17 +140,15 @@ ProgressBar.prototype.updateProgressBar = function(percentDownloaded) {
 		percentDownloaded = 1;
 	}
 
-	var newWidth = (ProgressBar.WIDTH/* - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth*/) * percentDownloaded;
-	console.log("percents: " + percentDownloaded + "," + this.loadingProgressBar.naturalWidth + "," + newWidth + "," + ProgressBar.WIDTH);
-
+	var newWidth = (this.canvas.width - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth) * percentDownloaded;
 	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.naturalWidth, this.loadingProgressBar.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.naturalWidth,this.loadingProgressBarLeftCap.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.naturalWidth, 0, newWidth + 1, this.loadingProgressBarFill.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarRightCap, this.loadingProgressBarLeftCap.naturalWidth + newWidth, 0, this.loadingProgressBarRightCap.naturalWidth, this.loadingProgressBarRightCap.naturalHeight);
 	if(percentDownloaded >= 1) {
-		this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP);
+		this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), this.canvas.width/2, ProgressBar.MESSAGE_TOP);
 	} else {
-		this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP );
+		this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), this.canvas.width/2, ProgressBar.MESSAGE_TOP );
 	}
 };
 
