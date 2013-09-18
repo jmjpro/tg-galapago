@@ -40,14 +40,13 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 
 function MainMenuScreen() {}
 
-MainMenuScreen.init = function(callingScreenId, callingObject) {
+MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCallBack) {
 	var mainMenuScreen = new MainMenuScreen();
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
 	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
 		if (result.success) {
-			//LoadingScreen.gal.un
 			/*
 			 if( callingScreenId == 'screen-loading') {
 			 mainMenuScreen.registerImageLoadEvents();
@@ -62,6 +61,9 @@ MainMenuScreen.init = function(callingScreenId, callingObject) {
 
 			mainMenuScreen.windowKeyHandler = window.onkeydown;
 			mainMenuScreen.addMouseListener();
+			if(typeof onDialogOpenedCallBack !== 'undefined') {
+				onDialogOpenedCallBack();
+			}
 		}
 	});
 	LoadingScreen.gal.download('bg-main-menu');
@@ -114,35 +116,38 @@ MainMenuScreen.prototype.setImages = function() {
 }; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level;
+	var navItem, isTimedMode, level,
+		hide = (function(that) {
+		    return function() {
+				that.hide();
+			}
+		})(this);
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
 			break;
 		case 'button-timed' :
-			this.hide();
 			isTimedMode = true;
-			if( this.callingObject instanceof Level ) {
+			if (this.callingObject instanceof Level) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level);
+				LevelMap.show(level, hide);
 				//level.showLevelMap(level);
-			}			else {
-				Galapago.init(isTimedMode);
+			} else {
+				Galapago.init(isTimedMode, hide);
 			}
 			break;
 		case 'button-relaxed' :
-			this.hide();
 			isTimedMode = false;
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level);
+				LevelMap.show(level, hide);
 				//level.showLevelMap(level);
 			}
 			else {
-				Galapago.init(isTimedMode);
+				Galapago.init(isTimedMode, hide);
 			}
 			break;
 		case 'button-how-to-play' :

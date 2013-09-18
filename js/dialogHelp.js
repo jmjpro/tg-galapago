@@ -1,6 +1,5 @@
 /* begin DialogHelp.SELECT_HANDLERS[] */
 DialogHelp.SELECT_HANDLERS = [];
-DialogHelp.MAX_PAGE =7;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
@@ -30,7 +29,6 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.dialogMenuDOM = $('#' + this.dialogId);
 	this.setDialogBackgroundImage();
 	this.scrollDiv = $('#help-text-scroll');
-	this.currentPage=1;
 	this.dialogNav = this.dialogMenuDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
@@ -52,11 +50,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
 		//sdkApi.reportPageView(TGH5.Reporting.Screen.Help);
 	}
-	this.scrollDiv[0].scrollTop=0;
 	this.updateScrollDivPages();
-	this.scrollDiv[0].focus();
-	this.setArrow( 'down', true);
-	this.setArrow( 'up', false);
 	/*
 	if( callback ) {
 		this.callback = callback;
@@ -142,44 +136,26 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
+			if( dialogHelp.currentNavItem.index() > 0 ) {
+				dialogHelp.setNavItem(dialogHelp.currentNavItem.prev('li'));
+				console.debug(dialogHelp.currentNavItem[0]);
+			}
+			else { //loop back to last item
+				dialogHelp.setNavItem(dialogHelp.dialogNav.children(lastItemSelector));
+			}
 			evt.stopPropagation();
 			evt.preventDefault();
-			if( dialogHelp.currentPage === 1 ) {
-				break;
-			}
-			dialogHelp.currentPage--;
-			dialogHelp.setArrow('down', true);
-			if( dialogHelp.currentPage >= 1 ) {
-				if(dialogHelp.scrollDiv[0].scrollByPages){
-					dialogHelp.scrollDiv[0].scrollByPages(-1);
-				}
-			}
-			if( dialogHelp.currentPage === 1 ) {
-				dialogHelp.setArrow('up', false);
-			}
-			else {
-				dialogHelp.setArrow('up', true);
-			}
 			break;
 		case 40: // down arrow
+			if( dialogHelp.currentNavItem.index() < lastIndex - 1 ) {
+				dialogHelp.setNavItem(dialogHelp.currentNavItem.next('li'));
+				console.debug(dialogHelp.currentNavItem[0]);
+			}
+			else { //loop back to first item
+				dialogHelp.setNavItem(dialogHelp.dialogNav.children(firstItemSelector));
+			}
 			evt.stopPropagation();
 			evt.preventDefault();
-			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
-				break;
-			}
-			dialogHelp.currentPage++;
-			dialogHelp.setArrow('up', true);
-			if( dialogHelp.currentPage <= DialogHelp.MAX_PAGE ) {
-				if(dialogHelp.scrollDiv[0].scrollByPages){
-					dialogHelp.scrollDiv[0].scrollByPages(1);
-				}
-			}
-			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
-				dialogHelp.setArrow('down', false);
-			}
-			else {
-				dialogHelp.setArrow('down', true);
-			}
 			break;
 		case 8: // backspace
 			dialogHelp.hide();
@@ -210,35 +186,20 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	var scrollDiv, currentPage, pageCount;
 	scrollDiv = this.scrollDiv[0];
 	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
-	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
-	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
-	$('#page-count').html(DialogHelp.MAX_PAGE);
-	if( this.currentPage === 1) {
+	if( scrollDiv.scrollTop + scrollDiv.clientHeight >= scrollDiv.scrollHeight ) { //on last page
+		this.setNavItem( $( this.dialogMenuDOM.selector + ' #option-close' ) );
+	}
+	else {
+		this.setNavItem( $( this.dialogMenuDOM.selector + ' #option-scroll' ) );
+	}
+	pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
+	currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight) / scrollDiv.scrollHeight * pageCount );
+	$('#current-page').html(currentPage);
+	$('#page-count').html(pageCount);
+	if( currentPage === 1) {
 		$('#version').html(galapagoVersion);
 	}
 	else {
 		$('#version').html('&nbsp');
 	}
-}; //DialogHelp.prototype.updateScrollDivPages()
-
-DialogHelp.prototype.setArrow = function(direction, isEnabled) {
-	var arrowSelector, galResourcePath, imageArrow;
-	arrowSelector = '#' + direction;
-	galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-';
-	if( isEnabled ) {
-		galResourcePath += 'hilight';
-	}
-	else {
-		galResourcePath += 'disable';
-	}
-	galResourcePath += '.png';
-	imageArrow = LoadingScreen.gal.get(galResourcePath);
-	if( imageArrow ) {
-		$(arrowSelector)[0].src = imageArrow.src;
-	}
-	else {
-		console.error( 'unable to load arrow ' + galResourcePath);
-	}
-	return this;
-}; //DialogHelp.prototype.setArrow()
+};

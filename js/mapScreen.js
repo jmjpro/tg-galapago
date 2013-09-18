@@ -86,7 +86,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.currentNavItem.css( 'background-image','');
 			mapScreen.unregisterEventHandlers();
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			levelMap.aimateStartArrowIfNeeded();
+			if(!Level.isComplete('1')){
+				levelMap.levelAnimation.animateGameStartArrow(levelMap.otherAnimationLayer);
+			}
 			levelMap.registerEventHandlers();
 			evt.preventDefault();
 			break;
@@ -116,8 +118,9 @@ MapScreen.prototype.registerEventHandlers = function() {
 }; //MapScreen.prototype.registerEventHandlers()
 
 MapScreen.prototype.toMainMenuScreen = function(levelMap) {
-	levelMap.cleanup();
-	MainMenuScreen.init('screen-map', levelMap);
+	MainMenuScreen.init('screen-map', levelMap, function() {
+		levelMap.cleanup();
+	});
 }; //MapScreen.prototype.toMainMenuScreen()
 
 MapScreen.prototype.unregisterEventHandlers = function() {

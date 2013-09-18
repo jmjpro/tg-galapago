@@ -113,6 +113,7 @@
 				'ext/**/*.*',
 				'locales/**/*.*',
 				'js/**/*.*',
+				'js/.htaccess',
 				'res/**/*.*',
 				'index.html'
 			],
