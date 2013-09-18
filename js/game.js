@@ -4317,83 +4317,26 @@ function OnScreenCache(imagesArray, onCachedCallBack) {
 	this.processImages(imagesArray, element);
 
 	document.body.appendChild(element);
+
+	/**
+	 * @private
+	 * @type {HTMLDivElement}
+	 */
 	this.cacheElement = element;
+
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.id = id;
 
 	if(typeof onCachedCallBack !== 'undefined') {
 		//TODO: currently there is no way to determine that image is completely DRAWN on screen!
 		//TODO: so, currently this is just a timeout.
+		//TODO: NOTE: image LOADED is not the same as image DRAWN.
 		setTimeout(onCachedCallBack, 700);
 	}
 }
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.STYLE =
-	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
-	'-webkit-background-size: 1px 1px;' +
-	'-o-background-size: 1px 1px;' +
-	'-moz-background-size: 1px 1px;' +
-	'-khtml-background-size: 1px 1px;' +
-	'-ms-background-size: 1px 1px;' +
-	'background-size: 1px 1px;';
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
-
-/**
- * @static
- * @private
- * @type {number}
- */
-OnScreenCache.nextId = 0;
-
-/**
- * @private
- * @param {HTMLElement|Node} rootElement
- * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
- */
-OnScreenCache.prototype.processImages = function(imagesArray, rootElement) {
-	// error protection
-	if(imagesArray) {
-		for(var i = imagesArray.length - 1; i >= 0; i--) {
-			var item = imagesArray[i];
-			// error protection
-			if(!item) {
-				continue;
-			}
-
-			// check if item is array
-			if(Object.prototype.toString.call( item ) === '[object Array]') {
-				this.processImages(item, rootElement);
-			} else {
-				var image = document.createElement('div');
-				image.setAttribute(
-					'style',
-					OnScreenCache.STYLE + "background-image: url('" + item.src + "'); background-repeat: no-repeat;"
-				);
-				rootElement.appendChild(image);
-			}
-		}
-	}
-};
-
-OnScreenCache.prototype.removeImages = function(rootElement) {
-	if(rootElement) {
-		var el = rootElement.firstElementChild;
-		while(el) {
-			el.style.backgroundImage = '';
-			el = el.nextElementSibling;
-		}
-	}
-};
 
 /**
  * @public
@@ -4427,4 +4370,76 @@ OnScreenCache.prototype.destroy = function() {
 
 	this.cacheElement = null;
 	this.id = null;
+};
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.STYLE =
+	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
+	'-webkit-background-size: 1px 1px;' +
+	'-o-background-size: 1px 1px;' +
+	'-moz-background-size: 1px 1px;' +
+	'-khtml-background-size: 1px 1px;' +
+	'-ms-background-size: 1px 1px;' +
+	'background-size: 1px 1px;';
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
+
+/**
+ * @static
+ * @private
+ * @type {number}
+ */
+OnScreenCache.nextId = 0;
+
+/**
+ * @private
+ * @param {HTMLDivElement|Node} rootElement
+ * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
+ */
+OnScreenCache.prototype.processImages = function(imagesArray, rootElement) {
+	// error protection
+	if(imagesArray) {
+		for(var i = imagesArray.length - 1; i >= 0; i--) {
+			var item = imagesArray[i];
+			// error protection
+			if(!item) {
+				continue;
+			}
+
+			// check if item is array
+			if(Object.prototype.toString.call( item ) === '[object Array]') {
+				this.processImages(item, rootElement);
+			} else {
+				var image = document.createElement('div');
+				image.setAttribute(
+					'style',
+					OnScreenCache.STYLE + "background-image: url('" + item.src + "'); background-repeat: no-repeat;"
+				);
+				rootElement.appendChild(image);
+			}
+		}
+	}
+};
+
+/**
+ * @private
+ * @param {HTMLDivElement|Node} rootElement
+ */
+OnScreenCache.prototype.removeImages = function(rootElement) {
+	if(rootElement) {
+		var el = rootElement.firstElementChild;
+		while(el) {
+			el.style.backgroundImage = '';
+			el = el.nextElementSibling;
+		}
+	}
 };
