@@ -40,7 +40,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 
 function MainMenuScreen() {}
 
-MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCallBack) {
+MainMenuScreen.init = function(callingScreenId, callingObject) {
 	var mainMenuScreen = new MainMenuScreen();
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
@@ -61,9 +61,6 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 
 			mainMenuScreen.windowKeyHandler = window.onkeydown;
 			mainMenuScreen.addMouseListener();
-			if(typeof onDialogOpenedCallBack !== 'undefined') {
-				onDialogOpenedCallBack();
-			}
 		}
 	});
 	LoadingScreen.gal.download('bg-main-menu');
@@ -116,38 +113,35 @@ MainMenuScreen.prototype.setImages = function() {
 }; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level,
-		hide = (function(that) {
-		    return function() {
-				that.hide();
-			}
-		})(this);
+	var navItem, isTimedMode, level;
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
 			break;
 		case 'button-timed' :
+			this.hide();
 			isTimedMode = true;
 			if (this.callingObject instanceof Level) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level, hide);
+				LevelMap.show(level);
 				//level.showLevelMap(level);
 			} else {
-				Galapago.init(isTimedMode, hide);
+				Galapago.init(isTimedMode);
 			}
 			break;
 		case 'button-relaxed' :
+			this.hide();
 			isTimedMode = false;
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level, hide);
+				LevelMap.show(level);
 				//level.showLevelMap(level);
 			}
 			else {
-				Galapago.init(isTimedMode, hide);
+				Galapago.init(isTimedMode);
 			}
 			break;
 		case 'button-how-to-play' :
