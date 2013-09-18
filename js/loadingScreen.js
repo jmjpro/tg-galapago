@@ -145,7 +145,7 @@ ProgressBar.prototype.updateProgressBar = function(percentDownloaded) {
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.naturalWidth,this.loadingProgressBarLeftCap.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.naturalWidth, 0, newWidth + 1, this.loadingProgressBarFill.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarRightCap, this.loadingProgressBarLeftCap.naturalWidth + newWidth, 0, this.loadingProgressBarRightCap.naturalWidth, this.loadingProgressBarRightCap.naturalHeight);
-	if(percentDownloaded >= 1) {
+	if(/*percentDownloaded >= 1*/false) {
 		this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), this.canvas.width/2, ProgressBar.MESSAGE_TOP);
 	} else {
 		this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), this.canvas.width/2, ProgressBar.MESSAGE_TOP );
@@ -159,11 +159,13 @@ ProgressBar.prototype.progress = function(percentDownloaded) {
 ProgressBar.prototype.loaded = function() {
 	this.updateProgressBar(1);
 	this.isLoadingComplete=true;
+
+	LoadingScreen.hide();
 };
 
 ProgressBar.prototype.registerEventHandlers = function() {
 	var progressBar = this;
-	window.onclick= function(evt) {
+	/*window.onclick= function(evt) {
 		progressBar.canvas.focus();
 	};
 
@@ -185,7 +187,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 			}
 			break;
 		}
-	};
+	};*/
 }; //ProgressBar.prototype.registerEventHandlers()
 
 ProgressBar.prototype.unregisterEventHandlers = function() {
