@@ -85,17 +85,11 @@ LoadingScreen.hide = function(evt) {
 				// remove all divs
 				that.screenDiv.hide();
 
-				var backgroundCanvas;
-				backgroundCanvas = $('#loading-screen-background')[0];
-				backgroundCanvas.width = backgroundCanvas.height = 1;
-				backgroundCanvas.style.display = 'none';
-
 				that.screenDiv[0].parentNode.removeChild(that.screenDiv[0]);
 
 				that.screenDiv = null;
 				that.canvas = null;
 				that.layer = null;
-				backgroundCanvas = null;
 
 				LoadingScreen.gal.unload('screen-loading');
 				that = null;
@@ -124,6 +118,7 @@ function ProgressBar(){
 	this.loadingProgressBarLeftCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-left-cap.png");
 	this.loadingProgressBarFill =LoadingScreen.gal.get("screen-loading/loading-progress-bar-fill.png");
 	this.loadingProgressBarRightCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-right-cap.png");
+
 	this.canvas = $('#layer-progress-bar')[0];
 	this.canvas.focus();
 	this.canvas.width = this.loadingProgressBar.naturalWidth;//ProgressBar.WIDTH;
@@ -136,22 +131,21 @@ function ProgressBar(){
 	this.layer.font = '27px HelveticaBold';
 	ProgressBar.WIDTH = this.loadingProgressBar.naturalWidth - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth;
 	//this.drawImages();
-	this.updateProgressBarBG(0);
+	this.updateProgressBar(0);
 	this.isLoadingComplete = false;
 	this.registerEventHandlers();
 	/*this.canvas.focus();*/
 }
 
-ProgressBar.prototype.updateProgressBarBG = function(percentDownloaded) {
-	//this.layer.clearRect(0, 0, this.loadingProgressBar.naturalWidth, this.loadingProgressBar.naturalHeight);
-	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.naturalWidth, this.loadingProgressBar.naturalHeight);
-
+ProgressBar.prototype.updateProgressBar = function(percentDownloaded) {
 	if(percentDownloaded > 1) {
 		percentDownloaded = 1;
 	}
+
 	var newWidth = (ProgressBar.WIDTH/* - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth*/) * percentDownloaded;
 	console.log("percents: " + percentDownloaded + "," + this.loadingProgressBar.naturalWidth + "," + newWidth + "," + ProgressBar.WIDTH);
 
+	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.naturalWidth, this.loadingProgressBar.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.naturalWidth,this.loadingProgressBarLeftCap.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.naturalWidth, 0, newWidth + 1, this.loadingProgressBarFill.naturalHeight);
 	this.layer.drawImage(this.loadingProgressBarRightCap, this.loadingProgressBarLeftCap.naturalWidth + newWidth, 0, this.loadingProgressBarRightCap.naturalWidth, this.loadingProgressBarRightCap.naturalHeight);
@@ -163,11 +157,11 @@ ProgressBar.prototype.updateProgressBarBG = function(percentDownloaded) {
 };
 
 ProgressBar.prototype.progress = function(percentDownloaded) {
-	this.updateProgressBarBG(percentDownloaded);
+	this.updateProgressBar(percentDownloaded);
 };
 
 ProgressBar.prototype.loaded = function() {
-	this.updateProgressBarBG(1);
+	this.updateProgressBar(1);
 	this.isLoadingComplete=true;
 };
 
