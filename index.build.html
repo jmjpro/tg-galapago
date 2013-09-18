@@ -50,10 +50,15 @@
 		</div>
 
 		<div id="screen-map" class="canvas-fullscreen">
-			<canvas id="layer-map" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
-			<canvas id="layer-map-other-animation" width="1" height="1" style="z-index: 3;" tabindex="3"></canvas>
-			<canvas id="layer-map-animation" width="1" height="1" style="z-index: 4;" tabindex="4"></canvas>
-			
+			<canvas id="layer-map" width="1" height="1" tabindex="1"></canvas>
+			<div id="lava-animation"></div>
+			<div id="bombs-animation"></div>
+			<div id="map-level-info">
+				<span id="map-level-name"></span>
+				<img id="map-level-complete-indicator"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
+				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
+				<span id="map-level-score-label"></span><span id="map-level-score"></span>
+			</div>
 			<ul id="map-nav">
 				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
 				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
@@ -65,11 +70,9 @@
 
 		<div id="screen-game" class="canvas-fullscreen">
 			<div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div>
-			<!--<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>-->
-			<!--<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>-->
 			<canvas id="layer-creature" width="1" height="1" class="layer-board" style="z-index: 4;"></canvas>
 			<div id="div-hilight" style="z-index: 5;position: absolute" tabindex="1"></div>
-			<canvas id="layer-score" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
+			<div id="current-score" style="z-index: 2;" tabindex="2"></div><div id="level-name"></div>
 			<canvas id="layer-power-up" width="1" height="1" style="z-index: 2;" tabindex="3"></canvas>
 			<canvas id="layer-danger-bar" width="1" height="1" style="z-index: 2;"></canvas>
 			<canvas id="layer-collection-key" width="1" height="1" style="z-index: 2;"></canvas>
@@ -244,7 +247,7 @@
 					explore Galapago whenever you like.<br/>
 					The creatures of Galapago are forever grateful to you, and will bring
 					peace and prosperity for the rest of your days.<br/>
-					Final Score: <span id="finalScore"></span><br/>
+					Final Score: <span id="total-score"></span><br/>
 				</span>
 				<ul class="vertical-button-nav">
 					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>

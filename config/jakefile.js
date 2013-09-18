@@ -83,6 +83,7 @@
 			// list of files to copy
 			copy_files : [
 				'../sdk/**/*.*',
+				'.htaccess',
 				'js/.htaccess',
 				'js/loadingScreen.manifest',
 				'js/levels.json',
