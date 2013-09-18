@@ -754,9 +754,12 @@ function BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer){
 BonFireAnimation.prototype.start = function(){
 	this.bonfireSpriteId = 0;
 	var bonFireAnimation = this;
-	this.interval = setInterval(function(){
-		bonFireAnimation.animate();}, 
-		BonFireAnimation.ROLLOVER_TIME_INTERVAL);
+	this.interval = setInterval(
+		function () {
+			bonFireAnimation.animate();
+		},
+		BonFireAnimation.ROLLOVER_TIME_INTERVAL
+	);
 };
 
 BonFireAnimation.prototype.stop = function(){
@@ -790,9 +793,12 @@ function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, callback)
 BombAnimation.prototype.start = function(){
 	this.bombSpriteId = 0;
 	var bombAnimation = this;
-	this.interval = setInterval(function(){
-		bombAnimation.animate();}, 
-		BombAnimation.ROLLOVER_TIME_INTERVAL);
+	this.interval = setInterval(
+		function(){
+			bombAnimation.animate();
+		},
+		BombAnimation.ROLLOVER_TIME_INTERVAL
+	);
 };
 
 BombAnimation.prototype.stop = function(){

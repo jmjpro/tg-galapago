@@ -258,32 +258,44 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
-			var backgroundImage;
-			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-			if( backgroundImage ) {
-				that.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-			}
-			that.screenDiv.css( 'display', 'block');
-			that.canvas.focus();
+			that.levelMapOnScreenCache = new OnScreenCache([
+				LoadingScreen.gal.get('background/map.jpg'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-lava-strip.png') ,
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-start-arrow-strip.png'),
+				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'powerup-gained-strip.png'),
+				LoadingScreen.gal.getSprites('screen-map/bonfire-strip.png')
+			], function() {
+				var backgroundImage;
+				backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+				if (backgroundImage) {
+					that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
+				}
+				that.screenDiv.css('display', 'block');
+				that.canvas.focus();
 
-			if(typeof onDialogOpenedCallBack !== 'undefined') {
-				onDialogOpenedCallBack();
-			}
+				if (typeof onDialogOpenedCallBack !== 'undefined') {
+					onDialogOpenedCallBack();
+				}
 
-			that.aimateStartArrowIfNeeded();
-			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+				that.aimateStartArrowIfNeeded();
+				that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+				that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
-			var completedLevelIds = LevelMap.getLevelsCompleted();
-			if(completedLevelIds.length){
-				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
-			}
-			//that.levelAnimation.animateBombs();
-			that.levelAnimation.animateBombs2(that.screenDiv.selector);
+				var completedLevelIds = LevelMap.getLevelsCompleted();
+				if (completedLevelIds.length) {
+					that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
+				}
+				//that.levelAnimation.animateBombs();
+				that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
-			that.drawHotspots();
-			that.registerEventHandlers();
-			Galapago.audioPlayer.playVolcanoLoop();
+				that.drawHotspots();
+				that.registerEventHandlers();
+				Galapago.audioPlayer.playVolcanoLoop();
+			});
 		}
 	});
 	LoadingScreen.gal.download('bg-map-screen');
@@ -514,6 +526,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
+	this.levelMapOnScreenCache.destroy();
 	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
 	this.screenDiv.css('background-image','');
@@ -4265,4 +4278,153 @@ Store.prototype.clear = function(){
             }
         }
     }	
+};
+
+/**
+ * @example
+ * 		var image1 = new Image(),
+ * 			image2 = document.createElement('img'),
+ * 			image1000 = document.getElementsByTagName('img')[0],
+ * 			evenArrayIsSupported = [ new Image(), new Image() ];
+ *
+ *      // Do this before any access to screen. Attention: consumes video memory (pixels).
+ * 		var mainMenuOnScreenCache = new OnScreenCache(
+ * 			[
+ * 				image1,
+ * 				image2,
+ *		 		image1000,
+ *		 		evenArrayIsSupported
+ * 			],
+ * 			function() {
+ * 		    	// do something after all images cached on screen
+ * 			}
+ * 		);
+ *
+ * 		// Do this BEFORE any current screen cleanup and BEFORE any other screen preparing/loading
+ * 		mainMenuOnScreenCache.destroy();
+ *
+ * @class OnScreenCache
+ * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
+ * @param {function} onCachedCallBack
+ * @constructor
+ */
+function OnScreenCache(imagesArray, onCachedCallBack) {
+	var id = OnScreenCache.ID_PREFIX + OnScreenCache.nextId++,
+		element = document.createElement('div');
+
+	element.id = id;
+	element.setAttribute('style', OnScreenCache.STYLE);
+	this.processImages(imagesArray, element);
+
+	document.body.appendChild(element);
+	this.cacheElement = element;
+	this.id = id;
+
+	if(typeof onCachedCallBack !== 'undefined') {
+		//TODO: currently there is no way to determine that image is completely DRAWN on screen!
+		//TODO: so, currently this is just a timeout.
+		setTimeout(onCachedCallBack, 700);
+	}
+}
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.STYLE =
+	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
+	'-webkit-background-size: 1px 1px;' +
+	'-o-background-size: 1px 1px;' +
+	'-moz-background-size: 1px 1px;' +
+	'-khtml-background-size: 1px 1px;' +
+	'-ms-background-size: 1px 1px;' +
+	'background-size: 1px 1px;';
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
+
+/**
+ * @static
+ * @private
+ * @type {number}
+ */
+OnScreenCache.nextId = 0;
+
+/**
+ * @private
+ * @param {HTMLElement|Node} rootElement
+ * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
+ */
+OnScreenCache.prototype.processImages = function(imagesArray, rootElement) {
+	// error protection
+	if(imagesArray) {
+		for(var i = imagesArray.length - 1; i >= 0; i--) {
+			var item = imagesArray[i];
+			// error protection
+			if(!item) {
+				continue;
+			}
+
+			// check if item is array
+			if(Object.prototype.toString.call( item ) === '[object Array]') {
+				this.processImages(item, rootElement);
+			} else {
+				var image = document.createElement('div');
+				image.setAttribute(
+					'style',
+					OnScreenCache.STYLE + "background-image: url('" + item.src + "'); background-repeat: no-repeat;"
+				);
+				rootElement.appendChild(image);
+			}
+		}
+	}
+};
+
+OnScreenCache.prototype.removeImages = function(rootElement) {
+	if(rootElement) {
+		var el = rootElement.firstElementChild;
+		while(el) {
+			el.style.backgroundImage = '';
+			el = el.nextElementSibling;
+		}
+	}
+};
+
+/**
+ * @public
+ */
+OnScreenCache.prototype.destroy = function() {
+	var element = this.cacheElement;
+
+	// cacheElement can be detached from screen,
+	// so we can't find it by 'id', so we use reference to it
+	if(element) {
+		if(element.parentNode) {
+			this.removeImages(element);
+			element.parentNode.removeChild(element);
+		}
+		element.innerHTML = '';
+	}
+
+	// if someone did cacheElement.parentNode.innerHTML += 'someThing',
+	// reference this.cacheElement points to OLD instance of element,
+	// and innerHTML recreated new instance, so search by 'id'!
+	if(this.id !== null) {
+		element = document.getElementById(this.id);
+		if(element) {
+			if(element.parentNode) {
+				this.removeImages(element);
+				element.parentNode.removeChild(element);
+			}
+			element.innerHTML = '';
+		}
+	}
+
+	this.cacheElement = null;
+	this.id = null;
 };
