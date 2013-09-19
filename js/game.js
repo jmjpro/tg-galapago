@@ -269,16 +269,16 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'powerup-gained-strip.png'),
 				LoadingScreen.gal.getSprites('screen-map/bonfire-strip.png')
 			], function() {
-				var backgroundImage;
-				backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-				if (backgroundImage) {
-					that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
-				}
-				that.screenDiv.css('display', 'block');
-				that.canvas.focus();
-
 				if (typeof onDialogOpenedCallBack !== 'undefined') {
 					onDialogOpenedCallBack();
+				}
+
+				var backgroundImage;
+				backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+				that.screenDiv.css('display', 'block');
+				that.canvas.focus();
+				if (backgroundImage) {
+					that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
 				}
 
 				that.aimateStartArrowIfNeeded();
@@ -374,12 +374,15 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
 		$('#map-level-complete-indicator')[0].src = green_v.src;
+		$('#map-level-complete-indicator')[0].style.visibility = 'visible';
 	}
 	else if( this.hotspotLevel.isUnlocked ) {
-		$('#map-level-complete-indicator').src = null;
+		//$('#map-level-complete-indicator')[0].src = '';
+		$('#map-level-complete-indicator')[0].style.visibility = 'hidden';
 	}
 	else {
-		$('	#map-level-complete-indicator')[0].src = level_lock.src;
+		$('#map-level-complete-indicator')[0].src = level_lock.src;
+		$('#map-level-complete-indicator')[0].style.visibility = 'visible';
 	}
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
