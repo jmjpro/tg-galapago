@@ -990,7 +990,7 @@ BoardBuildAnimation.prototype.animate = function(){
 	}
 	if(complete){
 		//this.layer.canvas.height = Board.GRID_HEIGHT;
-		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
+		//this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
 		for(col = 0; col < this.tileMatrix.length; col++){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
 				tile = this.tileMatrix[col][row];
