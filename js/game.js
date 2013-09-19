@@ -1919,8 +1919,9 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 				y = Tile.getYCoord(row);
 				tileMatrix[col][row] = tile;
 				function draw(){ 
-				layer.clearRect( x, y, width, height );
-				layer.drawImage(tile.blob.image, x, y, width, height);
+					//layer.clearRect( x, y, width, height );
+					//layer.drawImage(tile.blob.image, x, y, width, height);
+					tile.drawComplete();
 				}
 				if(board.putInAnimationQ){
 					board.animationQ.push(draw);
@@ -3189,6 +3190,7 @@ Board.prototype.clearTiles = function(tiles, sparkles) {
 			board.creatureLayer.clearRect( Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 			var tile = board.getCreatureTilesFromPoints( [point] )[0];
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+			board.creatureLayer.drawImage(board.level.gameImages.tile_regular, Tile.getXCoord(point[0]), Tile.getYCoord(point[1]), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		});
 	}
 	if(this.putInAnimationQ){
