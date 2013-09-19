@@ -963,35 +963,58 @@ BoardBuildAnimation.prototype.start = function(){
 
 BoardBuildAnimation.prototype.animate = function(){
 	var col, row, tile, rowsToDisplay, complete;
-	for(col = 0; col < this.tileMatrix.length; col++){
-		if(this.noOfRows > this.tileMatrix[col].length){
-			rowsToDisplay = this.tileMatrix[col].length;
-		}else{
-			rowsToDisplay = this.noOfRows;
-		}
-		for(row = 0; row < rowsToDisplay;row++){
+
+	// draw board background tiles (board position and size is constant)
+	for (col = 0; col < this.tileMatrix.length; col++) {
+		for (row = 0; row < this.tileMatrix[col].length; row++) {
 			tile = this.tileMatrix[col][row];
-			if(tile && tile.blob){
-				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
-				if(y < tile.getYCoord()){
-					complete = true;
-					break;
-				}
-				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawComplete(y);
+			if (tile && tile.blob) {
+				tile.drawBackground();
 			}
 		}
-		if(complete){
-			break;
+	}
+
+	// draw creatures (position of creatures changes during animation)
+	for (col = 0; col < this.tileMatrix.length; col++) {
+		if (this.noOfRows > this.tileMatrix[col].length) {
+			rowsToDisplay = this.tileMatrix[col].length;
+		} else {
+			rowsToDisplay = this.noOfRows;
+		}
+
+		for (row = 0; row < rowsToDisplay; row++) {
+			tile = this.tileMatrix[col][row];
+			if (tile && tile.blob) {
+				var y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
+				if (y < tile.getYCoord()) {
+					complete = true;
+					//break;
+				}
+				tile.board.creatureLayer.drawImage(tile.blob.image, tile.getXCoord(), y, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			}
+		}
+		/*if(complete){
+		 break;
+		 }*/
+	}
+
+	// draw border for each board tile, should be drawn after all creatures drawn!
+	for (col = 0; col < this.tileMatrix.length; col++) {
+		for (row = 0; row < this.tileMatrix[col].length; row++) {
+			tile = this.tileMatrix[col][row];
+			if (tile && tile.blob) {
+				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+			}
 		}
 	}
-	if(complete){
+
+	if (complete) {
 		this.layer.canvas.height = Board.GRID_HEIGHT;
-		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
-		for(col = 0; col < this.tileMatrix.length; col++){
-			for(row = 0; row < this.tileMatrix[col].length; row++){
+		this.layer.clearRect(0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT);
+		for (col = 0; col < this.tileMatrix.length; col++) {
+			for (row = 0; row < this.tileMatrix[col].length; row++) {
 				tile = this.tileMatrix[col][row];
-				if(tile && tile.blob){
+				if (tile && tile.blob) {
 					tile.drawComplete();
 				}
 			}

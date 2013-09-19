@@ -517,8 +517,13 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
-		this.cleanup();
-		Galapago.setLevel(this.hotspotLevel.id, function() {});
+		var that = this;
+		Galapago.setLevel(this.hotspotLevel.id, function() {
+			if(that !== null) {
+				that.cleanup();
+				that = null;
+			}
+		});
 	}
 	else {
 		console.debug( 'level ' + this.hotspotLevel.id + ' is locked');
@@ -980,7 +985,7 @@ Level.prototype.loadImages = function() {
 
 }; //Level.prototype.loadImages()
 
-Level.prototype.display = function() {
+Level.prototype.display = function(onDialogOpenedCallBack) {
 	var level, timedMode;
 	console.debug( 'entering Level.prototype.display()');
 	level = this;
@@ -990,6 +995,19 @@ Level.prototype.display = function() {
 	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
+
+		var themeComplete = this.bgTheme + '-' + this.bgSubTheme,
+			resourcePath = 'background/' + themeComplete + '.jpg',
+			backgroundImage = LoadingScreen.gal.get(resourcePath);
+
+		if( backgroundImage ) {
+			console.debug('setting background to ' + resourcePath);
+			this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+		}
+
+		if(typeof onDialogOpenedCallBack !== 'undefined') {
+			onDialogOpenedCallBack();
+		}
 		level.styleCanvas();
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.putInAnimationQ = true;
@@ -1310,17 +1328,9 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, themeComplete, resourcePath, backgroundImage, canvasBonusFrenzy;
+	var screenDivElement, canvasBonusFrenzy;
 	console.debug('entering Level.prototype.styleCanvas()');
-	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
-	resourcePath = 'background/' + themeComplete + '.jpg';
-	backgroundImage = LoadingScreen.gal.get(resourcePath);	
 
-	if( backgroundImage ) {
-		console.debug('setting background to ' + resourcePath);
-		this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-	}
-	
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
@@ -3374,6 +3384,25 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
+Tile.prototype.drawBackground = function() {
+	var galGoldAssetPath, imageGold, layer, tile;
+	tile = this;
+	layer = this.board.creatureLayer;
+	if( this.board.getGoldTile(tile) ) {
+		galGoldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
+		imageGold = LoadingScreen.gal.get(galGoldAssetPath);
+		if( imageGold ) {
+			layer.drawImage(imageGold, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		}
+		else {
+			console.error( 'unable to find gold image ' + galGoldAssetPath );
+		}
+	}
+	else{
+		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+};
+
 Tile.prototype.drawComplete = function(y) {
 	var galGoldAssetPath, imageGold, layer, tile, creatureY;
 	tile = this;
@@ -4331,8 +4360,8 @@ function OnScreenCache(imagesArray, onCachedCallBack) {
 	this.id = id;
 
 	if(typeof onCachedCallBack !== 'undefined') {
-		//TODO: currently there is no way to determine that image is completely DRAWN on screen!
-		//TODO: so, currently this is just a timeout.
+		//TODO: there is no way to determine that image is completely DRAWN on screen!
+		//TODO: currently this is just a timeout.
 		//TODO: NOTE: image LOADED is not the same as image DRAWN.
 		setTimeout(onCachedCallBack, 700);
 	}

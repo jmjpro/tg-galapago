@@ -132,11 +132,19 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	switch( optionId ) {
 		case 'new-game-option-yes' :
 			console.log("starting new game");
-			this.hide();
+			//this.hide();
 			board.level.cleanup();
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
-			Galapago.setLevel(board.level.id, function() {});
+
+
+			var that = this;
+			Galapago.setLevel(board.level.id, function() {
+				if(that !== null) {
+					that.hide();
+					that = null;
+				}
+			});
 			break;
 		case 'new-game-option-no' :
 			this.hide();
