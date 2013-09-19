@@ -255,47 +255,56 @@ function LevelMap(level, onDialogOpenedCallBack) {
 
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
+	that.screenDiv.css('display', 'none');
+
+	that.aimateStartArrowIfNeeded();
+	that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+
+	var completedLevelIds = LevelMap.getLevelsCompleted();
+	if (completedLevelIds.length) {
+		that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
+	}
+	that.levelAnimation.animateBombs2(that.screenDiv.selector);
+
+	that.drawHotspots();
 
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
-			that.levelMapOnScreenCache = new OnScreenCache([
-				LoadingScreen.gal.get('background/map.jpg'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-lava-strip.png') ,
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-start-arrow-strip.png'),
-				LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'powerup-gained-strip.png'),
-				LoadingScreen.gal.getSprites('screen-map/bonfire-strip.png')
-			], function() {
-				if (typeof onDialogOpenedCallBack !== 'undefined') {
-					onDialogOpenedCallBack();
-				}
+			var backgroundImage;
+			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+			if (backgroundImage) {
+				that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
+			}
 
-				var backgroundImage;
-				backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-				that.screenDiv.css('display', 'block');
-				that.canvas.focus();
-				if (backgroundImage) {
-					that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
-				}
+			that.levelMapOnScreenCache = new OnScreenCache(
+				[
+					LoadingScreen.gal.get('background/map.jpg'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-lava-strip.png') ,
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-start-arrow-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'powerup-gained-strip.png'),
+					LoadingScreen.gal.getSprites('screen-map/bonfire-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-buttons.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-2.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-1.png')
+				], function () {
 
-				that.aimateStartArrowIfNeeded();
-				that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-				that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+					that.registerEventHandlers();
+					Galapago.audioPlayer.playVolcanoLoop();
 
-				var completedLevelIds = LevelMap.getLevelsCompleted();
-				if (completedLevelIds.length) {
-					that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
-				}
-				//that.levelAnimation.animateBombs();
-				that.levelAnimation.animateBombs2(that.screenDiv.selector);
+					if (typeof onDialogOpenedCallBack !== 'undefined') {
+						onDialogOpenedCallBack();
+					}
 
-				that.drawHotspots();
-				that.registerEventHandlers();
-				Galapago.audioPlayer.playVolcanoLoop();
-			});
+					that.screenDiv.css('display', 'block');
+					that.canvas.focus();
+				},
+				1200
+			);
 		}
 	});
 	LoadingScreen.gal.download('bg-map-screen');
@@ -311,7 +320,7 @@ LevelMap.prototype.stopStartArrowAnimation = function(){
 	this.levelAnimation.stopAnimateSprite(Galapago.collageDirectory + 'map-start-arrow-strip.png');
 }
 
-LevelMap.prototype.drawHotspots = function(level){
+LevelMap.prototype.drawHotspots = function(){
 	var levelMap = this;
 	_.each(Galapago.levels, function(level){
 		if(Level.isComplete(level.id)){
@@ -4337,12 +4346,17 @@ Store.prototype.clear = function(){
  *
  * @class OnScreenCache
  * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
- * @param {function} onCachedCallBack
+ * @param {function} [onCachedCallBack]
+ * @param {number} [timeOutInMilliSeconds]
  * @constructor
  */
-function OnScreenCache(imagesArray, onCachedCallBack) {
+function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
 	var id = OnScreenCache.ID_PREFIX + OnScreenCache.nextId++,
 		element = document.createElement('div');
+
+	if(typeof timeOutInMilliSeconds === 'undefined') {
+		timeOutInMilliSeconds = 700;
+	}
 
 	element.id = id;
 	element.setAttribute('style', OnScreenCache.STYLE);
@@ -4366,7 +4380,7 @@ function OnScreenCache(imagesArray, onCachedCallBack) {
 		//TODO: there is no way to determine that image is completely DRAWN on screen!
 		//TODO: currently this is just a timeout.
 		//TODO: NOTE: image LOADED is not the same as image DRAWN.
-		setTimeout(onCachedCallBack, 700);
+		setTimeout(onCachedCallBack, timeOutInMilliSeconds);
 	}
 }
 

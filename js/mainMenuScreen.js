@@ -47,29 +47,32 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
 	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
 		if (result.success) {
-			mainMenuScreen.mainMenuOnScreenCache = new OnScreenCache([
-				LoadingScreen.gal.get('background/main-menu.jpg'),
-				LoadingScreen.gal.getSprites('collage/main-menu-1.png'),
-				LoadingScreen.gal.getSprites('collage/main-menu-2.png')
-			], function () {
-				/*
-				 if( callingScreenId == 'screen-loading') {
-				 mainMenuScreen.registerImageLoadEvents();
-				 }
-				 else {
-				 mainMenuScreen.setInitialNavItem();
-				 }
-				 */
-				mainMenuScreen.setImages();
-				mainMenuScreen.setInitialNavItem();
-				mainMenuScreen.show();
+			mainMenuScreen.mainMenuOnScreenCache = new OnScreenCache(
+				[
+					LoadingScreen.gal.get('background/main-menu.jpg'),
+					LoadingScreen.gal.getSprites('collage/main-menu-1.png'),
+					LoadingScreen.gal.getSprites('collage/main-menu-2.png')
+				], function () {
+					/*
+					 if( callingScreenId == 'screen-loading') {
+					 mainMenuScreen.registerImageLoadEvents();
+					 }
+					 else {
+					 mainMenuScreen.setInitialNavItem();
+					 }
+					 */
+					mainMenuScreen.setImages();
+					mainMenuScreen.setInitialNavItem();
+					mainMenuScreen.show();
 
-				mainMenuScreen.windowKeyHandler = window.onkeydown;
-				mainMenuScreen.addMouseListener();
-				if (typeof onDialogOpenedCallBack !== 'undefined') {
-					onDialogOpenedCallBack();
-				}
-			});
+					mainMenuScreen.windowKeyHandler = window.onkeydown;
+					mainMenuScreen.addMouseListener();
+					if (typeof onDialogOpenedCallBack !== 'undefined') {
+						onDialogOpenedCallBack();
+					}
+				},
+				700
+			);
 		}
 	});
 	LoadingScreen.gal.download('bg-main-menu');
