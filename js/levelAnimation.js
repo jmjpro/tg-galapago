@@ -955,7 +955,7 @@ function BoardBuildAnimation(layer, tileMatrix, callback){
 BoardBuildAnimation.prototype.start = function(){
 	var boardBuildAnimation = this;
 	this.interval = setInterval(function(){
-		boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
+		//boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
 		boardBuildAnimation.animate()}, 
 		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
 };
@@ -970,6 +970,9 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 		for(row = 0; row < rowsToDisplay;row++){
 			tile = this.tileMatrix[col][row];
+			if(tile){
+				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+			}
 			if(tile && tile.blob){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
 				if(y < tile.getYCoord()){
@@ -977,7 +980,8 @@ BoardBuildAnimation.prototype.animate = function(){
 					break;
 				}
 				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawComplete();
+				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+				this.layer.drawImage(tile.blob.image, tile.getXCoord(), y, this.width, this.height);
 			}
 		}
 		if(complete){
@@ -985,7 +989,7 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 	}
 	if(complete){
-		this.layer.canvas.height = Board.GRID_HEIGHT;
+		//this.layer.canvas.height = Board.GRID_HEIGHT;
 		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
 		for(col = 0; col < this.tileMatrix.length; col++){
 			for(row = 0; row < this.tileMatrix[col].length; row++){

@@ -3355,24 +3355,21 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
-Tile.prototype.drawComplete = function() {
-	var galGoldAssetPath, imageGold, layer, tile;
+Tile.prototype.drawComplete = function(drawSelection) {
+	var goldTile, layer, tile;
 	tile = this;
 	layer = this.board.creatureLayer;
-	if( this.board.getGoldTile(tile) ) {
-		galGoldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
-		imageGold = LoadingScreen.gal.get(galGoldAssetPath);
-		if( imageGold ) {
-			layer.drawImage(imageGold, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}
-		else {
-			console.error( 'unable to find gold image ' + galGoldAssetPath );
-		}
+	goldTile = this.board.getGoldTile(tile)
+	if( goldTile ) {
+		layer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	else{
 		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), this.width, this.height);
+	if(drawSelection){
+		layer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
+	layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 };
 
@@ -3439,16 +3436,18 @@ Tile.prototype.setSelectedAsync = function() {
 	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	
 	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	var goldTile = this.board.getGoldTile(this)
+	/*var goldTile = this.board.getGoldTile(this)
 		//$('#'+spanId).css('background-size','cover');
 		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
-	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	if(goldTile){
 		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );	
+	}else{
+		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	
+	*/
+	this.drawComplete(true);
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3456,11 +3455,12 @@ Tile.prototype.setSelectedAsync = function() {
 }; //Tile.prototype.setSelectedAsync()
 
 Tile.prototype.setUnselected = function() {
+	this.drawComplete();
 	//this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	
 	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	var goldTile = this.board.getGoldTile(this);
+	/*var goldTile = this.board.getGoldTile(this);
 	
 		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
 	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
@@ -3469,7 +3469,7 @@ Tile.prototype.setUnselected = function() {
 		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-
+*/
 	return this; // chainable
 };
 
