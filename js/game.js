@@ -204,6 +204,7 @@ Galapago.eraseProfile = function(profile) {
 };
 /* end class Galapago */
 
+LevelMap.LEFT = 150;
 LevelMap.WIDTH = 1018;
 LevelMap.HEIGHT = 640;
 LevelMap.STAR_WIDTH = 40;
@@ -272,7 +273,7 @@ LevelMap.prototype.display = function() {
 
 			var completedLevelIds = LevelMap.getLevelsCompleted();
 			if(completedLevelIds.length){
-				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id, that.layer);
+				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id);
 			}
 			//that.levelAnimation.animateBombs();
 			that.levelAnimation.animateBombs2(that.screenDiv.selector);

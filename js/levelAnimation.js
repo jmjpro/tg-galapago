@@ -265,7 +265,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		}
 };
 
-LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
+LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
@@ -291,7 +291,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 			if(levelAnimation.bonFireAnimation){
 				levelAnimation.bonFireAnimation.stop();
 			}
-			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
+			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet);		
 			bonFireAnimation.start();
 			levelAnimation.bonFireAnimation = bonFireAnimation;
 		}
@@ -743,17 +743,22 @@ RolloverAnimation.prototype.animate = function(){
 };
 
 BonFireAnimation.ROLLOVER_TIME_INTERVAL=330;
-function BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer){
-	this.bonfireImageSpriteSheet = bonfireImageSpriteSheet;
+function BonFireAnimation(coordinates, bonfireImageSprites){
+	this.bonfireImageSprites = bonfireImageSprites;
 	this.interval = null;
 	this.bonfireSpriteId = 0;
 	this.coordinates = coordinates;
-	this.layer = layer;
+	this.animatedDivs = [];
 }
 
 BonFireAnimation.prototype.start = function(){
+	var animationDiv;
 	this.bonfireSpriteId = 0;
 	var bonFireAnimation = this;
+	_.each(this.coordinates, function(coordinate){
+		animationDiv = new AnimationDiv(LevelMap.LEFT + coordinate[0], coordinate[1], bonFireAnimation.bonfireImageSprites[0].width, bonFireAnimation.bonfireImageSprites[0].height);
+		bonFireAnimation.animatedDivs.push(animationDiv);
+	});
 	this.interval = setInterval(function(){
 		bonFireAnimation.animate();}, 
 		BonFireAnimation.ROLLOVER_TIME_INTERVAL);
@@ -762,19 +767,19 @@ BonFireAnimation.prototype.start = function(){
 BonFireAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
 	var bonFireAnimation = this;
-	_.each(this.coordinates, function(coordinate){
-		bonFireAnimation.layer.clearRect(coordinate[0], coordinate[1], LevelAnimation.BONFIRE_IMAGE_WIDTH,LevelAnimation.BONFIRE_IMAGE_HEIGHT);
+	_.each(this.animatedDivs, function(animatedDiv){
+		animatedDiv.destroy();
 	});
 };
 
 BonFireAnimation.prototype.animate = function(){
-	var image = this.bonfireImageSpriteSheet[this.bonfireSpriteId];
+	var image = this.bonfireImageSprites[this.bonfireSpriteId];
 	var bonFireAnimation = this;
-	_.each(this.coordinates, function(coordinate){
-		bonFireAnimation.layer.drawImage(image, coordinate[0], coordinate[1]);
+	_.each(this.animatedDivs, function(animatedDiv){
+		animatedDiv.addBackground(image);
 	});
 	this.bonfireSpriteId++;
-	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSpriteSheet.length;
+	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSprites.length;
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
