@@ -149,6 +149,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-relaxed' :
 			isTimedMode = false;
+			this.unregisterEventHandlers();
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;

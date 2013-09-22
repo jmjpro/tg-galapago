@@ -1108,6 +1108,7 @@ Level.prototype.quit = function(){
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
+	this.unregisterEventHandlers();
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {

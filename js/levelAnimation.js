@@ -623,7 +623,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 			blinkingImage.stop();
 		});
 	}
-
+	this.blinkingImages = null;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
