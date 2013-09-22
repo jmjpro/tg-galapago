@@ -784,9 +784,8 @@ Level.NAV_MARGIN_BOTTOM = 10;
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 */
-Level.POWER_UP_SCORE =0;
 Level.SUPER_FRIEND_SUFFIX = '-friend';
-
+Level.powerUpScore =0;
 function Level(id) {
 	this.id = id;
 	this.name = '';
@@ -1535,8 +1534,8 @@ Board.prototype.displayQuitButton = function(isActive) {
 }; //Board.protoype.displayQuitButton()
 
 Board.prototype.addPowerups = function() {
-	this.powerUp=new Powerup(this , Level.POWER_UP_SCORE);
-	Level.POWER_UP_SCORE=0;
+	this.powerUp=new Powerup(this , Level.powerUpScore);
+	Level.powerUpScore=0;
 };
 
 /* req 4.4.2
@@ -2342,7 +2341,7 @@ Board.prototype.setComplete = function() {
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
-		Level.POWER_UP_SCORE = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
+		Level.powerUpScore = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.isTimedMode ) {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
