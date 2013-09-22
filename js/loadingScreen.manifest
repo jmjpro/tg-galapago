@@ -12,7 +12,8 @@
 			"background/loading.jpg",
 			"screen-loading/loading-progress-bar.png",
 			"screen-loading/loading-progress-bar-fill.png",
-			"screen-loading/loading-progress-bar-left-cap.png"
+			"screen-loading/loading-progress-bar-left-cap.png",
+			"screen-loading/loading-progress-bar-right-cap.png"
 		]
 	},
 	{

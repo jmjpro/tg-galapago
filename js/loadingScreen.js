@@ -68,6 +68,8 @@ LoadingScreen.registerEvent = function(){
 };
 
 LoadingScreen.hide = function(evt) {
+	var that = this;
+
 	//TODO if api.inDemoMode() skip the main menu screen?
 	LoadingScreen.progressBar.unregisterEventHandlers();
 	if( evt ) {
@@ -75,26 +77,25 @@ LoadingScreen.hide = function(evt) {
 		evt.preventDefault();		
 	}
 
-	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar);
+	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar, function() {
+		var timerId = null;
+		if (that !== null && timerId == null) {
+			timerId = setTimeout(function() {
+				// TODO: remove/hide/shrink not needed elements
+				// remove all divs
+				that.screenDiv.hide();
 
+				that.screenDiv[0].parentNode.removeChild(that.screenDiv[0]);
 
-	// TODO: remove/hide/shrink not needed elements
-	this.screenDiv[0].parentNode.removeChild(this.screenDiv[0]);
+				that.screenDiv = null;
+				that.canvas = null;
+				that.layer = null;
 
-	// remove all divs
-	this.screenDiv.hide();
-
-	var backgroundCanvas;
-	backgroundCanvas = $('#layer-background')[0];
-	backgroundCanvas.width = backgroundCanvas.height = 1;
-	backgroundCanvas.style.display = 'none';
-
-	this.screenDiv = null;
-	this.canvas = null;
-	this.layer = null;
-	backgroundCanvas = null;
-
-	LoadingScreen.gal.unload('screen-loading');
+				LoadingScreen.gal.unload('screen-loading');
+				that = null;
+			}, 1000);
+		}
+	});
 }; //LoadingScreen.hide
 
 LoadingScreen.localization = function(){
@@ -105,7 +106,6 @@ LoadingScreen.localization = function(){
 /// end LoadingScreen class
 
 /// progress bar
-ProgressBar.WIDTH = 475;
 ProgressBar.LEFT = 410;
 ProgressBar.TOP = 530;
 ProgressBar.MESSAGE_TOP = 28;
@@ -116,58 +116,56 @@ function ProgressBar(){
 	this.loadingProgressBar = LoadingScreen.gal.get("screen-loading/loading-progress-bar.png");
 	this.loadingProgressBarLeftCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-left-cap.png");
 	this.loadingProgressBarFill =LoadingScreen.gal.get("screen-loading/loading-progress-bar-fill.png");
+	this.loadingProgressBarRightCap = LoadingScreen.gal.get("screen-loading/loading-progress-bar-right-cap.png");
+
 	this.canvas = $('#layer-progress-bar')[0];
 	this.canvas.focus();
-	this.canvas.width = ProgressBar.WIDTH;
-	this.canvas.height = this.loadingProgressBar.height;
+	this.canvas.width = this.loadingProgressBar.naturalWidth;//ProgressBar.WIDTH;
+	this.canvas.height = this.loadingProgressBar.naturalHeight;
 	this.canvas.style.left = ProgressBar.LEFT + 'px';
 	this.canvas.style.top = ProgressBar.TOP + 'px';
 	this.layer = this.canvas.getContext('2d');
 	this.layer.fillStyle = 'rgb(255,255,255)';
-	this.drawImages();
+	this.layer.textAlign = 'center';
+	this.layer.font = '27px HelveticaBold';
+	//this.drawImages();
+	this.updateProgressBar(0);
 	this.isLoadingComplete = false;
 	this.registerEventHandlers();
 	/*this.canvas.focus();*/
 }
 
-ProgressBar.prototype.drawImages = function() {
-	var backgroundCanvas, backgroundLayer
-	backgroundCanvas = $('#layer-background')[0];
-	backgroundLayer = backgroundCanvas.getContext('2d');
-	backgroundCanvas.width = this.canvas.width;
-	backgroundCanvas.height = this.canvas.height;
-	backgroundCanvas.style.left = this.canvas.style.left;
-	backgroundCanvas.style.top = this.canvas.style.top;
-	backgroundLayer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height );
-	this.layer.textAlign = 'center';
-	this.layer.font = '27px HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP );
-	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width, this.loadingProgressBarLeftCap.height);
-}; //DangerBar.prototype.drawImages()
+ProgressBar.prototype.updateProgressBar = function(percentDownloaded) {
+	if(percentDownloaded > 1) {
+		percentDownloaded = 1;
+	}
+
+	var newWidth = (this.canvas.width - this.loadingProgressBarLeftCap.naturalWidth - this.loadingProgressBarRightCap.naturalWidth) * percentDownloaded;
+	this.layer.drawImage( this.loadingProgressBar, 0, 0, this.loadingProgressBar.naturalWidth, this.loadingProgressBar.naturalHeight);
+	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.naturalWidth,this.loadingProgressBarLeftCap.naturalHeight);
+	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.naturalWidth, 0, newWidth + 1, this.loadingProgressBarFill.naturalHeight);
+	this.layer.drawImage(this.loadingProgressBarRightCap, this.loadingProgressBarLeftCap.naturalWidth + newWidth, 0, this.loadingProgressBarRightCap.naturalWidth, this.loadingProgressBarRightCap.naturalHeight);
+	if(/*percentDownloaded >= 1*/false) {
+		this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), this.canvas.width/2, ProgressBar.MESSAGE_TOP);
+	} else {
+		this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), this.canvas.width/2, ProgressBar.MESSAGE_TOP );
+	}
+};
 
 ProgressBar.prototype.progress = function(percentDownloaded) {
-	var newWidth=  ProgressBar.WIDTH * percentDownloaded;
-	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
-	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
-	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, newWidth,this.loadingProgressBarFill.height);
-	this.layer.textAlign = 'center';
-	this.layer.font = '27px HelveticaBold';
-	this.layer.fillText(i18n.t('Loading Screen.Instruction Text'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP );
+	this.updateProgressBar(percentDownloaded);
 };
 
 ProgressBar.prototype.loaded = function() {
-	this.layer.clearRect(0, 0, this.loadingProgressBar.width, this.loadingProgressBar.height);
-	this.layer.drawImage(this.loadingProgressBarLeftCap, 0, 0, this.loadingProgressBarLeftCap.width,this.loadingProgressBarLeftCap.height);	
-	this.layer.drawImage(this.loadingProgressBarFill, this.loadingProgressBarLeftCap.width, 0, ProgressBar.WIDTH, this.loadingProgressBarFill.height);
-	this.layer.font = '27px HelveticaBold';
-	this.layer.textAlign = 'center';
-	this.layer.fillText(i18n.t('Loading Screen.Hot Spots'), ProgressBar.WIDTH/2, ProgressBar.MESSAGE_TOP);
+	this.updateProgressBar(1);
 	this.isLoadingComplete=true;
+
+	LoadingScreen.hide();
 };
 
 ProgressBar.prototype.registerEventHandlers = function() {
 	var progressBar = this;
-	window.onclick= function(evt) {
+	/*window.onclick= function(evt) {
 		progressBar.canvas.focus();
 	};
 
@@ -189,7 +187,7 @@ ProgressBar.prototype.registerEventHandlers = function() {
 			}
 			break;
 		}
-	};
+	};*/
 }; //ProgressBar.prototype.registerEventHandlers()
 
 ProgressBar.prototype.unregisterEventHandlers = function() {

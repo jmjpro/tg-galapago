@@ -24,7 +24,7 @@ Galapago.dangerBarImageNames = [
 	'danger-bar-fill-1',
 	'danger-bar-fill-2'
 ];
-Galapago.LAYER_BACKGROUND = 'layer-background';
+//Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
 /* ym: this class shouldn't be instantiated */
@@ -60,7 +60,7 @@ Galapago.setLevelsFromJson = function (levelsJson) {
 	});
 }; //Galapago.setLevelsFromJson()
 
-Galapago.init = function(isTimedMode) {
+Galapago.init = function(isTimedMode, onDialogOpenedCallBack) {
 	var levelTemp, level, levelIt, timedMode, gameTipsSelection, gameTipsSelectionEle;
 	Galapago.collageDirectory = LoadingScreen.gal.manifest.collageDirectory;
 	// switch to the second version of this line to enable audio by default
@@ -84,11 +84,11 @@ Galapago.init = function(isTimedMode) {
 	}
 	var configFilePath = QueryString.levels === 'ya' ? Galapago.CONFIG_FILE_PATH_YA : Galapago.CONFIG_FILE_PATH;
 	console.debug( 'configFilePath: ' + configFilePath );
-	Galapago.loadJsonAsync(configFilePath).then(function(data) {
+	Galapago.loadJsonAsync(configFilePath).then(function (data) {
 		Galapago.setLevelsFromJson(data);
 		level = LevelMap.getNextLevel();
-		Galapago.levelMap = new LevelMap(level);
-	}, function(status) {
+		Galapago.levelMap = new LevelMap(level, onDialogOpenedCallBack);
+	}, function (status) {
 		console.log('failed to load JSON level config with status ' + status);
 	})/*.then(function() {
 		//Galapago.setLevel(levelName);
@@ -141,7 +141,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 	//Galapago.levels = Galapago.levelsFromJson(Level.LEVELS_JSON);
 }; //Galapago.loadJsonAsync
 
-Galapago.setLevel = function(levelId) {
+Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	var theme, subTheme, backgroundBundle, themeBundle;
 	console.debug( 'entering Galapago.setLevel()' );
 	this.level = Level.findById(levelId);
@@ -160,7 +160,7 @@ Galapago.setLevel = function(levelId) {
 				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-				Galapago.level.display();
+				Galapago.level.display(onDialogOpenedCallBack);
 				Level.registerEventHandlers();
 			}
 		});
@@ -232,7 +232,7 @@ LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
 */
 
 /* begin class LevelMap */
-function LevelMap(level) {
+function LevelMap(level, onDialogOpenedCallBack) {
 	this.hotspotLevel = level;
 	this.screenDiv = $('#screen-map');
 	this.canvas = $(Galapago.LAYER_MAP)[0];
@@ -250,37 +250,62 @@ function LevelMap(level) {
 	this.levelCounter = 0;
 	//this.setImages(LoadingScreen.mapScreenImageNames);
 	this.levelAnimation = new LevelAnimation();
-	this.display();
+	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
 } //LevelMap constructor
 
-LevelMap.prototype.display = function() {
+LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
-
-	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
-		if (result.success) {
-			var backgroundImage;
-			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
-			if( backgroundImage ) {
-				that.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-			}
-			that.screenDiv.css( 'display', 'block');
-			that.canvas.focus();
+	that.screenDiv.css('display', 'none');
 
 			that.aimateStartArrowIfNeeded();
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
 			var completedLevelIds = LevelMap.getLevelsCompleted();
-			if(completedLevelIds.length){
+	if (completedLevelIds.length) {
 				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id);
 			}
-			//that.levelAnimation.animateBombs();
 			that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
 			that.drawHotspots();
+
+	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
+		if (result.success) {
+			var backgroundImage;
+			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+			if (backgroundImage) {
+				that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
+			}
+
+			that.levelMapOnScreenCache = new OnScreenCache(
+				[
+					LoadingScreen.gal.get('background/map.jpg'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-lava-strip.png') ,
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-start-arrow-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'powerup-gained-strip.png'),
+					LoadingScreen.gal.getSprites('screen-map/bonfire-strip.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-buttons.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-2.png'),
+					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-1.png')
+				], function () {
+
 			that.registerEventHandlers();
 			Galapago.audioPlayer.playVolcanoLoop();
+
+					if (typeof onDialogOpenedCallBack !== 'undefined') {
+						onDialogOpenedCallBack();
+		}
+
+					that.screenDiv.css('display', 'block');
+					that.canvas.focus();
+				},
+				1200
+			);
 		}
 	});
 	LoadingScreen.gal.download('bg-map-screen');
@@ -296,7 +321,7 @@ LevelMap.prototype.stopStartArrowAnimation = function(){
 	this.levelAnimation.stopAnimateSprite(Galapago.collageDirectory + 'map-start-arrow-strip.png');
 }
 
-LevelMap.prototype.drawHotspots = function(level){
+LevelMap.prototype.drawHotspots = function(){
 	var levelMap = this;
 	_.each(Galapago.levels, function(level){
 		if(Level.isComplete(level.id)){
@@ -359,12 +384,15 @@ LevelMap.prototype.updateLevelStatus = function() {
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
 		$('#map-level-complete-indicator')[0].src = green_v.src;
+		$('#map-level-complete-indicator')[0].style.visibility = 'visible';
 	}
 	else if( this.hotspotLevel.isUnlocked ) {
-		$('#map-level-complete-indicator').src = null;
+		//$('#map-level-complete-indicator')[0].src = '';
+		$('#map-level-complete-indicator')[0].style.visibility = 'hidden';
 	}
 	else {
-		$('	#map-level-complete-indicator')[0].src = level_lock.src;
+		$('#map-level-complete-indicator')[0].src = level_lock.src;
+		$('#map-level-complete-indicator')[0].style.visibility = 'visible';
 	}
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
@@ -502,8 +530,13 @@ LevelMap.prototype.handleSelect = function(evt) {
 
 LevelMap.prototype.handleKeyboardSelect = function() {
 	if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
-		this.cleanup();
-		Galapago.setLevel(this.hotspotLevel.id);
+		var that = this;
+		Galapago.setLevel(this.hotspotLevel.id, function() {
+			if(that !== null) {
+				that.cleanup();
+				that = null;
+	}
+		});
 	}
 	else {
 		console.debug( 'level ' + this.hotspotLevel.id + ' is locked');
@@ -511,6 +544,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 }; //LevelMap.prototype.handleKeyboardSelect()
 
 LevelMap.prototype.cleanup = function() {
+	this.levelMapOnScreenCache.destroy();
 	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
 	this.screenDiv.css('background-image','');
@@ -618,8 +652,8 @@ LevelMap.prototype.debugDisplayMapCoordinates = function(x, y) {
 	this.layer.fillText( x + ',' + y, x, y );
 }; //LevelMap.prototype.debugDisplayMapCoordinates
 
-LevelMap.show = function(level){
-	Galapago.levelMap = new LevelMap(level);
+LevelMap.show = function(level, onDialogOpenedCallBack){
+	Galapago.levelMap = new LevelMap(level, onDialogOpenedCallBack);
 	Galapago.levelMap.canvas.focus();
 	Galapago.levelMap.registerEventHandlers();
 }; //LevelMap.show()
@@ -964,7 +998,7 @@ Level.prototype.loadImages = function() {
 
 }; //Level.prototype.loadImages()
 
-Level.prototype.display = function() {
+Level.prototype.display = function(onDialogOpenedCallBack) {
 	var level, timedMode;
 	console.debug( 'entering Level.prototype.display()');
 	level = this;
@@ -974,6 +1008,19 @@ Level.prototype.display = function() {
 	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
+
+		var themeComplete = this.bgTheme + '-' + this.bgSubTheme,
+			resourcePath = 'background/' + themeComplete + '.jpg',
+			backgroundImage = LoadingScreen.gal.get(resourcePath);
+
+		if( backgroundImage ) {
+			console.debug('setting background to ' + resourcePath);
+			this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
+		}
+
+		if(typeof onDialogOpenedCallBack !== 'undefined') {
+			onDialogOpenedCallBack();
+		}
 		level.styleCanvas();
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.putInAnimationQ = true;
@@ -1043,14 +1090,16 @@ Level.prototype.won = function(){
 	store.removeItem( timedMode + Galapago.profile + "level" + this.id + "restore" );
 	Galapago.audioPlayer.playLevelWon();
     level = this;
-    level.cleanup();
 	if( sdkApi ) {
 		sdkApi.requestModalAd("inGame").done( function() {
-			LevelMap.show( LevelMap.getNextLevel() );
+			LevelMap.show( LevelMap.getNextLevel(), function() {
+				level.cleanup();
+		});
 		});
 	}
 	else {
-		LevelMap.show( LevelMap.getNextLevel() );
+		// TODO: IGOR: Do we need cleanup here?!
+		LevelMap.show( LevelMap.getNextLevel(), function() {} );
 	}
 }; //Level.prototypepx()
 
@@ -1060,6 +1109,7 @@ Level.prototype.quit = function(){
 }; //Level.prototype.quit()
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
+	this.unregisterEventHandlers();
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
@@ -1178,8 +1228,9 @@ Level.registerEventHandlers = function() {
 				evt.stopPropagation();
 				break;
 			case 8: // back/backspace key
+				LevelMap.show(level, function() {
 				level.quit();
-				LevelMap.show(level);				
+				});
 				evt.stopPropagation();
 				evt.preventDefault();		
 				break;
@@ -1291,17 +1342,9 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, themeComplete, resourcePath, backgroundImage, canvasBonusFrenzy;
+	var screenDivElement, canvasBonusFrenzy;
 	console.debug('entering Level.prototype.styleCanvas()');
-	themeComplete = this.bgTheme + '-' + this.bgSubTheme;
-	resourcePath = 'background/' + themeComplete + '.jpg';
-	backgroundImage = LoadingScreen.gal.get(resourcePath);	
 
-	if( backgroundImage ) {
-		console.debug('setting background to ' + resourcePath);
-		this.board.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
-	}
-	
 	console.debug('styling .layer-board canvas');
 	_.each( $('.layer-board'), function(layer) {
 		layer.width = Board.GRID_WIDTH;
@@ -4257,4 +4300,173 @@ Store.prototype.clear = function(){
             }
         }
     }	
+};
+
+/**
+ * @example
+ * 		var image1 = new Image(),
+ * 			image2 = document.createElement('img'),
+ * 			image1000 = document.getElementsByTagName('img')[0],
+ * 			evenArrayIsSupported = [ new Image(), new Image() ];
+ *
+ *      // Do this before any access to screen. Attention: consumes video memory (pixels).
+ * 		var mainMenuOnScreenCache = new OnScreenCache(
+ * 			[
+ * 				image1,
+ * 				image2,
+ *		 		image1000,
+ *		 		evenArrayIsSupported
+ * 			],
+ * 			function() {
+ * 		    	// do something after all images cached on screen
+ * 			}
+ * 		);
+ *
+ * 		// Do this BEFORE any current screen cleanup and BEFORE any other screen preparing/loading
+ * 		mainMenuOnScreenCache.destroy();
+ *
+ * @class OnScreenCache
+ * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
+ * @param {function} [onCachedCallBack]
+ * @param {number} [timeOutInMilliSeconds]
+ * @constructor
+ */
+function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
+	var id = OnScreenCache.ID_PREFIX + OnScreenCache.nextId++,
+		element = document.createElement('div');
+
+	if(typeof timeOutInMilliSeconds === 'undefined') {
+		timeOutInMilliSeconds = 700;
+	}
+
+	element.id = id;
+	element.setAttribute('style', OnScreenCache.STYLE);
+	this.processImages(imagesArray, element);
+
+	document.body.appendChild(element);
+
+	/**
+	 * @private
+	 * @type {HTMLDivElement}
+	 */
+	this.cacheElement = element;
+
+	/**
+	 * @private
+	 * @type {string}
+	 */
+	this.id = id;
+
+	if(typeof onCachedCallBack !== 'undefined') {
+		//TODO: there is no way to determine that image is completely DRAWN on screen!
+		//TODO: currently this is just a timeout.
+		//TODO: NOTE: image LOADED is not the same as image DRAWN.
+		setTimeout(onCachedCallBack, timeOutInMilliSeconds);
+	}
+}
+
+/**
+ * @public
+ */
+OnScreenCache.prototype.destroy = function() {
+	var element = this.cacheElement;
+
+	// cacheElement can be detached from screen,
+	// so we can't find it by 'id', so we use reference to it
+	if(element) {
+		if(element.parentNode) {
+			this.removeImages(element);
+			element.parentNode.removeChild(element);
+		}
+		element.innerHTML = '';
+	}
+
+	// if someone did cacheElement.parentNode.innerHTML += 'someThing',
+	// reference this.cacheElement points to OLD instance of element,
+	// and innerHTML recreated new instance, so search by 'id'!
+	if(this.id !== null) {
+		element = document.getElementById(this.id);
+		if(element) {
+			if(element.parentNode) {
+				this.removeImages(element);
+				element.parentNode.removeChild(element);
+			}
+			element.innerHTML = '';
+		}
+	}
+
+	this.cacheElement = null;
+	this.id = null;
+};
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.STYLE =
+	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
+	'-webkit-background-size: 1px 1px;' +
+	'-o-background-size: 1px 1px;' +
+	'-moz-background-size: 1px 1px;' +
+	'-khtml-background-size: 1px 1px;' +
+	'-ms-background-size: 1px 1px;' +
+	'background-size: 1px 1px;';
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
+
+/**
+ * @static
+ * @private
+ * @type {number}
+ */
+OnScreenCache.nextId = 0;
+
+/**
+ * @private
+ * @param {HTMLDivElement|Node} rootElement
+ * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
+ */
+OnScreenCache.prototype.processImages = function(imagesArray, rootElement) {
+	// error protection
+	if(imagesArray) {
+		for(var i = imagesArray.length - 1; i >= 0; i--) {
+			var item = imagesArray[i];
+			// error protection
+			if(!item) {
+				continue;
+			}
+
+			// check if item is array
+			if(Object.prototype.toString.call( item ) === '[object Array]') {
+				this.processImages(item, rootElement);
+			} else {
+				var image = document.createElement('div');
+				image.setAttribute(
+					'style',
+					OnScreenCache.STYLE + "background-image: url('" + item.src + "'); background-repeat: no-repeat;"
+				);
+				rootElement.appendChild(image);
+			}
+		}
+	}
+};
+
+/**
+ * @private
+ * @param {HTMLDivElement|Node} rootElement
+ */
+OnScreenCache.prototype.removeImages = function(rootElement) {
+	if(rootElement) {
+		var el = rootElement.firstElementChild;
+		while(el) {
+			el.style.backgroundImage = '';
+			el = el.nextElementSibling;
+		}
+	}
 };

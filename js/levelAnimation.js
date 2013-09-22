@@ -623,7 +623,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 			blinkingImage.stop();
 		});
 	}
-
+	this.blinkingImages = null;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -795,9 +795,12 @@ function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, callback)
 BombAnimation.prototype.start = function(){
 	this.bombSpriteId = 0;
 	var bombAnimation = this;
-	this.interval = setInterval(function(){
-		bombAnimation.animate();}, 
-		BombAnimation.ROLLOVER_TIME_INTERVAL);
+	this.interval = setInterval(
+		function(){
+			bombAnimation.animate();
+		},
+		BombAnimation.ROLLOVER_TIME_INTERVAL
+	);
 };
 
 BombAnimation.prototype.stop = function(){

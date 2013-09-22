@@ -42,8 +42,6 @@
 
 		<div id="debug-console"></div>
 
-		<canvas id="layer-background" width="1" height="1" style="z-index: 1;"></canvas>
-
 		<div id="screen-loading" class="canvas-fullscreen">
 			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
 			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
@@ -51,10 +49,15 @@
 		</div>
 
 		<div id="screen-map" class="canvas-fullscreen">
-			<canvas id="layer-map" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
-			<canvas id="layer-map-other-animation" width="1" height="1" style="z-index: 3;" tabindex="3"></canvas>
-			<canvas id="layer-map-animation" width="1" height="1" style="z-index: 4;" tabindex="4"></canvas>
-			
+			<canvas id="layer-map" width="1" height="1" tabindex="1"></canvas>
+			<div id="lava-animation"></div>
+			<div id="bombs-animation"></div>
+			<div id="map-level-info">
+				<span id="map-level-name"></span>
+				<img id="map-level-complete-indicator" style="visibility:hidden;"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
+				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
+				<span id="map-level-score-label"></span><span id="map-level-score"></span>
+			</div>
 			<ul id="map-nav">
 				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
 				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
@@ -65,21 +68,18 @@
 		</div>
 
 		<div id="screen-game" class="canvas-fullscreen">
-			<div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div>
-			<!--<canvas id="layer-grid" class="layer-board" style="z-index: 2;"></canvas>-->
-			<!--<canvas id="layer-gold" class="layer-board" style="z-index: 3;"></canvas>-->
+			<!--div id="layer_screen_game_background" style="position: fixed; top: 0; left: 0; width: 1279px; height: 720px; background-size: 100% 100%;"></div-->
 			<canvas id="layer-creature" width="1" height="1" class="layer-board" style="z-index: 4;"></canvas>
 			<div id="div-hilight" style="z-index: 5;position: absolute" tabindex="1"></div>
-			<canvas id="layer-score" width="1" height="1" style="z-index: 2;" tabindex="2"></canvas>
+			<div id="current-score" style="z-index: 2;" tabindex="2"></div><div id="level-name"></div>
 			<canvas id="layer-power-up" width="1" height="1" style="z-index: 2;" tabindex="3"></canvas>
 			<canvas id="layer-danger-bar" width="1" height="1" style="z-index: 2;"></canvas>
 			<canvas id="layer-collection-key" width="1" height="1" style="z-index: 2;"></canvas>
-			<canvas id="layer-game-animation" width="1" height="1" style="z-index: 5;"></canvas>
 			<canvas id="layer-power-up-animation" width="1" height="1" style="z-index: 5;"></canvas>
-			<canvas id="layer-game-lightning" width="1" height="1" style="z-index: 5;"></canvas>
 			<canvas id="layer-bob-cervantes" width="1" height="1" style="z-index: 9;"></canvas>
-			<canvas id="layer-nav" style="z-index: 9;" tabindex="4"></canvas>
-			<div  id="layerGrid" class='layerGrid'></div>
+			<div id="div-menu" class='gameNav' style="z-index: 9; top: 600px; " tabindex="4"><div id="div-menucursor">MENU</div></div>
+			<div id="div-quit" class='gameNav' style="z-index: 9; top: 652px; " tabindex="4"><div id="div-quitcursor">QUIT</div></div>
+			<!--<div id="layerGrid" class='layerGrid'></div>-->
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
@@ -181,7 +181,11 @@
 					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
 					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
 					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
-					<li id="option-game-tip" class="button-huge">Game Tips<!--<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialog/arrow-left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialog/arrow-right.png" class="game-option-arrow" width="37" height="27"></div>--></li>
+					Game Tips &nbsp;&nbsp;&nbsp;<li id="option-game-tip" class="button-regular">
+					<img id="arrow-left" src="" class="game-option-arrow" width="37" height="27">
+					<span id='gameTipsSelection'>On</span>
+					<img id="arrow-right" src="" class="game-option-arrow" width="37" height="27">
+				</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -241,7 +245,7 @@
 					explore Galapago whenever you like.<br/>
 					The creatures of Galapago are forever grateful to you, and will bring
 					peace and prosperity for the rest of your days.<br/>
-					Final Score: <span id="finalScore"></span><br/>
+					Final Score: <span id="total-score"></span><br/>
 				</span>
 				<ul class="vertical-button-nav">
 					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
@@ -328,9 +332,10 @@
 				</div>
 
 				<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>
+				<div id="up-down"><img id="up"/><img id="down"/></div>
 				<ul class="vertical-button-nav">
-					<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
-					<li id="option-help-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
+					<!--<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li> -->
+					<li id="option-help-close" data-i18n="Dialog Help.Close" class="button-medium button-medium-hilight">Close</li>
 				</ul>
 				<div id="version"></div>		
 			</div>
