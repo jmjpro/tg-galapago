@@ -1,6 +1,5 @@
-ImageCollage.COLLAGE_ARRAY = [
-	{
-		"collageId": "collage/main-menu-1.png",
+ImageCollage.COLLAGE_ARRAY = {
+	"collage/main-menu-1.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 305, 60], "id": "main-menu/button-change-player-selected.png"},
 			{"cell": [0, 60, 305, 60], "id": "main-menu/button-change-player-regular.png"},
@@ -8,8 +7,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [305, 60, 165, 60], "id": "main-menu/button-options-regular.png"}
 		]
 	},
-	{
-		"collageId": "collage/main-menu-2.png",
+	"collage/main-menu-2.png":{
 		"imageCoordinateArray": [
 			/*{"cell": [0, 120, 233, 164], "id": "main-menu/button-timed-selected.png"},*/
 			{"cell": [0, 0, 234, 164], "id": "main-menu/button-timed-regular.png"},
@@ -17,15 +15,13 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 328, 234, 164], "id": "main-menu/button-relaxed-regular.png"}
 		]
 	},
-	{
-		"collageId": "collage/arrows.png",
+	"collage/arrows.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 25, 25], "id": "main-menu/arrow-left.png"},
 			{"cell": [0, 25, 25, 25], "id": "main-menu/arrow-right.png"}
 		]
 	},
-	{
-		'collageId': 'collage/dialog-buttons.png',
+	'collage/dialog-buttons.png':{
 		'imageCoordinateArray': [
 		
 			{'cell': [0,0,180,44], 'id': 'dialog/button-disabled.png'},
@@ -33,8 +29,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{'cell': [10,98,180,44], 'id': 'dialog/button-hilight.png'}
 		]
 	},
-	{
-		"collageId": "collage/dialog-arrow-buttons.png",
+	"collage/dialog-arrow-buttons.png":{
 		"imageCoordinateArray": [
 			{"cell": [98, 0, 33, 34], "id": "dialog/arrow-button-up-hilight.png"},
 			{"cell": [131, 0, 33, 34], "id": "dialog/arrow-button-up-disable.png"},
@@ -42,14 +37,12 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [197, 0, 33, 34], "id": "dialog/arrow-button-down-disable.png"}
 		]
 	},
-	{
-		"collageId": "collage/keypad-buttons.png",
+	"collage/keypad-buttons.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 1, 1], "id": "dialog/keypad-button-1.png"}
 		]
 	},
-	{
-		"collageId": "collage/map-board-1.png",
+	"collage/map-board-1.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 40, 43], "id": "screen-map/level-stars-silver.png"},
 			{"cell": [40, 0, 40, 43], "id": "screen-map/level-stars-gold.png"},
@@ -59,8 +52,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [173, 0, 24, 52], "id": "screen-game/bracket-right.png"}
 		]
 	},
-	{
-		"collageId": "collage/map-board-2.png",
+	"collage/map-board-2.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 19, 284], "id": "screen-game/powerups-holder.png"},
 			{"cell": [19, 0, 38, 26], "id": "screen-map/next-level-arrow-down.png"},
@@ -77,15 +69,13 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [57, 154, 41, 33], "id": "screen-game/item-collected-mark.png"}
 		]
 	},
-	{
-		"collageId": "collage/map-board-buttons.png",
+	"collage/map-board-buttons.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 150, 55], "id": "screen-map/button-regular.png"},
 			{"cell": [150, 0, 150, 55], "id": "screen-map/button-cursor.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-powerup.png",
+	"collage/game-powerup.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 35, 35], "id": "screen-game/flame-disabled.png"},
 			{"cell": [0, 35, 19, 19], "id": "screen-game/flame-fill.png"},
@@ -95,14 +85,12 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [38, 35, 19, 19], "id": "screen-game/shuffle-fill.png"}
 		]
 	},
-	{
-		"collageId": "collage/gold-strip.png",
+	"collage/gold-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46], "id": "screen-game/gold/gold-1.png"}
 		]
 	},
-	{
-		"collageId": "collage/heads-mouth-strip.png",
+	"collage/heads-mouth-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 60, 62]},
 			{"cell": [60, 0, 60, 62]},
@@ -113,15 +101,13 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [360, 0, 60, 62]}
 		]
 	},
-	{
-		"collageId": "collage/heads-eyes-strip.png",
+	"collage/heads-eyes-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 552, 21], "id": "collage/heads-right-eyes-strip.png"},
 			{"cell": [0, 21, 481, 21], "id": "collage/heads-left-eyes-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/heads-left-eyes-strip.png",
+	"collage/heads-left-eyes-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 37, 21]},
 			{"cell": [37, 0, 37, 21]},
@@ -137,8 +123,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [407, 0, 37, 21]}
 		]
 	},
-	{
-		"collageId": "collage/heads-right-eyes-strip.png",
+	"collage/heads-right-eyes-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 21]},
 			{"cell": [46, 0, 46, 21]},
@@ -154,8 +139,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [506, 0, 46, 21]}
 		]
 	},
-	{
-		"collageId": "collage/game-beach-jump-strips.png",
+	"collage/game-beach-jump-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 340, 92], "id": "creatures/beach/blue-crab-jump-strip.png"},
 			{"cell": [0, 92, 340, 92], "id": "creatures/beach/green-turtle-jump-strip.png"},
@@ -166,8 +150,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 552, 340, 92], "id": "creatures/beach/yellow-fish-jump-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-beach-rollover-strips.png",
+	"collage/game-beach-rollover-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 230, 46], "id": "creatures/beach/blue-crab-rollover-strip.png"},
 			{"cell": [0, 46, 230, 46], "id": "creatures/beach/green-turtle-rollover-strip.png"},
@@ -178,8 +161,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 230, 46], "id": "creatures/beach/yellow-fish-rollover-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-forest-jump-strips.png",
+	"collage/game-forest-jump-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 260, 92], "id": "creatures/forest/blue-beetle-jump-strip.png"},
 			{"cell": [0, 92, 260, 92], "id": "creatures/forest/green-butterfly-jump-strip.png"},
@@ -190,8 +172,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 552, 260, 92], "id": "creatures/forest/yellow-frog-jump-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-forest-rollover-strips.png",
+	"collage/game-forest-rollover-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 230, 46], "id": "creatures/forest/blue-beetle-rollover-strip.png"},
 			{"cell": [0, 46, 230, 46], "id": "creatures/forest/green-butterfly-rollover-strip.png"},
@@ -202,8 +183,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 230, 46], "id": "creatures/forest/yellow-frog-rollover-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-cave-jump-strips.png",
+	"collage/game-cave-jump-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 350, 92], "id": "creatures/cave/blue-crystal-jump-strip.png"},
 			{"cell": [0, 92, 350, 92], "id": "creatures/cave/green-frog-jump-strip.png"},
@@ -214,8 +194,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 552, 350, 92], "id": "creatures/cave/yellow-bug-jump-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/game-cave-rollover-strips.png",
+	"collage/game-cave-rollover-strips.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 230, 46], "id": "creatures/cave/blue-crystal-rollover-strip.png"},
 			{"cell": [0, 46, 230, 46], "id": "creatures/cave/green-frog-rollover-strip.png"},
@@ -226,8 +205,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 230, 46], "id": "creatures/cave/yellow-bug-rollover-strip.png"}
 		]
 	},
-	{
-		"collageId": "collage/superfriends.png",
+	"collage/superfriends.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46], "id": "blue-friend"},
 			{"cell": [0, 46, 46, 46], "id": "green-friend"},
@@ -238,8 +216,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 46, 46], "id": "yellow-friend"}
 		]
 	},
-	{
-		"collageId": "collage/map-start-arrow-strip.png",
+	"collage/map-start-arrow-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 27, 65]},
 			{"cell": [27, 0, 27, 65]},
@@ -252,8 +229,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [216, 0, 27, 65]}
 		]
 	},
-	{
-		"collageId": "collage/map-lava-strip.png",
+	"collage/map-lava-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 95, 108]},
 			{"cell": [95, 0, 95, 108]},
@@ -268,8 +244,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [950, 0, 95, 108]}
 		]
 	},
-	{
-		"collageId": "collage/game-tile-mark-strip.png",
+	"collage/game-tile-mark-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 30, 30]},
 			{"cell": [0, 30, 30, 30]},
@@ -280,8 +255,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 180, 30, 30]}
 		]
 	},
-	{
-		"collageId": "creatures/rollover-strip.png",
+	"creatures/rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -292,8 +266,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 180, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach-jump-strip.png",
+	"creatures/beach-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 68, 92]},
 			{"cell": [68, 0, 68, 92]},
@@ -302,8 +275,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [272, 0, 68, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest-jump-strip.png",
+	"creatures/forest-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 70, 92]},
 			{"cell": [70, 0, 70, 92]},
@@ -312,8 +284,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [280, 0, 70, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave-jump-strip.png",
+	"creatures/cave-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 68, 92]},
 			{"cell": [68, 0, 68, 92]},
@@ -322,8 +293,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [272, 0, 68, 92]}
 		]
 	},
-	{
-		"collageId": "collage/map-bomb-left-one-strip.png",
+	"collage/map-bomb-left-one-strip.png":{
 		"imageCoordinateArray": [
 			 {"cell": [0, 0 ,73 , 105]},
 			 {"cell": [73, 0,73 , 105]}, 
@@ -339,8 +309,7 @@ ImageCollage.COLLAGE_ARRAY = [
 
 		]	
 	},
-	{
-		"collageId": "collage/map-bomb-left-two-strip.png",
+	"collage/map-bomb-left-two-strip.png":{
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 80 , 121]},
 			 {"cell": [80, 0, 80 , 121]}, 
@@ -356,8 +325,7 @@ ImageCollage.COLLAGE_ARRAY = [
 
 		]	
 	},
-	{
-		"collageId": "collage/map-bomb-mid-strip.png",
+	"collage/map-bomb-mid-strip.png":{
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 15.5 , 124]},
 			 {"cell": [15.5, 0, 15.5 , 124]}, 
@@ -369,8 +337,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {"cell": [108.5, 0, 15.5 , 124]}
 		]	
 	},
-	{
-		"collageId": "collage/map-bomb-right-strip.png",
+	"collage/map-bomb-right-strip.png":{
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 , 69.27, 98 ]},
 			 {"cell": [69.27, 0, 69.27, 98]}, 
@@ -385,8 +352,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {"cell": [692.7, 0, 69.27, 98]}
 		]	
 	},
-	{
-		"collageId": "screen-map/bonfire-strip.png",
+	"screen-map/bonfire-strip.png":{
 		"imageCoordinateArray": [ 
 			 {"cell": [0, 0 ,21 ,36]}, 
 			 {"cell": [21, 0,21 ,36]}, 
@@ -406,8 +372,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			 {"cell": [315, 0,21 ,36]}
 		]	
 	},
-	{
-		"collageId": "collage/sparkle-strip.png",
+	"collage/sparkle-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 146, 122]},
 			{"cell": [146, 0, 146, 122]},  
@@ -419,8 +384,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [1022, 0, 146, 122]} 
 		]
 	},
-	{
-		"collageId": "collage/cocoon-removed-strip.png",
+	"collage/cocoon-removed-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 33, 33]},
 			{"cell": [0, 33, 33, 33]},  
@@ -434,8 +398,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 297, 33, 33]} 
 		]
 	},
-	{
-		"collageId": "collage/powerup-gained-strip.png",
+	"collage/powerup-gained-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 48 , 57]}, 
 			{"cell": [48, 0, 48 , 57]}, 
@@ -443,8 +406,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [144, 0, 48 , 57]}
 		]	
 	},
-	{
-		"collageId": "collage/powerup-activated-strip.png",
+	"collage/powerup-activated-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0 ,74 ,75]}, 
 			{"cell": [74, 0,74 ,75]}, 
@@ -455,8 +417,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [444, 0,74 ,75]}
 		]		
 	},
-	{
-		"collageId": "collage/creatures-forest-strip.png",
+	"collage/creatures-forest-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 138, 46], "id": "forest/blue-beetle.png"},
 			{"cell": [0, 46, 138, 46], "id": "forest/green-butterfly.png"},
@@ -467,64 +428,56 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 138, 46], "id": "forest/yellow-frog.png"}
 		]
 	},
-	{
-		"collageId": "forest/blue-beetle.png",
+	"forest/blue-beetle.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/green-butterfly.png",
+	"forest/green-butterfly.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/pink-lizard.png",
+	"forest/pink-lizard.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/red-beetle.png",
+	"forest/red-beetle.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/teal-bug.png",
+	"forest/teal-bug.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/violet-moth.png",
+	"forest/violet-moth.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "forest/yellow-frog.png",
+	"forest/yellow-frog.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "collage/creatures-beach-strip.png",
+	"collage/creatures-beach-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 138, 46], "id": "beach/blue-crab.png"},
 			{"cell": [0, 46, 138, 46], "id": "beach/green-turtle.png"},
@@ -535,64 +488,56 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 138, 46], "id": "beach/yellow-fish.png"}
 		]
 	},
-	{
-		"collageId": "beach/blue-crab.png",
+	"beach/blue-crab.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
 			{"cell": [92, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "beach/green-turtle.png",
+	"beach/green-turtle.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "beach/pink-frog.png",
+	"beach/pink-frog.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "beach/red-starfish.png",
+	"beach/red-starfish.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "beach/teal-blob.png",
+	"beach/teal-blob.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "beach/violet-crab.png",
+	"beach/violet-crab.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "beach/yellow-fish.png",
+	"beach/yellow-fish.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "collage/creatures-cave-strip.png",
+	"collage/creatures-cave-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 138, 46], "id": "cave/blue-crystal.png"},
 			{"cell": [0, 46, 138, 46], "id": "cave/green-frog.png"},
@@ -603,64 +548,56 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 276, 138, 46], "id": "cave/yellow-bug.png"}
 		]
 	},
-	{
-		"collageId": "cave/blue-crystal.png",
+	"cave/blue-crystal.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/green-frog.png",
+	"cave/green-frog.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/pink-spike.png",
+	"cave/pink-spike.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/red-beetle.png",
+	"cave/red-beetle.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/teal-flyer.png",
+	"cave/teal-flyer.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/violet-lizard.png",
+	"cave/violet-lizard.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]} 
 		]
 	},
-	{
-		"collageId": "cave/yellow-bug.png",
+	"cave/yellow-bug.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},  
 			{"cell": [92, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/blue-crab-rollover-strip.png",
+	"creatures/beach/blue-crab-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -669,8 +606,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/green-turtle-rollover-strip.png",
+	"creatures/beach/green-turtle-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -679,8 +615,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/pink-frog-rollover-strip.png",
+	"creatures/beach/pink-frog-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -689,8 +624,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/red-starfish-rollover-strip.png",
+	"creatures/beach/red-starfish-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -699,8 +633,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/teal-blob-rollover-strip.png",
+	"creatures/beach/teal-blob-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -709,8 +642,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/violet-crab-rollover-strip.png",
+	"creatures/beach/violet-crab-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -719,8 +651,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/yellow-fish-rollover-strip.png",
+	"creatures/beach/yellow-fish-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -729,8 +660,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/blue-beetle-rollover-strip.png",
+	"creatures/forest/blue-beetle-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -739,8 +669,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/green-butterfly-rollover-strip.png",
+	"creatures/forest/green-butterfly-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -749,8 +678,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/pink-lizard-rollover-strip.png",
+	"creatures/forest/pink-lizard-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -759,8 +687,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/red-beetle-rollover-strip.png",
+	"creatures/forest/red-beetle-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -769,8 +696,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/teal-bug-rollover-strip.png",
+	"creatures/forest/teal-bug-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -779,8 +705,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/violet-moth-rollover-strip.png",
+	"creatures/forest/violet-moth-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -789,8 +714,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/yellow-frog-rollover-strip.png",
+	"creatures/forest/yellow-frog-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -799,8 +723,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/blue-crystal-rollover-strip.png",
+	"creatures/cave/blue-crystal-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -809,8 +732,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/green-frog-rollover-strip.png",
+	"creatures/cave/green-frog-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -819,8 +741,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/pink-spike-rollover-strip.png",
+	"creatures/cave/pink-spike-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -829,8 +750,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/red-beetle-rollover-strip.png",
+	"creatures/cave/red-beetle-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -839,8 +759,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/teal-flyer-rollover-strip.png",
+	"creatures/cave/teal-flyer-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -849,8 +768,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/violet-lizard-rollover-strip.png",
+	"creatures/cave/violet-lizard-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -859,8 +777,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/yellow-bug-rollover-strip.png",
+	"creatures/cave/yellow-bug-rollover-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 46, 46]},
 			{"cell": [46, 0, 46, 46]},
@@ -869,8 +786,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [184, 0, 46, 46]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/blue-crab-jump-strip.png",
+	"creatures/beach/blue-crab-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -879,8 +795,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/green-turtle-jump-strip.png",
+	"creatures/beach/green-turtle-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -889,8 +804,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/pink-frog-jump-strip.png",
+	"creatures/beach/pink-frog-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -899,8 +813,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/red-starfish-jump-strip.png",
+	"creatures/beach/red-starfish-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -909,8 +822,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/teal-blob-jump-strip.png",
+	"creatures/beach/teal-blob-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -919,8 +831,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/violet-crab-jump-strip.png",
+	"creatures/beach/violet-crab-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -929,8 +840,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/beach/yellow-fish-jump-strip.png",
+	"creatures/beach/yellow-fish-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -939,8 +849,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/blue-beetle-jump-strip.png",
+	"creatures/forest/blue-beetle-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -949,8 +858,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/green-butterfly-jump-strip.png",
+	"creatures/forest/green-butterfly-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -959,8 +867,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/pink-lizard-jump-strip.png",
+	"creatures/forest/pink-lizard-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -969,8 +876,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/red-beetle-jump-strip.png",
+	"creatures/forest/red-beetle-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -979,8 +885,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/teal-bug-jump-strip.png",
+	"creatures/forest/teal-bug-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -989,8 +894,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/violet-moth-jump-strip.png",
+	"creatures/forest/violet-moth-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -999,8 +903,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/forest/yellow-frog-jump-strip.png",
+	"creatures/forest/yellow-frog-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1009,8 +912,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/blue-crystal-jump-strip.png",
+	"creatures/cave/blue-crystal-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1019,8 +921,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/green-frog-jump-strip.png",
+	"creatures/cave/green-frog-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1029,8 +930,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/pink-spike-jump-strip.png",
+	"creatures/cave/pink-spike-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1039,8 +939,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/red-beetle-jump-strip.png",
+	"creatures/cave/red-beetle-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1049,8 +948,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/teal-flyer-jump-strip.png",
+	"creatures/cave/teal-flyer-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1059,8 +957,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/violet-lizard-jump-strip.png",
+	"creatures/cave/violet-lizard-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1069,8 +966,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "creatures/cave/yellow-bug-jump-strip.png",
+	"creatures/cave/yellow-bug-jump-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [11, 0, 46, 92]},
 			{"cell": [79, 0, 46, 92]},
@@ -1079,24 +975,21 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [283, 0, 46, 92]}
 		]
 	},
-	{
-		"collageId": "collage/game-lightning-strip.png",
+	"collage/game-lightning-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 235, 58]},
 			{"cell": [0, 58, 235, 58]},
 			{"cell": [0, 166, 235, 58]}
 		]
 	},
-	{
-		"collageId": "collage/game-lightning-strip.png",
+	"collage/game-lightning-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 235, 58]},
 			{"cell": [0, 58, 235, 58]},
 			{"cell": [0, 166, 235, 58]}
 		]
 	},
-	{
-		"collageId": "collage/game-hint-strip.png",
+	"collage/game-hint-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 41, 18]},
 			{"cell": [0, 18, 41, 18]},
@@ -1109,7 +1002,7 @@ ImageCollage.COLLAGE_ARRAY = [
 			{"cell": [0, 144, 41, 18]}
 		]
 	}
-];
+};
 
 /**
  * Assumes a sheet of symmetric images defined by a 1 or 2 dimensional image matrix
@@ -1262,9 +1155,19 @@ ImageCollage.loadByName = function (collageId){
 	return imageCollage;
 }; //ImageCollage.loadByName()
 
+
+
 ImageCollage.findByName = function( collageId ) {
-	return _.find( ImageCollage.COLLAGE_ARRAY, {'collageId' : collageId} );
-}; //ImageCollage.findByName()
+    var result = null;
+    if(collageId) {
+        result = ImageCollage.COLLAGE_ARRAY[collageId]; // Access by hash, not traversing whole object hierarchy
+        if(result) {
+            result.collageId = collageId; // TODO: Backward compatibility!!
+        }
+    }
+    return result;
+};
+ //ImageCollage.findByName()
 
 ImageCollage.buildSpriteAssetPath = function( collageId, i ) {
 	return collageId.replace( Level.BLOB_IMAGE_EXTENSION, '_' + (i + 1));
