@@ -984,7 +984,7 @@ BoardBuildAnimation.prototype.animate = function(){
 					break;
 				}
 				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawComplete(false, false, y);
+				tile.drawComplete(false, false, null, y);
 			}
 		}
 		if(complete){

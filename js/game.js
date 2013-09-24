@@ -1873,8 +1873,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		tile.coordinates = coordinates;
 		tileMatrix[col][row] = tile;	
 		function drawReplace(){
-			layer.clearRect( x, y, width, height );
-			tile.drawComplete();
+			tile.drawComplete(false, false, x, y);
 		}
 		if(this.putInAnimationQ){
 			this.animationQ.push(function(){
@@ -3393,22 +3392,23 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
-Tile.prototype.drawComplete = function(drawSelection, eraseTile, yCoord, skipClear, skipRegularTile) {
+Tile.prototype.drawComplete = function(drawSelection, eraseTile, xCoord, yCoord) {
 	var goldTile, layer, tile;
+	if(!xCoord){
+		xCoord = this.getXCoord();
+	}
 	if(!yCoord){
 		yCoord = this.getYCoord();
 	}
 	tile = this;
 	layer = this.board.creatureLayer;
-	if(!skipClear){
-		layer.clearRect( this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	}
+	layer.clearRect( this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	goldTile = this.board.getGoldTile(tile)
 	if( goldTile ) {
 		layer.drawImage( goldTile.blob.image, this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	else if(!skipRegularTile){
+	else{
 		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	if(drawSelection){
