@@ -965,7 +965,7 @@ Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
 }; //Level.prototype.loadSuperFriends()
 
 Level.prototype.loadImages = function() {
-	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, levelAnimationImagePaths, levelAnimationImages, image, gameImages;
+	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, /*levelAnimationImagePaths,*/ levelAnimationImages, image, gameImages;
 	level = this;	
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
@@ -989,10 +989,10 @@ Level.prototype.loadImages = function() {
 		level.goldImages.push( LoadingScreen.gal.get( goldImagePath ) );
 	});
 
-	levelAnimationImages = [];
+	/*levelAnimationImages = [];
 	_.each( levelAnimationImagePaths, function( levelAnimationImagePath ) {
 		levelAnimationImages.push( LoadingScreen.gal.get( levelAnimationImagePath ) );
-	});
+	});*/
 	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
 
 }; //Level.prototype.loadImages()
