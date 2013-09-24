@@ -3393,24 +3393,29 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
-Tile.prototype.drawComplete = function(drawSelection, clearTile) {
+Tile.prototype.drawComplete = function(drawSelection, eraseTile, yCoord, skipClear, skipRegularTile) {
 	var goldTile, layer, tile;
+	if(!yCoord){
+		yCoord = this.getYCoord();
+	}
 	tile = this;
 	layer = this.board.creatureLayer;
-	layer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	if(!skipClear){
+		layer.clearRect( this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	}
 	tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 	goldTile = this.board.getGoldTile(tile)
 	if( goldTile ) {
-		layer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		layer.drawImage( goldTile.blob.image, this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	else{
-		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+	else if(!skipRegularTile){
+		layer.drawImage(this.board.level.gameImages.tile_regular, tile.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
 	if(drawSelection){
-		layer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
+		layer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
-	if(!clearTile){
-		layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	if(!eraseTile){
+		layer.drawImage(tile.blob.image, tile.getXCoord(), yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 	}
 };
 

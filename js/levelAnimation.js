@@ -975,6 +975,7 @@ BoardBuildAnimation.prototype.animate = function(){
 			tile = this.tileMatrix[col][row];
 			if(tile){
 				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+				//tile.drawComplete(false, true, null, true, true);
 			}
 			if(tile && tile.blob){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
@@ -983,8 +984,7 @@ BoardBuildAnimation.prototype.animate = function(){
 					break;
 				}
 				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-				this.layer.drawImage(tile.blob.image, tile.getXCoord(), y, this.width, this.height);
+				tile.drawComplete(false, false, y);
 			}
 		}
 		if(complete){
@@ -999,6 +999,8 @@ BoardBuildAnimation.prototype.animate = function(){
 				tile = this.tileMatrix[col][row];
 				if(tile && tile.blob){
 					tile.drawComplete();
+				}else if(tile){
+					tile.drawComplete(false, true);
 				}
 			}
 		}
