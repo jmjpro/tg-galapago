@@ -96,6 +96,13 @@ BonusFrenzy.prototype.handleMouseClickEvent = function(evt) {
 
 BonusFrenzy.prototype.handleLeftArrow = function () {	
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	if(this.currentY>100){
+		var i = Tile.getCol(this.currentX)
+		var j = Tile.getRow((this.currentY-100));
+		if(this.board.creatureTileMatrix[i][j]){
+			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		}
+	}
     if(this.currentX - Board.TILE_WIDTH >= BonusFrenzy.X_MIN){
 		this.currentX = this.currentX - Board.TILE_WIDTH;
 	}
@@ -105,6 +112,13 @@ BonusFrenzy.prototype.handleLeftArrow = function () {
 
 BonusFrenzy.prototype.handleUpArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	if(this.currentY>100){
+		var i = Tile.getCol(this.currentX)
+		var j = Tile.getRow((this.currentY-100));
+		if(this.board.creatureTileMatrix[i][j]){
+			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		}	
+	}
     if(this.currentY - Board.TILE_HEIGHT >= BonusFrenzy.Y_MIN){
 		this.currentY = this.currentY - Board.TILE_HEIGHT;
 	}
@@ -114,6 +128,13 @@ BonusFrenzy.prototype.handleUpArrow = function () {
 
 BonusFrenzy.prototype.handleRightArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	if(this.currentY>100){
+		var i = Tile.getCol(this.currentX)
+		var j = Tile.getRow((this.currentY-100));
+		if(this.board.creatureTileMatrix[i][j]){
+			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		}
+	}
     if(this.currentX + Board.TILE_WIDTH <= BonusFrenzy.X_MAX){
 		this.currentX = this.currentX + Board.TILE_WIDTH;
 	}
@@ -123,6 +144,13 @@ BonusFrenzy.prototype.handleRightArrow = function () {
 
 BonusFrenzy.prototype.handleDownArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	if(this.currentY>100){
+		var i = Tile.getCol(this.currentX)
+		var j = Tile.getRow((this.currentY-100));
+		if(this.board.creatureTileMatrix[i][j]){
+			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		}
+	}
     if(this.currentY + Board.TILE_HEIGHT <= BonusFrenzy.Y_MAX){
 		this.currentY = this.currentY + Board.TILE_HEIGHT;
 	}
@@ -136,6 +164,7 @@ BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 		//console.log(tile.xCoord +" "+ x + " "+ tile.yCoord +"  "+ (y-BonusFrenzy.Y_OFFSET))
 		if(tile.xCoord == x && tile.yCoord == (y-BonusFrenzy.Y_OFFSET)){
 			this.layer.clearRect(x, y, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 			this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 			delete this.randomCreatureMap[key];
 			this.score++;
@@ -154,6 +183,7 @@ BonusFrenzy.prototype.drawBoard = function(){
 	var creaturemap = [];
 	var layer = this.layer;
 	var i =0;
+	var board = this.board;
 	while( i <30 ){ //TODO: create a constant from this "magic" number
 		var randomTileId = Math.ceil( Math.random() * 99); //TODO: will this work properly for a 13x11 board?
 		var row = randomTileId % 10;
@@ -174,9 +204,9 @@ BonusFrenzy.prototype.drawBoard = function(){
 				var col = tile.coordinates[0];
 				var row = tile.coordinates[1];
 				if(creaturemap[col+"_"+row] == undefined){
-					tile.clear();
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}else{
-			
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 					layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}
 			}
@@ -187,10 +217,25 @@ BonusFrenzy.prototype.drawBoard = function(){
 
 BonusFrenzy.prototype.startMoving = function(){
 	//var creatureLayer = this.board.creatureLayer;
+	
 	var bonusFrenzy = this;
 	var layer = this.layer;
+	var board = this.board;
 	function fly(){
-	    layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+	    layer.clearRect(0, 0, layer.canvas.width, 99);
+
+		for(var i =0 ; i < board.creatureTileMatrix.length ; i++){
+			for (var j =0 ; j < board.creatureTileMatrix[i].length ; j++){
+				var tile =  board.creatureTileMatrix[i][j];
+				if(tile){
+					layer.clearRect(tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+				}else{
+					layer.clearRect(Tile.getXCoord(i), Tile.getYCoord(j)+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+				}
+			}
+		}	
+		
 		layer.drawImage( bonusFrenzy.tile_hilight, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 		for (var key in  bonusFrenzy.randomCreatureMap){
 			var tile =  bonusFrenzy.randomCreatureMap[key];
