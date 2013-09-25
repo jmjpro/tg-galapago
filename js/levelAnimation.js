@@ -350,7 +350,7 @@ LevelAnimation.prototype.animateBombs = function(){
 }; //LevelAnimation.prototype.animateBombs()
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
-	var animationSprite, sprites, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		sprites = LoadingScreen.gal.getSprites(galAssetPath);
@@ -385,7 +385,7 @@ LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
 } //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
-	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	var blinkingImage, image, animationConfig, frameInterval, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		image = LoadingScreen.gal.get(galAssetPath);
