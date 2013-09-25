@@ -141,13 +141,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	imageId = tileActive.blob.image.id.replace('_1','') + LevelAnimation.ROLLOVER_SUFFIX;
 	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
-		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-		if(board.getGoldTile(tileActive)){
-			layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}else{
-			layer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}
-		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		tileActive.drawComplete();
 		if(board.tileSelected == tileActive){
 			tileActive.setSelectedAsync().then( function() {
 				return;
@@ -924,20 +918,14 @@ MakeMatchAnimation.prototype.start = function(){
 };
 
 MakeMatchAnimation.prototype.stop = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.initialTile.drawComplete();
+	this.swapTile.drawComplete();
 	clearInterval(this.interval);
 };
 
 MakeMatchAnimation.prototype.animate = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.initialTile.drawComplete();
+	this.swapTile.drawComplete();
 	var image = this.imageArray[this.rolloverSpriteId];
 	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.rolloverSpriteId++;
