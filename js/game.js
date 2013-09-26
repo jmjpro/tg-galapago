@@ -2422,10 +2422,11 @@ Board.prototype.handleTileSelect = function(tile) {
 					board.animationQ = [];
 					board.handleTriplets([tile, tilePrev]);
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
+					board.powerUp.timerPause();
 					board.level.levelAnimation.animateDroppingCreatures(board.animationQ).then(function(){
 						board.animationQ = [];
 						board.putInAnimationQ = false;
-						
+						board.powerUp.timerResume();
 						if(dangerBar){
 							dangerBar.resume();
 						}
@@ -4175,6 +4176,7 @@ MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeRepla
 function PauseableInterval(func, delay , sender){
     this.func = func;
     this.delay = delay;  
+	this.caller = sender;
     this.triggerSetAt = new Date().getTime();
     this.triggerTime = this.triggerSetAt + this.delay;
    // console.log('initial delay '+delay + ' now '+new Date().getTime());
@@ -4198,12 +4200,12 @@ function PauseableInterval(func, delay , sender){
         this.i = window.setInterval(this.func, this.delay,sender);
     };
     this.restart = function(sender){
-        sender.i = window.setInterval(sender.func, sender.delay,sender);
+        sender.i = window.setInterval(sender.func, sender.delay,this.caller);
     };
     this.callAndRestart = function(sender){
       sender.restart(sender);
       //console.log('callAndRestart function called : ' +' now : '+new Date().getTime());
-      sender.func();
+      sender.func(this.caller);
     };
     this.resume = function(){
         if (this.i === null){
