@@ -1879,7 +1879,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		}
 		if(this.putInAnimationQ){
 			this.animationQ.push(function(){
-				Tile.draw(previousX, previousY, previousGoldTile, image, board) ;
+				Tile.draw(previousX, previousY, previousGoldTile, null, board) ;
 				drawReplace();
 			});
 		}else{

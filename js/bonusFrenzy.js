@@ -6,6 +6,7 @@ BonusFrenzy.Y_MAX = 523;
 BonusFrenzy.Y_OFFSET = 100;
 BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
 BonusFrenzy.START_MOVING_DELAY_MS = 800;
+BonusFrenzy.CREATURE_LAYER_TOP = 100;
 
 
 
@@ -96,9 +97,9 @@ BonusFrenzy.prototype.handleMouseClickEvent = function(evt) {
 
 BonusFrenzy.prototype.handleLeftArrow = function () {	
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	if(this.currentY>100){
+	if(this.currentY>BonusFrenzy.CREATURE_LAYER_TOP){
 		var i = Tile.getCol(this.currentX)
-		var j = Tile.getRow((this.currentY-100));
+		var j = Tile.getRow((this.currentY-BonusFrenzy.CREATURE_LAYER_TOP));
 		if(this.board.creatureTileMatrix[i][j]){
 			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}
@@ -112,9 +113,9 @@ BonusFrenzy.prototype.handleLeftArrow = function () {
 
 BonusFrenzy.prototype.handleUpArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	if(this.currentY>100){
+	if(this.currentY>BonusFrenzy.CREATURE_LAYER_TOP){
 		var i = Tile.getCol(this.currentX)
-		var j = Tile.getRow((this.currentY-100));
+		var j = Tile.getRow((this.currentY-BonusFrenzy.CREATURE_LAYER_TOP));
 		if(this.board.creatureTileMatrix[i][j]){
 			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}	
@@ -128,9 +129,9 @@ BonusFrenzy.prototype.handleUpArrow = function () {
 
 BonusFrenzy.prototype.handleRightArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	if(this.currentY>100){
+	if(this.currentY>BonusFrenzy.CREATURE_LAYER_TOP){
 		var i = Tile.getCol(this.currentX)
-		var j = Tile.getRow((this.currentY-100));
+		var j = Tile.getRow((this.currentY-BonusFrenzy.CREATURE_LAYER_TOP));
 		if(this.board.creatureTileMatrix[i][j]){
 			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}
@@ -144,9 +145,9 @@ BonusFrenzy.prototype.handleRightArrow = function () {
 
 BonusFrenzy.prototype.handleDownArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	if(this.currentY>100){
+	if(this.currentY>BonusFrenzy.CREATURE_LAYER_TOP){
 		var i = Tile.getCol(this.currentX)
-		var j = Tile.getRow((this.currentY-100));
+		var j = Tile.getRow((this.currentY-BonusFrenzy.CREATURE_LAYER_TOP));
 		if(this.board.creatureTileMatrix[i][j]){
 			this.layer.drawImage(this.board.level.gameImages.tile_regular, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 		}
@@ -204,10 +205,10 @@ BonusFrenzy.prototype.drawBoard = function(){
 				var col = tile.coordinates[0];
 				var row = tile.coordinates[1];
 				if(creaturemap[col+"_"+row] == undefined){
-					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}else{
-					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-					layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}
 			}
 		});
@@ -222,16 +223,16 @@ BonusFrenzy.prototype.startMoving = function(){
 	var layer = this.layer;
 	var board = this.board;
 	function fly(){
-	    layer.clearRect(0, 0, layer.canvas.width, 99);
+	    layer.clearRect(0, 0, layer.canvas.width, BonusFrenzy.CREATURE_LAYER_TOP-1);
 
 		for(var i =0 ; i < board.creatureTileMatrix.length ; i++){
 			for (var j =0 ; j < board.creatureTileMatrix[i].length ; j++){
 				var tile =  board.creatureTileMatrix[i][j];
 				if(tile){
-					layer.clearRect(tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.clearRect(tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}else{
-					layer.clearRect(Tile.getXCoord(i), Tile.getYCoord(j)+100, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+					layer.clearRect(Tile.getXCoord(i), Tile.getYCoord(j)+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}
 			}
 		}	
