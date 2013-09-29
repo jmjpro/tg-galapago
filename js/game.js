@@ -998,7 +998,7 @@ Level.prototype.loadImages = function() {
 }; //Level.prototype.loadImages()
 
 Level.prototype.display = function(onDialogOpenedCallBack) {
-	var level, timedMode;
+	var level, timedMode, themeComplete, resourcePath, backgroundImage, restoreLookupString, restoreLookup;
 	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
@@ -1008,9 +1008,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
 
-		var themeComplete = this.bgTheme + '-' + this.bgSubTheme,
-			resourcePath = 'background/' + themeComplete + '.jpg',
-			backgroundImage = LoadingScreen.gal.get(resourcePath);
+		themeComplete = this.bgTheme + '-' + this.bgSubTheme,
+		resourcePath = 'background/' + themeComplete + '.jpg',
+		backgroundImage = LoadingScreen.gal.get(resourcePath);
 
 		if( backgroundImage ) {
 			console.debug('setting background to ' + resourcePath);
@@ -1034,10 +1034,10 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			}
 			timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			if (Galapago.isTimedMode) {
-				var restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
-				var restoreLookup , dangerBarTimeRemaining = null;
+				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
+				dangerBarTimeRemaining = null;
 			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
-			if(restoreLookupString !== 'undefined'){
+			if(restoreLookupString){
 				restoreLookup = JSON.parse(restoreLookupString);
 				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
 				if(dangerBarTimeRemaining !== 'undefined'){
@@ -3921,7 +3921,7 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.layer.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	this.canvas.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
 	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );

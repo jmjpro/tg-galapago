@@ -198,6 +198,7 @@
 											image.onload = onLoad;
 											intervalId = setInterval(onLoad, 50);
 											image.src = src;
+											image.id = key;
 											restarted = true;
 										} else {
 											console.debug('common image ' + url + " loaded");

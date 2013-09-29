@@ -9,8 +9,8 @@ ImageCollage.COLLAGE_ARRAY = {
 	},
 	"collage/main-menu-2.png":{
 		"imageCoordinateArray": [
-			/*{"cell": [0, 120, 233, 164], "id": "main-menu/button-timed-selected.png"},*/
 			{"cell": [0, 0, 234, 164], "id": "main-menu/button-timed-regular.png"},
+			{"cell": [0, 0, 234, 164], "id": "main-menu/button-timed-selected.png"},
 			{"cell": [0, 164, 234, 164], "id": "main-menu/button-relaxed-selected.png"},
 			{"cell": [0, 328, 234, 164], "id": "main-menu/button-relaxed-regular.png"}
 		]
