@@ -4,7 +4,7 @@ require.config({
     mocha: 'ext/mocha',
     chai: 'ext/chai',
     lodash: '../ext/lodash.min',
-    game: '../js/game',
+    game: '../js/game'
   }
 });
 

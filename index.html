@@ -71,8 +71,6 @@
 
 		<div id="debug-console"></div>
 
-		<canvas id="layer-background" width="1" height="1" style="z-index: 1;"></canvas>
-
 		<div id="screen-loading" class="canvas-fullscreen">
 			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
 			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
@@ -85,7 +83,7 @@
 			<div id="bombs-animation"></div>
 			<div id="map-level-info">
 				<span id="map-level-name"></span>
-				<img id="map-level-complete-indicator"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
+				<img id="map-level-complete-indicator" style="visibility:hidden;"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
 				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
 				<span id="map-level-score-label"></span><span id="map-level-score"></span>
 			</div>
@@ -225,11 +223,11 @@
 		<div id="dialog-time-out" class="overlay2">
 			<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
 			<div class="dialog-content">
-				<span data-i18n="Dialog Time Out.BodyText">
+				<div data-i18n="Dialog Time Out.BodyText">
 					<p>Don't despair, Galapago's creatures are rooting for you!</p>
 					<p>Play at your own pace in relaxed mode</p>
 					<p>Final Score: <span id="final-score">43200</span></p>
-				</span>
+				</div>
 				<ul class="vertical-button-nav">
 					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
 				</ul>
@@ -240,7 +238,7 @@
 			<div class="dialog-title" data-i18n="Dialog Game Over.Title">Game Over</div>
 			<div class="dialog-content">
 				<ul class="vertical-button-nav">
-					<li id="option-close" data-i18n="Dialog Game Over.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+					<li id="option-game-over-close" data-i18n="Dialog Game Over.OptionClose"  class="button-medium button-medium-hilight">Close</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -259,7 +257,7 @@
 					<tr><th>Score</th><td id="total-score"></td></tr>
 				</table>
 				<ul class="vertical-button-nav">
-					<li id="option-close" data-i18n="Dialog Level Won.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+					<li id="option-level-won-close" data-i18n="Dialog Level Won.OptionClose"  class="button-medium button-medium-hilight">Close</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -276,10 +274,10 @@
 					explore Galapago whenever you like.<br/>
 					The creatures of Galapago are forever grateful to you, and will bring
 					peace and prosperity for the rest of your days.<br/>
-					Final Score: <span id="total-score"></span><br/>
+					Final Score: <span id="total-final-score"></span><br/>
 				</span>
 				<ul class="vertical-button-nav">
-					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+					<li id="option-you-won-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -301,10 +299,10 @@
 		<div id="dialog-reset-game" class="overlay2">
 			<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
 			<div class="dialog-content">
-				<span data-i18n="Dialog Reset Game.Body Text">
+				<div data-i18n="Dialog Reset Game.Body Text">
 					<p>Resetting the map will erase your progress and and will start a new game!</p>
 					<p>Do you wish to reset the map?</p>
-				</span>
+				</div>
 				<ul class="vertical-button-nav">
 					<li id="reset-game-option-no" data-i18n="Dialog Reset Game.No"   class="button-medium button-medium-hilight">No</li>
 					<li id="reset-game-option-yes" data-i18n="Dialog Reset Game.Yes"   class="button-medium">Yes</li>
@@ -320,7 +318,7 @@
 			<div class="dialog-title" data-i18n="Dialog Help.Title">How to Play</div>
 			<div class="dialog-content">
 				<div id="help-text-scroll">
-					<span data-i18n="Dialog Help.Body Text">
+					<div data-i18n="Dialog Help.Body Text">
 						<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
 						<h4>Object</h4>
 						<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano... reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
@@ -359,7 +357,7 @@
 
 						<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
 						<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
-					</span>
+					</div>
 				</div>
 
 				<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>

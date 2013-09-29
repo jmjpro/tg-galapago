@@ -1,0 +1,5 @@
+#disable cache
+Header set Access-Control-Allow-Origin "*"
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+#Header set Cache-Control "no-store"
+Header set Expires "Mon, 26 Jul 1997 05:00:00 GMT"
