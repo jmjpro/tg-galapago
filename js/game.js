@@ -263,8 +263,8 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
 			var completedLevelIds = LevelMap.getLevelsCompleted();
-	if (completedLevelIds.length) {
-				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id);
+			if (completedLevelIds.length) {
+				that.levelAnimation.animateBonFire(that.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
 			}
 			that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
