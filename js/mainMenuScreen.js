@@ -32,9 +32,9 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 */
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
-	//"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { /*"LEFT" : "button-timed",*/ "DOWN" : "button-quit" },
-	"button-how-to-play" : { "UP" : "button-relaxed", "RIGHT" : "button-quit" },
+	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
+ 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
+	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
 
@@ -274,9 +274,15 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 }; //MainMenuScreen.prototype.setNavItem()
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
-	var galFilePath;
+	var galFilePath, regularImage;
 	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
+	regularImage = LoadingScreen.gal.get(galFilePath);
+	if( regularImage ) {
+		navItem.css( 'background-image', 'url(' + regularImage.src + ')' );
+	}
+	else {
+		console.error( 'unable to swap to regular image ' + galFilePath );
+	}
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
@@ -286,6 +292,9 @@ MainMenuScreen.prototype.addHilight = function(navItem) {
 	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
 	if( hilightedImage ) {
 		navItem.css( 'background-image', 'url(' + hilightedImage.src + ')' );
+	}
+	else {
+		console.error( 'unable to swap to hilight image ' + galHilightFilePath );
 	}
 };
 
