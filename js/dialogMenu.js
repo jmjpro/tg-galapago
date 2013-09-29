@@ -205,16 +205,13 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	 
 	switch( optionId ) {
 		case 'reset-game-option-no' :
-			Galapago.levelMap.cleanup();
-			//Galapago.init(Galapago.gameMode);
-			LevelMap.show(level);
-			//level.showLevelMap(level);
 			this.hide();
+			Galapago.mapScreen.focusMap( Galapago.levelMap );
 			break;
 		case 'reset-game-option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			Galapago.levelMap.cleanup();
+			levelMap.cleanup();
 			//Galapago.init(Galapago.gameMode);
 			LevelMap.show(Level.findById(1));
 			//level.showLevelMap(Level.findById(1));
@@ -503,6 +500,9 @@ DialogMenu.prototype.dialogQuitOptionNo = function() {
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
+	}
+	else {
+		Galapago.mapScreen.focusMap( Galapago.levelMap );
 	}
 }; //DialogMenu.prototype.dialogQuitOptionNo()
 

@@ -258,7 +258,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
 
-			that.aimateStartArrowIfNeeded();
+			that.animateStartArrowIfNeeded();
 			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
@@ -311,7 +311,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	LoadingScreen.gal.download('bg-map-screen');
 }; //LevelMap.prototype.display()
 
-LevelMap.prototype.aimateStartArrowIfNeeded = function(){
+LevelMap.prototype.animateStartArrowIfNeeded = function(){
 	if(!Level.isComplete("1")){
 		this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
 	}
