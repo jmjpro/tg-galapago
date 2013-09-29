@@ -1412,7 +1412,7 @@ Board has layer with matrix of Tiles with Gold
 */
 Board.TILE_WIDTH = 47;
 Board.TILE_HEIGHT = 47;
-Board.MAX_COLUMNS = 13;
+Board.MAX_COLUMNS = 15;
 Board.MAX_ROWS = 11;
 Board.GRID_LEFT = 325;
 Board.GRID_TOP = 100;
