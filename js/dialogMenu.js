@@ -14,7 +14,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-profile-create-init", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-help", "background" : "dialog-large.png", "button-class" : "button-medium-hilight"}
 ];
 DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';

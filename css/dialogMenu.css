@@ -44,6 +44,11 @@ div.dialog-title {
 	width: 240px;
 }
 
+div.dialog-title-wide {
+	left: 360px;
+	width: 411px;
+}
+
 #dialog-game-menu {
 	width: 717px;
 	height: 690px;
@@ -323,30 +328,20 @@ ul.galapago-drop-down {
 }
 
 #dialog-help {
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
+	width: 1082px;
+	height: 624px;
+	left: 99px;
+	top: 58px;
 }
 
-#up-down{
-	width:34px;
-	left: 220px;
-	position: absolute;
-    top: 435px;
-}
-#up{
+.up-down{
 	width:34px;
 	height:34px;
-}
-
-#down{
-	width:34px;
-	height:34px;
+	display: inline-block;
 }
 
 #dialog-help div.dialog-content {
-	width: 500px;
+	width: 900px;
 	height: 480px;
 }
 
@@ -355,7 +350,6 @@ ul.galapago-drop-down {
 	height: 300px;
 	margin-top: 20px;
 	padding: 0px 20px 0px 50px;
-	font-family: 'Helvetica';
 	text-align: left;
 }
 
@@ -369,17 +363,18 @@ ul.galapago-drop-down {
 
 #dialog-help div.dialog-content p {
 	font-size: 14px;
+	color: black;
 }
 
 #dialog-help #paging {
-	font-family: 'Helvetica';
 	font-size: 14px;
-	width:150px;
 	margin-top: 10px;
+	height: 34px;
+	line-height: 34px;
+	vertical-align: middle;
 }
 
 #dialog-help #version {
-	font-family: 'Helvetica';
 	font-size: 14px;
 	text-align: left;
 }
