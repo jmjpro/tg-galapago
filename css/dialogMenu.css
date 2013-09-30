@@ -387,3 +387,8 @@ ul.galapago-drop-down {
 	height: 61px;
 	margin-top: -10px;
 }
+
+#version-text {
+	padding: 0px 20px 0px 50px;
+	text-align: left;
+}
