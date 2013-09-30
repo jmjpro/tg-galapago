@@ -376,11 +376,13 @@ ul.galapago-drop-down {
 	height: 34px;
 	line-height: 34px;
 	vertical-align: middle;
+	color: rgb(107,45,0);
 }
 
 #dialog-help #version {
 	font-size: 14px;
 	text-align: left;
+	color: rgb(107,45,0);
 }
 
 #dialog-help .button-medium {
@@ -391,4 +393,8 @@ ul.galapago-drop-down {
 #version-text {
 	padding: 0px 20px 0px 50px;
 	text-align: left;
+}
+
+#current-page{
+	color: rgb(255,255,255);	
 }
