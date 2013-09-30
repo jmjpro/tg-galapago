@@ -369,7 +369,6 @@ LevelMap.prototype.updateLevelStatus = function() {
 	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
 	levelDifficulty = this.hotspotLevel.difficulty;
-	
 	$('#map-difficulty-level-gray').css( 'backgroundImage', 'url(' + level_stars_silver.src + ')' );
 	$('#map-difficulty-level-gold').css( 'backgroundImage', 'url(' + level_stars_gold.src + ')' );
 	$('#map-difficulty-level-gold').css( 'width', LevelMap.STAR_WIDTH * levelDifficulty + 'px' );
@@ -1050,6 +1049,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			level.board.displayLevelName();
 			level.board.displayMenuButton(false);
 			level.board.displayQuitButton(false);
+			level.board.hilightDiv.css('display','block');
+			level.board.scoreElement.show();
+			level.board.levelNameElement.show();
 			level.board.display();
 			level.board.setActiveTile();
 			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
