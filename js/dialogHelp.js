@@ -76,6 +76,9 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 			if( backgroundImage ) {
 				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
 			}
+			else {
+				console.error( 'unable to find background image ' + galBackgroundPath );
+			}
 		}
 	}
 	else {

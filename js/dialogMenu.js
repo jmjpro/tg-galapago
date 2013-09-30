@@ -14,7 +14,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-profile-create-init", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-help", "background" : "dialog-large.png", "button-class" : "button-medium-hilight"}
 ];
 DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
@@ -392,7 +392,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to last item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
@@ -410,7 +410,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.next('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to first item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
@@ -496,13 +496,13 @@ DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
 	this.hide();
-	if(this.callingObject instanceof Board){
+	if( this.callingObject instanceof Board ){
 		if(this.callingObject.level.dangerBar){
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
 	}
-	else {
+	else if( this.callingObject instanceof MapScreen ) {
 		Galapago.mapScreen.focusMap( Galapago.levelMap );
 	}
 }; //DialogMenu.prototype.dialogQuitOptionNo()
