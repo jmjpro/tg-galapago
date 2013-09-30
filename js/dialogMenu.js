@@ -114,7 +114,14 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var level, that;
 	that = this;
 	level = dialogMenu.callingObject.level;
-    sdkApi.requestModalAd("inGame").done(function(){
+	LevelMap.show(level, function() {
+		if(that !== null) {
+			that.hide();
+			level.cleanup();
+			that = null;
+		}
+	});
+   /* sdkApi.requestModalAd("inGame").done(function(){
 		LevelMap.show(level, function() {
 			if(that !== null) {
 				that.hide();
@@ -123,7 +130,7 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 			}
 		});
 		//level.showLevelMap();
-	});
+	});*/
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
