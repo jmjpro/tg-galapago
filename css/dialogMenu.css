@@ -338,16 +338,20 @@ ul.galapago-drop-down {
 	width:34px;
 	height:34px;
 	display: inline-block;
+	vertical-align: middle;
 }
 
 #dialog-help div.dialog-content {
 	width: 900px;
 	height: 480px;
+	overflow: hidden;
 }
 
 #help-text-scroll {
 	overflow-y: scroll;
+	overflow-x: hidden;
 	height: 300px;
+	width: 908px;
 	margin-top: 20px;
 	padding: 0px 20px 0px 50px;
 	text-align: left;
