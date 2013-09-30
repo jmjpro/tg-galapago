@@ -2455,7 +2455,7 @@ Board.prototype.handleTileSelect = function(tile) {
 							});
 						}
 						if(board.powerUp.isFlipFlopSelected()){
-							board.setActiveTile(tilePrev);
+							board.setActiveTileByGivenCoordinate(tileCoordinates);
 							board.powerUp.powerUsed();
 							board.navigationLock = false;
 						}
@@ -2533,6 +2533,11 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 }; //Board.prototype.handleTileSelect
 
+Board.prototype.setActiveTileByGivenCoordinate = function(coordinatesToActivate) {
+	this.tileActive = this.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
+	this.tileActive.setActiveAsync().done();
+}
+
 Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	var board = this;
 	board.updateScore();
@@ -2540,8 +2545,7 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 		board.saveBoard();
 		board.collectionModified = false;
 	}
-	board.tileActive = board.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
-	board.tileActive.setActiveAsync().done();
+	board.setActiveTileByGivenCoordinate(coordinatesToActivate);
 	if( board.blobCollection.isEmpty()){
 		if(board.level.id==1){
 			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrienzy tip'));
