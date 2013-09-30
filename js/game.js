@@ -263,8 +263,8 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
 
 			var completedLevelIds = LevelMap.getLevelsCompleted();
-	if (completedLevelIds.length) {
-				that.levelAnimation.animateBonFire(completedLevelIds, LevelMap.getHighestLevelCompleted().id);
+			if (completedLevelIds.length) {
+				that.levelAnimation.animateBonFire(that.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
 			}
 			that.levelAnimation.animateBombs2(that.screenDiv.selector);
 
@@ -1022,10 +1022,8 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		}
 		level.styleCanvas();
 		level.board.init( level.levelConfig.blobPositions );
-		level.board.putInAnimationQ = true;
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
-		level.board.putInAnimationQ = false;
 		level.board.animationQ = [];
 		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function () {
 			level.board.displayBlobCollections();
@@ -1761,7 +1759,7 @@ Board.prototype.build = function(tilePositions) {
 					this.firstTileCoordinates = coordinates;
 				}
 				spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
-				this.addTile(coordinates, 'CREATURE', null, spriteNumber);
+				this.addTile(coordinates, 'CREATURE', null, spriteNumber, null, true);
 			}
 			if( typeof cellObject.gold != 'undefined' ) {
 				this.addTile(coordinates, 'GOLD', cellObject.gold);
@@ -1807,8 +1805,8 @@ Board.prototype.buildInitialSwapForTriplet = function(initialSwapForTripletInfo)
 		var colorId = initialSwapForTripletInfo.color;
 		_.each(coordinates,function(coordinate){
 			var creature = board.level.getCreatureByColorId(colorId, Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
-			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.CREATUREONLY_TILE_SPRITE_NUMBER);
-			board.regenerateMatchingCreatureIfAny(tile, coordinates);
+			var tile = board.addTile(coordinate, 'CREATURE', creature, Tile.CREATUREONLY_TILE_SPRITE_NUMBER, null, true);
+			board.regenerateMatchingCreatureIfAny(tile, coordinates, true);
 		});
 		board.initialSwapForTripletInfo = initialSwapForTripletInfo;
 	}
@@ -1852,7 +1850,7 @@ Board.prototype.parseCell = function(cellId) {
 
 //add a new tile or update the position of an existing tile
 //synchronizes coordinate and position information with the tile object
-Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, tile) {
+Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, tile, skipDraw) {
 	var layer, tileMatrix, col, row, x, y, width, height, imageName, previousX, previousY, board, image, goldTile, previousGoldTile;
 
 	tileMatrix = this.getTileMatrix(blobType);
@@ -1916,24 +1914,26 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		if( blob && blob.image ) {
 			goldTile = board.getGoldTile(tile);
 			image = blob.image;
-			function draw(){
-				Tile.draw(x, y, goldTile, blob.image, board);
-			}
-			if(this.putInAnimationQ && blob.blobType != 'GOLD'){
-				this.animationQ.push(draw);
-			}else{
-				draw();
+			if(!skipDraw){
+				function draw(){
+					Tile.draw(x, y, goldTile, blob.image, board);
+				}
+				if(this.putInAnimationQ && blob.blobType != 'GOLD'){
+					this.animationQ.push(draw);
+				}else{
+					draw();
+				}
 			}
 		}
 		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
-			this.regenerateMatchingCreatureIfAny(tile);
+			this.regenerateMatchingCreatureIfAny(tile, skipDraw);
 		}	
 	}
 	return tile; 
 }; //Board.prototype.addTile()
 
-Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoords) {
-	var layer, tileMatrix, col, row, x, y, width, height, imageName;
+Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoords, skipDraw) {
+	var layer, tileMatrix, col, row, x, y, width, height, imageName, goldTile, image;
 	var fixedTile = tile;
 	tileMatrix = this.creatureTileMatrix;
 	layer = this.creatureLayer;
@@ -1950,15 +1950,17 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 				x = Tile.getXCoord(col);
 				y = Tile.getYCoord(row);
 				tileMatrix[col][row] = tile;
-				function draw(){ 
-					//layer.clearRect( x, y, width, height );
-					//layer.drawImage(tile.blob.image, x, y, width, height);
-					tile.drawComplete();
-				}
-				if(board.putInAnimationQ){
-					board.animationQ.push(draw);
-				}else{
-					draw();
+				goldTile = board.getGoldTile(tile);
+				image = tile.blob.image;
+				if(!skipDraw){
+					function draw(){ 
+						Tile.draw(x, y, goldTile, image, board);
+					}
+					if(board.putInAnimationQ){
+						board.animationQ.push(draw);
+					}else{
+						draw();
+					}
 				}
 				return;
 			}

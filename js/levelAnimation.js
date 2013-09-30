@@ -259,7 +259,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		}
 };
 
-LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId){
+LevelAnimation.prototype.animateBonFire = function(parentElementSelector, completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
@@ -285,7 +285,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 			if(levelAnimation.bonFireAnimation){
 				levelAnimation.bonFireAnimation.stop();
 			}
-			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet);		
+			var bonFireAnimation = new BonFireAnimation(parentElementSelector, coordinates, bonfireImageSpriteSheet);		
 			bonFireAnimation.start();
 			levelAnimation.bonFireAnimation = bonFireAnimation;
 		}
@@ -737,12 +737,13 @@ RolloverAnimation.prototype.animate = function(){
 };
 
 BonFireAnimation.ROLLOVER_TIME_INTERVAL=330;
-function BonFireAnimation(coordinates, bonfireImageSprites){
+function BonFireAnimation(parentElementSelector, coordinates, bonfireImageSprites){
 	this.bonfireImageSprites = bonfireImageSprites;
 	this.interval = null;
 	this.bonfireSpriteId = 0;
 	this.coordinates = coordinates;
 	this.animatedDivs = [];
+	this.parentElementSelector = parentElementSelector;
 }
 
 BonFireAnimation.prototype.start = function(){
@@ -750,7 +751,7 @@ BonFireAnimation.prototype.start = function(){
 	this.bonfireSpriteId = 0;
 	var bonFireAnimation = this;
 	_.each(this.coordinates, function(coordinate){
-		animationDiv = new AnimationDiv(LevelMap.LEFT + coordinate[0], coordinate[1], bonFireAnimation.bonfireImageSprites[0].width, bonFireAnimation.bonfireImageSprites[0].height);
+		animationDiv = new AnimationDiv(LevelMap.LEFT + coordinate[0], coordinate[1], bonFireAnimation.bonfireImageSprites[0].width, bonFireAnimation.bonfireImageSprites[0].height, bonFireAnimation.parentElementSelector);
 		bonFireAnimation.animatedDivs.push(animationDiv);
 	});
 	this.interval = setInterval(function(){
@@ -1220,9 +1221,13 @@ LightningAnimation.prototype.animate = function(){
 	}
 };
 
-function AnimationDiv(left, top, width, height){
+function AnimationDiv(left, top, width, height, parentElementSelector){
 	this.div = $('<div>');
-	$(document.body).append(this.div);
+	if(parentElementSelector){
+		$(parentElementSelector).append(this.div);
+	}else{
+		$(document.body).append(this.div);
+	}
 	this.div.css('position', 'absolute');
 	this.div.css('top', top + 'px');
 	this.div.css('left', left + 'px');  
