@@ -78,6 +78,11 @@ canvas.layer-board {
 	top: 0;
 }
 
+.creature-hilight{
+	position: absolute;
+	display:  none;
+}
+
 #layer-map-animation {
 	position: absolute;
 	left: 643px;
