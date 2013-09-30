@@ -141,6 +141,7 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			var that = this;
 			Galapago.setLevel(board.level.id, function() {
 				if(that !== null) {
+					that.callingObject = null;
 					that.hide();
 					that = null;
 				}
@@ -326,9 +327,9 @@ DialogMenu.prototype.hide = function() {
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
-			this.callingObject.reshuffleService.start();
+		this.callingObject.reshuffleService.start();
 	}
-	if(this.callingObject.registerEventHandlers){
+	if(this.callingObject && this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
 	}else{
 		window.onkeydown = this.windowKeyHandler;
