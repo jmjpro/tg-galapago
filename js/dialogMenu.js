@@ -391,7 +391,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to last item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
@@ -409,7 +409,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.next('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to first item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
@@ -495,13 +495,13 @@ DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
 	this.hide();
-	if(this.callingObject instanceof Board){
+	if( this.callingObject instanceof Board ){
 		if(this.callingObject.level.dangerBar){
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
 	}
-	else {
+	else if( this.callingObject instanceof MapScreen ) {
 		Galapago.mapScreen.focusMap( Galapago.levelMap );
 	}
 }; //DialogMenu.prototype.dialogQuitOptionNo()

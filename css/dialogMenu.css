@@ -39,7 +39,9 @@ div.dialog-title {
 	position: relative;
 	font-size: 28px;
 	color: rgb(141,122,46);
+	left: 257px;
 	top: 50px;
+	width: 240px;
 }
 
 #dialog-game-menu {
@@ -255,7 +257,7 @@ span#final-score {
 
 #dialog-profile-create .dialog-title {
 	top: 35px;
-	left: 20px;
+	/*left: 20px;*/
 }
 
 .profile-name {
@@ -341,10 +343,6 @@ ul.galapago-drop-down {
 #down{
 	width:34px;
 	height:34px;
-}
-
-#dialog-help .dialog-title {
-	left: 20px;
 }
 
 #dialog-help div.dialog-content {
