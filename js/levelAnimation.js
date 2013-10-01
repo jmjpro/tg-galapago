@@ -1337,6 +1337,12 @@ AnimationSprites.prototype.animate = function(isContinuous){
 	return this;
 }; //AnimationSprites.prototype.animate()
 
+AnimationSprites.prototype.animateAndMove = function(moveInterval, moveLeft, moveTop){
+	return this;
+}; //AnimationSprites.prototype.animateAndMove()
+// end class AnimationSprites
+
+
 /* end class AnimationSprites */
 
 function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback) {
@@ -1365,13 +1371,7 @@ BlinkingImage.prototype.destroy = function(url){
 	}
 	this.image = null;
 	return this;
-}; //AnimationSprites.prototype.destroy
-
-
-AnimationSprites.prototype.animateAndMove = function(moveInterval, moveLeft, moveTop){
-	return this;
-}; //AnimationSprites.prototype.animateAndMove()
-// end class AnimationSprites
+}; //BlinkingImage.prototype.destroy
 
 //begin class BlinkingImage
 BlinkingImage.prototype.start = function(isContinuous){
