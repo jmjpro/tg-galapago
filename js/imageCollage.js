@@ -9,10 +9,10 @@ ImageCollage.COLLAGE_ARRAY = {
 	},
 	"collage/main-menu-2.png":{
 		"imageCoordinateArray": [
-			/*{"cell": [0, 120, 233, 164], "id": "main-menu/button-timed-selected.png"},*/
-			{"cell": [0, 0, 234, 164], "id": "main-menu/button-timed-regular.png"},
-			{"cell": [0, 164, 234, 164], "id": "main-menu/button-relaxed-selected.png"},
-			{"cell": [0, 328, 234, 164], "id": "main-menu/button-relaxed-regular.png"}
+			{"cell": [0, 0, 234, 165], "id": "main-menu/button-timed-selected.png"},
+			{"cell": [0, 165, 234, 165], "id": "main-menu/button-timed-regular.png"},
+			{"cell": [0, 330, 234, 165], "id": "main-menu/button-relaxed-selected.png"},
+			{"cell": [0, 495, 234, 165], "id": "main-menu/button-relaxed-regular.png"}
 		]
 	},
 	"collage/arrows.png":{
@@ -1000,6 +1000,21 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 108, 41, 18]},
 			{"cell": [0, 126, 41, 18]},
 			{"cell": [0, 144, 41, 18]}
+		]
+	},
+	"screen-game/danger-bar-fill-strip.png":{
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 10, 226]},
+			{"cell": [10, 0, 10, 226]},
+			{"cell": [20, 0, 10, 226]},
+			{"cell": [30, 0, 10, 226]},
+			{"cell": [40, 0, 10, 226]}
+		]
+	},
+	"collage/danger-bar-warning-strip.png":{
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 52, 57]},
+			{"cell": [52, 0, 52, 57]}
 		]
 	}
 };

@@ -3,7 +3,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-game-menu", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-time-out", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-time-out", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-you-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-leaderboards", "background" : "dialog-large.png", "button-class" : "button-big-hilight"},
 	{"id" : "dialog-level-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
@@ -111,9 +111,17 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
-	var level, that = this;
+	var level, that;
+	that = this;
 	level = dialogMenu.callingObject.level;
-    sdkApi.requestModalAd("inGame").done(function(){
+	LevelMap.show(level, function() {
+		if(that !== null) {
+			that.hide();
+			level.cleanup();
+			that = null;
+		}
+	});
+   /* sdkApi.requestModalAd("inGame").done(function(){
 		LevelMap.show(level, function() {
 			if(that !== null) {
 				that.hide();
@@ -122,7 +130,7 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 			}
 		});
 		//level.showLevelMap();
-	});
+	});*/
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
