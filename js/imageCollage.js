@@ -44,8 +44,8 @@ ImageCollage.COLLAGE_ARRAY = {
 	},
 	"collage/map-board-1.png":{
 		"imageCoordinateArray": [
-			{"cell": [0, 0, 40, 43], "id": "screen-map/level-stars-silver.png"},
-			{"cell": [40, 0, 40, 43], "id": "screen-map/level-stars-gold.png"},
+			{"cell": [0, 0, 36, 39], "id": "screen-map/level-stars-silver.png"},
+			{"cell": [40, 0, 36, 39], "id": "screen-map/level-stars-gold.png"},
 			{"cell": [80, 0, 40, 35], "id": "screen-map/green-v.png"},
 			{"cell": [120, 0, 29, 34], "id": "screen-map/level-lock.png"},
 			{"cell": [149, 0, 24, 52], "id": "screen-game/bracket-left.png"},

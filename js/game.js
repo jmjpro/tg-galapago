@@ -207,29 +207,8 @@ Galapago.eraseProfile = function(profile) {
 LevelMap.LEFT = 150;
 LevelMap.WIDTH = 1018;
 LevelMap.HEIGHT = 640;
-LevelMap.STAR_WIDTH = 40;
+LevelMap.STAR_WIDTH = 36;
 LevelMap.MAX_DIFFICULTY = 5;
-/*
-LevelMap.LEVEL_NAV_X = 257;
-LevelMap.LEVEL_NAV_Y = 647;
-LevelMap.LEVEL_NAV_BUTTON_WIDTH = 145;
-LevelMap.LEVEL_NAV_BUTTON_MARGIN = 16;
-LevelMap.LEVEL_STATUS_X = 985;
-LevelMap.LEVEL_STATUS_Y = 75;
-LevelMap.LEVEL_STATUS_LEVEL_NAME_SIZE = '15px';
-LevelMap.LEVEL_STATUS_SCORE_LABEL_SIZE = '17px';
-LevelMap.LEVEL_STATUS_SCORE_SIZE = '22px';
-LevelMap.LEVEL_STATUS_FONT_NAME = 'JungleFever';
-LevelMap.LEVEL_STATUS_FONT_COLOR = 'rgb(19,97,197)';
-LevelMap.LEVEL_STATUS_WIDTH = 235;
-LevelMap.LEVEL_STATUS_HEIGHT = 151;
-LevelMap.LEVEL_STATUS_LEVEL_TEXT_X = LevelMap.LEVEL_STATUS_X + 10;
-LevelMap.LEVEL_STATUS_LEVEL_TEXT_Y = LevelMap.LEVEL_STATUS_Y + 30;
-LevelMap.LEVEL_COMPLETE_INDICATOR_X = LevelMap.LEVEL_STATUS_X + 10;
-LevelMap.LEVEL_COMPLETE_INDICATOR_Y = LevelMap.LEVEL_STATUS_Y + 63;
-LevelMap.DIFFICULTY_STARS_X = LevelMap.LEVEL_STATUS_X + 51;
-LevelMap.DIFFICULTY_STARS_Y = LevelMap.LEVEL_STATUS_Y + 53;
-*/
 
 /* begin class LevelMap */
 function LevelMap(level, onDialogOpenedCallBack) {
@@ -369,7 +348,6 @@ LevelMap.prototype.updateLevelStatus = function() {
 	level_lock = LoadingScreen.gal.get( MapScreen.GAL_PREFIX + 'level-lock.png');
 	text = i18n.t('levels.'+this.hotspotLevel.id)+ ' ' + this.hotspotLevel.id;
 	levelDifficulty = this.hotspotLevel.difficulty;
-	
 	$('#map-difficulty-level-gray').css( 'backgroundImage', 'url(' + level_stars_silver.src + ')' );
 	$('#map-difficulty-level-gold').css( 'backgroundImage', 'url(' + level_stars_gold.src + ')' );
 	$('#map-difficulty-level-gold').css( 'width', LevelMap.STAR_WIDTH * levelDifficulty + 'px' );
@@ -378,7 +356,7 @@ LevelMap.prototype.updateLevelStatus = function() {
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
-		$('#map-level-score-label').html('Score');
+		$('#map-level-score-label').html('Score:');
 		$('#map-level-score').html(levelScore);
 	}
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
@@ -1050,6 +1028,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			level.board.displayLevelName();
 			level.board.displayMenuButton(false);
 			level.board.displayQuitButton(false);
+			level.board.hilightDiv.css('display','block');
+			level.board.scoreElement.show();
+			level.board.levelNameElement.show();
 			level.board.display();
 			level.board.setActiveTile();
 			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
@@ -1339,16 +1320,13 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var screenDivElement, canvasBonusFrenzy;
-	console.debug('entering Level.prototype.styleCanvas()');
+	var canvasCreature;
+	canvasCreature = this.board.creatureLayer.canvas;
 
-	console.debug('styling .layer-board canvas');
-	_.each( $('.layer-board'), function(layer) {
-		layer.width = Board.GRID_WIDTH;
-		layer.height = Board.GRID_HEIGHT;
-		layer.style.left = Board.GRID_LEFT + 'px';
-		layer.style.top = Board.GRID_TOP + 'px';
-	});
+	canvasCreature.width = Board.GRID_WIDTH;
+	canvasCreature.height = Board.GRID_HEIGHT;
+	canvasCreature.style.left = Board.GRID_LEFT + 'px';
+	canvasCreature.style.top = Board.GRID_TOP + 'px';
 
 	this.board.scoreElement.css('left', Board.GRID_LEFT + 'px');
 
