@@ -78,7 +78,7 @@ canvas.layer-board {
 	top: 0;
 }
 
-.creature-hilight{
+#div-hilight{
 	position: absolute;
 	display:  none;
 }
@@ -233,9 +233,16 @@ ul.menu li {
 	line-height:42px;
 	width:116px;
 	text-align:center;
-	z-index: 9999;
 	font-family: 'JungleFever';
 	font-size: 17px;
 	color: rgb(107,45,0);
 	vertical-align:middle;
+}
+
+#div-menu {
+	top: 600px;
+}
+
+#div-quit {
+	top: 652px;
 }
