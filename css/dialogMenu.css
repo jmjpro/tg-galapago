@@ -139,6 +139,7 @@ div.dialog-title-wide {
 .game-option-arrow {
 	position: relative;
 	top: 5px;
+	display: none;
 }
 
 #dialog-game-over {
