@@ -236,10 +236,10 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	else if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
-				navItem = $('#button-relaxed');
+				navItem = $('#button-timed');
 				break;
 			case 'screen-map' :
-				navItem = $('#button-relaxed');
+				navItem = $('#button-timed');
 				break;
 			case 'screen-game' :
 				navItem = $(this.getLastSelectedMode());
