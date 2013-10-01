@@ -1001,6 +1001,21 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 126, 41, 18]},
 			{"cell": [0, 144, 41, 18]}
 		]
+	},
+	"screen-game/danger-bar-fill-strip.png":{
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 10, 226]},
+			{"cell": [10, 0, 10, 226]},
+			{"cell": [20, 0, 10, 226]},
+			{"cell": [30, 0, 10, 226]},
+			{"cell": [40, 0, 10, 226]}
+		]
+	},
+	"collage/danger-bar-warning-strip.png":{
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 52, 57]},
+			{"cell": [52, 0, 52, 57]}
+		]
 	}
 };
 
