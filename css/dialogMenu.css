@@ -334,13 +334,6 @@ ul.galapago-drop-down {
 	top: 58px;
 }
 
-.up-down{
-	width:34px;
-	height:34px;
-	display: inline-block;
-	vertical-align: middle;
-}
-
 #dialog-help div.dialog-content {
 	width: 900px;
 	height: 480px;
@@ -351,8 +344,8 @@ ul.galapago-drop-down {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	height: 300px;
-	width: 908px;
-	margin-top: 20px;
+	width: 875px;
+	margin: 20px 0px 20px 0px;
 	padding: 0px 20px 0px 50px;
 	text-align: left;
 }
@@ -362,40 +355,46 @@ ul.galapago-drop-down {
 	color: black;
 }
 
-#dialog-help .vertical-button-nav {
-	margin-top: 15px;
-}
-
 #dialog-help div.dialog-content p {
 	font-size: 14px;
 	color: black;
 }
 
 #dialog-help #paging {
-	font-size: 14px;
-	margin-top: 10px;
-	height: 34px;
-	line-height: 34px;
+	font-size: 22px;
+	color: rgb(243,209,111);
+}
+
+#pages {
+	width: 150px;
+	display: inline-block;
+}
+
+#current-page{
+	color: rgb(255,255,255);	
+}
+
+.up-down{
 	vertical-align: middle;
-	color: rgb(107,45,0);
 }
 
 #dialog-help #version {
-	font-size: 14px;
+	font-size: 22px;
 	text-align: left;
-	color: rgb(107,45,0);
+	color: rgb(243,209,111);
+	margin-top: 40px;
+	padding-left: 50px;
+}
+
+#dialog-help #close-positioner {
+	margin-top: -35px;
 }
 
 #dialog-help .button-medium {
 	height: 61px;
-	margin-top: -10px;
 }
 
 #version-text {
 	padding: 0px 20px 0px 50px;
 	text-align: left;
-}
-
-#current-page{
-	color: rgb(255,255,255);	
 }
