@@ -168,16 +168,18 @@ ul.menu li {
 	position: absolute;
 	/*left: 500px; yj: left is dynamically positioned by .js code to align with left side of game board */
 	top: 60px;
-	width: 100px;
-	height: 25px;
+	width: 283px;
+	height: 36px;
+	padding-left: 20px;
 	font-family: 'JungleFever';
 	font-size: 26px;
 	color: rgba(255,255,255, 100);
+
 }
 
 #level-name {
 	position: absolute;
-	left: 600px;
+	left: 700px;
 	top: 60px;
 	width: 400px;
 	height: 30px;

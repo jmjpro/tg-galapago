@@ -1320,7 +1320,7 @@ function findAllPixels(element, deep, pixels, prevId) {
 }
 
 Level.prototype.styleCanvas = function() {
-	var canvasCreature;
+	var canvasCreature, scoreBackgroundGalAssestPath, scoreBackgroundImage;
 	canvasCreature = this.board.creatureLayer.canvas;
 
 	canvasCreature.width = Board.GRID_WIDTH;
@@ -1329,6 +1329,14 @@ Level.prototype.styleCanvas = function() {
 	canvasCreature.style.top = Board.GRID_TOP + 'px';
 
 	this.board.scoreElement.css('left', Board.GRID_LEFT + 'px');
+	scoreBackgroundGalAssestPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'score-background.png';
+	scoreBackgroundImage = LoadingScreen.gal.get( scoreBackgroundGalAssestPath );
+	if( scoreBackgroundImage ) {
+		this.board.scoreElement.css('background-image', 'url(' + scoreBackgroundImage.src + ')');
+	}
+	else {
+		console.error( 'unable to load score background ' + scoreBackgroundGalAssestPath);
+	}
 
 	findAllPixels(document.body);
 	var t = LoadingScreen.gal.lookupTable;
