@@ -1,6 +1,6 @@
 /* begin DialogHelp.SELECT_HANDLERS[] */
 DialogHelp.SELECT_HANDLERS = [];
-DialogHelp.MAX_PAGE =7;
+DialogHelp.MAX_PAGE =6;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
@@ -75,6 +75,9 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
 			if( backgroundImage ) {
 				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+			}
+			else {
+				console.error( 'unable to find background image ' + galBackgroundPath );
 			}
 		}
 	}

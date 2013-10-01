@@ -73,7 +73,7 @@ div.nav-button {
 #map-level-complete-indicator {
 	position: absolute;
 	left: 10px;
-	top: 48px;
+	top: 43px;
 }
 
 .difficulty-stars {
@@ -86,7 +86,7 @@ div.nav-button {
 }
 
 #map-difficulty-level-gray {
-	width: 200px;
+	width: 180px;
 	z-index: 1;
 }
 #map-difficulty-level-gold {

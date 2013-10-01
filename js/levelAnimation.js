@@ -141,13 +141,7 @@ LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markT
 	imageId = tileActive.blob.image.id.replace('_1','') + LevelAnimation.ROLLOVER_SUFFIX;
 	rolloverImageSpriteSheet = this[imageId];
 	function stopCallback(){
-		layer.clearRect(tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-		if(board.getGoldTile(tileActive)){
-			layer.drawImage(LoadingScreen.gal.get(Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png'), tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}else{
-			layer.drawImage(board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}
-		layer.drawImage(tileActive.blob.image, tileActive.getXCoord(),tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		tileActive.drawComplete();
 		if(board.tileSelected == tileActive){
 			tileActive.setSelectedAsync().then( function() {
 				return;
@@ -265,7 +259,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		}
 };
 
-LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCompletedId, layer){
+LevelAnimation.prototype.animateBonFire = function(parentElementSelector, completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
 	function animateRandomBornFires(){
 		var coordinates = [];
@@ -291,7 +285,7 @@ LevelAnimation.prototype.animateBonFire = function(completedLevelIds, highestCom
 			if(levelAnimation.bonFireAnimation){
 				levelAnimation.bonFireAnimation.stop();
 			}
-			var bonFireAnimation = new BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer);		
+			var bonFireAnimation = new BonFireAnimation(parentElementSelector, coordinates, bonfireImageSpriteSheet);		
 			bonFireAnimation.start();
 			levelAnimation.bonFireAnimation = bonFireAnimation;
 		}
@@ -350,7 +344,7 @@ LevelAnimation.prototype.animateBombs = function(){
 }; //LevelAnimation.prototype.animateBombs()
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
-	var animationSprite, sprites, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		sprites = LoadingScreen.gal.getSprites(galAssetPath);
@@ -385,7 +379,7 @@ LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
 } //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
-	var blinkingImage, image, animationConfig, frameInterval, initLeft, initTop, magnificationFactor, isContinuous;
+	var blinkingImage, image, animationConfig, frameInterval, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		image = LoadingScreen.gal.get(galAssetPath);
@@ -623,7 +617,7 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 			blinkingImage.stop();
 		});
 	}
-
+	this.blinkingImages = null;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -743,17 +737,23 @@ RolloverAnimation.prototype.animate = function(){
 };
 
 BonFireAnimation.ROLLOVER_TIME_INTERVAL=330;
-function BonFireAnimation(coordinates, bonfireImageSpriteSheet, layer){
-	this.bonfireImageSpriteSheet = bonfireImageSpriteSheet;
+function BonFireAnimation(parentElementSelector, coordinates, bonfireImageSprites){
+	this.bonfireImageSprites = bonfireImageSprites;
 	this.interval = null;
 	this.bonfireSpriteId = 0;
 	this.coordinates = coordinates;
-	this.layer = layer;
+	this.animatedDivs = [];
+	this.parentElementSelector = parentElementSelector;
 }
 
 BonFireAnimation.prototype.start = function(){
+	var animationDiv;
 	this.bonfireSpriteId = 0;
 	var bonFireAnimation = this;
+	_.each(this.coordinates, function(coordinate){
+		animationDiv = new AnimationDiv(LevelMap.LEFT + coordinate[0], coordinate[1], bonFireAnimation.bonfireImageSprites[0].width, bonFireAnimation.bonfireImageSprites[0].height, bonFireAnimation.parentElementSelector);
+		bonFireAnimation.animatedDivs.push(animationDiv);
+	});
 	this.interval = setInterval(function(){
 		bonFireAnimation.animate();}, 
 		BonFireAnimation.ROLLOVER_TIME_INTERVAL);
@@ -762,19 +762,19 @@ BonFireAnimation.prototype.start = function(){
 BonFireAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
 	var bonFireAnimation = this;
-	_.each(this.coordinates, function(coordinate){
-		bonFireAnimation.layer.clearRect(coordinate[0], coordinate[1], LevelAnimation.BONFIRE_IMAGE_WIDTH,LevelAnimation.BONFIRE_IMAGE_HEIGHT);
+	_.each(this.animatedDivs, function(animatedDiv){
+		animatedDiv.destroy();
 	});
 };
 
 BonFireAnimation.prototype.animate = function(){
-	var image = this.bonfireImageSpriteSheet[this.bonfireSpriteId];
+	var image = this.bonfireImageSprites[this.bonfireSpriteId];
 	var bonFireAnimation = this;
-	_.each(this.coordinates, function(coordinate){
-		bonFireAnimation.layer.drawImage(image, coordinate[0], coordinate[1]);
+	_.each(this.animatedDivs, function(animatedDiv){
+		animatedDiv.addBackground(image);
 	});
 	this.bonfireSpriteId++;
-	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSpriteSheet.length;
+	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSprites.length;
 };
 
 BombAnimation.ROLLOVER_TIME_INTERVAL=100;
@@ -790,9 +790,12 @@ function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, callback)
 BombAnimation.prototype.start = function(){
 	this.bombSpriteId = 0;
 	var bombAnimation = this;
-	this.interval = setInterval(function(){
-		bombAnimation.animate();}, 
-		BombAnimation.ROLLOVER_TIME_INTERVAL);
+	this.interval = setInterval(
+		function(){
+			bombAnimation.animate();
+		},
+		BombAnimation.ROLLOVER_TIME_INTERVAL
+	);
 };
 
 BombAnimation.prototype.stop = function(){
@@ -916,20 +919,14 @@ MakeMatchAnimation.prototype.start = function(){
 };
 
 MakeMatchAnimation.prototype.stop = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
+	this.initialTile.drawComplete();
+	this.swapTile.drawComplete();
 	clearInterval(this.interval);
 };
 
 MakeMatchAnimation.prototype.animate = function(){
-	this.layer.clearRect(this.initialTile.getXCoord(), this.initialTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.initialTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	this.layer.drawImage(this.initialTile.blob.image, this.initialTile.getXCoord(),this.initialTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.layer.clearRect(this.swapTile.getXCoord(), this.swapTile.getYCoord(),Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	this.swapTile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	this.layer.drawImage(this.swapTile.blob.image, this.swapTile.getXCoord(),this.swapTile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);	
+	this.initialTile.drawComplete();
+	this.swapTile.drawComplete();
 	var image = this.imageArray[this.rolloverSpriteId];
 	this.layer.drawImage(image, this.x, this.y, image.naturalWidth * 2, image.naturalHeight * 2);
 	this.rolloverSpriteId++;
@@ -950,7 +947,7 @@ function BoardBuildAnimation(layer, tileMatrix, callback){
 BoardBuildAnimation.prototype.start = function(){
 	var boardBuildAnimation = this;
 	this.interval = setInterval(function(){
-		boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
+		//boardBuildAnimation.layer.canvas.height = LoadingScreen.STAGE_HEIGHT;
 		boardBuildAnimation.animate()}, 
 		BoardBuildAnimation.ROLLOVER_TIME_INTERVAL);
 };
@@ -965,6 +962,10 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 		for(row = 0; row < rowsToDisplay;row++){
 			tile = this.tileMatrix[col][row];
+			if(tile){
+				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
+				//tile.drawComplete(false, true, null, true, true);
+			}
 			if(tile && tile.blob){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
 				if(y < tile.getYCoord()){
@@ -972,7 +973,7 @@ BoardBuildAnimation.prototype.animate = function(){
 					break;
 				}
 				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawComplete(y);
+				tile.drawComplete(false, false, null, y);
 			}
 		}
 		if(complete){
@@ -980,13 +981,15 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 	}
 	if(complete){
-		this.layer.canvas.height = Board.GRID_HEIGHT;
-		this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
+		//this.layer.canvas.height = Board.GRID_HEIGHT;
+		//this.layer.clearRect( 0, 0, Board.GRID_WIDTH, Board.GRID_HEIGHT );
 		for(col = 0; col < this.tileMatrix.length; col++){
 			for(row = 0; row < this.tileMatrix[col].length; row++){
 				tile = this.tileMatrix[col][row];
 				if(tile && tile.blob){
 					tile.drawComplete();
+				}else if(tile){
+					tile.drawComplete(false, true);
 				}
 			}
 		}
@@ -1218,9 +1221,13 @@ LightningAnimation.prototype.animate = function(){
 	}
 };
 
-function AnimationDiv(left, top, width, height){
+function AnimationDiv(left, top, width, height, parentElementSelector){
 	this.div = $('<div>');
-	$(document.body).append(this.div);
+	if(parentElementSelector){
+		$(parentElementSelector).append(this.div);
+	}else{
+		$(document.body).append(this.div);
+	}
 	this.div.css('position', 'absolute');
 	this.div.css('top', top + 'px');
 	this.div.css('left', left + 'px');  
@@ -1330,6 +1337,12 @@ AnimationSprites.prototype.animate = function(isContinuous){
 	return this;
 }; //AnimationSprites.prototype.animate()
 
+AnimationSprites.prototype.animateAndMove = function(moveInterval, moveLeft, moveTop){
+	return this;
+}; //AnimationSprites.prototype.animateAndMove()
+// end class AnimationSprites
+
+
 /* end class AnimationSprites */
 
 function BlinkingImage(parentElement, image, frameInterval, initLeft, initTop, magnificationFactor, callback) {
@@ -1358,13 +1371,7 @@ BlinkingImage.prototype.destroy = function(url){
 	}
 	this.image = null;
 	return this;
-}; //AnimationSprites.prototype.destroy
-
-
-AnimationSprites.prototype.animateAndMove = function(moveInterval, moveLeft, moveTop){
-	return this;
-}; //AnimationSprites.prototype.animateAndMove()
-// end class AnimationSprites
+}; //BlinkingImage.prototype.destroy
 
 //begin class BlinkingImage
 BlinkingImage.prototype.start = function(isContinuous){

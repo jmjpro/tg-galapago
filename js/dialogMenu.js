@@ -3,7 +3,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-game-menu", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-time-out", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-time-out", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-you-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-leaderboards", "background" : "dialog-large.png", "button-class" : "button-big-hilight"},
 	{"id" : "dialog-level-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
@@ -14,7 +14,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-profile-create-init", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-help", "background" : "dialog-large.png", "button-class" : "button-medium-hilight"}
 ];
 DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
@@ -52,7 +52,7 @@ DialogMenu.SELECT_HANDLERS['dialog-quit'] = function(dialogMenu) {
 };
 
 DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
-	var optionId, board, mainCanvasId;
+	var optionId, board, mainCanvasId, that;
 	optionId = dialogMenu.currentNavItem[0].id;
 	board = dialogMenu.callingObject;
 	mainCanvasId = dialogMenu.callingScreen[0].id;
@@ -69,9 +69,15 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			board.reshuffleService.start();
 			break;
 		case 'option-main-menu' :
+			that = this;
 			this.hide();
 			board.level.quit();
-			MainMenuScreen.init('screen-game', board.level);
+			// TODO: IGOR not fixed - strange behaviour
+			MainMenuScreen.init('screen-game', board.level, function() {
+				if (that !== null) {
+					that = null;
+				}
+			});
 			break;
 		case 'option-new-game' :
 			this.hide();
@@ -105,14 +111,26 @@ DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
-	var level;
+	var level, that;
+	that = this;
 	level = dialogMenu.callingObject.level;
-	this.hide();
-	level.cleanup();
-    sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level);
-		//level.showLevelMap();
+	LevelMap.show(level, function() {
+		if(that !== null) {
+			that.hide();
+			level.cleanup();
+			that = null;
+		}
 	});
+   /* sdkApi.requestModalAd("inGame").done(function(){
+		LevelMap.show(level, function() {
+			if(that !== null) {
+				that.hide();
+				level.cleanup();
+				that = null;
+			}
+		});
+		//level.showLevelMap();
+	});*/
 	//show map screen;
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
@@ -122,11 +140,20 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	switch( optionId ) {
 		case 'new-game-option-yes' :
 			console.log("starting new game");
-			this.hide();
+			//this.hide();
 			board.level.cleanup();
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
-			Galapago.setLevel(board.level.id);
+
+
+			var that = this;
+			Galapago.setLevel(board.level.id, function() {
+				if(that !== null) {
+					that.callingObject = null;
+					that.hide();
+					that = null;
+				}
+			});
 			break;
 		case 'new-game-option-no' :
 			this.hide();
@@ -187,16 +214,13 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 	 
 	switch( optionId ) {
 		case 'reset-game-option-no' :
-			Galapago.levelMap.cleanup();
-			//Galapago.init(Galapago.gameMode);
-			LevelMap.show(level);
-			//level.showLevelMap(level);
 			this.hide();
+			Galapago.mapScreen.focusMap( Galapago.levelMap );
 			break;
 		case 'reset-game-option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			Galapago.levelMap.cleanup();
+			levelMap.cleanup();
 			//Galapago.init(Galapago.gameMode);
 			LevelMap.show(Level.findById(1));
 			//level.showLevelMap(Level.findById(1));
@@ -311,9 +335,9 @@ DialogMenu.prototype.hide = function() {
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
-			this.callingObject.reshuffleService.start();
+		this.callingObject.reshuffleService.start();
 	}
-	if(this.callingObject.registerEventHandlers){
+	if(this.callingObject && this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
 	}else{
 		window.onkeydown = this.windowKeyHandler;
@@ -376,7 +400,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 38: // up arrow
 			if( dialogMenu.currentNavItem.index() > 0 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.prev('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to last item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
@@ -394,7 +418,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 		case 40: // down arrow
 			if( dialogMenu.currentNavItem.index() < lastIndex - 1 ) {
 				dialogMenu.setNavItem(dialogMenu.currentNavItem.next('li'));
-				console.debug(dialogMenu.currentNavItem[0]);
+				//console.debug(dialogMenu.currentNavItem[0]);
 			}
 			else { //loop back to first item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
@@ -480,11 +504,14 @@ DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
 
 DialogMenu.prototype.dialogQuitOptionNo = function() {
 	this.hide();
-	if(this.callingObject instanceof Board){
+	if( this.callingObject instanceof Board ){
 		if(this.callingObject.level.dangerBar){
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
+	}
+	else if( this.callingObject instanceof MapScreen ) {
+		Galapago.mapScreen.focusMap( Galapago.levelMap );
 	}
 }; //DialogMenu.prototype.dialogQuitOptionNo()
 
@@ -497,12 +524,16 @@ DialogMenu.prototype.dialogLevelWonSelect = function() {
 }; //DialogMenu.prototype.dialogLevelWonSelect()
 
 DialogMenu.prototype.dialogGameOverSelect = function() {
-	var level;
+	var level, that = this;
 	level = this.callingObject.level;
-	this.hide();
-	level.cleanup();
 	sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level);
+		LevelMap.show(level, function() {
+			if(that !== null) {
+				that.hide();
+				level.cleanup();
+				that = null;
+			}
+		});
 	});
 	//show map screen;
 };

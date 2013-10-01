@@ -32,36 +32,47 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 */
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
-	//"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
- 	"button-relaxed" : { /*"LEFT" : "button-timed",*/ "DOWN" : "button-quit" },
-	"button-how-to-play" : { "UP" : "button-relaxed", "RIGHT" : "button-quit" },
+	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
+ 	"button-relaxed" : { "LEFT" : "button-timed", "DOWN" : "button-quit" },
+	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
 
 function MainMenuScreen() {}
 
-MainMenuScreen.init = function(callingScreenId, callingObject) {
+MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCallBack) {
 	var mainMenuScreen = new MainMenuScreen();
 	mainMenuScreen.mainMenuDOM = $('#screen-main-menu');
 	mainMenuScreen.callingScreen = callingScreenId ? $('#' + callingScreenId) : null;
 	mainMenuScreen.callingObject = callingObject ? callingObject : null;
 	LoadingScreen.gal.onLoaded('bg-main-menu', function(result) {
 		if (result.success) {
-			//LoadingScreen.gal.un
-			/*
-			 if( callingScreenId == 'screen-loading') {
-			 mainMenuScreen.registerImageLoadEvents();
-			 }
-			 else {
-			 mainMenuScreen.setInitialNavItem();
-			 }
-			 */
-			mainMenuScreen.setImages();
-			mainMenuScreen.setInitialNavItem();
-			mainMenuScreen.show();
+			mainMenuScreen.mainMenuOnScreenCache = new OnScreenCache(
+				[
+					LoadingScreen.gal.get('background/main-menu.jpg'),
+					LoadingScreen.gal.getSprites('collage/main-menu-1.png'),
+					LoadingScreen.gal.getSprites('collage/main-menu-2.png')
+				], function () {
+					/*
+					 if( callingScreenId == 'screen-loading') {
+					 mainMenuScreen.registerImageLoadEvents();
+					 }
+					 else {
+					 mainMenuScreen.setInitialNavItem();
+					 }
+					 */
+					mainMenuScreen.setImages();
+					mainMenuScreen.setInitialNavItem();
+					mainMenuScreen.show();
 
-			mainMenuScreen.windowKeyHandler = window.onkeydown;
-			mainMenuScreen.addMouseListener();
+					mainMenuScreen.windowKeyHandler = window.onkeydown;
+					mainMenuScreen.addMouseListener();
+					if (typeof onDialogOpenedCallBack !== 'undefined') {
+						onDialogOpenedCallBack();
+					}
+				},
+				700
+			);
 		}
 	});
 	LoadingScreen.gal.download('bg-main-menu');
@@ -114,35 +125,39 @@ MainMenuScreen.prototype.setImages = function() {
 }; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level;
+	var navItem, isTimedMode, level,
+		hide = (function(that) {
+		    return function() {
+				that.hide();
+			}
+		})(this);
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
 			break;
 		case 'button-timed' :
-			this.hide();
 			isTimedMode = true;
-			if( this.callingObject instanceof Level ) {
+			if (this.callingObject instanceof Level) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level);
+				LevelMap.show(level, hide);
 				//level.showLevelMap(level);
-			}			else {
-				Galapago.init(isTimedMode);
+			} else {
+				Galapago.init(isTimedMode, hide);
 			}
 			break;
 		case 'button-relaxed' :
-			this.hide();
 			isTimedMode = false;
+			this.unregisterEventHandlers();
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
-				LevelMap.show(level);
+				LevelMap.show(level, hide);
 				//level.showLevelMap(level);
 			}
 			else {
-				Galapago.init(isTimedMode);
+				Galapago.init(isTimedMode, hide);
 			}
 			break;
 		case 'button-how-to-play' :
@@ -176,6 +191,7 @@ MainMenuScreen.prototype.show = function() {
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
+	this.mainMenuOnScreenCache.destroy();
 	this.unregisterEventHandlers();
 	this.mainMenuDOM.hide();
 
@@ -220,10 +236,10 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	else if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
-				navItem = $('#button-relaxed');
+				navItem = $('#button-timed');
 				break;
 			case 'screen-map' :
-				navItem = $('#button-relaxed');
+				navItem = $('#button-timed');
 				break;
 			case 'screen-game' :
 				navItem = $(this.getLastSelectedMode());
@@ -258,9 +274,15 @@ MainMenuScreen.prototype.setNavItem = function(item) {
 }; //MainMenuScreen.prototype.setNavItem()
 
 MainMenuScreen.prototype.removeHilight = function(navItem) {
-	var galFilePath;
+	var galFilePath, regularImage;
 	galFilePath = MainMenuScreen.GAL_PREFIX + MainMenuScreen.IMAGE_MAP[navItem.selector];
-	navItem.css( 'background-image', 'url(' + LoadingScreen.gal.get(galFilePath).src + ')' );
+	regularImage = LoadingScreen.gal.get(galFilePath);
+	if( regularImage ) {
+		navItem.css( 'background-image', 'url(' + regularImage.src + ')' );
+	}
+	else {
+		console.error( 'unable to swap to regular image ' + galFilePath );
+	}
 };
 
 MainMenuScreen.prototype.addHilight = function(navItem) {
@@ -270,6 +292,9 @@ MainMenuScreen.prototype.addHilight = function(navItem) {
 	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
 	if( hilightedImage ) {
 		navItem.css( 'background-image', 'url(' + hilightedImage.src + ')' );
+	}
+	else {
+		console.error( 'unable to swap to hilight image ' + galHilightFilePath );
 	}
 };
 

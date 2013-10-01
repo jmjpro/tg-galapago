@@ -383,7 +383,9 @@ Powerup.prototype.focus = function(){
 };
 
 Powerup.prototype.updatePowerup = function(tripletCount){
-  this.timer.reset(this);
+  if(this.timer){
+	this.timer.reset(this);
+  }
   this.score += tripletCount;
   console.log('incrementScore' +this.score );
   console.log('incrementScore' +this.score/Powerup.POWER_POINTS );
@@ -397,11 +399,27 @@ Powerup.prototype.updatePowerup = function(tripletCount){
   return this.updatePowerAchieved();
 };
 
+Powerup.prototype.timerPause = function(){
+	console.log('powerup pause');
+	if(this.timer){
+		this.timer.pause();
+	}
+};
+
+Powerup.prototype.timerResume = function(){
+	console.log('powerup resume');
+	if(this.timer){
+		this.timer.resume();
+	}
+};
+
 Powerup.prototype.decrementScore = function(sender){
 //alert(sender);
   
-  if(sender.score>0){
-    sender.timer.reset(sender);
+  if(sender && sender.score>0){
+	if(sender.timer){
+		sender.timer.reset(sender);
+	}
     sender.score -= 1;
 	if(sender.focusOn ==1){
 		sender.focus();

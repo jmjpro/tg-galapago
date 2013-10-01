@@ -82,12 +82,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 			evt.preventDefault();
 			break;
 		case 38: // up arrow
-			//mapScreen.unsetNavItem();
-			mapScreen.currentNavItem.css( 'background-image','');
-			mapScreen.unregisterEventHandlers();
-			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-			levelMap.aimateStartArrowIfNeeded();
-			levelMap.registerEventHandlers();
+			mapScreen.focusMap( levelMap );
 			evt.preventDefault();
 			break;
 		case 39: // right arrow
@@ -115,9 +110,18 @@ MapScreen.prototype.registerEventHandlers = function() {
 	});
 }; //MapScreen.prototype.registerEventHandlers()
 
+MapScreen.prototype.focusMap = function(levelMap) {
+	this.currentNavItem.css( 'background-image','');
+	this.unregisterEventHandlers();
+	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
+	levelMap.animateStartArrowIfNeeded();
+	levelMap.registerEventHandlers();
+}; //MapScreen.prototype.focusMap()
+
 MapScreen.prototype.toMainMenuScreen = function(levelMap) {
-	levelMap.cleanup();
-	MainMenuScreen.init('screen-map', levelMap);
+	MainMenuScreen.init('screen-map', levelMap, function() {
+		levelMap.cleanup();
+	});
 }; //MapScreen.prototype.toMainMenuScreen()
 
 MapScreen.prototype.unregisterEventHandlers = function() {
