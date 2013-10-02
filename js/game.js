@@ -755,8 +755,8 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
-Level.NAV_LEFT = 124;
-Level.NAV_TOP = 600;
+Level.NAV_LEFT = 119;
+Level.NAV_TOP = 520;
 Level.NAV_MARGIN_BOTTOM = 10;
 /*
 Level.MENU_BUTTON_X = 124;
@@ -2033,12 +2033,13 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 	if(board.blobCollection && board.blobCollection.button_regular){
 		var menuButtonImage = board.blobCollection.button_regular;
 		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-		if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
+		x -= Level.NAV_LEFT;
+		if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
+		}else if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
@@ -2106,14 +2107,15 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	var board, menuButtonImage, quitButtonY
 	board = this;
 	menuButtonImage = board.blobCollection.button_regular;
-	if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
+	x -= Level.NAV_LEFT;
+	if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 			board.handleKeyboardSelect();
 	}
 	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-	if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
+	if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;
