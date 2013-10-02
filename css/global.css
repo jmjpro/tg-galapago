@@ -16,6 +16,12 @@
   src: local('☺'), url('../res/fonts/HelveticaBold.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'ArchivoNarrowBold';
+  src: url('../res/fonts/ArchivoNarrow-Bold.ttf');
+  src: local('☺'), url('../res/fonts/ArchivoNarrow-Bold.ttf') format('truetype');
+}
+
 .jungle {
 	font-family: 'JungleFever';
 	font-size: 32px;
