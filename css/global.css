@@ -38,6 +38,17 @@ html, body {
 	vertical-align: top;
 }
 
+#div-danger-bar {
+	position: absolute;
+	z-index: 2;
+}
+
+#div-animation-danger-bar {
+	position: absolute;
+	z-index: 1;
+	overflow: hidden;
+}
+
 canvas, div, li {
 	background-repeat: no-repeat;
 	background-position: top left;
