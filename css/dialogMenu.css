@@ -50,10 +50,10 @@ div.dialog-title-wide {
 }
 
 #dialog-game-menu {
-	width: 717px;
+	width: 718px;
 	height: 626px;
-	left: 281px; /*(1279-717/2)*/
-	top: 15px; /*(720-690/2)*/
+	left: 281px; /*(1280-718/2)*/
+	top: 47px; /*(720-626/2)*/
 }
 
 #dialog-game-menu .dialog-content {
@@ -232,18 +232,18 @@ span#final-score {
 }
 
 #dialog-new-game {
-	width: 717px;
+	width: 718px;
 	height: 590px;
-	left: 281px; /*(1279-717/2)*/
+	left: 281px; /*(1280-718/2)*/
 	top: 65px; /*(720-590/2)*/
 	font-size: 27px;
 }
 
 #dialog-game-options {
-	width: 717px;
+	width: 718px;
 	height: 626px;
-	left: 281px;
-	top: 15px;
+	left: 281px; /*(1280-718/2)*/
+	top: 47px; /*(720-626/2)*/
 }
 
 #dialog-profile-delete {
