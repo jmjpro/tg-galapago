@@ -389,8 +389,8 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 	
 	window.onmousemove = function(e) {
-		x = e.pageX ;//- this.offsetLeft;
-		y = e.pageY ;//- this.offsetTop;
+		x = e.pageX - levelMap.canvas.offsetLeft;
+		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
 		point[0] = x;
 		point[1] = y;
@@ -482,8 +482,8 @@ LevelMap.prototype.reset = function() {
 
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
-	x = evt.pageX ;//- this.offsetLeft;
-	y = evt.pageY ;//- this.offsetTop;
+	x = evt.pageX - this.canvas.offsetLeft;
+	y = evt.pageY - this.canvas.offsetTop;
 	point = new Array(2);
 	point[0] = x;
 	point[1] = y;
