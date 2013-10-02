@@ -518,6 +518,7 @@ DialogMenu.prototype.dialogQuitOptionNo = function() {
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
+		this.callingObject.displayQuitButton(true);
 	}
 	else if( this.callingObject instanceof MapScreen ) {
 		Galapago.mapScreen.focusMap( Galapago.levelMap );

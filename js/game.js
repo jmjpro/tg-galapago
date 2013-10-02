@@ -2702,6 +2702,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayMenuButton(false);
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2710,6 +2711,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayQuitButton(false);
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
