@@ -2,7 +2,8 @@ BlobCollection.FONT_SIZE = '20px';
 BlobCollection.FONT_NAME = 'JungleFever';
 BlobCollection.FONT_COLOR = 'rgb(21,36,161)';
 BlobCollection.COLLECTION_Y = 632;
-BlobCollection.COUNT_HEIGHT = 30;
+BlobCollection.COUNT_HEIGHT = 15;
+BlobCollection.COUNT_LEFT_OFFSET = 7;
 /*
 BlobCollection.ITEM_WIDTH = 47;
 BlobCollection.ITEM_HEIGHT = 47;
@@ -56,14 +57,15 @@ BlobCollection.prototype.removeBlobItem= function(tile) {
 };
 
 BlobCollection.prototype.display= function(skipDrawingImage) {
-	var numberOfImages, count, layer, left, key, image, x, blobItemCount;
+	var numberOfImages, count, layer, left, key, image, x, blobItemCount, collectedMarkLeft, collectedMarkTop, creatureCanvas;
 	numberOfImages = Math.min(_.size(this.blobCollection), BlobCollection.MAX_ITEMS) + 2;
 	count = 0;
 	x = 0;
 	layer = this.layer;
-	this.canvas[0].width = (BlobCollection.ITEM_WIDTH * numberOfImages) + (BlobCollection.ITEM_SPACE * (numberOfImages-1));
+	this.canvas[0].width = (BlobCollection.ITEM_WIDTH * numberOfImages) + (BlobCollection.ITEM_SPACE * (numberOfImages-5));
 	this.canvas[0].height = BlobCollection.COUNT_HEIGHT + this.bracket_right.height;
-	left = (LoadingScreen.STAGE_WIDTH / 2) - (this.canvas[0].width / 2);
+	creatureCanvas = Galapago.level.board.creatureLayer.canvas;
+	left = (creatureCanvas.width - this.canvas[0].width) / 2 + creatureCanvas.offsetLeft;
 	this.canvas.css('left', left + 'px');
 	this.canvas.css('top', BlobCollection.COLLECTION_Y + 'px');
 
@@ -77,7 +79,13 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 			break;
 		}
 		blobItemCount = this.blobCollection[key].count;
-		x += BlobCollection.ITEM_WIDTH + BlobCollection.ITEM_SPACE;
+		x += BlobCollection.ITEM_SPACE;
+		if( count === 0 ) {
+			x += BlobCollection.ITEM_WIDTH/2;
+		}
+		else {
+			x += BlobCollection.ITEM_WIDTH;
+		}
 		this.blobCollection[key].x = left + x;
 		layer.clearRect(x + BlobCollection.ITEM_COUNT_X_OFFSET, 0, BlobCollection.ITEM_WIDTH, BlobCollection.ITEM_WIDTH);
 		if(!skipDrawingImage){
@@ -87,12 +95,14 @@ BlobCollection.prototype.display= function(skipDrawingImage) {
 			layer.textBaseline = 'top';
 			layer.font = BlobCollection.FONT_SIZE + ' ' + BlobCollection.FONT_NAME;
 			layer.fillStyle = BlobCollection.FONT_COLOR;
-			layer.fillText(blobItemCount, x + BlobCollection.ITEM_COUNT_X_OFFSET, 0);
+			layer.fillText(blobItemCount, x + BlobCollection.ITEM_COUNT_X_OFFSET + BlobCollection.COUNT_LEFT_OFFSET, 0);
 		}
 		else{
-			layer.drawImage(this.item_collected_mark, x + BlobCollection.ITEM_COUNT_X_OFFSET, 0, BlobCollection.ITEM_WIDTH/2, BlobCollection.ITEM_HEIGHT/2);
+			collectedMarkLeft = x + BlobCollection.ITEM_COUNT_X_OFFSET - BlobCollection.ITEM_WIDTH/8;
+			collectedMarkTop = BlobCollection.COUNT_HEIGHT + BlobCollection.ITEM_HEIGHT/4;
+			layer.drawImage(this.item_collected_mark, collectedMarkLeft, collectedMarkTop, BlobCollection.ITEM_WIDTH/2, BlobCollection.ITEM_HEIGHT/2);
 		}
-		count ++;
+		count++;
 	}
 	x += BlobCollection.ITEM_WIDTH + BlobCollection.ITEM_SPACE;
 	if(!skipDrawingImage){

@@ -998,7 +998,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		if(typeof onDialogOpenedCallBack !== 'undefined') {
 			onDialogOpenedCallBack();
 		}
-		level.styleCanvas();
+		level.styleCanvas( level.levelConfig.blobPositions );
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
@@ -1319,12 +1319,16 @@ function findAllPixels(element, deep, pixels, prevId) {
 	return pixels;
 }
 
-Level.prototype.styleCanvas = function() {
-	var canvasCreature, scoreBackgroundGalAssestPath, scoreBackgroundImage;
+Level.prototype.styleCanvas = function(blobPositions) {
+	var canvasCreature, scoreBackgroundGalAssestPath, scoreBackgroundImage, numRows, numCols;
 	canvasCreature = this.board.creatureLayer.canvas;
 
-	canvasCreature.width = Board.GRID_WIDTH;
-	canvasCreature.height = Board.GRID_HEIGHT;
+	numRows = blobPositions.length;
+	numCols = blobPositions[0].length;
+	canvasCreature.width = Board.TILE_WIDTH * numCols;
+	canvasCreature.height = Board.TILE_HEIGHT * numRows;
+	//canvasCreature.width = Board.GRID_WIDTH;
+	//canvasCreature.height = Board.GRID_HEIGHT;
 	canvasCreature.style.left = Board.GRID_LEFT + 'px';
 	canvasCreature.style.top = Board.GRID_TOP + 'px';
 
@@ -1656,20 +1660,7 @@ Board.prototype.init = function(tilePositions) {
 	board = this;
 	var left = 0;
 	var top =100;
-	/*$('#layerGrid').html('');
-	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
-		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
-		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
-		$("#div_"+rowIt).css('top',top);
-		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
-			$("#div_"+rowIt).append("<span class='columnSpan' id='span_"+rowIt+"_"+colIt+"'></span>");
-			var spanId = 'span_'+rowIt+'_'+colIt;
-			$("#"+spanId).css('left',left);
-			left+=47;
-		}
-		top+=47;
-		left=0;
-	}*/
+
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
