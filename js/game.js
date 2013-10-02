@@ -4052,7 +4052,7 @@ if (typeof String.prototype.startsWith !== 'function') {
 }
 
 
-ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
+ReshuffleService.CHECK_VALID_MOVE_INTERVAL_MS = 20000;
 function ReshuffleService(board){
 	this.board = board;
 	this.reshuffleInterval = null;
@@ -4095,7 +4095,7 @@ ReshuffleService.prototype.start = function() {
 					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Shuffling Board') );
 				});
 			}
-		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
+		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL_MS);
 		this.isStarted = true;
 	}
 };
