@@ -2641,6 +2641,7 @@ Board.prototype.dangerBarEmptied = function() {
 		});
 	 });
 	window.onkeydown=null;	
+	gameboard.hilightDiv.css('display','none');
 	$('#final-score').html(gameboard.score);
 	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
