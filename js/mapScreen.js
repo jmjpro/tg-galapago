@@ -11,11 +11,17 @@ function MapScreen() {
 }
 
 MapScreen.prototype.setImages = function() {
-	var galFilePath;
+	var galFilePath, imageBackground;
 	_.each( MapScreen.NAV_BUTTON_IDS, function( navButtonId ) {
 		galFilePath =  MapScreen.GAL_PREFIX + 'button-regular.png';
 		console.debug( '#' + navButtonId + " : " + galFilePath);
-		$('#' + navButtonId).css( 'background-image','url(' + LoadingScreen.gal.get(galFilePath).src + ')');
+		imageBackground = LoadingScreen.gal.get(galFilePath);
+		if( imageBackground ) {
+			$('#' + navButtonId).css( 'background-image','url(' + imageBackground.src + ')');
+		}
+		else {
+			console.error( 'unable to load ' + galFilePath);
+		}
 	});
 }
 

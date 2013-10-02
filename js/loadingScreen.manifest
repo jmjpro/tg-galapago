@@ -148,7 +148,14 @@
     {
 		"name": "dialog-and-menus-testing",
 		"contents": [
-			"collage/map_level_ui_static.png"
+			"background/dialog-regular.png",
+			"background/dialog-regular-no-title.png",
+			"background/dialog-small.png",
+			"background/dialog-large.png",
+			"collage/arrows.png",
+			"collage/dialog-buttons.png",
+			"collage/dialog-arrow-buttons.png",
+			"collage/keypad-buttons.png"
     	]
     },
     {

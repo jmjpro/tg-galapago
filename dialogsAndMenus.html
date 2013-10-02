@@ -3,9 +3,13 @@
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
 	<link rel="stylesheet" type="text/css" href="css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="css/map.css"/>
+	<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
+	<link rel="stylesheet" type="text/css" href="css/dialogMenu.css"/>
 	<script src="ext/zepto-1.0.min.js"></script>
 	<script src="ext/lodash.min.js"></script>
 	<script src="ext/gal.js"></script>
+	<script src="js/game.js"></script>
 	<script src="ext/i18next-1.6.3.min.js"></script>
 	<script src="../sdk/tgh5.min.js" type="text/javascript"></script>
 	<script src="js/loadingScreen.js"></script>
@@ -14,9 +18,10 @@
 	<script src="js/mapScreen.js"></script>
 	<script src="js/imageCollage.js"></script>
 	<script>
-	var Galapago = "";
+	Galapago.LAYER_MAP = '#screen-map #layer-map';
+	var Galapago = function() {};
 	var dialogMenu;
-	var galapagoVersion = 'Ver. 1.3';
+	var galapagoVersion = 'Ver. 2.0.2';
 
 	function loadGame() {
 		i18n.init({ lng: 'en' , fallbackLng: 'en'});
@@ -122,187 +127,68 @@
 
 <div id="test-layer"></div>
 
-<ul id="map-nav">
-	<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
-	<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
-</ul>
+		<div id="screen-loading" class="canvas-fullscreen">
+			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
+			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
+			&copy; 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.</span>
+		</div>
 
-<div id="dialog-profile-create" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Please enter<br/>your name</div>
-	<div class="dialog-content">
-		<input class="profile-name" type="text"/>
-		<div id="keypad"></div>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
+		<div id="screen-map" class="canvas-fullscreen">
+			<canvas id="layer-map" width="1" height="1" tabindex="1"></canvas>
+			<div id="lava-animation"></div>
+			<div id="bombs-animation"></div>
+			<div id="map-level-info">
+				<span id="map-level-name"></span>
+				<img id="map-level-complete-indicator" style="visibility:hidden;"/><div class="difficulty-stars" id="map-difficulty-level-gray"></div>
+				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
+				<span id="map-level-score-label"></span><span id="map-level-score"></span>
+			</div>
+			<ul id="map-nav">
+				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
+			</ul>
+		</div>
 
-<div id="dialog-quit" class="overlay2">
-	<div class="dialog-content">
-		<span data-i18n="Dialog Quit.BodyText" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
-		<ul class="vertical-button-nav">
-			<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
-			<li id="option-no" data-i18n="Dialog Quit.OptionNo" class="button-huge">No</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
+		<div id="screen-game" class="canvas-fullscreen">
+			<canvas id="layer-creature" width="1" height="1" tabindex="1"></canvas>
+			<div id="div-hilight" style="z-index: 2;"></div>
+			<div id="current-score"></div>
+			<div id="level-name"></div>
+			<canvas id="layer-power-up" width="1" height="1" tabindex="2"></canvas>
+			<canvas id="layer-danger-bar" width="1" height="1"></canvas>
+			<canvas id="layer-collection-key" width="1" height="1"></canvas>
+			<canvas id="layer-power-up-animation" width="1" height="1"></canvas>
+			<canvas id="layer-bob-cervantes" width="1" height="1"></canvas>
+			<div id="div-menu" class="gameNav" tabindex="3"><div id="div-menucursor">MENU</div></div>
+			<div id="div-quit" class="gameNav" tabindex="4"><div id="div-quitcursor">QUIT</div></div>
+		</div>
 
-<div id="dialog-game-menu" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</div>
-	<div class="dialog-content">
-		<ul class="vertical-button-nav">
-			<li id="option-continue-playing" data-i18n="Dialog Game Menu.OptionContinuePlaying" class="button-huge button-huge-hilight">Continue Playing</li>
-			<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
-			<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
-			<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
-			<li>Game Tips<div id="option-game-tips" data-i18n="Dialog Game Menu.OptionOn" class="button-regular"><img src="res/img/dialog/arrow-left.png" class="game-option-arrow" width="37" height="27">On<img src="res/img/dialog/arrow-right.png" class="game-option-arrow" width="37" height="27"></div></li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
+		<div id="screen-main-menu" class="canvas-fullscreen">
+			<!-- hidden until after IFA exhibition
+			div id="button-change-player">
+				<span id="hello-player">Hello Tim!</span>
+				<span id="click-here">Click here to change player</span>
+			</div-->
+			<div id="button-timed" class="main-menu-mode"></div>
+			<div id="button-relaxed" class="main-menu-mode"></div>
+			<table id="main-menu-button-group">
+				<tr>
+					<td id="button-how-to-play" class="main-menu-button">How To Play</td>
+					<td id="button-quit" class="main-menu-button">Quit</td>
+					<!-- hidden until after IFA exhibition td id="button-top-scores" class="main-menu-button">Top Scores</td-->
+				</tr>
+				<!-- hidden until after IFA exhibition
+				<tr>
+					<td id="button-set-language" class="main-menu-button">Set Language</td>
+					<td id="button-quit" class="main-menu-button">Quit</td>
+				</tr>
+			-->
+			</table>
 
-<div id="dialog-level-won" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
-	<div class="dialog-content">
-		<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
-		<table>
-			<tr><th>Level</th><td>20800</td></tr>
-			<tr><th>Bonus Frenzy</th><td>27</td></tr>
-			<tr><th>Bonus Points</th><td>6750</td></tr>
-			<tr><th>Time Bonus</th><td>35771</td></tr>
-			<tr><th>Level Score</th><td>90442</td></tr>
-			<tr><th>Score</th><td>1344154</td></tr>
-		</table>
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Level Won.OptionClose" class="button-medium button-medium-hilight">Close</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-game-over" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Game Over.Title">Game Over</div>
-	<div class="dialog-content">
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Game Over.OptionClose" class="button-medium button-medium-hilight">Close</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-leaderboards" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Leaderboards.Title">Top Scores</div>
-	<div class="dialog-content">
-		<!--div class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</div-->
-		<table>
-			<caption class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</caption>
-			<thead>
-				<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
-			</thead>
-			<tbody>
-				<tr><td>1</td><td>Yaely</td><td>45367</td></tr>
-				<tr><td>2</td><td>Anat</td><td>34897</td></tr>
-				<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-			</tbody>
-		</table>
-		<table>
-			<caption class="button-big" data-i18n="Dialog Leaderboards.Relaxed">Relaxed</caption>
-			<thead>
-				<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
-			</thead>
-			<tbody>
-				<tr><td>1</td><td>Yaely</td><td>95367</td></tr>
-				<tr><td>2</td><td>Anat</td><td>64897</td></tr>
-				<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-				<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-			</tbody>
-		</table>
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Leaderboards.OptionClose" class="button-big button-big-hilight">Back to main menu</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-time-out" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
-	<div class="dialog-content">
-		<span data-i18n="Dialog Time Out.BodyText">
-			<p>Don't despair, Galapago's creatures are rooting for you!</p>
-			<p>Play at your own pace in relaxed mode</p>
-			<p>Final Score: <span id="final-score">43200</span></p>
-		</span>
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Time Out.OptionClose" class="button-medium button-medium-hilight">Close</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-you-won" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog You Won.Title">You Won!</div>
-	<div class="dialog-content">
-		<span data-i18n="Dialog You Won.BodyText">
-			Congratulations!<br/>
-			You've collected all of Galapago's
-			magical creatures and freed them forever! Now the island and its
-			golden treasures belong to you;
-			explore Galapago whenever you like.<br/>
-			The creatures of Galapago are forever grateful to you, and will bring
-			peace and prosperity for the rest of your days.<br/>
-			Final Score: <span id="final-score">43200</span><br/>
-		</span>
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Time Out.OptionClose" class="button-medium button-medium-hilight">Close</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-loading" class="overlay2">
-	<div class="dialog-content">
-		<span data-i18n="Dialog You Won.BodyText">
-			Loading...
-		</span>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-new-game" class="overlay2">
-	<div class="dialog-content">
-		<span data-i18n="Dialog New Game.BodyText">
-			Do you want<br/>to start a new game?
-		</span>
-		<ul class="vertical-button-nav">
-			<li id="new-game-option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
-			<li id="new-game-option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-game-options" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Game Options.Title">Options</div>
-	<div class="dialog-content">
-		<ul class="vertical-button-nav">
-			<li id="button-game-tips" class="button-big" data-i18n="Dialog Game Options.GameTips">Game tips</li><div id="button-off" class="button-medium" data-i18n="Dialog Game Options.Off">Off</div>
-			<li class="button-big" data-i18n="Dialog Game Options.Language">Language - English</li>
+			<!--
 			<ul class="galapago-drop-down">
 				<li>English</li>
 				<li>French</li>
@@ -310,119 +196,240 @@
 				<li>Russian</li>
 				<li>Spanish</li>
 			</ul>
-			<li id="option-confirm" data-i18n="Dialog Game Options.Confirm" class="button-medium button-medium-hilight">Confirm</li>
-			<li id="option-cancel" data-i18n="Dialog Game Options.Cancel" class="button-medium">Cancel</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-profile-delete" class="overlay2">
-	<div class="dialog-content">
-		<span data-i18n="Dialog New Game.BodyText">
-			Are you sure you want to delete this player?
-		</span>
-		<ul class="vertical-button-nav">
-			<li id="option-yes" data-i18n="Dialog New Game.OptionYes" class="button-huge button-huge-hilight">Yes</li>
-			<li id="option-no" data-i18n="Dialog New Game.OptionNo" class="button-huge">No</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-profile-create-init" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Profile Create Initial.Title">Please enter your name</div>
-	<div class="dialog-content">
-		<img src="res/img/dialog/Profile name entering from initial state.jpg" width="266" height="279"/>
-		<div id="keypad"></div>
-		<ul class="vertical-button-nav">
-			<li id="option-close" data-i18n="Dialog Profile Create Initial.Close" class="button-medium button-medium-hilight">Close</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-profile-list" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Profile List.Title">Players</div>
-	<div class="dialog-content">
-		<img src="res/img/dialog/Profile-initialState.jpg" width="266" height="279"/>
-		<ul class="vertical-button-nav">
-			<li id="option-save" data-i18n="Dialog Profile List.Save" class="button-huge button-huge-hilight">Save changes and play<br/>with active player</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-reset-game" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
-	<div class="dialog-content">
-		<span data-i18n="Dialog Reset Game.Body Text">
-			<p>Resetting the map will erase your progress and and will start a new game!</p>
-			<p>Do you wish to reset the map?</p>
-		</span>
-		<ul class="vertical-button-nav">
-			<li id="reset-game-option-no" data-i18n="Dialog Reset Game.No" class="button-medium button-medium-hilight">No</li>
-			<li id="reset-game-option-yes" data-i18n="Dialog Reset Game.Yes" class="button-medium">Yes</li>
-		</ul>
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
-
-<div id="dialog-help" class="overlay2">
-	<div class="dialog-title" data-i18n="Dialog Help.Title">How to Play</div>
-	<div class="dialog-content">
-		<div id="help-text-scroll">
-			<span data-i18n="Dialog Help.Body Text">
-				<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
-				<h4>Object</h4>
-				<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano... reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
-				<h4>Navigating Galapago</h4>
-				<p>To play a level just select any tile on the map.</p>
-				<p>New levels will unlock once you win a level.</p>
-				<p>Remember that camp fires appear on levels already completed.</p>
-				<h4>How To Play</h4>
-				<p>Swap adjacent creatures vertically or horizontally to match them.</p>
-				<h4>Gold Tiles</h4>
-				<p>You must make matches over the gold tiles in order to complete the board.</p>
-				<h4>Locked Tile</h4>
-				<p>These tricky tiles have a creature locked inside. They can't be moved, but you can use them in a match to clear them off the board.</p>
-				<h4>Cocoon Tile</h4>
-				<p>Cocoon Tiles can't be moved, and can't be matched – but matching three or more tiles adjacent to a Cocoon Tile will wake it up and clear it off your board.</p>
-				<h4>Winning The Level</h4>
-				<p>Clear the board of all the items in the collection key at the bottom of the board.</p>
-				<p>A checkmark indicates that the goal is completed.</p>
-				<p>The numbers show how many of each is left.</p>
-				<h4>Bonus Frenzy</h4>
-				<p>When you win a level, some creatures will flee the board - catch them using the arrow keys to charge up your powerups on the next level!</p>
-				<h4>Flip-flop Powerup</h4>
-				<p>Make multiple match combos to turn on this powerup!</p>
-				<p>The Flip-Flop lets you swap two creatures anywhere on the board - they don't need to be adjacent!</p>
-				<h4>Firepower Powerup</h4>
-				<p>Make multiple match combos to turn on Firepower!</p>
-				<p>Use Firepower to select a creature anywhere on the board and make it disappear.</p>
-				<h4>Shuffler Powerup</h4>
-				<p>Make multiple match combos to turn on the Shuffler!</p>
-				<p>Use Shuffler to reshuffle all the creatures on the board.</p>
-				<h4>Lightning Critters</h4>
-				<p>Be on the lookout for the powerful Lightning Critters!</p>
-				<p>Match three or more Lightning Critters and clear an entire row!</p>
-				<h4>Super Match Friend</h4>
-				<p>Use your Super Match Friend to clear all of one creature off the board!</p>
-
-				<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
-				<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
-			</span>
+			-->
 		</div>
 
-		<div id="paging">Page <span id="current-page"></span> of <span id="page-count"></span></div>
-		<ul class="vertical-button-nav">
-			<li id="option-scroll" data-i18n="Dialog Help.ScrollDown" class="button-medium button-medium-hilight">Scroll</li>
-			<li id="option-close" data-i18n="Dialog Help.Close" class="button-medium">Close</li>
-		</ul>
-		<div id="version"></div>		
-	</div>
-	<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
-</div>
+		<div id="dialog-leaderboards" class="overlay2">
+			<div class="dialog-title dialog-title-wide" data-i18n="Dialog Leaderboards.Title">Top Scores</div>
+			<div class="dialog-content">
+				<!--div class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</div-->
+				<table>
+					<caption class="button-big" data-i18n="Dialog Leaderboards.OptionTimed">Timed</caption>
+					<thead>
+						<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+					</thead>
+					<tbody>
+						<tr><td>1</td><td>Yaely</td><td>45367</td></tr>
+						<tr><td>2</td><td>Anat</td><td>34897</td></tr>
+						<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+					</tbody>
+				</table>
+				<table>
+					<caption class="button-big" data-i18n="Dialog Leaderboards.OptionRelaxed">Relaxed</caption>
+					<thead>
+						<tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+					</thead>
+					<tbody>
+						<tr><td>1</td><td>Yaely</td><td>95367</td></tr>
+						<tr><td>2</td><td>Anat</td><td>64897</td></tr>
+						<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>4</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>5</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>6</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>7</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>8</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>9</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+						<tr><td>10</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+					</tbody>
+				</table>
+				<ul class="vertical-button-nav">
+					<li id="dialog-leaderboards-option-close" data-i18n="Dialog Leaderboards.OptionClose"  class="button-big button-big-hilight">Back to main menu</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-quit" class="overlay2">
+			<div class="dialog-content">
+				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
+				<ul class="vertical-button-nav">
+					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge">Yes</li>
+					<li id="option-no" data-i18n="Dialog Quit.OptionNo"   class="button-huge button-huge-hilight">No</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+
+		<div id="dialog-game-menu" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</div>
+			<div class="dialog-content">
+				<ul class="vertical-button-nav">
+					<li id="option-continue-playing" data-i18n="Dialog Game Menu.OptionContinuePlaying" class="button-huge button-huge-hilight">Continue Playing</li>
+					<li id="option-main-menu" data-i18n="Dialog Game Menu.OptionMainMenu" class="button-huge">To the Main Menu</li>
+					<li id="option-new-game" data-i18n="Dialog Game Menu.OptionNewGame" class="button-huge">New Game</li>
+					<li id="option-how-to-play" data-i18n="Dialog Game Menu.OptionHowToPlay" class="button-huge">How to play</li>
+					Game Tips &nbsp;&nbsp;&nbsp;<li id="option-game-tip" class="button-regular"> 
+						<img id="arrow-left" src="" class="game-option-arrow" width="37" height="27">
+							<span id='gameTipsSelection'>On</span>
+						<img id="arrow-right" src="" class="game-option-arrow" width="37" height="27">
+					</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-time-out" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
+			<div class="dialog-content">
+				<div data-i18n="Dialog Time Out.BodyText">
+					<p>Don't despair, Galapago's creatures are rooting for you!</p>
+					<p>Play at your own pace in relaxed mode</p>
+					<p>Final Score: <span id="final-score">43200</span></p>
+				</div>
+				<ul class="vertical-button-nav">
+					<li id="option-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		<div id="dialog-game-over" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Game Over.Title">Game Over</div>
+			<div class="dialog-content">
+				<ul class="vertical-button-nav">
+					<li id="option-game-over-close" data-i18n="Dialog Game Over.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-level-won" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
+			<div class="dialog-content">
+				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
+				<table>
+					<tr><th>Level</th><td id="level"></td></tr>
+					<tr><th>Bonus Frenzy</th><td id="bonus-frenzy"></td></tr>
+					<tr><th>Bonus Points</th><td id="bonus-points"></td></tr>
+					<tr id="row-time-bonus"><th>Time Bonus</th><td id="time-bonus"></td></tr>
+					<tr><th>Level Score</th><td id="level-score"></td></tr>
+					<tr><th>Score</th><td id="total-score"></td></tr>
+				</table>
+				<ul class="vertical-button-nav">
+					<li id="option-level-won-close" data-i18n="Dialog Level Won.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-you-won" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog You Won.Title">You Won!</div>
+			<div class="dialog-content">
+				<span data-i18n="Dialog You Won.BodyText">
+					Congratulations!<br/>
+					You've collected all of Galapago's
+					magical creatures and freed them forever! Now the island and its
+					golden treasures belong to you;
+					explore Galapago whenever you like.<br/>
+					The creatures of Galapago are forever grateful to you, and will bring
+					peace and prosperity for the rest of your days.<br/>
+					Final Score: <span id="total-final-score"></span><br/>
+				</span>
+				<ul class="vertical-button-nav">
+					<li id="option-you-won-close" data-i18n="Dialog Time Out.OptionClose"  class="button-medium button-medium-hilight">Close</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-new-game" class="overlay2">
+			<div class="dialog-content">
+				<span data-i18n="Dialog New Game.BodyText">
+					Do you want<br/>	to start a new game?
+				</span>
+				<ul class="vertical-button-nav">
+					<li id="new-game-option-yes" data-i18n="Dialog New Game.OptionYes"   class="button-huge ">Yes</li>
+					<li id="new-game-option-no" data-i18n="Dialog New Game.OptionNo"   class="button-huge button-huge-hilight">No</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="dialog-reset-game" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
+			<div class="dialog-content">
+				<div data-i18n="Dialog Reset Game.Body Text">
+					<p>Resetting the map will erase your progress and and will start a new game!</p>
+					<p>Do you wish to reset the map?</p>
+				</div>
+				<ul class="vertical-button-nav">
+					<li id="reset-game-option-no" data-i18n="Dialog Reset Game.No"   class="button-medium button-medium-hilight">No</li>
+					<li id="reset-game-option-yes" data-i18n="Dialog Reset Game.Yes"   class="button-medium">Yes</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="bubbleTip" class="bubbleTip">
+		</div>
+
+		<div id="dialog-help" class="overlay2">
+			<div class="dialog-title dialog-title-wide" data-i18n="Dialog Help.Title">How to Play</div>
+			<div class="dialog-content">
+				<div id="help-text-scroll">
+					<div data-i18n="Dialog Help.Body Text">
+						<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
+						<h4>Object</h4>
+						<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano... reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
+						<h4>Navigating Galapago</h4>
+						<p>To play a level just select any tile on the map.</p>
+						<p>New levels will unlock once you win a level.</p>
+						<p>Remember that camp fires appear on levels already completed.</p>
+						<h4>How To Play</h4>
+						<p>Swap adjacent creatures vertically or horizontally to match them.</p>
+						<h4>Gold Tiles</h4>
+						<p>You must make matches over the gold tiles in order to complete the board.</p>
+						<h4>Locked Tile</h4>
+						<p>These tricky tiles have a creature locked inside. They can't be moved, but you can use them in a match to clear them off the board.</p>
+						<h4>Cocoon Tile</h4>
+						<p>Cocoon Tiles can't be moved, and can't be matched – but matching three or more tiles adjacent to a Cocoon Tile will wake it up and clear it off your board.</p>
+						<h4>Winning The Level</h4>
+						<p>Clear the board of all the items in the collection key at the bottom of the board.</p>
+						<p>A checkmark indicates that the goal is completed.</p>
+						<p>The numbers show how many of each is left.</p>
+						<h4>Bonus Frenzy</h4>
+						<p>When you win a level, some creatures will flee the board - catch them using the arrow keys to charge up your powerups on the next level!</p>
+						<h4>Flip-flop Powerup</h4>
+						<p>Make multiple match combos to turn on this powerup!</p>
+						<p>The Flip-Flop lets you swap two creatures anywhere on the board - they don't need to be adjacent!</p>
+						<h4>Firepower Powerup</h4>
+						<p>Make multiple match combos to turn on Firepower!</p>
+						<p>Use Firepower to select a creature anywhere on the board and make it disappear.</p>
+						<h4>Shuffler Powerup</h4>
+						<p>Make multiple match combos to turn on the Shuffler!</p>
+						<p>Use Shuffler to reshuffle all the creatures on the board.</p>
+						<h4>Lightning Critters</h4>
+						<p>Be on the lookout for the powerful Lightning Critters!</p>
+						<p>Match three or more Lightning Critters and clear an entire row!</p>
+						<h4>Super Match Friend</h4>
+						<p>Use your Super Match Friend to clear all of one creature off the board!</p>
+
+						<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
+						<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
+					</div>
+				</div>
+
+				<div id="paging">
+					<img class="up-down" id="up"/>
+					<div id="pages">Page <span id="current-page"></span> of <span id="page-count"></span></div>
+					<img class="up-down" id="down"/>
+				</div>
+				
+				<div id="version"></div>
+				<div id="close-positioner">
+					<ul class="vertical-button-nav">
+						<li id="option-help-close" data-i18n="Dialog Help.Close" class="button-medium button-medium-hilight">Close</li>
+					</ul>
+				</div>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
 
 </body>
 </html>
