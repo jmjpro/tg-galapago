@@ -2645,6 +2645,7 @@ Board.prototype.dangerBarEmptied = function() {
 		});
 	 });
 	window.onkeydown=null;	
+	gameboard.hilightDiv.css('display','none');
 	$('#final-score').html(gameboard.score);
 	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
@@ -2706,6 +2707,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayMenuButton(false);
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2714,6 +2716,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayQuitButton(false);
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
