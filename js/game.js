@@ -2512,6 +2512,9 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 	// same tile selected; unselect it and move on
 	else {
+		if((tile === tilePrev) && (this.powerUp.isFlipFlopSelected())){
+			board.powerUp.powerUsed();
+		}
 		tilePrev.setUnselected();
 		this.tileSelected = null;
 		board.navigationLock = false;
