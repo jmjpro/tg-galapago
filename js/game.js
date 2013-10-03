@@ -4005,7 +4005,14 @@ ReshuffleService.prototype.start = function() {
 	board = this.board;
 	if( !this.reshuffleInterval) {
 		this.reshuffleInterval = setInterval(function(){
-			swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			var validMoveWithGoldFound;
+			if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
+				swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board, true);
+				validMoveWithGoldFound = swapForTripletInfo.tipInfo.initialTile !== null;
+			}
+			if(!validMoveWithGoldFound){
+				swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			}
 			validMoveFound = swapForTripletInfo.tipInfo.initialTile !== null;
 			powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 			if(validMoveFound){
@@ -4013,7 +4020,7 @@ ReshuffleService.prototype.start = function() {
 				swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
-				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
+				if(validMoveWithGoldFound && (reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2)){
 					board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
 					Galapago.delay(5000).done(function() {
 						board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Make Matches') );
