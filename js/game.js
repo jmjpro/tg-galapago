@@ -3847,15 +3847,13 @@ DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 457;
-DangerBar.DANGER_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_ADJUSTMENT_LEFT = 18;
 DangerBar.FILL_ADJUSTMENT_TOP = 31;
 DangerBar.CAP_BOTTOM_TOP = 495;
-DangerBar.LEFT = 1064;
-DangerBar.FILL_WIDTH = 15;
 DangerBar.IMAGE_MAGNIFICATION = 2;
 DangerBar.CROWN_LEFT = 12;
+DangerBar.CROWN_IMAGE_MAGNIFICATION = 1.6;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
@@ -3864,15 +3862,7 @@ function DangerBar(initialTimeMs, levelAnimation) {
 	this.danger_bar = CanvasUtil.magnifyImage(LoadingScreen.gal.get("screen-game/danger-bar.png"), DangerBar.IMAGE_MAGNIFICATION );
 	this.div = $('#div-danger-bar');
 	this.div.empty();
-	this.div.css( 'left', DangerBar.LEFT + 'px' );
-	this.div.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.div.css( 'width', this.danger_bar.width + 'px' );
-	this.div.css( 'height', this.danger_bar.height + 'px' );
 	this.divAnimation = $('#div-animation-danger-bar');
-	this.divAnimation.css( 'left', DangerBar.LEFT + 'px' );
-	this.divAnimation.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.divAnimation.css( 'width', this.danger_bar.width + 'px' );
-	this.divAnimation.css( 'height', this.danger_bar.height - DangerBar.FILL_ADJUSTMENT_TOP + 'px' );
 	this.divAnimation.empty();
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
@@ -3897,7 +3887,7 @@ DangerBar.prototype.drawImages = function() {
 		this.imageCrown.parentNode.removeChild(this.imageCrown);
 	}
 	imageCrown = LoadingScreen.gal.get("screen-game/danger-bar-crown.png");
-	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, 1.6);
+	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, DangerBar.CROWN_IMAGE_MAGNIFICATION);
 	this.levelAnimation.animateDangerBar(this.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop);
 }; //DangerBar.prototype.drawImages()
 
