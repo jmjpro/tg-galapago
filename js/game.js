@@ -19,11 +19,7 @@ Galapago.gameImageNames = [
 	'button-regular',
 	'button-cursor'
 ];
-Galapago.dangerBarImageNames = [
-	'danger-bar',
-	'danger-bar-fill-1',
-	'danger-bar-fill-2'
-];
+
 //Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
@@ -110,15 +106,6 @@ Galapago.buildGameImagePaths = function() {
 	});
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
-
-Galapago.buildDangerBarImagePaths = function() {
-	var dangerBarImagePaths;
-	dangerBarImagePaths = [];
-	_.each( Galapago.dangerBarImageNames, function(imageName) {
-		dangerBarImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
-	});
-	return dangerBarImagePaths;
-}; //Galapago.buildDangerBarImagePaths()
 
 Galapago.loadJsonAsync = function(jsonFilePath) {
 	var deferred;
@@ -780,7 +767,6 @@ function Level(id) {
 	this.mapHotspotRegion = [];
 	this.dangerBar = null;
 	this.gameImages = [];
-	this.dangerBarImages = [];
 	this.layerBackground = null;
 	this.neighbors = {};
 	this.levelAnimation = null;
@@ -943,11 +929,10 @@ Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
 }; //Level.prototype.loadSuperFriends()
 
 Level.prototype.loadImages = function() {
-	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, /*levelAnimationImagePaths,*/ levelAnimationImages, image, gameImages;
+	var level, goldImagePaths, gameImagePaths, /*levelAnimationImagePaths,*/ levelAnimationImages, image, gameImages;
 	level = this;	
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
-	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 	gameImages = [];
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	level.superFriendImages = Galapago.creatureImages['superFriends'];
@@ -958,10 +943,6 @@ Level.prototype.loadImages = function() {
 		gameImages.push( image );
 	});
 	level.initImages(gameImages);
-
-	_.each( dangerBarImagePaths, function( dangerBarImagePath ) {
-		level.dangerBarImages.push( LoadingScreen.gal.get( dangerBarImagePath ) );
-	});
 
 	_.each( goldImagePaths, function( goldImagePath ) {
 		level.goldImages.push( LoadingScreen.gal.get( goldImagePath ) );
@@ -1012,7 +993,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			if (Galapago.isTimedMode) {
 				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 			if(restoreLookupString){
 				restoreLookup = JSON.parse(restoreLookupString);
 				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
@@ -3875,10 +3856,9 @@ DangerBar.CROWN_LEFT = 12;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(imageArray, initialTimeMs, levelAnimation) {
-	//this.layerBackground = layerBackground;
+function DangerBar(initialTimeMs, levelAnimation) {
 	this.levelAnimation = levelAnimation;
-	this.initImages(imageArray);
+	this.danger_bar = CanvasUtil.magnifyImage(LoadingScreen.gal.get("screen-game/danger-bar.png"), DangerBar.IMAGE_MAGNIFICATION );
 	this.div = $('#div-danger-bar');
 	this.div.empty();
 	this.div.css( 'left', DangerBar.LEFT + 'px' );
@@ -3891,7 +3871,6 @@ function DangerBar(imageArray, initialTimeMs, levelAnimation) {
 	this.divAnimation.css( 'width', this.danger_bar.width + 'px' );
 	this.divAnimation.css( 'height', this.danger_bar.height - DangerBar.FILL_ADJUSTMENT_TOP + 'px' );
 	this.divAnimation.empty();
-	//this.layer = this.canvas[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
@@ -3909,27 +3888,11 @@ function DangerBar(imageArray, initialTimeMs, levelAnimation) {
 	this.drawImages();
 }
 
-//dynamically add properties to the DangerBar for each image
-//this makes reference to the images easier later
-DangerBar.prototype.initImages = function(imageArray) {
-	var dangerBar;
-	var imageId;
-	dangerBar = this;
-	_.each(imageArray, function(image) {
-		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
-		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
-		dangerBar[replaceAll( imageId, '-', '_' )] = image;
-	});
-}; //DangerBar.prototype.initImages
-
 DangerBar.prototype.drawImages = function() {
+	var imageCrown;
 	if(this.imageCrown){
 		this.imageCrown.parentNode.removeChild(this.imageCrown);
 	}
-	var imageCrown;
-	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
-	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	//this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 	imageCrown = LoadingScreen.gal.get("screen-game/danger-bar-crown.png");
 	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, 1.6);
 	this.levelAnimation.animateDangerBar(this.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop);
@@ -3939,23 +3902,19 @@ DangerBar.prototype.isRunning = function() {
 	if(!this.timer){
 	return false;
 	}
-	//return this.intervalId >= 0;
 	return this.timer.isRunning();
 }; //DangerBar.prototype.isRunning()
 
 DangerBar.prototype.start = function() {
 	var dangerBar;
 	dangerBar = this;
-	//dangerBar.layer.clearRect( DangerBar.LEFT, DangerBar.CAP_TOP_TOP, DangerBar.FILL_WIDTH, dangerBar.fillTop );
 	this.timer = new PauseableInterval(dangerBar.update,DangerBar.REFRESH_INTERVAL_SEC * 1000,this);
-	//dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
 	console.debug('starting danger bar timing with ' + dangerBar.timeRemainingMs/1000 + ' sec remaining');
 	return dangerBar; //chainable
 }; //DangerBar.prototype.start()
 
 DangerBar.prototype.stop = function() {
 	console.debug('stopping danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
-	//clearInterval(this.intervalId);
 	if(this.timer){
 		this.timer.clearInterval();
 	}
@@ -3997,14 +3956,7 @@ DangerBar.prototype.update = function(sender) {
 	// by the same amount that we reduce the height
 	fillNormal.height = fillHeight;
 	fillDanger.height = fillHeight;
-	//clear the space between the top cap and the bottom cap
-	//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
-	
-	//if( ratio > DangerBar.RATIO_DANGER ) {
-		//dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
-		//dangerBar.levelAnimation.animateDangerBar(dangerBar.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop);
-		dangerBar.drawImages();
-	//}
+	dangerBar.drawImages();
 	if( ratio > 0 && ratio <= DangerBar.RATIO_DANGER) { //0 < ratio <= DangerBar.RATIO_DANGER
 		dangerBar.levelAnimation.animateDangerBarWarning(dangerBar.div.selector, 0, DangerBar.BOTTOM_CAP_TOP);
 
@@ -4016,8 +3968,6 @@ DangerBar.prototype.update = function(sender) {
 		}
 	}
 	else if(ratio <= 0){ //ratio = 0; timeout!
-		//clear the space between the top cap and the bottom cap, including the bottom cap
-		//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.levelAnimation.stopDangerBarAnimations();
 		dangerBar.addImage(dangerBar.div.selector, LoadingScreen.gal.getSprites("screen-game/danger-bar-warning-strip.png")[0], 0, DangerBar.BOTTOM_CAP_TOP, 1);
 		dangerBar.stop();
