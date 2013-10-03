@@ -99,7 +99,14 @@ canvas.layer-board {
 	position: absolute;
 	display:  none;
 }
-
+#power-up-label{
+	font-family: 'ArchivoNarrowBold';
+	font-size: 12px;
+	color: red;
+	left:45px;
+	top:350px;
+	position: absolute;
+}
 #layer-map-animation {
 	position: absolute;
 	left: 643px;
