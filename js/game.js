@@ -2605,18 +2605,21 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
 }; //Board.prototype.handleLockedTilesForShuffle
 
 Board.prototype.dangerBarEmptied = function() {
-	var timedMode, tileMatrix, gameboard;
+	var timedMode, tileMatrix, gameboard, tilesRemaining;
+	tilesRemaining = [];
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
+	this.reshuffleService.stop();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
 			  if(tile){
 			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
 				  tile.clear();
-				  
+				}else{
+					tilesRemaining.push(tile);
 				}
 			  }
 		});
@@ -2624,12 +2627,14 @@ Board.prototype.dangerBarEmptied = function() {
 	window.onkeydown=null;	
 	gameboard.hilightDiv.css('display','none');
 	$('#final-score').html(gameboard.score);
-	if( sdkApi.inDemoMode() ){
-			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
+	function callback(){
+		if( sdkApi.inDemoMode() ){
+			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
+		}else{
+			new DialogMenu('screen-game', gameboard, 'dialog-time-out');
+		}
 	}
-	else{
-			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
-	}
+	this.level.levelAnimation.animateDangerBarEmptied(this.screenDiv.selector, tilesRemaining, callback);
 }; //Board.prototype.dangerBarEmptied
 
 Board.prototype.saveBoard = function() {
