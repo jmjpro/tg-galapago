@@ -92,7 +92,7 @@ MainMenuScreen.prototype.registerOnClickEvent = function(id){
 	var mainMenuScreen = this;
 	$('#'+id)[0].onclick = function (evt){
 				mainMenuScreen.setNavItem($('#'+id));
-				mainMenuScreen.selectHandler();
+				mainMenuScreen.handleSelect();
 	}
 }
 
@@ -124,20 +124,27 @@ MainMenuScreen.prototype.setImages = function() {
 	});
 }; //MainMenuScreen.prototype.setImages()
 
-MainMenuScreen.prototype.selectHandler = function() {
-	var navItem, isTimedMode, level,
-		hide = (function(that) {
-		    return function() {
-				that.hide();
-			}
-		})(this);
+MainMenuScreen.prototype.handleSelect = function() {
+	var navItem, isTimedMode, level, hide;
+
+	hide = (function(that) {
+	    return function() {
+			that.hide();
+		}
+	})(this);
+
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
+	if( navItem[0].id != 'button-set-language' ) {
+		this.unregisterEventHandlers();
+	}
+	store.setItem( 'mainMenuScreenLastSelectedOption', navItem[0].id );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
 			break;
 		case 'button-timed' :
 			isTimedMode = true;
+			//store.setItem( 'mainMenuScreenLastSelectedMode', navItem[0].id );
 			if (this.callingObject instanceof Level) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
@@ -149,7 +156,7 @@ MainMenuScreen.prototype.selectHandler = function() {
 			break;
 		case 'button-relaxed' :
 			isTimedMode = false;
-			this.unregisterEventHandlers();
+			//store.setItem( 'mainMenuScreenLastSelectedMode', navItem[0].id );
 			if( this.callingObject instanceof Level ) {
 				Galapago.isTimedMode = isTimedMode;
 				level = this.callingObject;
@@ -161,11 +168,9 @@ MainMenuScreen.prototype.selectHandler = function() {
 			}
 			break;
 		case 'button-how-to-play' :
-			this.unregisterEventHandlers();
 			new DialogHelp('main-menu-screen', this);
 			break;
 		case 'button-top-scores' :
-			this.unregisterEventHandlers();
 			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Screen.Leaderboards);
 			break;
 		case 'button-set-language' :
@@ -176,11 +181,10 @@ MainMenuScreen.prototype.selectHandler = function() {
 			//TODO add event handlers here to change the language with left and right arrows, and enter to select the language
 			break;
 		case 'button-quit' :
-			this.unregisterEventHandlers();
 			new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
-}; //MainMenuScreen.prototype.selectHandler()
+}; //MainMenuScreen.prototype.handleSelect()
 
 MainMenuScreen.prototype.show = function() {
 	this.callingObject && this.callingObject.unregisterEventHandlers();	
@@ -218,37 +222,33 @@ MainMenuScreen.prototype.quit = function() {
 	sdkApi.exit();
 }; //MainMenuScreen.prototype.show()
 
-MainMenuScreen.prototype.isFirstTimeShown = function() {
-	//TODO load from localStorage
-	return false;
-}; //MainMenuScreen.prototype.isFirstTimeShown()
-
-MainMenuScreen.prototype.getLastSelectedMode = function() {
-	//TODO read from local storage
-	return '#button-relaxed';
-}; //MainMenuScreen.prototype.getLastSelectedMode()
-
 MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	var navItem, currentElementId, nextElementId;
-	if( this.isFirstTimeShown() ) {
+	/*
+	if( store.getItem( 'mainMenuScreenLastSelectedOption' ) === null ) {
 		navItem = $('#button-timed');
 	}
-	else if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
+	*/
+	if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
+		if( callingScreen[0].id === 'screen-loading' ) {
+			navItem = $( '#button-timed' );
+		}
+		else {
+			navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedOption' ) );
+		}
+		/*
 		switch( callingScreen[0].id ) {
 			case 'screen-loading' :
-				navItem = $('#button-timed');
-				break;
-			case 'screen-map' :
-				navItem = $('#button-timed');
+				navItem = $( '#button-timed' );
 				break;
 			case 'screen-game' :
-				navItem = $(this.getLastSelectedMode());
+				navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedMode' ) );
 				break;
 			default :
-				//TODO do we need this? won't it show automatically?
-				//navItem = this.lastFocusedButton();
+				navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedOption' ) );
 				break;
 		}
+		*/
 	}
 	else if ( direction ) {
 		currentElementId = this.currentNavItem[0].id;
@@ -305,7 +305,7 @@ MainMenuScreen.prototype.registerEventHandlers = function() {
 		console.debug(mainMenuScreen.currentNavItem[0].id + ' hilighted');
 		switch( evt.keyCode ) {
 		case 13: // enter
-			mainMenuScreen.selectHandler();
+			mainMenuScreen.handleSelect();
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
