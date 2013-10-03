@@ -18,6 +18,9 @@
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
 		<script src="../sdk/tgh5.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/store.js"></script>
+		<script src="js/onScreenCache.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -42,6 +45,8 @@
 			var sdkApi, galapagoVersion;
 			galapagoVersion = 'Ver. 2.0.2';
 			function loadGame(){
+				//redefine local storage to support cookie fallback
+				window.store = new Store();
 				if( typeof jsErrLog !== 'undefined' ) {
 						jsErrLog.debugMode = false;
 						jsErrLog.info = "Galapago debugging";                

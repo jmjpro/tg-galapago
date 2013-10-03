@@ -294,54 +294,17 @@ LevelAnimation.prototype.animateBonFire = function(parentElementSelector, comple
 	this.bonFireParentAnimationInterval = setInterval(animateRandomBornFires, LevelAnimation.BONFIRE_TIME_INTERVAL);
 }; //LevelAnimation.prototype.animateBonFire()
 
-LevelAnimation.BOMB_LEFT_ONE_LEFT = 556;
-LevelAnimation.BOMB_LEFT_ONE_TOP_START = 305;
-LevelAnimation.BOMB_LEFT_TWO_LEFT = 546;
-LevelAnimation.BOMB_LEFT_TWO_TOP_START = 295;
-LevelAnimation.BOMB_MID_LEFT = 715;
-LevelAnimation.BOMB_MID_TOP_START = 386;
-LevelAnimation.BOMB_RIGHT_LEFT = 744;
-LevelAnimation.BOMB_RIGHT_TOP_START = 295;
-
-LevelAnimation.prototype.animateBombs = function(){
-	var levelAnimation = this, spriteFrame;
-
-	spriteFrame = new Image();
-	spriteFrame.style.position = 'absolute';
-	spriteFrame.style.display = 'block';
-	$('#screen-map').append(spriteFrame);
-
-	function animateBomb(callback){
-		var randomBombId = Math.ceil( Math.random() * 4);
-		var coordinates, image, bombImageSpriteSheet;
-		switch( randomBombId ) {
-			case 1:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-one-strip.png');
-				coordinates = [LevelAnimation.BOMB_LEFT_ONE_LEFT, LevelAnimation.BOMB_LEFT_ONE_TOP_START - bombImageSpriteSheet[0].height];
-				break;
-			case 2:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-left-two-strip.png');
-				coordinates = [LevelAnimation.BOMB_LEFT_TWO_LEFT, LevelAnimation.BOMB_LEFT_TWO_TOP_START - bombImageSpriteSheet[0].height];
-				break;
-			case 3:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-mid-strip.png');
-				coordinates = [LevelAnimation.BOMB_MID_LEFT, LevelAnimation.BOMB_MID_TOP_START - bombImageSpriteSheet[0].height];
-				break;
-			case 4:
-				bombImageSpriteSheet = LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-bomb-right-strip.png');				
-				coordinates = [LevelAnimation.BOMB_RIGHT_LEFT , LevelAnimation.BOMB_RIGHT_TOP_START - bombImageSpriteSheet[0].height];
-				break;
-		} //switch( randomBombId ) {
-		if(levelAnimation.bombAnimation){
-			levelAnimation.bombAnimation.stop();
-		}
-
-		var bombAnimation = new BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, callback);
-		bombAnimation.start();
-		levelAnimation.bombAnimation = bombAnimation;
-	} //function animateBomb(callback)()
+LevelAnimation.prototype.animateBombs2 = function(parentElement){
+	var that = this;
+	function animateBomb( callback ) {
+		var randomBombId;
+		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
+		that.bombAnimation = new BombAnimation2(that, randomBombId, parentElement);
+		that.bombAnimation.start(callback);
+	} //function animateBomb()
 	animateBomb(animateBomb);
 }; //LevelAnimation.prototype.animateBombs()
+
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
@@ -404,17 +367,6 @@ LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, in
 	this.blinkingImages.push( blinkingImage );
 	return;
 }; //LevelAnimation.prototype.animateSprites()
-
-LevelAnimation.prototype.animateBombs2 = function(parentElement){
-	var that = this;
-	function animateBomb( callback ) {
-		var randomBombId;
-		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
-		that.bombAnimation = new BombAnimation2(that, randomBombId, parentElement);
-		that.bombAnimation.start(callback);
-	} //function animateBomb()
-	animateBomb(animateBomb);
-}; //LevelAnimation.prototype.animateBombs()
 
 LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 	var levelAnimation, powerAchievedAnimation, powerAchievedImageSpriteSheet, spriteFrame;
@@ -777,55 +729,13 @@ BonFireAnimation.prototype.animate = function(){
 	this.bonfireSpriteId = this.bonfireSpriteId % this.bonfireImageSprites.length;
 };
 
-BombAnimation.ROLLOVER_TIME_INTERVAL=100;
-function BombAnimation(coordinates, bombImageSpriteSheet, spriteFrame, callback){
-	this.bombImageSpriteSheet = bombImageSpriteSheet;
-	this.interval = null;
-	this.bombSpriteId = 0;
-	this.coordinates = coordinates;
-	this.callback = callback;
-	this.spriteFrame = spriteFrame;
-}
-
-BombAnimation.prototype.start = function(){
-	this.bombSpriteId = 0;
-	var bombAnimation = this;
-	this.interval = setInterval(
-		function(){
-			bombAnimation.animate();
-		},
-		BombAnimation.ROLLOVER_TIME_INTERVAL
-	);
-};
-
-BombAnimation.prototype.stop = function(){
-	if(this.interval){
-		clearInterval(this.interval);
-		this.bombImageSpriteSheet = null;
-	}
-};
-
-BombAnimation.prototype.animate = function(){
-	var sprite = this.bombImageSpriteSheet[this.bombSpriteId];
-	sprite = CanvasUtil.magnifyImage( sprite, 2 );
-	this.spriteFrame.src = sprite.src;
-	this.spriteFrame.style.left = this.coordinates[0] + 'px';
-	this.spriteFrame.style.top = this.coordinates[1] + 'px';
-	this.spriteFrame.width = sprite.naturalWidth;
-	this.spriteFrame.height = sprite.naturalHeight;
-	this.bombSpriteId++;
-	if(this.bombSpriteId >= this.bombImageSpriteSheet.length-1){
-		this.callback(this.callback);
-	}
-};
-
-//begin class BombAnimation
+//begin class BombAnimation2
 function BombAnimation2(levelAnimation, bombId, parentElement){
 	this.levelAnimation = levelAnimation;
 	this.bombId = bombId;
 	this.parentElement = parentElement;
 	this.animationImage = null;
-} //BombAnimation constructor
+} //BombAnimation2 constructor
 
 BombAnimation2.prototype.start = function(callback){
 	switch( this.bombId ) {
@@ -842,15 +752,15 @@ BombAnimation2.prototype.start = function(callback){
 			this.animationImage = this.levelAnimation.animateSprites(this.parentElement, Galapago.collageDirectory + 'map-bomb-right-strip.png', null, null, callback);
 			break;
 	}
-}; //BombAnimation.prototype.start()
+}; //BombAnimation2.prototype.start()
 
 BombAnimation2.prototype.stop = function(){
 	if( this.interval ) {
 		clearInterval( this.interval );
 		this.animationImage.stop();
 	}
-}; //BombAnimation.prototype.stop()
-//end class BombAnimation
+}; //BombAnimation2.prototype.stop()
+//end class BombAnimation2
 
 GameStartArrowAnimation.ROLLOVER_TIME_INTERVAL=100;
 function GameStartArrowAnimation(coordinates, sprites, spriteFrame, layer ,callback){
