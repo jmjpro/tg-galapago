@@ -2342,6 +2342,9 @@ Board.prototype.handleTileSelect = function(tile) {
 	board.navigationLock = true;
 	console.log("appling navigation lock in handle tile select 2273");
 	tilePrev = this.tileSelected;
+	if(tile){
+		tile.setInactiveAsync();
+	}
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
 	if(tile && !(tile.isCreatureOnly() || tile.hasSuperFriend()) && !this.powerUp.isFireSelected()){
