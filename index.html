@@ -18,13 +18,17 @@
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
 		<script src="../sdk/tgh5.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/store.js"></script>
+		<script src="js/onScreenCache.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
 		<script src="js/mainMenuScreen.js"></script>
 		<script src="js/score.js"></script>
 		<script src="js/blobCollection.js"></script>
-		<script src="js/tilesEventProcessor.js"></script>		<script src="js/imageCollage.js"></script>
+		<script src="js/tilesEventProcessor.js"></script>
+		<script src="js/imageCollage.js"></script>
 		<script src="js/mapScreen.js"></script>
 		<script src="js/levelAnimation.js"></script>
 		<script src="js/loadingScreen.js"></script>
@@ -39,8 +43,10 @@
 
 		<script>
 			var sdkApi, galapagoVersion;
-			galapagoVersion = 'Ver. 2.0.2';
+			galapagoVersion = 'Ver. 2.0.3';
 			function loadGame(){
+				//redefine local storage to support cookie fallback
+				window.store = new Store();
 				if( typeof jsErrLog !== 'undefined' ) {
 						jsErrLog.debugMode = false;
 						jsErrLog.info = "Galapago debugging";                
@@ -102,7 +108,8 @@
 			<div id="current-score"></div>
 			<div id="level-name"></div>
 			<canvas id="layer-power-up" width="1" height="1" tabindex="2"></canvas>
-			<canvas id="layer-danger-bar" width="1" height="1"></canvas>
+			<div id="div-danger-bar" width="1" height="1"></div>
+			<div id="div-animation-danger-bar" width="1" height="1"></div>
 			<canvas id="layer-collection-key" width="1" height="1"></canvas>
 			<canvas id="layer-power-up-animation" width="1" height="1"></canvas>
 			<canvas id="layer-bob-cervantes" width="1" height="1"></canvas>
@@ -194,8 +201,8 @@
 			<div class="dialog-content">
 				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
 				<ul class="vertical-button-nav">
-					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge button-huge-hilight">Yes</li>
-					<li id="option-no" data-i18n="Dialog Quit.OptionNo"   class="button-huge">No</li>
+					<li id="option-yes" data-i18n="Dialog Quit.OptionYes" class="button-huge">Yes</li>
+					<li id="option-no" data-i18n="Dialog Quit.OptionNo"   class="button-huge button-huge-hilight">No</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->

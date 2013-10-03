@@ -54,11 +54,12 @@
 			"collage/map-lava-strip.png",
 			"collage/game-powerup.png",
 			"collage/cocoon-removed-strip.png",
+			"collage/game-danger-bar-crown-and-warning-strip.png",
 			"screen-game/danger-bar-fill-1.png",
 			"screen-game/danger-bar-fill-2.png",
 			"screen-game/danger-bar-fill-strip.png",
-			"screen-game/danger-bar-warning-strip.png",
 			"screen-game/danger-bar.png",
+			"screen-game/score-background.png",
 			"collage/gold-strip.png",
 			"screen-game/heads-base.png",
 			"collage/heads-eyes-strip.png",
@@ -84,7 +85,6 @@
 			"screen-game/danger-bar-fill-1.png",
 			"screen-game/danger-bar-fill-2.png",
 			"screen-game/danger-bar-fill-strip.png",
-			"screen-game/danger-bar-warning-strip.png",
 			"screen-game/danger-bar.png",
 			"collage/gold-strip.png",
 			"screen-game/heads-base.png",
@@ -147,7 +147,14 @@
     {
 		"name": "dialog-and-menus-testing",
 		"contents": [
-			"collage/map_level_ui_static.png"
+			"background/dialog-regular.png",
+			"background/dialog-regular-no-title.png",
+			"background/dialog-small.png",
+			"background/dialog-large.png",
+			"collage/arrows.png",
+			"collage/dialog-buttons.png",
+			"collage/dialog-arrow-buttons.png",
+			"collage/keypad-buttons.png"
     	]
     },
     {

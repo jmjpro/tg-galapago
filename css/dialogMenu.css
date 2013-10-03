@@ -50,10 +50,10 @@ div.dialog-title-wide {
 }
 
 #dialog-game-menu {
-	width: 717px;
-	height: 690px;
-	left: 281px; /*(1279-717/2)*/
-	top: 15px; /*(720-690/2)*/
+	width: 718px;
+	height: 626px;
+	left: 281px; /*(1280-718/2)*/
+	top: 47px; /*(720-626/2)*/
 }
 
 #dialog-game-menu .dialog-content {
@@ -64,11 +64,21 @@ div.dialog-title-wide {
 	margin-top: 40px;
 }
 
+#dialog-game-menu .button-huge {
+	height: 89px;
+	line-height: 76px;
+}
+
+#dialog-game-menu .button-regular {
+	height: 102px;
+	line-height: 86px;
+}
+
 #dialog-level-won {
-	width: 717px;
+	width: 718px;
 	height: 626px;
 	left: 281px;
-	top: 15px;
+	top: 47px;
 }
 
 #dialog-level-won .dialog-content {
@@ -139,6 +149,7 @@ div.dialog-title-wide {
 .game-option-arrow {
 	position: relative;
 	top: 5px;
+	display: none;
 }
 
 #dialog-game-over {
@@ -183,10 +194,10 @@ div.dialog-title-wide {
 }
 
 #dialog-time-out {
-	width: 717px;
+	width: 718px;
 	height: 626px;
 	left: 281px;
-	top: 15px;
+	top: 47px;
 }
 
 #dialog-time-out div.dialog-content {
@@ -221,18 +232,18 @@ span#final-score {
 }
 
 #dialog-new-game {
-	width: 717px;
+	width: 718px;
 	height: 590px;
-	left: 281px; /*(1279-717/2)*/
+	left: 281px; /*(1280-718/2)*/
 	top: 65px; /*(720-590/2)*/
 	font-size: 27px;
 }
 
 #dialog-game-options {
-	width: 717px;
+	width: 718px;
 	height: 626px;
-	left: 281px;
-	top: 15px;
+	left: 281px; /*(1280-718/2)*/
+	top: 47px; /*(720-626/2)*/
 }
 
 #dialog-profile-delete {
@@ -317,10 +328,10 @@ ul.galapago-drop-down {
 }
 
 #dialog-reset-game {
-	width: 717px;
+	width: 718px;
 	height: 626px;
 	left: 281px;
-	top: 15px;
+	top: 47px;
 }
 
 #dialog-reset-game div.dialog-content {

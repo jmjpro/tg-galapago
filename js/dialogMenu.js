@@ -359,6 +359,16 @@ DialogMenu.prototype.setNavItem = function(item) {
 	if( bgImage ) {
 		this.currentNavItem.css('background-image','url(' + bgImage.src + ')');
 	}
+
+	//code specific to dialog-game-menu TODO refactor DialogMenuGame as subclass of DialogMenu
+	if( this.dialogId === 'dialog-game-menu' ) {
+		if( this.currentNavItem[0].id === 'option-game-tip' ) {
+			$( '.game-option-arrow' ).css( 'display', 'inline-block' );
+		}
+		else {
+			$( '.game-option-arrow' ).css( 'display', 'none' );
+		}
+	}
 }; //DialogMenu.prototype.setNavItem()
 
 DialogMenu.prototype.registerMouseHandlers = function() {
@@ -469,7 +479,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			break;
 		}
 	};
-
 	/*
 	$('img.nav-button').on( 'click', function(evt) {
 		
@@ -509,6 +518,7 @@ DialogMenu.prototype.dialogQuitOptionNo = function() {
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
+		this.callingObject.displayQuitButton(true);
 	}
 	else if( this.callingObject instanceof MapScreen ) {
 		Galapago.mapScreen.focusMap( Galapago.levelMap );

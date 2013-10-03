@@ -1,3 +1,31 @@
+ImageCollage.CREATURE_COORDINATES = [
+	{"cell": [0, 0, 46, 46]},
+	{"cell": [46, 0, 46, 46]},
+	{"cell": [92, 0, 46, 46]}
+]
+
+ImageCollage.CREATURE_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_COORDINATES);
+
+ImageCollage.CREATURE_ROLLOVER_COORDINATES = [
+	{"cell": [0, 0, 46, 46]},
+	{"cell": [46, 0, 46, 46]},
+	{"cell": [92, 0, 46, 46]},
+	{"cell": [138, 0, 46, 46]},
+	{"cell": [184, 0, 46, 46]}
+]
+
+ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_ROLLOVER_COORDINATES);
+
+ImageCollage.CREATURE_JUMP_COORDINATES = [
+	{"cell": [11, 0, 46, 92]},
+	{"cell": [79, 0, 46, 92]},
+	{"cell": [147, 0, 46, 92]},
+	{"cell": [215, 0, 46, 92]},
+	{"cell": [283, 0, 46, 92]}
+]
+
+ImageCollage.CREATURE_JUMP_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_JUMP_COORDINATES);
+
 ImageCollage.COLLAGE_ARRAY = {
 	"collage/main-menu-1.png":{
 		"imageCoordinateArray": [
@@ -255,44 +283,6 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 180, 30, 30]}
 		]
 	},
-	"creatures/rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]},
-			{"cell": [0, 150, 46, 46]},
-			{"cell": [0, 180, 46, 46]}
-		]
-	},
-	"creatures/beach-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 68, 92]},
-			{"cell": [68, 0, 68, 92]},
-			{"cell": [136, 0, 68, 92]},
-			{"cell": [204, 0, 68, 92]},
-			{"cell": [272, 0, 68, 92]}
-		]
-	},
-	"creatures/forest-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 70, 92]},
-			{"cell": [70, 0, 70, 92]},
-			{"cell": [140, 0, 70, 92]},
-			{"cell": [210, 0, 70, 92]},
-			{"cell": [280, 0, 70, 92]}
-		]
-	},
-	"creatures/cave-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 68, 92]},
-			{"cell": [68, 0, 68, 92]},
-			{"cell": [136, 0, 68, 92]},
-			{"cell": [204, 0, 68, 92]},
-			{"cell": [272, 0, 68, 92]}
-		]
-	},
 	"collage/map-bomb-left-one-strip.png":{
 		"imageCoordinateArray": [
 			 {"cell": [0, 0 ,73 , 105]},
@@ -306,7 +296,6 @@ ImageCollage.COLLAGE_ARRAY = {
 			 {"cell": [584, 0,73 , 105]}, 
 			 {"cell": [657, 0,73 , 105]}, 
 			 {"cell": [730, 0,73 , 105]}
-
 		]	
 	},
 	"collage/map-bomb-left-two-strip.png":{
@@ -322,7 +311,6 @@ ImageCollage.COLLAGE_ARRAY = {
 			 {"cell": [640, 0, 80 , 121]}, 
 			 {"cell": [720, 0, 80 , 121]}, 
 			 {"cell": [800, 0, 80 , 121]}
-
 		]	
 	},
 	"collage/map-bomb-mid-strip.png":{
@@ -429,53 +417,25 @@ ImageCollage.COLLAGE_ARRAY = {
 		]
 	},
 	"forest/blue-beetle.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/green-butterfly.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/pink-lizard.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/red-beetle.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/teal-bug.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/violet-moth.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"forest/yellow-frog.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"collage/creatures-beach-strip.png":{
 		"imageCoordinateArray": [
@@ -489,53 +449,25 @@ ImageCollage.COLLAGE_ARRAY = {
 		]
 	},
 	"beach/blue-crab.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/green-turtle.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/pink-frog.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/red-starfish.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/teal-blob.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/violet-crab.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"beach/yellow-fish.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"collage/creatures-cave-strip.png":{
 		"imageCoordinateArray": [
@@ -549,431 +481,151 @@ ImageCollage.COLLAGE_ARRAY = {
 		]
 	},
 	"cave/blue-crystal.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/green-frog.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/pink-spike.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/red-beetle.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/teal-flyer.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/violet-lizard.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]} 
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"cave/yellow-bug.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},  
-			{"cell": [92, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_COORDINATES_JSON)
 	},
 	"creatures/beach/blue-crab-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/green-turtle-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/pink-frog-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/red-starfish-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/teal-blob-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/violet-crab-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/yellow-fish-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/blue-beetle-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/green-butterfly-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/pink-lizard-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/red-beetle-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/teal-bug-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/violet-moth-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/forest/yellow-frog-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/blue-crystal-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/green-frog-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/pink-spike-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/red-beetle-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/teal-flyer-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/violet-lizard-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/cave/yellow-bug-rollover-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 46, 46]},
-			{"cell": [46, 0, 46, 46]},
-			{"cell": [92, 0, 46, 46]},
-			{"cell": [138, 0, 46, 46]},
-			{"cell": [184, 0, 46, 46]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON)
 	},
 	"creatures/beach/blue-crab-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/green-turtle-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/pink-frog-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/red-starfish-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/teal-blob-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/violet-crab-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/beach/yellow-fish-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/blue-beetle-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/green-butterfly-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/pink-lizard-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/red-beetle-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/teal-bug-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/violet-moth-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/forest/yellow-frog-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/blue-crystal-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/green-frog-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/pink-spike-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/red-beetle-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/teal-flyer-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/violet-lizard-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"creatures/cave/yellow-bug-jump-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [11, 0, 46, 92]},
-			{"cell": [79, 0, 46, 92]},
-			{"cell": [147, 0, 46, 92]},
-			{"cell": [215, 0, 46, 92]},
-			{"cell": [283, 0, 46, 92]}
-		]
+		"imageCoordinateArray": JSON.parse(ImageCollage.CREATURE_JUMP_COORDINATES_JSON)
 	},
 	"collage/game-lightning-strip.png":{
 		"imageCoordinateArray": [
@@ -1011,7 +663,13 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [40, 0, 10, 226]}
 		]
 	},
-	"collage/danger-bar-warning-strip.png":{
+	"collage/game-danger-bar-crown-and-warning-strip.png": {
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
+			{"cell": [17, 0, 104, 57], "id" : "screen-game/danger-bar-warning-strip.png"}
+		]
+	},
+	"screen-game/danger-bar-warning-strip.png": {
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 52, 57]},
 			{"cell": [52, 0, 52, 57]}

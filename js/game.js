@@ -389,8 +389,8 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 	
 	window.onmousemove = function(e) {
-		x = e.pageX ;//- this.offsetLeft;
-		y = e.pageY ;//- this.offsetTop;
+		x = e.pageX - levelMap.canvas.offsetLeft;
+		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
 		point[0] = x;
 		point[1] = y;
@@ -482,8 +482,8 @@ LevelMap.prototype.reset = function() {
 
 LevelMap.prototype.handleSelect = function(evt) {
 	var x, y, point, levelIt, level;
-	x = evt.pageX ;//- this.offsetLeft;
-	y = evt.pageY ;//- this.offsetTop;
+	x = evt.pageX - this.canvas.offsetLeft;
+	y = evt.pageY - this.canvas.offsetTop;
 	point = new Array(2);
 	point[0] = x;
 	point[1] = y;
@@ -755,8 +755,8 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
-Level.NAV_LEFT = 124;
-Level.NAV_TOP = 600;
+Level.NAV_LEFT = 119;
+Level.NAV_TOP = 520;
 Level.NAV_MARGIN_BOTTOM = 10;
 /*
 Level.MENU_BUTTON_X = 124;
@@ -998,7 +998,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		if(typeof onDialogOpenedCallBack !== 'undefined') {
 			onDialogOpenedCallBack();
 		}
-		level.styleCanvas();
+		level.styleCanvas( level.levelConfig.blobPositions );
 		level.board.init( level.levelConfig.blobPositions );
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
@@ -1012,7 +1012,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			if (Galapago.isTimedMode) {
 				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 			if(restoreLookupString){
 				restoreLookup = JSON.parse(restoreLookupString);
 				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
@@ -1319,16 +1319,28 @@ function findAllPixels(element, deep, pixels, prevId) {
 	return pixels;
 }
 
-Level.prototype.styleCanvas = function() {
-	var canvasCreature;
+Level.prototype.styleCanvas = function(blobPositions) {
+	var canvasCreature, scoreBackgroundGalAssestPath, scoreBackgroundImage, numRows, numCols;
 	canvasCreature = this.board.creatureLayer.canvas;
 
-	canvasCreature.width = Board.GRID_WIDTH;
-	canvasCreature.height = Board.GRID_HEIGHT;
+	numRows = blobPositions.length;
+	numCols = blobPositions[0].length;
+	canvasCreature.width = Board.TILE_WIDTH * numCols;
+	canvasCreature.height = Board.TILE_HEIGHT * numRows;
+	//canvasCreature.width = Board.GRID_WIDTH;
+	//canvasCreature.height = Board.GRID_HEIGHT;
 	canvasCreature.style.left = Board.GRID_LEFT + 'px';
 	canvasCreature.style.top = Board.GRID_TOP + 'px';
 
 	this.board.scoreElement.css('left', Board.GRID_LEFT + 'px');
+	scoreBackgroundGalAssestPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'score-background.png';
+	scoreBackgroundImage = LoadingScreen.gal.get( scoreBackgroundGalAssestPath );
+	if( scoreBackgroundImage ) {
+		this.board.scoreElement.css('background-image', 'url(' + scoreBackgroundImage.src + ')');
+	}
+	else {
+		console.error( 'unable to load score background ' + scoreBackgroundGalAssestPath);
+	}
 
 	findAllPixels(document.body);
 	var t = LoadingScreen.gal.lookupTable;
@@ -1648,20 +1660,7 @@ Board.prototype.init = function(tilePositions) {
 	board = this;
 	var left = 0;
 	var top =100;
-	/*$('#layerGrid').html('');
-	for( rowIt = 0; rowIt < tilePositions.length; rowIt++ ) {
-		$('#layerGrid').append("<div class='rowDiv' id='div_"+rowIt+"'></div>");
-		$("#div_"+rowIt).width(tilePositions[0].length * Board.TILE_WIDTH);
-		$("#div_"+rowIt).css('top',top);
-		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
-			$("#div_"+rowIt).append("<span class='columnSpan' id='span_"+rowIt+"_"+colIt+"'></span>");
-			var spanId = 'span_'+rowIt+'_'+colIt;
-			$("#"+spanId).css('left',left);
-			left+=47;
-		}
-		top+=47;
-		left=0;
-	}*/
+
 	_.each(Level.BLOB_TYPES, function(blobType) {
 		tileMatrix = board.getTileMatrix(blobType);
 		for( colIt = 0; colIt < tilePositions[0].length; colIt++ ) {
@@ -2034,12 +2033,13 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 	if(board.blobCollection && board.blobCollection.button_regular){
 		var menuButtonImage = board.blobCollection.button_regular;
 		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-		if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
+		x -= Level.NAV_LEFT;
+		if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
+		}else if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
@@ -2107,14 +2107,15 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	var board, menuButtonImage, quitButtonY
 	board = this;
 	menuButtonImage = board.blobCollection.button_regular;
-	if(x> 0 && x< (0+menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
+	x -= Level.NAV_LEFT;
+	if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 			board.handleKeyboardSelect();
 	}
 	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-	if(x> 0 && x< (0+Level.NAV_BUTTON_WIDTH) && y>quitButtonY && y< (quitButtonY+Level.NAV_BUTTON_HEIGHT)){
+	if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;
@@ -2504,6 +2505,10 @@ Board.prototype.handleTileSelect = function(tile) {
 	}
 	// same tile selected; unselect it and move on
 	else {
+		if((tile === tilePrev) && (this.powerUp.isFlipFlopSelected())){
+			board.powerUp.powerSelected = 0;
+			board.powerUp.update();
+		}
 		tilePrev.setUnselected();
 		this.tileSelected = null;
 		board.navigationLock = false;
@@ -2633,6 +2638,7 @@ Board.prototype.dangerBarEmptied = function() {
 		});
 	 });
 	window.onkeydown=null;	
+	gameboard.hilightDiv.css('display','none');
 	$('#final-score').html(gameboard.score);
 	if( sdkApi.inDemoMode() ){
 			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
@@ -2694,6 +2700,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayMenuButton(false);
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2702,6 +2709,7 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
+			board.displayQuitButton(false);
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
@@ -3854,27 +3862,36 @@ DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
-DangerBar.BOTTOM_CAP_TOP = 383;
+DangerBar.BOTTOM_CAP_TOP = 457;
 DangerBar.DANGER_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_ADJUSTMENT_LEFT = 18;
-DangerBar.FILL_ADJUSTMENT_TOP = 33;
+DangerBar.FILL_ADJUSTMENT_TOP = 31;
 DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.LEFT = 1064;
 DangerBar.FILL_WIDTH = 15;
 DangerBar.IMAGE_MAGNIFICATION = 2;
+DangerBar.CROWN_LEFT = 12;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(imageArray, initialTimeMs) {
+function DangerBar(imageArray, initialTimeMs, levelAnimation) {
 	//this.layerBackground = layerBackground;
+	this.levelAnimation = levelAnimation;
 	this.initImages(imageArray);
-	this.canvas = $('#layer-danger-bar');
-	this.canvas[0].width = this.danger_bar.width;
-	this.canvas[0].height = this.danger_bar.height;
-	this.canvas.css( 'left', DangerBar.LEFT + 'px' );
-	this.canvas.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.layer = this.canvas[0].getContext('2d');
+	this.div = $('#div-danger-bar');
+	this.div.empty();
+	this.div.css( 'left', DangerBar.LEFT + 'px' );
+	this.div.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
+	this.div.css( 'width', this.danger_bar.width + 'px' );
+	this.div.css( 'height', this.danger_bar.height + 'px' );
+	this.divAnimation = $('#div-animation-danger-bar');
+	this.divAnimation.css( 'left', DangerBar.LEFT + 'px' );
+	this.divAnimation.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
+	this.divAnimation.css( 'width', this.danger_bar.width + 'px' );
+	this.divAnimation.css( 'height', this.danger_bar.height - DangerBar.FILL_ADJUSTMENT_TOP + 'px' );
+	this.divAnimation.empty();
+	//this.layer = this.canvas[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
@@ -3887,6 +3904,8 @@ function DangerBar(imageArray, initialTimeMs) {
 	*/
 	this.numTimesBelowDangerRatio = 0;
 	this.timer = null;
+	this.div.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	this.imageCrown = null;
 	this.drawImages();
 }
 
@@ -3896,7 +3915,6 @@ DangerBar.prototype.initImages = function(imageArray) {
 	var dangerBar;
 	var imageId;
 	dangerBar = this;
-
 	_.each(imageArray, function(image) {
 		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
@@ -3905,10 +3923,16 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.canvas.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	if(this.imageCrown){
+		this.imageCrown.parentNode.removeChild(this.imageCrown);
+	}
+	var imageCrown;
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	//this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	imageCrown = LoadingScreen.gal.get("screen-game/danger-bar-crown.png");
+	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, 1.6);
+	this.levelAnimation.animateDangerBar(this.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop);
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3974,13 +3998,15 @@ DangerBar.prototype.update = function(sender) {
 	fillNormal.height = fillHeight;
 	fillDanger.height = fillHeight;
 	//clear the space between the top cap and the bottom cap
-	dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+	//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 	
-	if( ratio > DangerBar.RATIO_DANGER ) {
-		dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
-	}
-	else if( ratio > 0 ) { //0 < ratio <= DangerBar.RATIO_DANGER
-		dangerBar.layer.drawImage( fillDanger, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
+	//if( ratio > DangerBar.RATIO_DANGER ) {
+		//dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
+		//dangerBar.levelAnimation.animateDangerBar(dangerBar.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop);
+		dangerBar.drawImages();
+	//}
+	if( ratio > 0 && ratio <= DangerBar.RATIO_DANGER) { //0 < ratio <= DangerBar.RATIO_DANGER
+		dangerBar.levelAnimation.animateDangerBarWarning(dangerBar.div.selector, 0, DangerBar.BOTTOM_CAP_TOP);
 
 		if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
 		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
@@ -3989,14 +4015,30 @@ DangerBar.prototype.update = function(sender) {
 			dangerBar.playWarningSoundRepeated();
 		}
 	}
-	else { //ratio = 0; timeout!
+	else if(ratio <= 0){ //ratio = 0; timeout!
 		//clear the space between the top cap and the bottom cap, including the bottom cap
-		dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		dangerBar.levelAnimation.stopDangerBarAnimations();
+		dangerBar.addImage(dangerBar.div.selector, LoadingScreen.gal.getSprites("screen-game/danger-bar-warning-strip.png")[0], 0, DangerBar.BOTTOM_CAP_TOP, 1);
 		dangerBar.stop();
 		Galapago.level.board.dangerBarEmptied();
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top, magnificationFactor ){
+	var image;
+	image = new Image(); 
+	image.src = sprite.src;
+	image.width = sprite.naturalWidth * magnificationFactor;
+	image.height = sprite.naturalHeight * magnificationFactor;
+	image.style.position = 'absolute';
+	image.style.left = left + 'px';
+	image.style.top = top + 'px';
+	$(parentElementSelector).append(image);
+	return image;
+};
+
 
 //req 4.9.11 time warning
 DangerBar.prototype.playWarningSoundRepeated = function() {
@@ -4005,46 +4047,7 @@ DangerBar.prototype.playWarningSoundRepeated = function() {
 
 /* end class DangerBar */
 
-/* class FileUtil */
-// helper functions for manipulating files and filenames
-function FileUtil() {}
-//strip everything after the last slash in a file path
-FileUtil.stripFileName = function (filePath) {
-	if( !(filePath === undefined || filePath === null) ) {
-		return filePath.substr(0, filePath.lastIndexOf('/') + 1);
-	}
-};
-/* end class FileUtil */
-
-/* class ArrayUtil */
-// helper functions for manipulating arrays
-function ArrayUtil() {}
-
-//from Justin Johnson at http://stackoverflow.com/a/1890233/567525
-ArrayUtil.unique = function(arr) {
-	var hash, result;
-	hash = {};
-	result = [];
-	for ( var i = 0, l = arr.length; i < l; ++i ) {
-		//it works with objects! tested with Chrome, FF, Opera on Windows 7
-		if ( !hash.hasOwnProperty(arr[i]) ) {
-			hash[ arr[i] ] = true;
-			result.push(arr[i]);
-		}
-	}
-	return result;
-};
-/* end class ArrayUtil */
-
-// define a startsWith method on String if it doesn't exist already
-if (typeof String.prototype.startsWith !== 'function') {
-	String.prototype.startsWith = function (str){
-		return this.slice(0, str.length) === str;
-	};
-}
-
-
-ReshuffleService.CHECK_VALID_MOVE_INTERVAL = 30000;
+ReshuffleService.CHECK_VALID_MOVE_INTERVAL_MS = 20000;
 function ReshuffleService(board){
 	this.board = board;
 	this.reshuffleInterval = null;
@@ -4087,7 +4090,7 @@ ReshuffleService.prototype.start = function() {
 					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Shuffling Board') );
 				});
 			}
-		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL);
+		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL_MS);
 		this.isStarted = true;
 	}
 };
@@ -4206,269 +4209,3 @@ function PauseableInterval(func, delay , sender){
 		return false;
 	};
 } //function PauseableInterval()
-
-function replaceAll(str, find, replace) {
-  return str.replace(new RegExp(find, 'g'), replace);
-} //function replaceAll()
-
-window.store = new Store(); 
-
-function Store(){
-}
-
-Store.prototype.localStoreSupport = function() {
-    try {
-        return 'localStorage' in window && window['localStorage'] !== null;
-    } catch (e) {
-        return false;
-    }
-};
-
-Store.prototype.setItem = function(name,value,days) {
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires = "; expires="+date.toGMTString();
-    }
-    else {
-        var expires = "";
-    }
-    if( this.localStoreSupport() ) {
-        localStorage.setItem(name, value);
-    }
-    else {
-        document.cookie = name+"="+value+expires+"; path=/";
-    }
-};
-
-Store.prototype.getItem = function(name) {
-    if( this.localStoreSupport() ) {
-        return localStorage.getItem(name);
-    }
-    else {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-        }
-        return null;
-    }
-};
-
-Store.prototype.getKeys = function(name) {
-	var keys = [];
-    if( this.localStoreSupport() ) {
-        for (var i = 0; i < localStorage.length; i++){
-			keys.push(localStorage.key(i));
-		}
-    }
-    else {
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            var eqIndex = c.indexOf("=");
-            if (eqIndex > -1){ 
-            	keys.push(c.substring(0, eqIndex));
-            }
-        }
-    }
-    return keys;
-};
- 
-Store.prototype.removeItem = function(name) {
-    if( this.localStoreSupport() ) {
-        localStorage.removeItem(name);
-    }
-    else {
-        this.setItem(name,"",-1);
-    }
-};
-
-Store.prototype.clear = function(){
-	if( this.localStoreSupport() ) {
-        localStorage.clear();
-    }
-    else {
-    	var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            var eqIndex = c.indexOf("=");
-            if (eqIndex > -1){ 
-            	this.setItem(c.substring(0, eqIndex), "", -1);
-            }
-        }
-    }	
-};
-
-/**
- * @example
- * 		var image1 = new Image(),
- * 			image2 = document.createElement('img'),
- * 			image1000 = document.getElementsByTagName('img')[0],
- * 			evenArrayIsSupported = [ new Image(), new Image() ];
- *
- *      // Do this before any access to screen. Attention: consumes video memory (pixels).
- * 		var mainMenuOnScreenCache = new OnScreenCache(
- * 			[
- * 				image1,
- * 				image2,
- *		 		image1000,
- *		 		evenArrayIsSupported
- * 			],
- * 			function() {
- * 		    	// do something after all images cached on screen
- * 			}
- * 		);
- *
- * 		// Do this BEFORE any current screen cleanup and BEFORE any other screen preparing/loading
- * 		mainMenuOnScreenCache.destroy();
- *
- * @class OnScreenCache
- * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
- * @param {function} [onCachedCallBack]
- * @param {number} [timeOutInMilliSeconds]
- * @constructor
- */
-function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
-	var id = OnScreenCache.ID_PREFIX + OnScreenCache.nextId++,
-		element = document.createElement('div');
-
-	if(typeof timeOutInMilliSeconds === 'undefined') {
-		timeOutInMilliSeconds = 700;
-	}
-
-	element.id = id;
-	element.setAttribute('style', OnScreenCache.STYLE);
-	this.processImages(imagesArray, element);
-
-	document.body.appendChild(element);
-
-	/**
-	 * @private
-	 * @type {HTMLDivElement}
-	 */
-	this.cacheElement = element;
-
-	/**
-	 * @private
-	 * @type {string}
-	 */
-	this.id = id;
-
-	if(typeof onCachedCallBack !== 'undefined') {
-		//TODO: there is no way to determine that image is completely DRAWN on screen!
-		//TODO: currently this is just a timeout.
-		//TODO: NOTE: image LOADED is not the same as image DRAWN.
-		setTimeout(onCachedCallBack, timeOutInMilliSeconds);
-	}
-}
-
-/**
- * @public
- */
-OnScreenCache.prototype.destroy = function() {
-	var element = this.cacheElement;
-
-	// cacheElement can be detached from screen,
-	// so we can't find it by 'id', so we use reference to it
-	if(element) {
-		if(element.parentNode) {
-			this.removeImages(element);
-			element.parentNode.removeChild(element);
-		}
-		element.innerHTML = '';
-	}
-
-	// if someone did cacheElement.parentNode.innerHTML += 'someThing',
-	// reference this.cacheElement points to OLD instance of element,
-	// and innerHTML recreated new instance, so search by 'id'!
-	if(this.id !== null) {
-		element = document.getElementById(this.id);
-		if(element) {
-			if(element.parentNode) {
-				this.removeImages(element);
-				element.parentNode.removeChild(element);
-			}
-			element.innerHTML = '';
-		}
-	}
-
-	this.cacheElement = null;
-	this.id = null;
-};
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.STYLE =
-	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
-	'-webkit-background-size: 1px 1px;' +
-	'-o-background-size: 1px 1px;' +
-	'-moz-background-size: 1px 1px;' +
-	'-khtml-background-size: 1px 1px;' +
-	'-ms-background-size: 1px 1px;' +
-	'background-size: 1px 1px;';
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
-
-/**
- * @static
- * @private
- * @type {number}
- */
-OnScreenCache.nextId = 0;
-
-/**
- * @private
- * @param {HTMLDivElement|Node} rootElement
- * @param {Array.<Image|HTMLImageElement|Array.<Image|HTMLImageElement>>} imagesArray
- */
-OnScreenCache.prototype.processImages = function(imagesArray, rootElement) {
-	// error protection
-	if(imagesArray) {
-		for(var i = imagesArray.length - 1; i >= 0; i--) {
-			var item = imagesArray[i];
-			// error protection
-			if(!item) {
-				continue;
-			}
-
-			// check if item is array
-			if(Object.prototype.toString.call( item ) === '[object Array]') {
-				this.processImages(item, rootElement);
-			} else {
-				var image = document.createElement('div');
-				image.setAttribute(
-					'style',
-					OnScreenCache.STYLE + "background-image: url('" + item.src + "'); background-repeat: no-repeat;"
-				);
-				rootElement.appendChild(image);
-			}
-		}
-	}
-};
-
-/**
- * @private
- * @param {HTMLDivElement|Node} rootElement
- */
-OnScreenCache.prototype.removeImages = function(rootElement) {
-	if(rootElement) {
-		var el = rootElement.firstElementChild;
-		while(el) {
-			el.style.backgroundImage = '';
-			el = el.nextElementSibling;
-		}
-	}
-};
