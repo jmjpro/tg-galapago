@@ -3940,22 +3940,14 @@ DangerBar.prototype.resume = function() {
 }; 
 
 DangerBar.prototype.update = function(sender) {
-	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
+	var ratio, dangerBar, fillHeight;
 	dangerBar = Galapago.level.dangerBar;
-	fillNormal = dangerBar.danger_bar_fill_1;
-	fillDanger = dangerBar.danger_bar_fill_2;
-	bottomCapNormal = dangerBar.danger_bar_cap_bottom01;
-	bottomCapDanger = dangerBar.danger_bar_cap_bottom02;
 	dangerBar.timeRemainingMs -= DangerBar.REFRESH_INTERVAL_SEC * 1000;
 	ratio = dangerBar.timeRemainingMs / dangerBar.initialTimeMs;
 	console.debug( 'danger bar time remaining ' + dangerBar.timeRemainingMs/1000 + ' sec (' + Math.round(ratio* 100) + '%)' );
 	fillHeight = Math.round(dangerBar.fillHeightInitial * ratio);
 	dangerBar.fillTop += (dangerBar.fillHeight - fillHeight);
 	dangerBar.fillHeight = fillHeight;
-	//YM: the height reduces from the bottom, so we need to shift the top down
-	// by the same amount that we reduce the height
-	fillNormal.height = fillHeight;
-	fillDanger.height = fillHeight;
 	dangerBar.drawImages();
 	if( ratio > 0 && ratio <= DangerBar.RATIO_DANGER) { //0 < ratio <= DangerBar.RATIO_DANGER
 		dangerBar.levelAnimation.animateDangerBarWarning(dangerBar.div.selector, 0, DangerBar.BOTTOM_CAP_TOP);
