@@ -1012,7 +1012,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			if (Galapago.isTimedMode) {
 				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000);
+			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 			if(restoreLookupString){
 				restoreLookup = JSON.parse(restoreLookupString);
 				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
@@ -3862,27 +3862,36 @@ DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
-DangerBar.BOTTOM_CAP_TOP = 383;
+DangerBar.BOTTOM_CAP_TOP = 457;
 DangerBar.DANGER_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_ADJUSTMENT_LEFT = 18;
-DangerBar.FILL_ADJUSTMENT_TOP = 33;
+DangerBar.FILL_ADJUSTMENT_TOP = 31;
 DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.LEFT = 1064;
 DangerBar.FILL_WIDTH = 15;
 DangerBar.IMAGE_MAGNIFICATION = 2;
+DangerBar.CROWN_LEFT = 12;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(imageArray, initialTimeMs) {
+function DangerBar(imageArray, initialTimeMs, levelAnimation) {
 	//this.layerBackground = layerBackground;
+	this.levelAnimation = levelAnimation;
 	this.initImages(imageArray);
-	this.canvas = $('#layer-danger-bar');
-	this.canvas[0].width = this.danger_bar.width;
-	this.canvas[0].height = this.danger_bar.height;
-	this.canvas.css( 'left', DangerBar.LEFT + 'px' );
-	this.canvas.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.layer = this.canvas[0].getContext('2d');
+	this.div = $('#div-danger-bar');
+	this.div.empty();
+	this.div.css( 'left', DangerBar.LEFT + 'px' );
+	this.div.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
+	this.div.css( 'width', this.danger_bar.width + 'px' );
+	this.div.css( 'height', this.danger_bar.height + 'px' );
+	this.divAnimation = $('#div-animation-danger-bar');
+	this.divAnimation.css( 'left', DangerBar.LEFT + 'px' );
+	this.divAnimation.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
+	this.divAnimation.css( 'width', this.danger_bar.width + 'px' );
+	this.divAnimation.css( 'height', this.danger_bar.height - DangerBar.FILL_ADJUSTMENT_TOP + 'px' );
+	this.divAnimation.empty();
+	//this.layer = this.canvas[0].getContext('2d');
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
@@ -3895,6 +3904,8 @@ function DangerBar(imageArray, initialTimeMs) {
 	*/
 	this.numTimesBelowDangerRatio = 0;
 	this.timer = null;
+	this.div.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	this.imageCrown = null;
 	this.drawImages();
 }
 
@@ -3904,7 +3915,6 @@ DangerBar.prototype.initImages = function(imageArray) {
 	var dangerBar;
 	var imageId;
 	dangerBar = this;
-
 	_.each(imageArray, function(image) {
 		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
 		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
@@ -3913,10 +3923,16 @@ DangerBar.prototype.initImages = function(imageArray) {
 }; //DangerBar.prototype.initImages
 
 DangerBar.prototype.drawImages = function() {
-	this.canvas.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	if(this.imageCrown){
+		this.imageCrown.parentNode.removeChild(this.imageCrown);
+	}
+	var imageCrown;
 	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
 	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	//this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
+	imageCrown = LoadingScreen.gal.get("screen-game/danger-bar-crown.png");
+	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, 1.6);
+	this.levelAnimation.animateDangerBar(this.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop);
 }; //DangerBar.prototype.drawImages()
 
 DangerBar.prototype.isRunning = function() {
@@ -3982,13 +3998,15 @@ DangerBar.prototype.update = function(sender) {
 	fillNormal.height = fillHeight;
 	fillDanger.height = fillHeight;
 	//clear the space between the top cap and the bottom cap
-	dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+	//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 	
-	if( ratio > DangerBar.RATIO_DANGER ) {
-		dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
-	}
-	else if( ratio > 0 ) { //0 < ratio <= DangerBar.RATIO_DANGER
-		dangerBar.layer.drawImage( fillDanger, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillDanger.height );
+	//if( ratio > DangerBar.RATIO_DANGER ) {
+		//dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
+		//dangerBar.levelAnimation.animateDangerBar(dangerBar.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop);
+		dangerBar.drawImages();
+	//}
+	if( ratio > 0 && ratio <= DangerBar.RATIO_DANGER) { //0 < ratio <= DangerBar.RATIO_DANGER
+		dangerBar.levelAnimation.animateDangerBarWarning(dangerBar.div.selector, 0, DangerBar.BOTTOM_CAP_TOP);
 
 		if( (ratio <= DangerBar.RATIO_DANGER && dangerBar.numTimesBelowDangerRatio === 0) ||
 		(dangerBar.timeRemainingMs/1000 <= 10 && dangerBar.timeRemainingMs/1000 > 5) ||
@@ -3997,14 +4015,30 @@ DangerBar.prototype.update = function(sender) {
 			dangerBar.playWarningSoundRepeated();
 		}
 	}
-	else { //ratio = 0; timeout!
+	else if(ratio <= 0){ //ratio = 0; timeout!
 		//clear the space between the top cap and the bottom cap, including the bottom cap
-		dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
+		dangerBar.levelAnimation.stopDangerBarAnimations();
+		dangerBar.addImage(dangerBar.div.selector, LoadingScreen.gal.getSprites("screen-game/danger-bar-warning-strip.png")[0], 0, DangerBar.BOTTOM_CAP_TOP, 1);
 		dangerBar.stop();
 		Galapago.level.board.dangerBarEmptied();
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top, magnificationFactor ){
+	var image;
+	image = new Image(); 
+	image.src = sprite.src;
+	image.width = sprite.naturalWidth * magnificationFactor;
+	image.height = sprite.naturalHeight * magnificationFactor;
+	image.style.position = 'absolute';
+	image.style.left = left + 'px';
+	image.style.top = top + 'px';
+	$(parentElementSelector).append(image);
+	return image;
+};
+
 
 //req 4.9.11 time warning
 DangerBar.prototype.playWarningSoundRepeated = function() {

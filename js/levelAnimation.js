@@ -557,8 +557,39 @@ LevelAnimation.prototype.animateSparkles = function(x, y){
 LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, tileMatrix, callback){
 	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, tileMatrix, callback);
 	boardBuildAnimation.start();
-}
+};
 
+LevelAnimation.DANGER_BAR_SPRITE_INTERVAL = 1000;
+LevelAnimation.prototype.animateDangerBar = function(parentElement, left, top) {
+	var sprites;
+	if(this.dangerBarAnimation){
+		this.dangerBarAnimation.stop();
+	}
+	sprites = LoadingScreen.gal.getSprites("screen-game/danger-bar-fill-strip.png");
+	this.dangerBarAnimation = new AnimationSprites(parentElement, null, sprites, LevelAnimation.DANGER_BAR_SPRITE_INTERVAL, left, top, 2);
+	this.dangerBarAnimation.start(true);
+};
+
+LevelAnimation.prototype.animateDangerBarWarning = function(parentElement, left, top) {
+	var sprites;
+	if(this.dangerBarWarningAnimation){
+		return;
+	}
+	sprites = LoadingScreen.gal.getSprites("screen-game/danger-bar-warning-strip.png");
+	this.dangerBarWarningAnimation = new AnimationSprites(parentElement, null, sprites, LevelAnimation.DANGER_BAR_SPRITE_INTERVAL, left, top, 1);
+	this.dangerBarWarningAnimation.start(true);
+};
+
+LevelAnimation.prototype.stopDangerBarAnimations = function() {
+	if(this.dangerBarAnimation){
+		this.dangerBarAnimation.stop();
+		this.dangerBarWarning = null;
+	}
+	if(this.dangerBarWarningAnimation){
+		this.dangerBarWarningAnimation.stop();
+		this.dangerBarWarningAnimation = null;
+	}
+}
 
 LevelAnimation.prototype.stopAllAnimations = function(){
 	for(key in this.animationSprites){
@@ -603,6 +634,14 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 	if(this.powerActivatedAnimation){
 		this.powerActivatedAnimation.stop();
 		this.powerActivatedAnimation = null;
+	}
+	if(this.dangerBarAnimation){
+		this.dangerBarAnimation.stop();
+		this.dangerBarAnimation = null;
+	}
+	if(this.dangerBarWarningAnimation){
+		this.dangerBarWarningAnimation.stop();
+		this.dangerBarWarningAnimation = null;
 	}
 };
 
@@ -1227,6 +1266,9 @@ AnimationSprites.prototype.stop = function(){
 
 AnimationSprites.prototype.animate = function(isContinuous){
 	var nextSprite;
+	nextSprite = this.sprites[this.spriteId];
+	this.currentSprite.src = nextSprite.src;
+	this.currentSprite.id = nextSprite.id;
 	this.spriteId++;
 	if(this.spriteId >= this.sprites.length){
 		if( isContinuous ) {
@@ -1238,11 +1280,6 @@ AnimationSprites.prototype.animate = function(isContinuous){
 				this.callback(this.callback);
 			}
 		}
-	}
-	else {
-		nextSprite = this.sprites[this.spriteId];
-		this.currentSprite.src = nextSprite.src;
-		this.currentSprite.id = nextSprite.id;
 	}
 	return this;
 }; //AnimationSprites.prototype.animate()
