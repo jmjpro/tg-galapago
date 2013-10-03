@@ -554,8 +554,8 @@ LevelAnimation.prototype.animateSparkles = function(x, y){
 	sparklesAnimation.start();
 };
 
-LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, tileMatrix, callback){
-	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, tileMatrix, callback);
+LevelAnimation.prototype.animateBoardBuild = function(creatureLayer, board, callback){
+	var boardBuildAnimation = new BoardBuildAnimation(creatureLayer, board, callback);
 	boardBuildAnimation.start();
 };
 
@@ -884,9 +884,10 @@ MakeMatchAnimation.prototype.animate = function(){
 
 BoardBuildAnimation.ROLLOVER_TIME_INTERVAL=100;
 BoardBuildAnimation.HEIGHT_OFFSET = 15;
-function BoardBuildAnimation(layer, tileMatrix, callback){
+function BoardBuildAnimation(layer, board, callback){
 	this.layer = layer;
-	this.tileMatrix = tileMatrix;
+	this.board = board;
+	this.tileMatrix = board.creatureTileMatrix;
 	this.noOfRows = 1;
 	this.width = Board.TILE_WIDTH;
 	this.height = Board.TILE_HEIGHT;
@@ -902,7 +903,7 @@ BoardBuildAnimation.prototype.start = function(){
 };
 
 BoardBuildAnimation.prototype.animate = function(){
-	var col, row, tile, rowsToDisplay, complete;
+	var col, row, tile, rowsToDisplay, complete, x, y, tileToBeReplaced, point, goldTile;
 	for(col = 0; col < this.tileMatrix.length; col++){
 		if(this.noOfRows > this.tileMatrix[col].length){
 			rowsToDisplay = this.tileMatrix[col].length;
@@ -921,8 +922,27 @@ BoardBuildAnimation.prototype.animate = function(){
 					complete = true;
 					break;
 				}
-				this.layer.clearRect( tile.getXCoord(), y +  this.height , this.width, this.height );
-				tile.drawComplete(false, false, null, y);
+				x = tile.getXCoord();
+				point = [];
+				point[0] = tile.coordinates[0];
+				point[1] = Tile.getRow(y + this.height);
+				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
+				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+					this.layer.clearRect( x, y +  this.height , this.width, this.height );	
+				}
+				point[1] = Tile.getRow(y);
+				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
+				goldTile = null;
+				if(tileToBeReplaced){
+					goldTile = this.board.getGoldTile(tileToBeReplaced);
+				}
+				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+					if(!tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
+						Tile.draw(x, y, goldTile, tile.blob.image, this.board);
+					}else{
+						Tile.draw(x, y, goldTile, null, this.board);
+					}
+				}
 			}
 		}
 		if(complete){
@@ -939,6 +959,8 @@ BoardBuildAnimation.prototype.animate = function(){
 					tile.drawComplete();
 				}else if(tile){
 					tile.drawComplete(false, true);
+				}else{
+					this.layer.clearRect( Tile.getXCoord(col), Tile.getYCoord(row) , this.width, this.height );	
 				}
 			}
 		}

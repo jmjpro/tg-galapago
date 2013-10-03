@@ -984,7 +984,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.animationQ = [];
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function () {
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board, function () {
 			level.board.displayBlobCollections();
 			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
 				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
