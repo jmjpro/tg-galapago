@@ -80,7 +80,7 @@ function Powerup(board ,powerupPoints) {
 };
 Powerup.prototype.updateCheat = function(sender){
 	$('#ppoints').html(sender.score);
-	$('#ptime').html(sender.timer.getTimeLeft()/1000);
+	$('#ptime').html(Math.round(sender.timer.getTimeLeft()/1000));
 };
 Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 	console.log('Powerup CheatCode used');
