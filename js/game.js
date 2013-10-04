@@ -129,8 +129,9 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
-	var theme, subTheme, backgroundBundle, themeBundle;
+	var theme, subTheme, backgroundBundle, themeBundle, dialogLevelLoading;
 	console.debug( 'entering Galapago.setLevel()' );
+	dialogLevelLoading = new DialogLevelLoading();
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
@@ -148,6 +149,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
+				dialogLevelLoading.onLevelLoad();
 				Level.registerEventHandlers();
 			}
 		});
@@ -4144,3 +4146,48 @@ function PauseableInterval(func, delay , sender){
 		return false;
 	};
 } //function PauseableInterval()
+
+DialogLevelLoading.LEVEL_LOADING_DIALOG_SHOW_WAIT_MS = 2000;
+DialogLevelLoading.LEVEL_LOADING_ANIMATION_MS = 300;
+function DialogLevelLoading(){
+	this.levelLoaded = false;
+	this.inerval = null;
+	this.div = $("#div-level-loading");
+	this.screenGameDiv = $('#screen-game'); 
+	this.init();
+}
+
+DialogLevelLoading.prototype.init = function(){
+	var dialogLevelLoading = this;
+	setTimeout(function(){
+		if(!dialogLevelLoading.levelLoaded){
+			dialogLevelLoading.screenGameDiv.addClass("blur");
+			dialogLevelLoading.div.show();
+			dialogLevelLoading.animate();
+		}
+	}, DialogLevelLoading.LEVEL_LOADING_DIALOG_SHOW_WAIT_MS);	
+};
+
+DialogLevelLoading.prototype.animate = function(){
+	var dialogLevelLoading, cycleId, cnt, text; 
+	dialogLevelLoading = this;
+	cycleId = 1;
+	dialogLevelLoading.interval = setInterval(function(){
+		text = "LOADING";
+		for(cnt=0; cnt<cycleId; cnt++){
+			text+= ".";
+		}
+		dialogLevelLoading.div.html(text);
+		cycleId++;
+		if(cycleId > 3){
+			cycleId = 1;
+		}
+	}, DialogLevelLoading.LEVEL_LOADING_ANIMATION_MS);
+};
+
+DialogLevelLoading.prototype.onLevelLoad = function(){
+	this.levelLoaded = true;
+	clearInterval(this.interval);
+	this.screenGameDiv.removeClass("blur");
+	this.div.hide();
+};
