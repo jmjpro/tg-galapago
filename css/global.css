@@ -41,12 +41,20 @@ html, body {
 #div-danger-bar {
 	position: absolute;
 	z-index: 2;
+	width : 52px;
+	height : 514px ;
+	left : 1064px;
+	top : 110px;
 }
 
 #div-animation-danger-bar {
 	position: absolute;
 	z-index: 1;
 	overflow: hidden;
+	width : 52px;
+	height : 483px ;
+	left : 1064px;
+	top : 110px;
 }
 
 canvas, div, li {
