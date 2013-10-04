@@ -129,9 +129,9 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
-	var theme, subTheme, backgroundBundle, themeBundle, dialogLevelLoading;
+	var theme, subTheme, backgroundBundle, themeBundle, resourceLoadingDialog;
 	console.debug( 'entering Galapago.setLevel()' );
-	dialogLevelLoading = new DialogLevelLoading();
+	resourceLoadingDialog = new ResourceLoadingDialog('#screen-game');
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
@@ -149,7 +149,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
-				dialogLevelLoading.onLevelLoad();
+				resourceLoadingDialog.onResourceLoad();
 				Level.registerEventHandlers();
 			}
 		});
@@ -4147,45 +4147,45 @@ function PauseableInterval(func, delay , sender){
 	};
 } //function PauseableInterval()
 
-DialogLevelLoading.LEVEL_LOADING_DIALOG_SHOW_WAIT_MS = 2000;
-DialogLevelLoading.LEVEL_LOADING_ANIMATION_MS = 300;
-function DialogLevelLoading(){
+ResourceLoadingDialog.DIALOG_SHOW_WAIT_MS = 2000;
+ResourceLoadingDialog.LOADING_ANIMATION_MS = 300;
+function ResourceLoadingDialog(parentElementSelector){
 	this.levelLoaded = false;
 	this.inerval = null;
 	this.div = $("#div-level-loading");
-	this.screenGameDiv = $('#screen-game'); 
+	this.screenGameDiv = $(parentElementSelector); 
 	this.init();
 }
 
-DialogLevelLoading.prototype.init = function(){
-	var dialogLevelLoading = this;
+ResourceLoadingDialog.prototype.init = function(){
+	var resourceLoadingDialog = this;
 	setTimeout(function(){
-		if(!dialogLevelLoading.levelLoaded){
-			dialogLevelLoading.screenGameDiv.addClass("blur");
-			dialogLevelLoading.div.show();
-			dialogLevelLoading.animate();
+		if(!resourceLoadingDialog.levelLoaded){
+			resourceLoadingDialog.screenGameDiv.addClass("blur");
+			resourceLoadingDialog.div.show();
+			resourceLoadingDialog.animate();
 		}
-	}, DialogLevelLoading.LEVEL_LOADING_DIALOG_SHOW_WAIT_MS);	
+	}, ResourceLoadingDialog.DIALOG_SHOW_WAIT_MS);	
 };
 
-DialogLevelLoading.prototype.animate = function(){
-	var dialogLevelLoading, cycleId, cnt, text; 
-	dialogLevelLoading = this;
+ResourceLoadingDialog.prototype.animate = function(){
+	var resourceLoadingDialog, cycleId, cnt, text; 
+	resourceLoadingDialog = this;
 	cycleId = 1;
-	dialogLevelLoading.interval = setInterval(function(){
+	resourceLoadingDialog.interval = setInterval(function(){
 		text = "LOADING";
 		for(cnt=0; cnt<cycleId; cnt++){
 			text+= ".";
 		}
-		dialogLevelLoading.div.html(text);
+		resourceLoadingDialog.div.html(text);
 		cycleId++;
 		if(cycleId > 3){
 			cycleId = 1;
 		}
-	}, DialogLevelLoading.LEVEL_LOADING_ANIMATION_MS);
+	}, ResourceLoadingDialog.LOADING_ANIMATION_MS);
 };
 
-DialogLevelLoading.prototype.onLevelLoad = function(){
+ResourceLoadingDialog.prototype.onResourceLoad = function(){
 	this.levelLoaded = true;
 	clearInterval(this.interval);
 	this.screenGameDiv.removeClass("blur");
