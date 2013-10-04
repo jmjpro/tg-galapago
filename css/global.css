@@ -281,9 +281,8 @@ ul.menu li {
 }
 
 .blur {
-	-webkit-filter: blur(3px);
-	-moz-filter: blur(3px);
-	filter: blur(3px);
+ 	opacity: .2 !important;
+    background: transparent none;
 }
 
 #div-level-loading {
