@@ -73,8 +73,15 @@ function Powerup(board ,powerupPoints) {
 		this.updatePowerAchieved();
 	}	
 	//this.addListener();
+	if( QueryString.cheat === 'true' ) {
+		$('#power-up-label').css('display','block');
+		window.setInterval(this.updateCheat, 1000 ,this );
+	}
 };
-
+Powerup.prototype.updateCheat = function(sender){
+	$('#ppoints').html(sender.score);
+	$('#ptime').html(sender.timer.getTimeLeft()/1000);
+};
 Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 	console.log('Powerup CheatCode used');
 	this.score += Powerup.POWER_POINTS;
