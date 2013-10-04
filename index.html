@@ -94,11 +94,11 @@
 				<span id="map-level-score-label"></span><span id="map-level-score"></span>
 			</div>
 			<ul id="map-nav">
-				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
+				<li id="button-play-map-li"><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
+				<li id="button-start-map-li"><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
+				<li id="button-reset-map-li"><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
+				<li id="button-menu-map-li"><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
+				<li id="button-quit-map-li"><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
 			</ul>
 		</div>
 
