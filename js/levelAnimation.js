@@ -128,12 +128,16 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 	}	
 };
 
-LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
-	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites;
+LevelAnimation.prototype.stopCreatureSelectionAnimation = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
+}
+
+LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
+	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites;
+	this.stopCreatureSelectionAnimation();
 	tileActive = board.tileActive;
 	if(!tileActive.blob){
 		return;

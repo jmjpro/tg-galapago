@@ -67,6 +67,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 				board.level.dangerBar.resume();
 			}
 			board.reshuffleService.start();
+			board.powerUp.timerResume();
 			break;
 		case 'option-main-menu' :
 			that = this;
@@ -255,6 +256,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	if(callingObject instanceof Board){
 			callingObject.level.bubbleTip.hideBubbleTip()
 			callingObject.reshuffleService.stop();
+			callingObject.powerUp.timerPause();
 	}
 	this.mouseClickHandler = window.onclick;
 	this.mouseMoveHandler = window.onmousemove;
@@ -336,6 +338,7 @@ DialogMenu.prototype.hide = function() {
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
 		this.callingObject.reshuffleService.start();
+		this.callingObject.powerUp.timerResume();
 	}
 	if(this.callingObject && this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
@@ -463,7 +466,8 @@ DialogMenu.prototype.registerEventHandlers = function() {
 					if(board.level.dangerBar){
 						board.level.dangerBar.resume();
 					}
-					board.reshuffleService.start();				
+					board.reshuffleService.start();			
+					board.powerUp.timerResume();	
 					break;
 				case 'dialog-reset-game':
 					Galapago.levelMap.cleanup();
@@ -518,6 +522,7 @@ DialogMenu.prototype.dialogQuitOptionNo = function() {
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
+		this.callingObject.powerUp.timerResume();
 		this.callingObject.displayQuitButton(true);
 	}
 	else if( this.callingObject instanceof MapScreen ) {
