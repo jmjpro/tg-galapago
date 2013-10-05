@@ -220,22 +220,22 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.profile = 'Default';
 } //LevelMap constructor
 
+LevelMap.prototype.startAnimations = function() {
+	this.animateStartArrowIfNeeded();
+	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+	var completedLevelIds = LevelMap.getLevelsCompleted();
+	if (completedLevelIds.length) {
+		this.levelAnimation.animateBonFire(this.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
+	}
+	this.levelAnimation.animateBombs2(this.screenDiv.selector);
+};
+
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
-
-			that.animateStartArrowIfNeeded();
-			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
-
-			var completedLevelIds = LevelMap.getLevelsCompleted();
-			if (completedLevelIds.length) {
-				that.levelAnimation.animateBonFire(that.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
-			}
-			that.levelAnimation.animateBombs2(that.screenDiv.selector);
-
-			that.drawHotspots();
-
+	that.startAnimations();
+	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
 			var backgroundImage;
@@ -500,7 +500,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 			if(that !== null) {
 				that.cleanup();
 				that = null;
-	}
+			}
 		});
 	}
 	else {
@@ -2765,6 +2765,7 @@ Board.prototype.handleRightArrow = function() {
 		return this; //chainable;
 		}).done();
 	}else if(!this.navigationLock){ // move to powerup if on the rightmost
+		board.level.levelAnimation.stopCreatureSelectionAnimation();
 		board.navigationLock = true;
 		board.tileActive.setInactiveAsync(); 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
@@ -2820,6 +2821,7 @@ Board.prototype.handleLeftArrow = function() {
 		return this; //chainable
 		}).done();
 	} else if(!board.navigationLock){
+		board.level.levelAnimation.stopCreatureSelectionAnimation();
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
 		//board.level.levelAnimation.rolloverAnimation.stop();
