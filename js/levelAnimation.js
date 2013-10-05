@@ -128,8 +128,8 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 	}	
 };
 
-LevelAnimation.prototype.animateScore = function(x, y, text){
-	(new ScoreAnimation(x, y, text)).start();
+LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous){
+	(new ScoreAnimation(x, y, text)).start(isContinuous);
 }
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
@@ -1090,19 +1090,21 @@ StarsAnimation.prototype.animate = function(){
 };
 
 ScoreAnimation.ROLLOVER_TIME_INTERVAL=200;
+ScoreAnimation.MAX_FRAMES = 10;
 function ScoreAnimation(x, y, text){
 	this.div = null;
 	this.interval = null;
 	this.x = x;
 	this.y = y;
 	this.text = text;
+	this.frameCount = 1;
 }
 
-ScoreAnimation.prototype.start = function(){
+ScoreAnimation.prototype.start = function(isContinuous){
 	this.div = new AnimationDiv(this.x, this.y, 26, 26);
 	var scoreAnimation = this;
 	this.interval = setInterval(function() {
-		scoreAnimation.animate();
+		scoreAnimation.animate(isContinuous);
 	}, ScoreAnimation.ROLLOVER_TIME_INTERVAL);
 };
 
@@ -1113,11 +1115,12 @@ ScoreAnimation.prototype.stop = function(){
 	}
 };
 
-ScoreAnimation.prototype.animate = function(){
+ScoreAnimation.prototype.animate = function(isContinuous){
 	this.div.move(this.x + Board.GRID_LEFT, this.y + Board.GRID_TOP);
 	this.div.addText(this.text);
 	this.y = this.y - 40;
-	if((this.y + Board.GRID_TOP) < 0){
+	this.frameCount++;
+	if((!isContinuous && this.frameCount > ScoreAnimation.MAX_FRAMES) || (this.y + Board.GRID_TOP) < 0){
 		this.stop();
 	}
 };

@@ -3317,7 +3317,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 	yCoord = Tile.getXCoord(centerPoint[1]);
 	if(scoreEvent.chainReactionCounter > 1){
 		function scoreChainReactionAnimation(){
-			board.level.levelAnimation.animateScore(xCoord, yCoord, "x" + scoreEvent.chainReactionCounter);
+			board.level.levelAnimation.animateScore(xCoord, yCoord, "x" + scoreEvent.chainReactionCounter, true);
 		}
 		if(board.putInAnimationQ){
 			board.animationQ.push(scoreChainReactionAnimation);
@@ -3326,7 +3326,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 		}
 	}
 	function scoreAnimation(){
-		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score());
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true);
 	}
 	if(board.putInAnimationQ){
 		board.animationQ.push(scoreAnimation);
