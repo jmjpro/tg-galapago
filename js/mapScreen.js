@@ -129,7 +129,7 @@ MapScreen.prototype.addMouseListener = function(){
 			levelMap.stopStartArrowAnimation();	
 			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
 			mapScreen.registerEventHandlers();
-			mapScreen.setNavItem($('#'+this.id));
+			mapScreen.setNavItem( $(this) );
 			evt.preventDefault();
 			evt.stopPropagation();
 		}
