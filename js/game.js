@@ -2152,7 +2152,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		board.reshuffleService.stop();
 		var validMatchWithCollection = false;
 		this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
-		board.removeTriplets(tileTriplets);
+		board.removeTriplets(tileTriplets, tilesMovedEventProcessorResult.scoreEvents);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
 		if(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
@@ -3165,8 +3165,8 @@ Board.prototype.pointEligibleForGeneration = function(point) {
 }; //Board.prototype.pointEligibleForGeneration()
 
 // run an animation removing a matching tile triplet
-Board.prototype.removeTriplets = function(tileTriplets) {
-	var board;
+Board.prototype.removeTriplets = function(tileTriplets, scoreEvents) {
+	var board, counter = 0;
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
@@ -3174,6 +3174,8 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 			board.animateLightningStrikeAsync(tileTriplet);
 		}
 		board.clearTiles(tileTriplet, true);
+		board.animateScores(scoreEvents[counter], tileTriplet);
+		counter++;
 	});
 	return this; //chainable
 }; //Board.prototype.removeTriplets()
@@ -3305,6 +3307,33 @@ Board.prototype.updateScore = function() {
 	this.displayScore();
 	return this; //chainable
 }; //Board.prototype.updateScore
+
+Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
+	var board, pointsArray, centerPoint, xCoord, yCoord;
+	board = this;
+	pointsArray = Tile.tileArrayToPointsArray(matchingTilesSet);
+	centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
+	xCoord = Tile.getXCoord(centerPoint[0]);
+	yCoord = Tile.getXCoord(centerPoint[1]);
+	if(scoreEvent.chainReactionCounter > 1){
+		function scoreChainReactionAnimation(){
+			board.level.levelAnimation.animateScore(xCoord, yCoord, "x" + scoreEvent.chainReactionCounter);
+		}
+		if(board.putInAnimationQ){
+			board.animationQ.push(scoreChainReactionAnimation);
+		}else{
+			scoreChainReactionAnimation();
+		}
+	}
+	function scoreAnimation(){
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score());
+	}
+	if(board.putInAnimationQ){
+		board.animationQ.push(scoreAnimation);
+	}else{
+		scoreAnimation();
+	}
+};
 
 Board.prototype.displayScore = function() {
 	this.scoreElement.html( this.score );
