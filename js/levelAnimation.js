@@ -912,10 +912,6 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 		for(row = 0; row < rowsToDisplay;row++){
 			tile = this.tileMatrix[col][row];
-			if(tile){
-				tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-				//tile.drawComplete(false, true, null, true, true);
-			}
 			if(tile && tile.blob){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
 				if(y < tile.getYCoord()){
