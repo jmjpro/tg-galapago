@@ -7,8 +7,7 @@ BonusFrenzy.Y_OFFSET = 100;
 BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
 BonusFrenzy.START_MOVING_DELAY_MS = 800;
 BonusFrenzy.CREATURE_LAYER_TOP = 100;
-
-
+BonusFrenzy.CREATURE_SCORE = 50;
 
 function BonusFrenzy(board) {
 	var rows, cols;
@@ -169,6 +168,7 @@ BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 			this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 			delete this.randomCreatureMap[key];
 			this.score++;
+			this.board.level.levelAnimation.animateScore(x, y - Board.GRID_TOP, BonusFrenzy.CREATURE_SCORE, false);
 		}
 	}
 };
