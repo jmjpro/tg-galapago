@@ -1397,8 +1397,7 @@ Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
-Board.BUTTON_FONT_SIZE = '17px';
-Board.BUTTON_FONT_NAME = 'JungleFever';
+Board.NAV_BUTTON_WIDTH_PX = 116;
 
 function Board() {
 	this.screenDiv = $('#screen-game');
@@ -2090,14 +2089,14 @@ Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
 	board = this;
 	menuButtonImage = board.blobCollection.button_regular;
 	x -= Level.NAV_LEFT;
-	if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
+	if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
 			board.displayMenuButton(true);
 			board.displayQuitButton(false);
 			board.hotspot = Board.HOTSPOT_MENU;
 			board.handleKeyboardSelect();
 	}
 	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-	if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
+	if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 			board.displayMenuButton(false);
 			board.displayQuitButton(true);
 			board.hotspot = Board.HOTSPOT_QUIT;

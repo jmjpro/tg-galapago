@@ -105,7 +105,7 @@ LevelAnimation.prototype.animateDroppingCreatures = function(animationQ){
 	return deferred.promise;
 };
 
-LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
+LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 	var levelAnimation = this;
 	if(cnt == animationQ.length){
 		deferred.resolve();
@@ -126,17 +126,18 @@ LevelAnimation.prototype.animateDropping= function(animationQ, deferred, cnt){
 			levelAnimation.animateDropping(animationQ, deferred, ++cnt);
 		});
 	}	
-};
+}; //LevelAnimation.prototype.animateDropping()
 
 LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
-}
+} //LevelAnimation.prototype.animateScore()
 
+LevelAnimation.prototype.stopCreatureSelectionAnimation = function(){
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
 	}
-}
+} //LevelAnimation.prototype.stopCreatureSelectionAnimation()
 
 LevelAnimation.prototype.animateCreatureSelection = function(layer, board, markTile){
 	var tileActive, imageId, rolloverImageSpriteSheet, tileMarkSprites;
@@ -264,7 +265,7 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 		if(!startedAnimation){
 			callback();
 		}
-};
+}; //LevelAnimation.prototype.animateCreaturesSwap()
 
 LevelAnimation.prototype.animateBonFire = function(parentElementSelector, completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
