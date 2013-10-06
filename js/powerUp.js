@@ -406,6 +406,7 @@ Powerup.prototype.updatePowerup = function(tripletCount){
   return this.updatePowerAchieved();
 };
 
+
 Powerup.prototype.timerPause = function(){
 	console.log('powerup pause');
 	if(this.timer){
@@ -469,14 +470,17 @@ Powerup.prototype.updatePowerAchieved = function(){
 		if(!this.flipflopPowerAchieved){
 		    this.flipflopPowerAchieved = true;
 			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 25);
+			this.board.level.flashBuubleTip("Game Tips.FlipFlopReady");
 			this.flipflopAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,25]); //[115,222]//[124,262]
 		}else if(!this.firePowerAchieved){
 			this.firePowerAchieved = true;
 			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 100);
+			this.board.level.flashBuubleTip("Game Tips.FireReady");
 			this.fireAnimator = this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,100]); //343
 		}else if(!this.shufflerPowerAchieved){
 			this.shufflerPowerAchieved = true;
 			//levelAnimation.animateSprites(gameBoardSelector, powerupGainedImagePath, posleft, Powerup.TOP + 180);
+			this.board.level.flashBuubleTip("Game Tips.ShufflerReady");
 			this.shufflerAnimator =this.board.level.levelAnimation.animatePowerAchieved(this.animationLayer, [11,180]);//424
 		}
 		this.score -= Powerup.POWER_POINTS;
@@ -563,3 +567,13 @@ Powerup.prototype.update = function() {
 	}
 	this.animatePowerStatus();
 }; //Powerup.prototype.update()
+
+Powerup.prototype.showTip = function(){
+	if(!this.flipflopPowerAchieved && !this.firePowerAchieved && !this.shufflerPowerAchieved){
+		this.board.level.flashBuubleTip("Game Tips.FlipFlopNotReady");
+	}else if(!this.firePowerAchieved){
+		this.board.level.flashBuubleTip("Game Tips.FireNotReady");
+	}else if(!this.shufflerPowerAchieved){
+		this.board.level.flashBuubleTip("Game Tips.ShufflerNotReady");
+	}
+};
