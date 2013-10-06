@@ -28,7 +28,7 @@ Powerup.IMAGE_MAGNIFICATION = 2;
 Powerup.LEFT_ADJUSTMENT = 15;
 Powerup.TOP_ADJUSTMENT = 10;
 Powerup.ANIMATION_LEFT = 11;
-
+Powerup.MIN_POINTS_FOR_TIP = 8;
 
 Powerup.gameImageNames = [
 	'flame-fill',

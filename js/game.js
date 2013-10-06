@@ -2400,7 +2400,7 @@ Board.prototype.handleTileSelect = function(tile) {
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 					board.powerUp.timerPause();
 					board.level.levelAnimation.animateDroppingCreatures(board.animationQ).then(function(){
-						if(board.powerupPointsAchievedInThisSwap >= 8){
+						if(board.powerupPointsAchievedInThisSwap >= Powerup.MIN_POINTS_FOR_TIP){
 							board.powerUp.showTip();
 						}
 						board.animationQ = [];
@@ -2483,7 +2483,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		}
 		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
 		board.handleChangedPointsArray(changedPointsArray);
-		if(board.powerupPointsAchievedInThisSwap >= 8){
+		if(board.powerupPointsAchievedInThisSwap >= Powerup.MIN_POINTS_FOR_TIP){
 			board.powerUp.showTip();
 		}
 		if(dangerBar){
