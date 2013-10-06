@@ -1072,7 +1072,7 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
-		this.board.hideGameScreenLayersForBonusFrenzy();
+		this.board.hilightDiv.hide();
 	}else{
 		this.board.screenDiv.hide();
 		$("#screen-game").children("canvas").each(function() {
@@ -1442,14 +1442,6 @@ Board.prototype.quit = function() {
 	sdkApi.exit();
 	return this; //chainable
 }; //Board.prototype.quit()
-
-Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
-	this.hilightDiv.hide();
-}; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
-
-Board.prototype.showGameScreenLayers = function() {
-	this.hilightDiv.show();
-}; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
 	this.creatureLayer.canvas.focus();
@@ -2331,7 +2323,7 @@ Board.prototype.setComplete = function() {
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.showGameScreenLayers();
+		this.hilightDiv.show();
 	}
 }; //Board.prototype.setComplete()
 
