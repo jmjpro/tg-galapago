@@ -938,9 +938,9 @@ BoardBuildAnimation.prototype.animate = function(){
 				}
 				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
 					if(!tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
-						Tile.draw(x, y, goldTile, tile.blob.image, this.board);
+						Tile.draw(x, y, goldTile, tile.blob.image, this.board, false);
 					}else{
-						Tile.draw(x, y, goldTile, null, this.board);
+						Tile.draw(x, y, goldTile, null, this.board, false);
 					}
 				}
 			}
