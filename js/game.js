@@ -131,7 +131,7 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	var theme, subTheme, backgroundBundle, themeBundle, resourceLoadingDialog;
 	console.debug( 'entering Galapago.setLevel()' );
-	resourceLoadingDialog = new ResourceLoadingDialog('#screen-game');
+	resourceLoadingDialog = new DialogResourceLoading('#screen-game');
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
@@ -4146,48 +4146,3 @@ function PauseableInterval(func, delay , sender){
 		return false;
 	};
 } //function PauseableInterval()
-
-ResourceLoadingDialog.DIALOG_SHOW_WAIT_MS = 2000;
-ResourceLoadingDialog.LOADING_ANIMATION_MS = 300;
-function ResourceLoadingDialog(parentElementSelector){
-	this.levelLoaded = false;
-	this.inerval = null;
-	this.div = $("#div-level-loading");
-	this.screenGameDiv = $(parentElementSelector); 
-	this.init();
-}
-
-ResourceLoadingDialog.prototype.init = function(){
-	var resourceLoadingDialog = this;
-	setTimeout(function(){
-		if(!resourceLoadingDialog.levelLoaded){
-			resourceLoadingDialog.screenGameDiv.addClass("blur");
-			resourceLoadingDialog.div.show();
-			resourceLoadingDialog.animate();
-		}
-	}, ResourceLoadingDialog.DIALOG_SHOW_WAIT_MS);	
-};
-
-ResourceLoadingDialog.prototype.animate = function(){
-	var resourceLoadingDialog, cycleId, cnt, text; 
-	resourceLoadingDialog = this;
-	cycleId = 1;
-	resourceLoadingDialog.interval = setInterval(function(){
-		text = "LOADING";
-		for(cnt=0; cnt<cycleId; cnt++){
-			text+= ".";
-		}
-		resourceLoadingDialog.div.html(text);
-		cycleId++;
-		if(cycleId > 3){
-			cycleId = 1;
-		}
-	}, ResourceLoadingDialog.LOADING_ANIMATION_MS);
-};
-
-ResourceLoadingDialog.prototype.onResourceLoad = function(){
-	this.levelLoaded = true;
-	clearInterval(this.interval);
-	this.screenGameDiv.removeClass("blur");
-	this.div.hide();
-};
