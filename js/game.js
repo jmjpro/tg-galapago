@@ -2200,7 +2200,6 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		if(!validMatchWithCollection){
 			Galapago.audioPlayer.playValidMatch(board.chainReactionCounter);
 		}
-		board.chainReactionCounter++;
 		var verticalPointsSets = Board.getVerticalPointsSets(tileSetsToBeRemoved);
 		changedPointsArray  = board.lowerTilesAbove(verticalPointsSets);
 		//YM: pointsArray can contain duplicates due to overlapping triplets

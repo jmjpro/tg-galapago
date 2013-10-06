@@ -88,6 +88,7 @@ TilesEventProcessor.prototype.tileMoved = function(tileFocal, tilesMovedEventPro
 				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, tilesEventProcessor.board.chainReactionCounter);
 			scoreEvents.push(scoreEvent);
 			tilesEventProcessor.board.scoreEvents.push(scoreEvent);
+			tilesEventProcessor.board.chainReactionCounter++;
 		});
 		tilesMovedEventProcessorResult.matchingTilesSets = tilesMovedEventProcessorResult.matchingTilesSets.concat(matchingTilesSets);
 		tilesMovedEventProcessorResult.totalMatchedTiles = tilesMovedEventProcessorResult.totalMatchedTiles.concat(totalMatchedTiles);
