@@ -1084,6 +1084,7 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.dangerBar.stop();
 	}
     this.board.powerUp.timer.clearInterval();
+    this.dangerBar.div.hide();
 	this.levelAnimation.stopAllAnimations();
 	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
@@ -3664,6 +3665,7 @@ function DangerBar(initialTimeMs, levelAnimation) {
 	this.numTimesBelowDangerRatio = 0;
 	this.timer = null;
 	this.div.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	this.div.css( 'display', 'block' );
 	this.imageCrown = null;
 	this.drawImages();
 }
@@ -3760,7 +3762,6 @@ DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top
 	$(parentElementSelector).append(image);
 	return image;
 };
-
 
 //req 4.9.11 time warning
 DangerBar.prototype.playWarningSoundRepeated = function() {

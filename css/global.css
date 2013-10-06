@@ -45,6 +45,7 @@ html, body {
 	height : 514px ;
 	left : 1064px;
 	top : 110px;
+	display: none;
 }
 
 #div-animation-danger-bar {
