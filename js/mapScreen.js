@@ -78,7 +78,6 @@ MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav, levelMap;
 	mapScreen = this;
 	levelMap = Galapago.levelMap;
-	levelMap.levelAnimation.stopAllAnimations();
 	mapNav = $('#map-nav');
 	//mapNav.onkeydown = function(evt) {
 	window.onkeydown = function(evt) {
@@ -148,7 +147,7 @@ MapScreen.prototype.focusMap = function(levelMap) {
 	this.currentNavItem.css( 'background-image','');
 	this.unregisterEventHandlers();
 	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-	levelMap.startAnimations();
+	//levelMap.startAnimations();
 	levelMap.registerEventHandlers();
 }; //MapScreen.prototype.focusMap()
 
