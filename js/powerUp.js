@@ -28,7 +28,8 @@ Powerup.IMAGE_MAGNIFICATION = 2;
 Powerup.LEFT_ADJUSTMENT = 15;
 Powerup.TOP_ADJUSTMENT = 10;
 Powerup.ANIMATION_LEFT = 11;
-
+Powerup.UPDATE_POINTS_INTERVAL_SEC = 5;
+Powerup.UPDATE_CHEAT_INTERVAL_SEC = 1;
 
 Powerup.gameImageNames = [
 	'flame-fill',
@@ -57,7 +58,13 @@ function Powerup(board ,powerupPoints) {
 	this.layer = $('#' + Powerup.LAYER_POWER_UP)[0].getContext('2d');
 	this.animationLayer = $('#' + Powerup.LAYER_POWERUP_ANIMATION)[0].getContext('2d');
 	this.update();
-	this.timer = new PauseableInterval(this.decrementScore,5000,this);
+	if( QueryString.cheat === 'true' ) {
+		$('#power-up-label').css('display','block');
+		this.timer = new PauseableInterval( this, this.decrementScore, Powerup.UPDATE_POINTS_INTERVAL_SEC * 1000, this.updateCheat, Powerup.UPDATE_CHEAT_INTERVAL_SEC * 1000 );
+	}
+	else {
+		this.timer = new PauseableInterval( this, this.decrementScore, Powerup.UPDATE_POINTS_INTERVAL_SEC * 1000 );
+	}
 	this.score=0;
 	this.flipflopPowerAchieved = false;
 	this.firePowerAchieved = false;
@@ -75,7 +82,7 @@ function Powerup(board ,powerupPoints) {
 	//this.addListener();
 	if( QueryString.cheat === 'true' ) {
 		$('#power-up-label').css('display','block');
-		window.setInterval(this.updateCheat, 1000 ,this );
+		//window.setInterval(this.updateCheat, 1000 ,this );
 	}
 };
 Powerup.prototype.updateCheat = function(sender){

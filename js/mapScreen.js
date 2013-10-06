@@ -59,7 +59,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-reset-map' :
 			//console.log( 'selected reset map button');
-			levelMap.levelAnimation.stopAllAnimations();
+			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
@@ -68,7 +68,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
-			levelMap.levelAnimation.stopAllAnimations();
+			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
@@ -78,6 +78,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav, levelMap;
 	mapScreen = this;
 	levelMap = Galapago.levelMap;
+	levelMap.levelAnimation.stopAllAnimations();
 	mapNav = $('#map-nav');
 	//mapNav.onkeydown = function(evt) {
 	window.onkeydown = function(evt) {
