@@ -80,10 +80,10 @@ function Powerup(board ,powerupPoints) {
 		this.updatePowerAchieved();
 	}	
 	//this.addListener();
-	if( QueryString.cheat === 'true' ) {
+	/*if( QueryString.cheat === 'true' ) {
 		$('#power-up-label').css('display','block');
 		//window.setInterval(this.updateCheat, 1000 ,this );
-	}
+	}*/
 };
 Powerup.prototype.updateCheat = function(sender){
 	$('#ppoints').html(sender.score);
