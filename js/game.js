@@ -2015,12 +2015,12 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 		var menuButtonImage = board.blobCollection.button_regular;
 		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
 		x -= Level.NAV_LEFT;
-		if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
+		if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(true);
 				board.displayQuitButton(false);
 				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
+		}else if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
 				board.tileActive.setInactiveAsync();
 				board.displayMenuButton(false);
 				board.displayQuitButton(true);
