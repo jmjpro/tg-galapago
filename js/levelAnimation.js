@@ -315,6 +315,9 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
+	if(this.animationSprites[galAssetPath]){
+		return;	
+	}
 	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
@@ -346,7 +349,7 @@ LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
 	if(animationSprite){
 		animationSprite.stop();
 	}
-	animationSprite = null;
+	this.animationSprites[galAssetPath] = null;
 } //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
@@ -622,7 +625,10 @@ LevelAnimation.prototype.stopDangerBarAnimations = function() {
 
 LevelAnimation.prototype.stopAllAnimations = function(){
 	for(key in this.animationSprites){
-		this.animationSprites[key].stop();
+		if(this.animationSprites[key]){
+			this.animationSprites[key].stop();
+			this.animationSprites[key] = null;
+		}
 	}
 	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
 		_.each( this.blinkingImages, function( blinkingImage ) {

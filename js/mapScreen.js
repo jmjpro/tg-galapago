@@ -59,7 +59,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-reset-map' :
 			//console.log( 'selected reset map button');
-			//levelMap.levelAnimation.stopAllAnimations();
+			levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
@@ -68,7 +68,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
-			//levelMap.levelAnimation.stopAllAnimations();
+			levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
@@ -137,17 +137,21 @@ MapScreen.prototype.addMouseListener = function(){
 		}
 		
 		element.onmouseout = function(evt){
-			mapScreen.focusMap(Galapago.levelMap);
+			mapScreen.focusMap(Galapago.levelMap, true);
 		}
 	
 	});
 }
 
-MapScreen.prototype.focusMap = function(levelMap) {
+MapScreen.prototype.focusMap = function(levelMap, onlyStartArrowAnimation) {
 	this.currentNavItem.css( 'background-image','');
 	this.unregisterEventHandlers();
 	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-	//levelMap.startAnimations();
+	if(onlyStartArrowAnimation){
+		levelMap.animateStartArrowIfNeeded();
+	}else{
+		levelMap.startAnimations();
+	}
 	levelMap.registerEventHandlers();
 }; //MapScreen.prototype.focusMap()
 
