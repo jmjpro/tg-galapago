@@ -157,7 +157,9 @@ function ScoreTallyingAnimation(board, score){
 
 ScoreTallyingAnimation.prototype.start = function(){
 	var scoreTallyingAnimation = this;
-	this.offset = (this.offset % 10) * 10 ;
+	if((this.offset % 10) != 0){
+		this.offset = this.offset + 10 - (this.offset % 10) ;
+	}
 	if(this.offset < ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES){
 		this.offset = ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES;
 	}
@@ -173,9 +175,10 @@ ScoreTallyingAnimation.prototype.stop = function(){
 
 ScoreTallyingAnimation.prototype.animate = function(){
 	this.currentScore = this.currentScore + this.offset;
-	this.board.scoreElement.html(this.currentScore);
-	if(this.currentScore == this.updatedScore){
+	if(this.currentScore >= this.updatedScore){
 		this.stop();
+	}else{
+		this.board.scoreElement.html(this.currentScore);
 	}
 };
 
