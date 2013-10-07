@@ -349,6 +349,7 @@ ul.galapago-drop-down {
 	width: 900px;
 	height: 480px;
 	overflow: hidden;
+	font-size: 23px;
 }
 
 #help-text-scroll {
@@ -367,22 +368,20 @@ ul.galapago-drop-down {
 }
 
 #dialog-help div.dialog-content p {
-	font-size: 14px;
-	color: black;
+	color: rgb(2, 57, 80);
 }
 
 #dialog-help #paging {
-	font-size: 22px;
-	color: rgb(243,209,111);
+	color: rgb(222, 176, 98);
 }
 
 #pages {
-	width: 150px;
+	width: 151px;
 	display: inline-block;
 }
 
 #current-page{
-	color: rgb(255,255,255);	
+	color: rgb(255,255,179);
 }
 
 .up-down{
@@ -390,9 +389,8 @@ ul.galapago-drop-down {
 }
 
 #dialog-help #version {
-	font-size: 22px;
 	text-align: left;
-	color: rgb(243,209,111);
+	color: rgb(222, 176, 98);
 	margin-top: 40px;
 	padding-left: 50px;
 }
