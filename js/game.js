@@ -148,7 +148,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
-				Level.registerEventHandlers();
+				Galapago.level.registerEventHandlers();
 			}
 		});
 
@@ -742,10 +742,10 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
+/*
 Level.NAV_LEFT = 119;
 Level.NAV_TOP = 520;
 Level.NAV_MARGIN_BOTTOM = 10;
-/*
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 */
@@ -1007,8 +1007,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 
 			level.board.addPowerups();
 			level.board.displayLevelName();
-			level.board.displayMenuButton(false);
-			level.board.displayQuitButton(false);
+			_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
+				level.board.displayNavButton( buttonType, false );
+			});
 			level.board.hilightDiv.css('display','block');
 			level.board.scoreElement.show();
 			level.board.levelNameElement.show();
@@ -1084,7 +1085,10 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.dangerBar.stop();
 	}
     this.board.powerUp.timer.clearInterval();
-    this.dangerBar.div.hide();
+    if( this.dangerBar ) {
+    	this.dangerBar.div.hide();
+    	this.dangerBar.divAnimation.hide();
+    }
 	this.levelAnimation.stopAllAnimations();
 	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
@@ -1115,7 +1119,7 @@ Level.findByName = function(levelName) {
 	return (level.length === 1) ? level[0] : null;
 };
 
-Level.registerEventHandlers = function() {
+Level.prototype.registerEventHandlers = function() {
 	var level, board;
 	level = Galapago.level;
 	board = level.board;
@@ -1140,7 +1144,10 @@ Level.registerEventHandlers = function() {
 		board.handleMouseMoveEvent(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
-	};	
+	};
+
+	this.registerMenuQuitButtonHandlers();
+
 	window.onkeydown = function(evt) {
 		if(board.animationQ.length){
 			return;
@@ -1153,18 +1160,23 @@ Level.registerEventHandlers = function() {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 51:
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					ns.frameWork.debug.profiler.clear();
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						ns.frameWork.debug.profiler.clear();
+					}
 				}
 				break;
 			case 52:
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					var report = ns.frameWork.debug.profiler.getPreparedReport();
-					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
-						console.log(report[i].id + ": " + report[i].own.total);
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						var report = ns.frameWork.debug.profiler.getPreparedReport();
+						for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+							console.log(report[i].id + ": " + report[i].own.total);
+						}
 					}
 				}
-				break;			case 13: // enter
+				break;
+			case 13: // enter
 				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow
@@ -1222,15 +1234,58 @@ Level.registerEventHandlers = function() {
 			default:
 		}
 	};
-}; //Level.registerEventHandlers()
+}; //Level.prototype.registerEventHandlers()
+
+Level.prototype.registerMenuQuitButtonHandlers = function() {
+	var level, board, handleMouseOver, idPrefix, buttonId, hilightId;
+	level = Galapago.level;
+	board = level.board;
+	//set up mouseover, mouseout, and mouseclick event handlers for menu and quit buttons
+	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
+		idPrefix = '#screen-game #game-nav-';
+		buttonId = idPrefix + 'button-' + buttonType;
+		hilightId = idPrefix + 'hilight-' + buttonType;
+
+		handleMouseOver = function(buttonType) {
+			if( board.tileActive ) {
+				board.tileActive.setInactiveAsync();
+			}
+			board.displayNavButton( buttonType, true );
+			board.hotspot = 'hotspot-' + buttonType;
+		};
+
+		$( buttonId ).on( 'mouseover', function() {
+			handleMouseOver(buttonType)
+		});
+		$( buttonId ).on( 'mouseout', function(e) {
+			board.displayNavButton( buttonType, false );
+			board.setActiveTile(board.tileActive);
+			board.hotspot = null;
+		});
+		$( buttonId ).on( 'click', function(e) {
+			handleMouseOver(buttonType); //in case another button was hilighted already with keyboard
+			board.handleKeyboardSelect();
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	});
+} //Level.prototype.registerMenuQuitButtonHandlers()
 
 Level.prototype.unregisterEventHandlers = function() {
+	var idPrefix, buttonId;
 	document.onclick = null;
 	$('#layer-grid').off('click');
 	$('#layer-grid').off('tap');
 	window.onclick = null;
 	window.onmousemove = null;
 	window.onkeydown = null;
+	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
+		idPrefix = '#screen-game #game-nav-';
+		buttonId = idPrefix + 'button-' + buttonType;
+		$( buttonId ).off( 'mouseover' );
+		$( buttonId ).off( 'mouseout' );
+		$( buttonId ).off( 'click' );
+	});
 }; //Level.prototype.unregisterEventHandlers()
 
 function changeCanvasState(stateName) {
@@ -1405,7 +1460,7 @@ Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
-Board.NAV_BUTTON_WIDTH_PX = 116;
+Board.NAV_BUTTON_TYPES = ['menu', 'quit'];
 
 function Board() {
 	this.screenDiv = $('#screen-game');
@@ -1446,6 +1501,15 @@ function Board() {
 	this.powerupPointsAchievedInThisSwap = 0;
 } //Board constructor
 
+Board.prototype.registerEventHandlers = function() {
+	this.level.registerEventHandlers();
+}; //Board.prototype.unregisterEventHandlers()
+
+
+Board.prototype.unregisterEventHandlers = function() {
+	this.level.unregisterEventHandlers();
+}; //Board.prototype.unregisterEventHandlers()
+
 Board.prototype.quit = function() {
 	this.level.cleanup(false);
 	sdkApi.exit();
@@ -1471,37 +1535,29 @@ Board.prototype.displayLevelName = function() {
 	levelNameElement.html( levelNameText );
 }; //Board.protoype.displayLevelName()
 
-Board.prototype.displayMenuButton = function(isActive) {
-	var menuButtonImage, gameButtonCursor;
+Board.prototype.displayNavButton = function(buttonType, isActive) {
+	var otherButtonTypes, otherHilightId, prefixId, menuButtonImage, gameButtonCursor, buttonId, hilightId;
 	menuButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
-	$("#div-menu").css("background-image","url('"+menuButtonImage.src+"')");
+	prefixId = '#screen-game #game-nav-';
+	buttonId = prefixId + 'button-' + buttonType;
+	hilightId = prefixId + 'hilight-' + buttonType;
+	$( buttonId ).css( 'background-image', 'url(' + menuButtonImage.src + ')' );
 	if( isActive ) {
-		this.buttonActive = 'menuButton';
-		$("#div-menucursor").css("background-image","url('"+gameButtonCursor.src +"')");
+		this.buttonActive = buttonType + 'Button';
+		//show hilight for this button and hide hilight from other buttons
+		$( hilightId ).css( 'background-image', 'url(' + gameButtonCursor.src + ')' );
+		otherButtonTypes = _.without( Board.NAV_BUTTON_TYPES, buttonType );
+		_.each( otherButtonTypes, function( buttonType ) {
+			otherHilightId = prefixId + 'hilight-' + buttonType;
+			$( otherHilightId ).css( 'background-image', '' );
+		});
 	}
 	else {
 		this.buttonActive = null;
-		$("#div-menucursor").css("background-image","");
+		$( hilightId ).css( 'background-image', '' );
 	}
-}; //Board.protoype.displayMenuButton()
-	
-Board.prototype.displayQuitButton = function(isActive) {
-	var quitButtonImage, gameButtonCursor;
-	layer = this.navLayer;
-	quitButtonImage = this.level.gameImages.button_regular;
-	gameButtonCursor = this.level.gameImages.button_cursor;
-	$("#div-quit").css("background-image","url('"+quitButtonImage.src+"')");
-	
-	if( isActive ) {
-		this.buttonActive = 'quitButton';
-		$("#div-quitcursor").css("background-image","url('"+gameButtonCursor.src +"')");
-	}
-	else {
-		this.buttonActive = null;
-		$("#div-quitcursor").css("background-image","");
-	}
-}; //Board.protoype.displayQuitButton()
+}; //Board.protoype.displayNavButton()
 
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.powerUpScore);
@@ -2011,28 +2067,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			window.onkeydown = board.powerUp.boardKeyHandler;
 		}
 	}
-	
-	if(board.blobCollection && board.blobCollection.button_regular){
-		var menuButtonImage = board.blobCollection.button_regular;
-		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-		x -= Level.NAV_LEFT;
-		if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
-				board.tileActive.setInactiveAsync();
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
-				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
-				board.tileActive.setInactiveAsync();
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
-				board.hotspot = Board.HOTSPOT_QUIT;
-		}else if(board.hotspot){
-				board.displayMenuButton(false);
-				board.displayQuitButton(false);
-				board.hotspot = null;	
-				board.setActiveTile(board.tileActive);
-		}
-	}	
+
 }; //Board.prototype.handleMouseMoveEvent()
 
 Board.prototype.handleMouseClickEvent = function(evt) {
@@ -2062,9 +2097,6 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 								board.level.bubbleTip.clearBubbleTip();							
 							}
 						}
-						board.displayMenuButton(false);
-						board.displayQuitButton(false);
-						board.hotspot = null;
 						console.log("active tile : "+board.tileActive);
 						board.tileActive.setInactiveAsync().then(function() {
 						console.log("tile : "+tile);
@@ -2080,30 +2112,9 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 				break;
 		}
 		}	
-		this.handleMouseClickForMenuAndQuit(x,y);
 		//powerup handling 
 		this.handleMouseClickForPowerUp(x,y);
 }; //Board.prototype.handleMouseClickEvent()
-
-Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
-	var board, menuButtonImage, quitButtonY
-	board = this;
-	menuButtonImage = board.blobCollection.button_regular;
-	x -= Level.NAV_LEFT;
-	if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
-			board.hotspot = Board.HOTSPOT_MENU;
-			board.handleKeyboardSelect();
-	}
-	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-	if(x> 0 && x< Board.NAV_BUTTON_WIDTH_PX && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
-			board.hotspot = Board.HOTSPOT_QUIT;
-			board.handleKeyboardSelect();
-	}
-}; //Board.prototype.handleMouseClickForMenuAndQuit()
 
 Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 	var board = this;
@@ -2692,7 +2703,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			board.displayMenuButton(false);
+			board.displayNavButton( 'menu', false );
+			board.hotspot = null;
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2701,7 +2713,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			board.displayQuitButton(false);
+			board.displayNavButton( 'quit', false );
+			board.hotspot = null;
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
@@ -2759,8 +2772,8 @@ Board.prototype.handleRightArrow = function() {
 	if( tileRight && !this.navigationLock) {
 		board.navigationLock = true;
 		if(board.hotspot){
-			board.displayMenuButton(false);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', false);
 			board.hotspot = null;
 		}
 		
@@ -2777,8 +2790,7 @@ Board.prototype.handleRightArrow = function() {
 			this.powerUp.addListener();
 			this.hotspot = Board.HOTSPOT_POWERUP;
 		}else{
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
 			board.hotspot = Board.HOTSPOT_MENU;
 		}
 		board.navigationLock = false;
@@ -2815,8 +2827,8 @@ Board.prototype.handleLeftArrow = function() {
 	if( tileLeft && !board.navigationLock) {
 		board.navigationLock=true;
 		if(board.hotspot){
-			board.displayMenuButton(false);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', false);
 			board.hotspot = null;
 		}
 		
@@ -2837,8 +2849,7 @@ Board.prototype.handleLeftArrow = function() {
 			this.hotspot = Board.HOTSPOT_POWERUP;
 			//this.powerUp.canvas.focus();
 		}else{
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
@@ -2875,22 +2886,22 @@ Board.prototype.handleDownArrow = function() {
 	}else if(!board.navigationLock){
 		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_POWERUP){
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}else if(this.hotspot == Board.HOTSPOT_MENU) {
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', true);
 			this.hotspot = Board.HOTSPOT_QUIT;
 		}else if(this.hotspot == Board.HOTSPOT_QUIT){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 				this.powerUp.addListener("down");
 				this.hotspot = Board.HOTSPOT_POWERUP;
-				this.displayMenuButton(false);
-				this.displayQuitButton(false);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', false);
 			}else{
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
+				board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 				this.hotspot = Board.HOTSPOT_MENU;
 			}
 		}
@@ -2928,23 +2939,23 @@ Board.prototype.handleUpArrow = function() {
 	}else if(!board.navigationLock){
 		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_QUIT) {
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 			this.hotspot = Board.HOTSPOT_MENU;
 		}else if(this.hotspot == Board.HOTSPOT_MENU){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 				this.powerUp.addListener("up");
 				this.hotspot = Board.HOTSPOT_POWERUP;
-				board.displayMenuButton(false);
-				board.displayQuitButton(false);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', false);
 			}else{
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', true);
 				this.hotspot = Board.HOTSPOT_QUIT;
 			}
 		}else if(this.hotspot == Board.HOTSPOT_POWERUP){
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', true);
 			board.hotspot = Board.HOTSPOT_QUIT;	
 		}
 		board.navigationLock=false;
@@ -3683,8 +3694,10 @@ function DangerBar(initialTimeMs, levelAnimation) {
 	this.danger_bar = CanvasUtil.magnifyImage(LoadingScreen.gal.get("screen-game/danger-bar.png"), DangerBar.IMAGE_MAGNIFICATION );
 	this.div = $('#div-danger-bar');
 	this.div.empty();
-	this.divAnimation = $('#div-animation-danger-bar');
+	this.div.show();
+	this.divAnimation = $('#div-animation-danger-bar');	
 	this.divAnimation.empty();
+	this.divAnimation.show();
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;

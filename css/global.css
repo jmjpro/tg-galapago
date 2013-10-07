@@ -261,7 +261,7 @@ ul.menu li {
 	position:absolute; 
 }
 
-.gameNav{
+.game-nav-button {
 	position:absolute;
 	left:119px;
 	height:42px;
@@ -274,10 +274,10 @@ ul.menu li {
 	vertical-align:middle;
 }
 
-#div-menu {
+#game-nav-button-menu {
 	top: 520px;
 }
 
-#div-quit {
+#game-nav-button-quit {
 	top: 568px;
 }
