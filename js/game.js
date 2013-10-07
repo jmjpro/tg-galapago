@@ -2165,6 +2165,7 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		var validMatchWithCollection = false;
 		this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
 		this.powerupPointsAchievedInThisSwap += tileTriplets.length;
+		board.removeTriplets(tileTriplets, tilesMovedEventProcessorResult.scoreEvents);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
 		if(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
