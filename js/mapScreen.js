@@ -8,6 +8,7 @@ function MapScreen() {
 	this.currentNavItem = mapNav.children('li:nth-child(1)');
 	galFilePathCursor = MapScreen.GAL_PREFIX + 'button-cursor.png';
 	this.cursor = LoadingScreen.gal.get(galFilePathCursor);
+	this.addMouseListener();
 }
 
 MapScreen.prototype.setImages = function() {
@@ -35,7 +36,9 @@ MapScreen.prototype.setNavItem = function(item) {
 }; //MapScreen.prototype.setNavItem()
 
 MapScreen.prototype.unsetNavItem = function() {
-	this.currentNavItem.css( 'background-image','');
+	if(this.currentNavItem){
+		this.currentNavItem.css( 'background-image','');
+	}
 }
 
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
@@ -56,6 +59,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-reset-map' :
 			//console.log( 'selected reset map button');
+			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
@@ -64,6 +68,7 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
+			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
@@ -116,11 +121,33 @@ MapScreen.prototype.registerEventHandlers = function() {
 	});
 }; //MapScreen.prototype.registerEventHandlers()
 
+MapScreen.prototype.addMouseListener = function(){
+	var mapScreen = this;
+	mapNav = $('#map-nav');
+	_.each(mapNav.children('li'), function( element ) {
+		element.onmouseover = function(evt){
+			var levelMap = Galapago.levelMap;
+			levelMap.unregisterEventHandlers();
+			levelMap.stopStartArrowAnimation();	
+			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
+			mapScreen.registerEventHandlers();
+			mapScreen.setNavItem( $(this) );
+			evt.preventDefault();
+			evt.stopPropagation();
+		}
+		
+		element.onmouseout = function(evt){
+			mapScreen.focusMap(Galapago.levelMap);
+		}
+	
+	});
+}
+
 MapScreen.prototype.focusMap = function(levelMap) {
 	this.currentNavItem.css( 'background-image','');
 	this.unregisterEventHandlers();
 	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
-	levelMap.animateStartArrowIfNeeded();
+	//levelMap.startAnimations();
 	levelMap.registerEventHandlers();
 }; //MapScreen.prototype.focusMap()
 

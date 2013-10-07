@@ -41,12 +41,21 @@ html, body {
 #div-danger-bar {
 	position: absolute;
 	z-index: 2;
+	width : 52px;
+	height : 514px ;
+	left : 1064px;
+	top : 110px;
+	display: none;
 }
 
 #div-animation-danger-bar {
 	position: absolute;
 	z-index: 1;
 	overflow: hidden;
+	width : 52px;
+	height : 483px ;
+	left : 1064px;
+	top : 110px;
 }
 
 canvas, div, li {
@@ -99,7 +108,15 @@ canvas.layer-board {
 	position: absolute;
 	display:  none;
 }
-
+#power-up-label{
+	font-family: 'ArchivoNarrowBold';
+	font-size: 12px;
+	color: red;
+	left:40px;
+	top:350px;
+	position: absolute;
+	display:  none;
+}
 #layer-map-animation {
 	position: absolute;
 	left: 643px;
@@ -244,7 +261,7 @@ ul.menu li {
 	position:absolute; 
 }
 
-.gameNav{
+.game-nav-button {
 	position:absolute;
 	left:119px;
 	height:42px;
@@ -257,10 +274,10 @@ ul.menu li {
 	vertical-align:middle;
 }
 
-#div-menu {
+#game-nav-button-menu {
 	top: 520px;
 }
 
-#div-quit {
+#game-nav-button-quit {
 	top: 568px;
 }

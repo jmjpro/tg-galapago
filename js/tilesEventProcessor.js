@@ -8,6 +8,7 @@ function TilesMovedEventProcessorResult(){
 	this.totalMatchedSuperFriendTiles = [];
 	this.totalTilesAffectedByLightning = [];
 	this.totalTilesAffectedBySuperFriend = [];
+	this.scoreEvents = [];
 }
 /* end class TilesMovedEventProcessorResult */
 
@@ -83,8 +84,11 @@ TilesEventProcessor.prototype.tileMoved = function(tileFocal, tilesMovedEventPro
 			goldTiles = goldTiles.concat(goldTilesAffectedBySuperFriend);
 			totalMatchedGoldTiles = totalMatchedGoldTiles.concat(goldTilesAffectedBySuperFriend);
 			// Score
-			tilesEventProcessor.board.scoreEvents.push(new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
-				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, tilesEventProcessor.board.chainReactionCounter));
+			var scoreEvent = new ScoreEvent(matchingTilesSet.length, goldTiles.length, blockedTiles.length, 
+				cocoonTiles.length, totalTilesAffectedByLightning.length, totalTilesAffectedBySuperFriend.length, tilesEventProcessor.board.chainReactionCounter);
+			scoreEvents.push(scoreEvent);
+			tilesEventProcessor.board.scoreEvents.push(scoreEvent);
+			tilesEventProcessor.board.chainReactionCounter++;
 		});
 		tilesMovedEventProcessorResult.matchingTilesSets = tilesMovedEventProcessorResult.matchingTilesSets.concat(matchingTilesSets);
 		tilesMovedEventProcessorResult.totalMatchedTiles = tilesMovedEventProcessorResult.totalMatchedTiles.concat(totalMatchedTiles);
@@ -94,6 +98,7 @@ TilesEventProcessor.prototype.tileMoved = function(tileFocal, tilesMovedEventPro
 		tilesMovedEventProcessorResult.totalTilesAffectedByLightning = tilesMovedEventProcessorResult.totalTilesAffectedByLightning.concat(totalTilesAffectedByLightning);
 		tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles = tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.concat(totalMatchedSuperFriendTiles);
 		tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend = tilesMovedEventProcessorResult.totalTilesAffectedBySuperFriend.concat(totalTilesAffectedBySuperFriend);
+		tilesMovedEventProcessorResult.scoreEvents = tilesMovedEventProcessorResult.scoreEvents.concat(scoreEvents);
 	}
 }
 

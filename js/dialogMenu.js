@@ -60,13 +60,13 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	switch( optionId ) {
 		case 'option-continue-playing' :
 			this.hide();
-			board.displayMenuButton(false);
 			board.hotspot = null;
 			board.display();
 			if(board.level.dangerBar){
 				board.level.dangerBar.resume();
 			}
 			board.reshuffleService.start();
+			board.powerUp.timerResume();
 			break;
 		case 'option-main-menu' :
 			that = this;
@@ -85,14 +85,10 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			break;
 		case 'option-how-to-play' :
 			this.hide();
-			board.displayMenuButton(false);
-			board.hotspot = null;
 			new DialogHelp(mainCanvasId, board);
 			break;
 		case 'option-options' :
 			this.hide();
-			board.displayMenuButton(false);
-			board.hotspot = null;
 			board.display();
 			break;
 	}
@@ -157,8 +153,6 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 			break;
 		case 'new-game-option-no' :
 			this.hide();
-			board.displayMenuButton(false);
-			board.hotspot = null;
 			board.display();
 			break;
 	}
@@ -255,11 +249,9 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	if(callingObject instanceof Board){
 			callingObject.level.bubbleTip.hideBubbleTip()
 			callingObject.reshuffleService.stop();
+			callingObject.powerUp.timerPause();
 	}
-	this.mouseClickHandler = window.onclick;
-	this.mouseMoveHandler = window.onmousemove;
-	window.onclick =null; window.onmousemove = null;
-	this.windowKeyHandler= window.onkeydown;
+
 	this.dialogId = dialogId;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
@@ -292,8 +284,6 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	}
 
 	this.initialNavItem = this.currentNavItem;
-	this.registerEventHandlers();
-	this.registerMouseHandlers();
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
@@ -326,6 +316,10 @@ DialogMenu.prototype.setDialogBackgroundImage = function() {
 }; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
+	if( this.callingObject && this.callingObject.unregisterEventHandlers ) {
+		this.callingObject.unregisterEventHandlers();
+	}
+	this.registerEventHandlers();
 	this.dialogMenuDOM.show();
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
@@ -336,6 +330,7 @@ DialogMenu.prototype.hide = function() {
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
 		this.callingObject.reshuffleService.start();
+		this.callingObject.powerUp.timerResume();
 	}
 	if(this.callingObject && this.callingObject.registerEventHandlers){
 		this.callingObject.registerEventHandlers();
@@ -374,6 +369,12 @@ DialogMenu.prototype.setNavItem = function(item) {
 DialogMenu.prototype.registerMouseHandlers = function() {
 	var menuButtonSize = this.dialogNav.children().length;
 	var dialogMenu = this;
+
+	this.mouseClickHandler = window.onclick;
+	this.mouseMoveHandler = window.onmousemove;
+	window.onclick =null;
+	window.onmousemove = null;
+
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (dialogMenu.dialogNav.children()[i]);
 		liElement.onmousemove = function(){
@@ -390,6 +391,9 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 DialogMenu.prototype.registerEventHandlers = function() {
 	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector, board;
 	dialogMenu = this;
+
+	this.windowKeyHandler = window.onkeydown;
+
 	lastIndex = dialogMenu.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
@@ -457,13 +461,12 @@ DialogMenu.prototype.registerEventHandlers = function() {
 				case 'dialog-game-menu':
 					dialogMenu.hide();
 					board = dialogMenu.callingObject;
-					board.displayMenuButton(false);
-					board.hotspot = null;
 					board.display();
 					if(board.level.dangerBar){
 						board.level.dangerBar.resume();
 					}
-					board.reshuffleService.start();				
+					board.reshuffleService.start();			
+					board.powerUp.timerResume();	
 					break;
 				case 'dialog-reset-game':
 					Galapago.levelMap.cleanup();
@@ -477,13 +480,9 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			evt.stopPropagation();
 			evt.preventDefault();		
 			break;
-		}
-	};
-	/*
-	$('img.nav-button').on( 'click', function(evt) {
-		
-	});
-	*/
+		} //switch()
+	}; //window.onkeydown()
+	this.registerMouseHandlers();
 }; //DialogMenu.prototype.registerEventHandlers()
 
 DialogMenu.prototype.handleGameMenuLeftRightNavigation = function() {
@@ -503,10 +502,6 @@ DialogMenu.prototype.handleGameMenuLeftRightNavigation = function() {
 };
 
 DialogMenu.prototype.dialogNewGameOptionNo = function(board) {
-	/*this.hide();
-	board.displayMenuButton(false);
-	board.hotspot = null;
-	board.display();*/
 	this.hide();
 	new DialogMenu('screen-game', board, 'dialog-game-menu');
 }; //DialogMenu.prototype.dialogNewGameOptionNo()
@@ -518,7 +513,8 @@ DialogMenu.prototype.dialogQuitOptionNo = function() {
 			this.callingObject.level.dangerBar.resume();
 		}
 		this.callingObject.reshuffleService.start();
-		this.callingObject.displayQuitButton(true);
+		this.callingObject.powerUp.timerResume();
+		//this.callingObject.displayQuitButton(true);
 	}
 	else if( this.callingObject instanceof MapScreen ) {
 		Galapago.mapScreen.focusMap( Galapago.levelMap );

@@ -19,11 +19,7 @@ Galapago.gameImageNames = [
 	'button-regular',
 	'button-cursor'
 ];
-Galapago.dangerBarImageNames = [
-	'danger-bar',
-	'danger-bar-fill-1',
-	'danger-bar-fill-2'
-];
+
 //Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
@@ -111,15 +107,6 @@ Galapago.buildGameImagePaths = function() {
 	return gameImagePaths;
 }; //Galapago.buildGameImagePaths()
 
-Galapago.buildDangerBarImagePaths = function() {
-	var dangerBarImagePaths;
-	dangerBarImagePaths = [];
-	_.each( Galapago.dangerBarImageNames, function(imageName) {
-		dangerBarImagePaths.push(Galapago.GAME_SCREEN_GAL_PREFIX + imageName + Galapago.IMAGE_PATH_SUFFIX);
-	});
-	return dangerBarImagePaths;
-}; //Galapago.buildDangerBarImagePaths()
-
 Galapago.loadJsonAsync = function(jsonFilePath) {
 	var deferred;
 	deferred = Q.defer();
@@ -161,7 +148,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
-				Level.registerEventHandlers();
+				Galapago.level.registerEventHandlers();
 			}
 		});
 
@@ -233,22 +220,22 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.profile = 'Default';
 } //LevelMap constructor
 
+LevelMap.prototype.startAnimations = function() {
+	this.animateStartArrowIfNeeded();
+	this.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
+	this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
+	var completedLevelIds = LevelMap.getLevelsCompleted();
+	if (completedLevelIds.length) {
+		this.levelAnimation.animateBonFire(this.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
+	}
+	this.levelAnimation.animateBombs2(this.screenDiv.selector);
+};
+
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
-
-			that.animateStartArrowIfNeeded();
-			that.drawBlinkingArrows(LevelMap.getHighestLevelCompleted());
-			that.levelAnimation.animateSprites(that.screenDiv.selector, Galapago.collageDirectory + 'map-lava-strip.png');
-
-			var completedLevelIds = LevelMap.getLevelsCompleted();
-			if (completedLevelIds.length) {
-				that.levelAnimation.animateBonFire(that.screenDiv.selector, completedLevelIds, LevelMap.getHighestLevelCompleted().id);
-			}
-			that.levelAnimation.animateBombs2(that.screenDiv.selector);
-
-			that.drawHotspots();
-
+	that.startAnimations();
+	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
 			var backgroundImage;
@@ -513,7 +500,7 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 			if(that !== null) {
 				that.cleanup();
 				that = null;
-	}
+			}
 		});
 	}
 	else {
@@ -755,10 +742,10 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
+/*
 Level.NAV_LEFT = 119;
 Level.NAV_TOP = 520;
 Level.NAV_MARGIN_BOTTOM = 10;
-/*
 Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 */
@@ -780,7 +767,6 @@ function Level(id) {
 	this.mapHotspotRegion = [];
 	this.dangerBar = null;
 	this.gameImages = [];
-	this.dangerBarImages = [];
 	this.layerBackground = null;
 	this.neighbors = {};
 	this.levelAnimation = null;
@@ -943,11 +929,10 @@ Level.prototype.loadSuperFriends = function(creatureSpriteSheet) {
 }; //Level.prototype.loadSuperFriends()
 
 Level.prototype.loadImages = function() {
-	var level, goldImagePaths, gameImagePaths, dangerBarImagePaths, /*levelAnimationImagePaths,*/ levelAnimationImages, image, gameImages;
+	var level, goldImagePaths, gameImagePaths, /*levelAnimationImagePaths,*/ levelAnimationImages, image, gameImages;
 	level = this;	
 	goldImagePaths = level.buildGoldImagePaths();
 	gameImagePaths = Galapago.buildGameImagePaths();
-	dangerBarImagePaths = Galapago.buildDangerBarImagePaths();
 	gameImages = [];
 	level.creatureImages = level.getCreatureImages(level.bgTheme);
 	level.superFriendImages = Galapago.creatureImages['superFriends'];
@@ -958,10 +943,6 @@ Level.prototype.loadImages = function() {
 		gameImages.push( image );
 	});
 	level.initImages(gameImages);
-
-	_.each( dangerBarImagePaths, function( dangerBarImagePath ) {
-		level.dangerBarImages.push( LoadingScreen.gal.get( dangerBarImagePath ) );
-	});
 
 	_.each( goldImagePaths, function( goldImagePath ) {
 		level.goldImages.push( LoadingScreen.gal.get( goldImagePath ) );
@@ -1003,7 +984,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.animationQ = [];
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board.creatureTileMatrix, function () {
+		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board, function () {
 			level.board.displayBlobCollections();
 			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
 				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
@@ -1012,7 +993,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			if (Galapago.isTimedMode) {
 				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(/*level.layerBackground, */level.dangerBarImages, level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 			if(restoreLookupString){
 				restoreLookup = JSON.parse(restoreLookupString);
 				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
@@ -1026,8 +1007,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 
 			level.board.addPowerups();
 			level.board.displayLevelName();
-			level.board.displayMenuButton(false);
-			level.board.displayQuitButton(false);
+			_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
+				level.board.displayNavButton( buttonType, false );
+			});
 			level.board.hilightDiv.css('display','block');
 			level.board.scoreElement.show();
 			level.board.levelNameElement.show();
@@ -1091,7 +1073,7 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
-		this.board.hideGameScreenLayersForBonusFrenzy();
+		this.board.hilightDiv.hide();
 	}else{
 		this.board.screenDiv.hide();
 		$("#screen-game").children("canvas").each(function() {
@@ -1103,6 +1085,10 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.dangerBar.stop();
 	}
     this.board.powerUp.timer.clearInterval();
+    if( this.dangerBar ) {
+    	this.dangerBar.div.hide();
+    	this.dangerBar.divAnimation.hide();
+    }
 	this.levelAnimation.stopAllAnimations();
 	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
 	if(this.levelAnimation.powerAchievedAnimation){
@@ -1133,7 +1119,7 @@ Level.findByName = function(levelName) {
 	return (level.length === 1) ? level[0] : null;
 };
 
-Level.registerEventHandlers = function() {
+Level.prototype.registerEventHandlers = function() {
 	var level, board;
 	level = Galapago.level;
 	board = level.board;
@@ -1158,7 +1144,10 @@ Level.registerEventHandlers = function() {
 		board.handleMouseMoveEvent(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
-	};	
+	};
+
+	this.registerMenuQuitButtonHandlers();
+
 	window.onkeydown = function(evt) {
 		if(board.animationQ.length){
 			return;
@@ -1171,18 +1160,23 @@ Level.registerEventHandlers = function() {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 51:
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					ns.frameWork.debug.profiler.clear();
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						ns.frameWork.debug.profiler.clear();
+					}
 				}
 				break;
 			case 52:
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					var report = ns.frameWork.debug.profiler.getPreparedReport();
-					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
-						console.log(report[i].id + ": " + report[i].own.total);
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						var report = ns.frameWork.debug.profiler.getPreparedReport();
+						for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+							console.log(report[i].id + ": " + report[i].own.total);
+						}
 					}
 				}
-				break;			case 13: // enter
+				break;
+			case 13: // enter
 				board.handleKeyboardSelect();
 				break;
 			case 37: // left arrow
@@ -1240,15 +1234,58 @@ Level.registerEventHandlers = function() {
 			default:
 		}
 	};
-}; //Level.registerEventHandlers()
+}; //Level.prototype.registerEventHandlers()
+
+Level.prototype.registerMenuQuitButtonHandlers = function() {
+	var level, board, handleMouseOver, idPrefix, buttonId, hilightId;
+	level = Galapago.level;
+	board = level.board;
+	//set up mouseover, mouseout, and mouseclick event handlers for menu and quit buttons
+	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
+		idPrefix = '#screen-game #game-nav-';
+		buttonId = idPrefix + 'button-' + buttonType;
+		hilightId = idPrefix + 'hilight-' + buttonType;
+
+		handleMouseOver = function(buttonType) {
+			if( board.tileActive ) {
+				board.tileActive.setInactiveAsync();
+			}
+			board.displayNavButton( buttonType, true );
+			board.hotspot = 'hotspot-' + buttonType;
+		};
+
+		$( buttonId ).on( 'mouseover', function() {
+			handleMouseOver(buttonType)
+		});
+		$( buttonId ).on( 'mouseout', function(e) {
+			board.displayNavButton( buttonType, false );
+			board.setActiveTile(board.tileActive);
+			board.hotspot = null;
+		});
+		$( buttonId ).on( 'click', function(e) {
+			handleMouseOver(buttonType); //in case another button was hilighted already with keyboard
+			board.handleKeyboardSelect();
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	});
+} //Level.prototype.registerMenuQuitButtonHandlers()
 
 Level.prototype.unregisterEventHandlers = function() {
+	var idPrefix, buttonId;
 	document.onclick = null;
 	$('#layer-grid').off('click');
 	$('#layer-grid').off('tap');
 	window.onclick = null;
 	window.onmousemove = null;
 	window.onkeydown = null;
+	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
+		idPrefix = '#screen-game #game-nav-';
+		buttonId = idPrefix + 'button-' + buttonType;
+		$( buttonId ).off( 'mouseover' );
+		$( buttonId ).off( 'mouseout' );
+		$( buttonId ).off( 'click' );
+	});
 }; //Level.prototype.unregisterEventHandlers()
 
 function changeCanvasState(stateName) {
@@ -1387,6 +1424,14 @@ Level.prototype.isNew = function() {
 	return !levelPlayed;
 };
 
+Level.prototype.flashBuubleTip = function(key){
+	var level = this;
+	level.bubbleTip.showBubbleTip(i18n.t(key));
+	Galapago.delay(5000).done(function() {
+		level.bubbleTip.clearBubbleTip( i18n.t(key) );
+	});
+};
+
 Level.isComplete = function(id) {
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	return store.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
@@ -1415,8 +1460,7 @@ Board.HOTSPOT_TILE = 'hotspot-tile';
 Board.HOTSPOT_POWERUP_FLIPFLOP = 'hotspot-powerup-flipflop';
 Board.HOTSPOT_POWERUP_FIREPOWER = 'hotspot-powerup-firepower';
 Board.HOTSPOT_POWERUP_SHUFFLE = 'hotspot-powerup-shuffle';
-Board.BUTTON_FONT_SIZE = '17px';
-Board.BUTTON_FONT_NAME = 'JungleFever';
+Board.NAV_BUTTON_TYPES = ['menu', 'quit'];
 
 function Board() {
 	this.screenDiv = $('#screen-game');
@@ -1454,21 +1498,23 @@ function Board() {
 	this.putInAnimationQ = false;
 	this.navigationLock = false;  // for multiple cursor on game screen
 	this.animationQ = [];
+	this.powerupPointsAchievedInThisSwap = 0;
 } //Board constructor
+
+Board.prototype.registerEventHandlers = function() {
+	this.level.registerEventHandlers();
+}; //Board.prototype.unregisterEventHandlers()
+
+
+Board.prototype.unregisterEventHandlers = function() {
+	this.level.unregisterEventHandlers();
+}; //Board.prototype.unregisterEventHandlers()
 
 Board.prototype.quit = function() {
 	this.level.cleanup(false);
 	sdkApi.exit();
 	return this; //chainable
 }; //Board.prototype.quit()
-
-Board.prototype.hideGameScreenLayersForBonusFrenzy = function() {
-	this.hilightDiv.hide();
-}; //Board.protoype.hideGameScreenLayersForBonusFrenzy()
-
-Board.prototype.showGameScreenLayers = function() {
-	this.hilightDiv.show();
-}; //Board.protoype.showGameScreenLayers()
 
 Board.prototype.display = function() {
 	this.creatureLayer.canvas.focus();
@@ -1489,37 +1535,29 @@ Board.prototype.displayLevelName = function() {
 	levelNameElement.html( levelNameText );
 }; //Board.protoype.displayLevelName()
 
-Board.prototype.displayMenuButton = function(isActive) {
-	var menuButtonImage, gameButtonCursor;
+Board.prototype.displayNavButton = function(buttonType, isActive) {
+	var otherButtonTypes, otherHilightId, prefixId, menuButtonImage, gameButtonCursor, buttonId, hilightId;
 	menuButtonImage = this.level.gameImages.button_regular;
 	gameButtonCursor = this.level.gameImages.button_cursor;
-	$("#div-menu").css("background-image","url('"+menuButtonImage.src+"')");
+	prefixId = '#screen-game #game-nav-';
+	buttonId = prefixId + 'button-' + buttonType;
+	hilightId = prefixId + 'hilight-' + buttonType;
+	$( buttonId ).css( 'background-image', 'url(' + menuButtonImage.src + ')' );
 	if( isActive ) {
-		this.buttonActive = 'menuButton';
-		$("#div-menucursor").css("background-image","url('"+gameButtonCursor.src +"')");
+		this.buttonActive = buttonType + 'Button';
+		//show hilight for this button and hide hilight from other buttons
+		$( hilightId ).css( 'background-image', 'url(' + gameButtonCursor.src + ')' );
+		otherButtonTypes = _.without( Board.NAV_BUTTON_TYPES, buttonType );
+		_.each( otherButtonTypes, function( buttonType ) {
+			otherHilightId = prefixId + 'hilight-' + buttonType;
+			$( otherHilightId ).css( 'background-image', '' );
+		});
 	}
 	else {
 		this.buttonActive = null;
-		$("#div-menucursor").css("background-image","");
+		$( hilightId ).css( 'background-image', '' );
 	}
-}; //Board.protoype.displayMenuButton()
-	
-Board.prototype.displayQuitButton = function(isActive) {
-	var quitButtonImage, gameButtonCursor;
-	layer = this.navLayer;
-	quitButtonImage = this.level.gameImages.button_regular;
-	gameButtonCursor = this.level.gameImages.button_cursor;
-	$("#div-quit").css("background-image","url('"+quitButtonImage.src+"')");
-	
-	if( isActive ) {
-		this.buttonActive = 'quitButton';
-		$("#div-quitcursor").css("background-image","url('"+gameButtonCursor.src +"')");
-	}
-	else {
-		this.buttonActive = null;
-		$("#div-quitcursor").css("background-image","");
-	}
-}; //Board.protoype.displayQuitButton()
+}; //Board.protoype.displayNavButton()
 
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.powerUpScore);
@@ -1850,11 +1888,11 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 		image = tile.blob.image;	
 		goldTile = board.getGoldTile(tile);
 		function drawReplace(){
-			Tile.draw(x, y, goldTile, image, board) ;
+			Tile.draw(x, y, goldTile, image, board, true) ;
 		}
 		if(this.putInAnimationQ){
 			this.animationQ.push(function(){
-				Tile.draw(previousX, previousY, previousGoldTile, null, board) ;
+				Tile.draw(previousX, previousY, previousGoldTile, null, board, true) ;
 				drawReplace();
 			});
 		}else{
@@ -1931,7 +1969,7 @@ Board.prototype.regenerateMatchingCreatureIfAny = function(tile, excludeTileCoor
 				image = tile.blob.image;
 				if(!skipDraw){
 					function draw(){ 
-						Tile.draw(x, y, goldTile, image, board);
+						Tile.draw(x, y, goldTile, image, board, true);
 					}
 					if(board.putInAnimationQ){
 						board.animationQ.push(draw);
@@ -2029,28 +2067,7 @@ Board.prototype.handleMouseMoveEvent = function(evt) {
 			window.onkeydown = board.powerUp.boardKeyHandler;
 		}
 	}
-	
-	if(board.blobCollection && board.blobCollection.button_regular){
-		var menuButtonImage = board.blobCollection.button_regular;
-		var quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-		x -= Level.NAV_LEFT;
-		if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP+menuButtonImage.height)){
-				board.tileActive.setInactiveAsync();
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
-				board.hotspot = Board.HOTSPOT_MENU;
-		}else if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
-				board.tileActive.setInactiveAsync();
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
-				board.hotspot = Board.HOTSPOT_QUIT;
-		}else if(board.hotspot){
-				board.displayMenuButton(false);
-				board.displayQuitButton(false);
-				board.hotspot = null;	
-				board.setActiveTile(board.tileActive);
-		}
-	}	
+
 }; //Board.prototype.handleMouseMoveEvent()
 
 Board.prototype.handleMouseClickEvent = function(evt) {
@@ -2080,9 +2097,6 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 								board.level.bubbleTip.clearBubbleTip();							
 							}
 						}
-						board.displayMenuButton(false);
-						board.displayQuitButton(false);
-						board.hotspot = null;
 						console.log("active tile : "+board.tileActive);
 						board.tileActive.setInactiveAsync().then(function() {
 						console.log("tile : "+tile);
@@ -2098,30 +2112,9 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 				break;
 		}
 		}	
-		this.handleMouseClickForMenuAndQuit(x,y);
 		//powerup handling 
 		this.handleMouseClickForPowerUp(x,y);
 }; //Board.prototype.handleMouseClickEvent()
-
-Board.prototype.handleMouseClickForMenuAndQuit = function(x,y) {
-	var board, menuButtonImage, quitButtonY
-	board = this;
-	menuButtonImage = board.blobCollection.button_regular;
-	x -= Level.NAV_LEFT;
-	if(x> 0 && x< (0 + menuButtonImage.width) && y>Level.NAV_TOP && y< (Level.NAV_TOP + menuButtonImage.height)){
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
-			board.hotspot = Board.HOTSPOT_MENU;
-			board.handleKeyboardSelect();
-	}
-	quitButtonY = Level.NAV_TOP + menuButtonImage.height+10;
-	if(x> 0 && x< (0 + menuButtonImage.width) && y>quitButtonY && y< (quitButtonY + menuButtonImage.height)){
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
-			board.hotspot = Board.HOTSPOT_QUIT;
-			board.handleKeyboardSelect();
-	}
-}; //Board.prototype.handleMouseClickForMenuAndQuit()
 
 Board.prototype.handleMouseClickForPowerUp = function(x,y) {
 	var board = this;
@@ -2171,7 +2164,8 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		board.reshuffleService.stop();
 		var validMatchWithCollection = false;
 		this.powerAchieved = this.powerUp.updatePowerup(tileTriplets.length);
-		board.removeTriplets(tileTriplets);
+		this.powerupPointsAchievedInThisSwap += tileTriplets.length;
+		board.removeTriplets(tileTriplets, tilesMovedEventProcessorResult.scoreEvents);
 		tileSetsToBeRemoved = tileSetsToBeRemoved.concat(tileTriplets);
 		//pointsArray = tilesMovedEventProcessorResult.affectedPointsArray;
 		if(tilesMovedEventProcessorResult.totalMatchedSuperFriendTiles.length > 0 ) {
@@ -2219,7 +2213,6 @@ Board.prototype.handleTriplets = function(tileFocals) {
 		if(!validMatchWithCollection){
 			Galapago.audioPlayer.playValidMatch(board.chainReactionCounter);
 		}
-		board.chainReactionCounter++;
 		var verticalPointsSets = Board.getVerticalPointsSets(tileSetsToBeRemoved);
 		changedPointsArray  = board.lowerTilesAbove(verticalPointsSets);
 		//YM: pointsArray can contain duplicates due to overlapping triplets
@@ -2351,16 +2344,20 @@ Board.prototype.setComplete = function() {
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.showGameScreenLayers();
+		this.hilightDiv.show();
 	}
 }; //Board.prototype.setComplete()
 
 Board.prototype.handleTileSelect = function(tile) {
 	var board, tilePrev, tileCoordinates, dangerBar;
 	board = this;
+	this.powerupPointsAchievedInThisSwap = 0;
 	board.navigationLock = true;
 	console.log("appling navigation lock in handle tile select 2273");
 	tilePrev = this.tileSelected;
+	if(tile){
+		tile.setInactiveAsync();
+	}
 	tileCoordinates = tile.coordinates;
 	dangerBar = board.level.dangerBar;
 	if(tile && !(tile.isCreatureOnly() || tile.hasSuperFriend()) && !this.powerUp.isFireSelected()){
@@ -2405,6 +2402,9 @@ Board.prototype.handleTileSelect = function(tile) {
 					console.log( 'handleTripletsDebugCounter: ' + board.handleTripletsDebugCounter );
 					board.powerUp.timerPause();
 					board.level.levelAnimation.animateDroppingCreatures(board.animationQ).then(function(){
+						if(board.powerupPointsAchievedInThisSwap >= Powerup.MIN_POINTS_FOR_TIP){
+							board.powerUp.showTip();
+						}
 						board.animationQ = [];
 						board.putInAnimationQ = false;
 						board.powerUp.timerResume();
@@ -2485,6 +2485,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		}
 		var changedPointsArray  = this.lowerTilesAbove(Board.getVerticalPointsSets(tileSet));
 		board.handleChangedPointsArray(changedPointsArray);
+		if(board.powerupPointsAchievedInThisSwap >= Powerup.MIN_POINTS_FOR_TIP){
+			board.powerUp.showTip();
+		}
 		if(dangerBar){
 			dangerBar.resume();
 		}
@@ -2629,22 +2632,23 @@ Board.prototype.dangerBarEmptied = function() {
 	this.level.levelAnimation.stopAllAnimations();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
-			  if(tile){
+			 if(tile){
 			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
 				  tile.clear();
-				  
 				}
-			  }
+			}
 		});
 	 });
+	var key = 'Game Tips.OutOfTime';
+	this.level.bubbleTip.showBubbleTip(i18n.t(key));					
 	window.onkeydown=null;	
 	gameboard.hilightDiv.css('display','none');
 	$('#final-score').html(gameboard.score);
 	if( sdkApi.inDemoMode() ){
-			 new DialogMenu('screen-game', gameboard, 'dialog-game-over');
+		new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 	}
 	else{
-			 new DialogMenu('screen-game', gameboard, 'dialog-time-out');
+		new DialogMenu('screen-game', gameboard, 'dialog-time-out');
 	}
 }; //Board.prototype.dangerBarEmptied
 
@@ -2700,7 +2704,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			board.displayMenuButton(false);
+			board.displayNavButton( 'menu', false );
+			board.hotspot = null;
 			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 			//gameMenu.show(this);
@@ -2709,7 +2714,8 @@ Board.prototype.handleKeyboardSelect = function() {
 				this.level.dangerBar.pause();
 			}
 			board.reshuffleService.stop();
-			board.displayQuitButton(false);
+			board.displayNavButton( 'quit', false );
+			board.hotspot = null;
 			new DialogMenu('screen-game', this, 'dialog-quit');
 		    break;
 		case null: //Fallthrough
@@ -2730,10 +2736,7 @@ Board.prototype.handleKeyboardSelect = function() {
 					}).done();
 				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
-					this.level.bubbleTip.showBubbleTip(i18n.t(key));
-					Galapago.delay(5000).done(function(){
-						board.level.bubbleTip.clearBubbleTip( i18n.t(key) );
-					});
+					this.level.flashBuubleTip(key);
 				}
 			}
 			break;
@@ -2770,8 +2773,8 @@ Board.prototype.handleRightArrow = function() {
 	if( tileRight && !this.navigationLock) {
 		board.navigationLock = true;
 		if(board.hotspot){
-			board.displayMenuButton(false);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', false);
 			board.hotspot = null;
 		}
 		
@@ -2781,14 +2784,14 @@ Board.prototype.handleRightArrow = function() {
 		return this; //chainable;
 		}).done();
 	}else if(!this.navigationLock){ // move to powerup if on the rightmost
+		board.level.levelAnimation.stopCreatureSelectionAnimation();
 		board.navigationLock = true;
 		board.tileActive.setInactiveAsync(); 
 	    if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 			this.powerUp.addListener();
 			this.hotspot = Board.HOTSPOT_POWERUP;
 		}else{
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
 			board.hotspot = Board.HOTSPOT_MENU;
 		}
 		board.navigationLock = false;
@@ -2825,8 +2828,8 @@ Board.prototype.handleLeftArrow = function() {
 	if( tileLeft && !board.navigationLock) {
 		board.navigationLock=true;
 		if(board.hotspot){
-			board.displayMenuButton(false);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', false);
 			board.hotspot = null;
 		}
 		
@@ -2836,6 +2839,7 @@ Board.prototype.handleLeftArrow = function() {
 		return this; //chainable
 		}).done();
 	} else if(!board.navigationLock){
+		board.level.levelAnimation.stopCreatureSelectionAnimation();
 		board.navigationLock=true;
 		board.tileActive.setInactiveAsync();
 		//board.level.levelAnimation.rolloverAnimation.stop();
@@ -2846,8 +2850,7 @@ Board.prototype.handleLeftArrow = function() {
 			this.hotspot = Board.HOTSPOT_POWERUP;
 			//this.powerUp.canvas.focus();
 		}else{
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}
 		board.navigationLock=false;
@@ -2884,22 +2887,22 @@ Board.prototype.handleDownArrow = function() {
 	}else if(!board.navigationLock){
 		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_POWERUP){
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 			board.hotspot = Board.HOTSPOT_MENU;	
 		}else if(this.hotspot == Board.HOTSPOT_MENU) {
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', true);
 			this.hotspot = Board.HOTSPOT_QUIT;
 		}else if(this.hotspot == Board.HOTSPOT_QUIT){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 				this.powerUp.addListener("down");
 				this.hotspot = Board.HOTSPOT_POWERUP;
-				this.displayMenuButton(false);
-				this.displayQuitButton(false);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', false);
 			}else{
-				board.displayMenuButton(true);
-				board.displayQuitButton(false);
+				board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 				this.hotspot = Board.HOTSPOT_MENU;
 			}
 		}
@@ -2937,23 +2940,23 @@ Board.prototype.handleUpArrow = function() {
 	}else if(!board.navigationLock){
 		board.navigationLock=true;
 		if(this.hotspot == Board.HOTSPOT_QUIT) {
-			board.displayMenuButton(true);
-			board.displayQuitButton(false);
+			board.displayNavButton('menu', true);
+			board.displayNavButton('quit', false);
 			this.hotspot = Board.HOTSPOT_MENU;
 		}else if(this.hotspot == Board.HOTSPOT_MENU){
 			if(this.powerUp.isPowerAchieved() && (!this.powerUp.isPowerSelected()) ){
 				this.powerUp.addListener("up");
 				this.hotspot = Board.HOTSPOT_POWERUP;
-				board.displayMenuButton(false);
-				board.displayQuitButton(false);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', false);
 			}else{
-				board.displayMenuButton(false);
-				board.displayQuitButton(true);
+				board.displayNavButton('menu', false);
+				board.displayNavButton('quit', true);
 				this.hotspot = Board.HOTSPOT_QUIT;
 			}
 		}else if(this.hotspot == Board.HOTSPOT_POWERUP){
-			board.displayMenuButton(false);
-			board.displayQuitButton(true);
+			board.displayNavButton('menu', false);
+			board.displayNavButton('quit', true);
 			board.hotspot = Board.HOTSPOT_QUIT;	
 		}
 		board.navigationLock=false;
@@ -3181,8 +3184,8 @@ Board.prototype.pointEligibleForGeneration = function(point) {
 }; //Board.prototype.pointEligibleForGeneration()
 
 // run an animation removing a matching tile triplet
-Board.prototype.removeTriplets = function(tileTriplets) {
-	var board;
+Board.prototype.removeTriplets = function(tileTriplets, scoreEvents) {
+	var board, counter = 0;
 	board = this;
 	tileTriplets = _.each( tileTriplets, function(tileTriplet) {
 		console.debug( 'removing triplet ' + Tile.tileArrayToPointsString(tileTriplet) );
@@ -3190,6 +3193,8 @@ Board.prototype.removeTriplets = function(tileTriplets) {
 			board.animateLightningStrikeAsync(tileTriplet);
 		}
 		board.clearTiles(tileTriplet, true);
+		board.animateScores(scoreEvents[counter], tileTriplet);
+		counter++;
 	});
 	return this; //chainable
 }; //Board.prototype.removeTriplets()
@@ -3322,6 +3327,33 @@ Board.prototype.updateScore = function() {
 	return this; //chainable
 }; //Board.prototype.updateScore
 
+Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
+	var board, pointsArray, centerPoint, xCoord, yCoord;
+	board = this;
+	pointsArray = Tile.tileArrayToPointsArray(matchingTilesSet);
+	centerPoint = pointsArray[Math.floor(pointsArray.length / 2)];
+	xCoord = Tile.getXCoord(centerPoint[0]);
+	yCoord = Tile.getXCoord(centerPoint[1]);
+	if(scoreEvent.chainReactionCounter > 1){
+		function scoreChainReactionAnimation(){
+			board.level.levelAnimation.animateScore(xCoord, yCoord, "x" + scoreEvent.chainReactionCounter, true);
+		}
+		if(board.putInAnimationQ){
+			board.animationQ.push(scoreChainReactionAnimation);
+		}else{
+			scoreChainReactionAnimation();
+		}
+	}
+	function scoreAnimation(){
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true);
+	}
+	if(board.putInAnimationQ){
+		board.animationQ.push(scoreAnimation);
+	}else{
+		scoreAnimation();
+	}
+};
+
 Board.prototype.displayScore = function() {
 	this.scoreElement.html( this.score );
 	return this; //chainable
@@ -3376,10 +3408,12 @@ function Tile(board, blob, coordinates, spriteNumber) {
 	this.spriteNumber = spriteNumber;
 }
 
-Tile.draw = function(xCoord, yCoord, goldTile, image, board) {
+Tile.draw = function(xCoord, yCoord, goldTile, image, board, hasBorder) {
 	var layer = board.creatureLayer;
 	layer.clearRect( xCoord, yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	Tile.drawBorderByCoords(layer, Tile.BORDER_COLOR, Tile.BORDER_WIDTH, xCoord, yCoord) ;
+	if( hasBorder ) {
+		Tile.drawBorderByCoords(layer, Tile.BORDER_COLOR, Tile.BORDER_WIDTH, xCoord, yCoord) ;
+	}
 	if( goldTile ) {
 		layer.drawImage( goldTile.blob.image, xCoord, yCoord, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	}
@@ -3477,21 +3511,6 @@ Tile.prototype.setSelectedAsync = function() {
 	var deferred;
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
-	//this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	
-	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	/*var goldTile = this.board.getGoldTile(this)
-		//$('#'+spanId).css('background-size','cover');
-		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_active.src+')');
-	if(goldTile){
-		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );	
-	}else{
-		this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	}
-	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_active, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	*/
 	this.drawComplete(true);
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
@@ -3501,44 +3520,13 @@ Tile.prototype.setSelectedAsync = function() {
 
 Tile.prototype.setUnselected = function() {
 	this.drawComplete();
-	//this.board.gridLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	//this.board.gridLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	
-	//var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	/*var goldTile = this.board.getGoldTile(this);
-	
-		//$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
-	this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	if(goldTile){
-		this.board.creatureLayer.drawImage( goldTile.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	}
-	this.board.creatureLayer.drawImage( this.blob.image, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-*/
 	return this; // chainable
 };
 
 Tile.prototype.clear = function() {
 	var goldAssetPath, imageGold, tileActive;
 	tileActive = this.board.tileActive;
-	//this.board.creatureLayer.clearRect( this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.drawComplete(false, true);
-	/*
-	if(this.board.getGoldTile(this)){
-		goldAssetPath = Galapago.GAME_SCREEN_GAL_PREFIX + 'gold/' + 'gold-1.png';
-		imageGold = LoadingScreen.gal.get(goldAssetPath);
-		if( imageGold ) {
-			this.board.creatureLayer.drawImage(imageGold, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-		}
-		else {
-			console.error( 'unable to find gold image ' + goldAssetPath );
-		}
-	}else{
-		this.board.creatureLayer.drawImage(this.board.level.gameImages.tile_regular, tileActive.getXCoord(), tileActive.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
-	}
-	this.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
-	*/
-	//this.board.creatureLayer.drawImage( this.board.level.gameImages.tile_regular, this.getXCoord(), this.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT );
 };
 
 Tile.prototype.drawBorder = function(color, lineWidth) {	
@@ -3547,7 +3535,6 @@ Tile.prototype.drawBorder = function(color, lineWidth) {
 	x = Tile.getXCoord(this.coordinates[0]);
 	y = Tile.getYCoord(this.coordinates[1]);
 	Tile.drawBorderByCoords(layer, color, lineWidth, x, y) ;
-	
 }; //Tile.prototype.drawBorder()
 
 Tile.drawBorderByCoords = function(layer, color, lineWidth, x, y) {	
@@ -3557,15 +3544,7 @@ Tile.drawBorderByCoords = function(layer, color, lineWidth, x, y) {
 	offset = 1;
 	width = Board.TILE_WIDTH * offset;
 	height = Board.TILE_HEIGHT * offset;
-	//layer.drawImage( this.board.level.gameImages.tile_regular, x, y, width, height );
 	layer.strokeRect(x, y, width, height);
-	
-	/*var spanId = 'span_'+this.coordinates[1]+'_'+this.coordinates[0];
-	$('#'+spanId).css('border', '1px solid '+color);
-	if(!$('#'+spanId).css('backgroundImage')){
-		$('#'+spanId).css('backgroundImage','url('+this.board.level.gameImages.tile_regular.src+')');
-	}*/
-	
 };
 
 Tile.prototype.drawHilight = function() {	
@@ -3695,203 +3674,31 @@ function SuperFriend(image, color) {
 }
 /* end class SuperFriend */
 
-/* class MatrixUtil */
-// helper functions for manipulating matrices and points
-function MatrixUtil() {}
-
-// determine whether or not two matrices have the same width and height
-MatrixUtil.isSameDimensions = function(matrix1, matrix2) {
-	if( matrix1.length === matrix2.length /* compare column count */ &&
-		/* assuming for now a match if the last column's row counts match */
-		matrix1[matrix1.length-1].length === matrix2[matrix2.length-1].length ) {
-		return true;
-	}
-	else {
-		return false;
-	}
-};
-
-// returns the matrix point at a certain distance from a particular point
-MatrixUtil.getNeighborCoordinates = function(coordinates, coordsDistance) {
-	var coordsNeighbor;
-	coordsNeighbor = [];
-	coordsNeighbor[0] = coordinates[0] + coordsDistance[0];
-	coordsNeighbor[1] = coordinates[1] + coordsDistance[1];
-	return coordsNeighbor;
-};
-
-//given a point at row R in a NxM matrix, returns an array of coordinates for points above that point
-MatrixUtil.getNeighborsAbovePoint = function(coordinates) {
-	var neighborPoints, col, row, rowIt;
-	neighborPoints = [];
-	col = coordinates[0];
-	row = coordinates[1];
-	for( rowIt = row - 1; rowIt >= 0; rowIt--) {
-		neighborPoints.push([col, rowIt]);
-	}
-	return neighborPoints;
-};
-
-//utility wrapper for getNeighborsAbove for a set (array) of points
-//first filter only the highest point in the input for a vertical set such as [[0,1],[0,2],[0,3]]
-MatrixUtil.getNeighborsAbovePoints = function(points) {
-	var neighborPoints, neighborsAbovePoint, highestPoint/*, neighborPointsCopy*/;
-	neighborPoints = [];
-
-	if( MatrixUtil.isVerticalPointSet(points) ) {
-		highestPoint = [];
-		highestPoint.push(MatrixUtil.getHighestPoint(points));
-		points = highestPoint;
-	}
-
-	_.each(points, function(point) {
-		neighborsAbovePoint = MatrixUtil.getNeighborsAbovePoint(point);
-		neighborPoints = neighborPoints.concat(neighborsAbovePoint);
-	});
-
-	console.debug('getNeighborsAbovePoints results for input ' +
-		MatrixUtil.pointsArrayToString(points) + ' is ' +
-		MatrixUtil.pointsArrayToString(neighborPoints));
-	return neighborPoints;
-};
-
-/* this is hard-coded right now for a triplet of points but it could be generalized */
-MatrixUtil.isVerticalPointSet = function(points) {
-	if( points.length > 1){
-		var previousCol = points[0][0];
-		var cnt;
-		for( cnt = 1 ; cnt < points.length; cnt++){
-			var currentCol = points[cnt][0];
-			if(previousCol != currentCol){
-				return false;
-			}
-		}
-		return true;
-	} 
-	return false;
-};
-
-//higher points have smaller row numbers
-//first loop to determine the highestRow
-//second loop to return the point with the highestRow
-//TODO investigate doing this in one loop with lodash min/max
-MatrixUtil.getHighestPoint = function(points) {
-	var row, highestRow, highestPoint;
-	highestRow = 99; //a large number, larger than anything we're likely to encounter
-	highestPoint = points[0];
-
-	_.each(points, function(point) {
-		row = point[1];
-		if( row < highestRow ) {
-			highestRow = row;
-		}
-	});
-
-	_.each(points, function(point) {
-		row = point[1];
-		if( highestRow === row ) {
-			highestPoint = point;
-		}
-	});
-	return highestPoint;
-};
-
-MatrixUtil.lowerPointByNRows = function(point, numRows) {
-	return [point[0], point[1] + numRows];
-};
-
-// depending on the number of rows N in the input verticalPoints,
-// return the points in the first N rows of the column that holds those points
-MatrixUtil.getFirstNRowPoints = function(verticalPoints, startIndex) {
-	var firstPoints, rowIt, col;
-	firstPoints = [];
-	rowIt = startIndex + verticalPoints.length - 1;
-	col = verticalPoints[0][0];
-	for(rowIt; rowIt >= startIndex; rowIt--) {
-		firstPoints.push([col, rowIt]);
-	}
-	return firstPoints;
-};
-
-// depending on the number of columns N in the input horizontalPoints,
-// return the points in the first row of those N columms
-MatrixUtil.getNFirstRowPoints = function(horizontalPoints) {
-	var firstPoints, col, row;
-	firstPoints = [];
-	row = 0;
-	_.each(horizontalPoints, function(point) {
-		col = point[0];
-		firstPoints.push([col, 0]);
-	});
-	return firstPoints;
-};
-
-MatrixUtil.pointsArrayToString = function(points) {
-	var pointsString, pointsIt;
-	pointsString = '[';
-	pointsIt = 0;
-	_.each(points, function(point) {
-		pointsString += MatrixUtil.coordinatesToString(point);
-		if( pointsIt < (points.length - 1) ) {
-			pointsString += ', ';
-		}
-		pointsIt++;
-	});
-	pointsString += ']';
-	return pointsString;
-};
-
-MatrixUtil.coordinatesToString = function(coordinates) {
-	return '[' + coordinates[0] + ',' + coordinates[1] + ']';
-};
-
-// determine the points that are about to change once the pointTriplet is removed
-MatrixUtil.getChangingPoints = function(pointsArray) {
-	var pointsAbove, changingPoints;
-	changingPoints = [];
-	console.debug( 'calculating changing points for ' + MatrixUtil.pointsArrayToString(pointsArray) );
-	pointsAbove = MatrixUtil.getNeighborsAbovePoints(pointsArray);
-	changingPoints = changingPoints.concat(pointsArray).concat(pointsAbove);
-	return changingPoints;
-}; //MatrixUtil.getChangingPoints()
-
-/* end class MatrixUtil */
-
 /* begin class DangerBar */
 DangerBar.REFRESH_INTERVAL_SEC = 5;
 DangerBar.RATIO_DANGER = 0.15;
 DangerBar.WARNING_10_SEC = 10;
 DangerBar.WARNING_5_SEC = 5;
 DangerBar.BOTTOM_CAP_TOP = 457;
-DangerBar.DANGER_BAR_TOP = 110;
 DangerBar.CAP_TOP_TOP = 63;
 DangerBar.FILL_ADJUSTMENT_LEFT = 18;
 DangerBar.FILL_ADJUSTMENT_TOP = 31;
 DangerBar.CAP_BOTTOM_TOP = 495;
-DangerBar.LEFT = 1064;
-DangerBar.FILL_WIDTH = 15;
 DangerBar.IMAGE_MAGNIFICATION = 2;
 DangerBar.CROWN_LEFT = 12;
+DangerBar.CROWN_IMAGE_MAGNIFICATION = 1.6;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
-function DangerBar(imageArray, initialTimeMs, levelAnimation) {
-	//this.layerBackground = layerBackground;
+function DangerBar(initialTimeMs, levelAnimation) {
 	this.levelAnimation = levelAnimation;
-	this.initImages(imageArray);
+	this.danger_bar = CanvasUtil.magnifyImage(LoadingScreen.gal.get("screen-game/danger-bar.png"), DangerBar.IMAGE_MAGNIFICATION );
 	this.div = $('#div-danger-bar');
 	this.div.empty();
-	this.div.css( 'left', DangerBar.LEFT + 'px' );
-	this.div.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.div.css( 'width', this.danger_bar.width + 'px' );
-	this.div.css( 'height', this.danger_bar.height + 'px' );
-	this.divAnimation = $('#div-animation-danger-bar');
-	this.divAnimation.css( 'left', DangerBar.LEFT + 'px' );
-	this.divAnimation.css( 'top', DangerBar.DANGER_BAR_TOP + 'px' );
-	this.divAnimation.css( 'width', this.danger_bar.width + 'px' );
-	this.divAnimation.css( 'height', this.danger_bar.height - DangerBar.FILL_ADJUSTMENT_TOP + 'px' );
+	this.div.show();
+	this.divAnimation = $('#div-animation-danger-bar');	
 	this.divAnimation.empty();
-	//this.layer = this.canvas[0].getContext('2d');
+	this.divAnimation.show();
 	this.initialTimeMs = initialTimeMs;
 	this.timeRemainingMs = initialTimeMs;
 	this.fillTop = DangerBar.FILL_ADJUSTMENT_TOP;
@@ -3905,33 +3712,18 @@ function DangerBar(imageArray, initialTimeMs, levelAnimation) {
 	this.numTimesBelowDangerRatio = 0;
 	this.timer = null;
 	this.div.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
+	this.div.css( 'display', 'block' );
 	this.imageCrown = null;
 	this.drawImages();
 }
 
-//dynamically add properties to the DangerBar for each image
-//this makes reference to the images easier later
-DangerBar.prototype.initImages = function(imageArray) {
-	var dangerBar;
-	var imageId;
-	dangerBar = this;
-	_.each(imageArray, function(image) {
-		image = CanvasUtil.magnifyImage( image, DangerBar.IMAGE_MAGNIFICATION );
-		imageId = image.id.substring( Galapago.GAME_SCREEN_GAL_PREFIX.length, image.id.length - Galapago.IMAGE_PATH_SUFFIX.length );
-		dangerBar[replaceAll( imageId, '-', '_' )] = image;
-	});
-}; //DangerBar.prototype.initImages
-
 DangerBar.prototype.drawImages = function() {
+	var imageCrown;
 	if(this.imageCrown){
 		this.imageCrown.parentNode.removeChild(this.imageCrown);
 	}
-	var imageCrown;
-	//this.layer.drawImage( this.danger_bar_cap_top01, DangerBar.LEFT, DangerBar.CAP_TOP_TOP, this.danger_bar_cap_top01.width, this.danger_bar_cap_top01.height );
-	//this.layer.drawImage( this.danger_bar_cap_bottom01, DangerBar.LEFT, DangerBar.CAP_BOTTOM_TOP, this.danger_bar_cap_bottom01.width, this.danger_bar_cap_bottom01.height );
-	//this.layer.drawImage( this.danger_bar_fill_1, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, DangerBar.FILL_WIDTH, this.fillHeight );
 	imageCrown = LoadingScreen.gal.get("screen-game/danger-bar-crown.png");
-	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, 1.6);
+	this.imageCrown = this.addImage(this.div.selector, imageCrown, DangerBar.CROWN_LEFT, this.fillTop - 5, DangerBar.CROWN_IMAGE_MAGNIFICATION);
 	this.levelAnimation.animateDangerBar(this.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop);
 }; //DangerBar.prototype.drawImages()
 
@@ -3939,23 +3731,19 @@ DangerBar.prototype.isRunning = function() {
 	if(!this.timer){
 	return false;
 	}
-	//return this.intervalId >= 0;
 	return this.timer.isRunning();
 }; //DangerBar.prototype.isRunning()
 
 DangerBar.prototype.start = function() {
 	var dangerBar;
 	dangerBar = this;
-	//dangerBar.layer.clearRect( DangerBar.LEFT, DangerBar.CAP_TOP_TOP, DangerBar.FILL_WIDTH, dangerBar.fillTop );
-	this.timer = new PauseableInterval(dangerBar.update,DangerBar.REFRESH_INTERVAL_SEC * 1000,this);
-	//dangerBar.intervalId = setInterval(dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000);
+	this.timer = new PauseableInterval( this, dangerBar.update, DangerBar.REFRESH_INTERVAL_SEC * 1000 );
 	console.debug('starting danger bar timing with ' + dangerBar.timeRemainingMs/1000 + ' sec remaining');
 	return dangerBar; //chainable
 }; //DangerBar.prototype.start()
 
 DangerBar.prototype.stop = function() {
 	console.debug('stopping danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
-	//clearInterval(this.intervalId);
 	if(this.timer){
 		this.timer.clearInterval();
 	}
@@ -3981,30 +3769,15 @@ DangerBar.prototype.resume = function() {
 }; 
 
 DangerBar.prototype.update = function(sender) {
-	var ratio, dangerBar, fillHeight, fillNormal, fillDanger, bottomCapNormal, bottomCapDanger;
+	var ratio, dangerBar, fillHeight;
 	dangerBar = Galapago.level.dangerBar;
-	fillNormal = dangerBar.danger_bar_fill_1;
-	fillDanger = dangerBar.danger_bar_fill_2;
-	bottomCapNormal = dangerBar.danger_bar_cap_bottom01;
-	bottomCapDanger = dangerBar.danger_bar_cap_bottom02;
 	dangerBar.timeRemainingMs -= DangerBar.REFRESH_INTERVAL_SEC * 1000;
 	ratio = dangerBar.timeRemainingMs / dangerBar.initialTimeMs;
 	console.debug( 'danger bar time remaining ' + dangerBar.timeRemainingMs/1000 + ' sec (' + Math.round(ratio* 100) + '%)' );
 	fillHeight = Math.round(dangerBar.fillHeightInitial * ratio);
 	dangerBar.fillTop += (dangerBar.fillHeight - fillHeight);
 	dangerBar.fillHeight = fillHeight;
-	//YM: the height reduces from the bottom, so we need to shift the top down
-	// by the same amount that we reduce the height
-	fillNormal.height = fillHeight;
-	fillDanger.height = fillHeight;
-	//clear the space between the top cap and the bottom cap
-	//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
-	
-	//if( ratio > DangerBar.RATIO_DANGER ) {
-		//dangerBar.layer.drawImage( fillNormal, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop, DangerBar.FILL_WIDTH, fillNormal.height );
-		//dangerBar.levelAnimation.animateDangerBar(dangerBar.divAnimation.selector, DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTop);
-		dangerBar.drawImages();
-	//}
+	dangerBar.drawImages();
 	if( ratio > 0 && ratio <= DangerBar.RATIO_DANGER) { //0 < ratio <= DangerBar.RATIO_DANGER
 		dangerBar.levelAnimation.animateDangerBarWarning(dangerBar.div.selector, 0, DangerBar.BOTTOM_CAP_TOP);
 
@@ -4016,8 +3789,6 @@ DangerBar.prototype.update = function(sender) {
 		}
 	}
 	else if(ratio <= 0){ //ratio = 0; timeout!
-		//clear the space between the top cap and the bottom cap, including the bottom cap
-		//dangerBar.layer.clearRect( DangerBar.FILL_ADJUSTMENT_LEFT, dangerBar.fillTopInitial, DangerBar.FILL_WIDTH, dangerBar.fillHeightInitial );
 		dangerBar.levelAnimation.stopDangerBarAnimations();
 		dangerBar.addImage(dangerBar.div.selector, LoadingScreen.gal.getSprites("screen-game/danger-bar-warning-strip.png")[0], 0, DangerBar.BOTTOM_CAP_TOP, 1);
 		dangerBar.stop();
@@ -4039,7 +3810,6 @@ DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top
 	return image;
 };
 
-
 //req 4.9.11 time warning
 DangerBar.prototype.playWarningSoundRepeated = function() {
 	Galapago.audioPlayer.playTimeWarning();
@@ -4060,7 +3830,14 @@ ReshuffleService.prototype.start = function() {
 	board = this.board;
 	if( !this.reshuffleInterval) {
 		this.reshuffleInterval = setInterval(function(){
-			swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			var validMoveWithGoldFound;
+			if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
+				swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board, true);
+				validMoveWithGoldFound = swapForTripletInfo.tipInfo.initialTile !== null;
+			}
+			if(!validMoveWithGoldFound){
+				swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
+			}
 			validMoveFound = swapForTripletInfo.tipInfo.initialTile !== null;
 			powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 			if(validMoveFound){
@@ -4068,27 +3845,18 @@ ReshuffleService.prototype.start = function() {
 				swapTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.swapTile);
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
-				if(reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2){
-					board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Make Matches'));
-					Galapago.delay(5000).done(function() {
-						board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Make Matches') );
-					});
+				if(validMoveWithGoldFound && (reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2)){
+					board.level.flashBuubleTip('Game Tips.Make Matches');
 				}
 			}
 			if(powerActive && !validMoveFound){
-				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Use PowerUps'));
-				Galapago.delay(5000).done(function() {
-					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Use PowerUps') );
-				});
+				board.level.bubbleTip.flashBuubleTip('Game Tips.Use PowerUps');
 			}
 			if(!powerActive && !validMoveFound){
-				board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.Shuffling Board'));
+				board.level.flashBuubleTip('Game Tips.Shuffling Board');
 				Galapago.audioPlayer.playReshuffle();
 				reshuffleService.board.shuffleBoard();
 				console.log("reshuffled");
-				Galapago.delay(5000).done(function() {
-					board.level.bubbleTip.clearBubbleTip( i18n.t('Game Tips.Shuffling Board') );
-				});
 			}
 		}, ReshuffleService.CHECK_VALID_MOVE_INTERVAL_MS);
 		this.isStarted = true;
@@ -4158,54 +3926,3 @@ MatchFinder.checkIfSwapMakesMatch = function(board, tileToBeMoved, tileToBeRepla
  	}
  	return false;
 }; //MatchFinder.checkIfSwapMakesMatch()
-
-// see @Tyler Whitehouse's answer at http://stackoverflow.com/a/11196395/567525
-function PauseableInterval(func, delay , sender){
-    this.func = func;
-    this.delay = delay;  
-	this.caller = sender;
-    this.triggerSetAt = new Date().getTime();
-    this.triggerTime = this.triggerSetAt + this.delay;
-   // console.log('initial delay '+delay + ' now '+new Date().getTime());
-    this.i = window.setInterval(this.func, this.delay ,sender);
-    this.t_restart = null;
-    this.paused_timeLeft = 0;
-    this.getTimeLeft = function(){
-        var now = new Date();
-        return this.delay - ((now - this.triggerSetAt) % this.delay);
-    };
-    this.pause = function(){
-        this.paused_timeLeft = this.getTimeLeft();
-            //console.log('pause  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
-        window.clearInterval(this.i);
-        this.i = null;
-                //window.setTimeout(this.resume, 4000);
-    };
-    this.reset = function(sender){
-        window.clearInterval(this.i);
-        this.i = null;
-        this.i = window.setInterval(this.func, this.delay,sender);
-    };
-    this.restart = function(sender){
-        sender.i = window.setInterval(sender.func, sender.delay,this.caller);
-    };
-    this.callAndRestart = function(sender){
-      sender.restart(sender);
-      //console.log('callAndRestart function called : ' +' now : '+new Date().getTime());
-      sender.func(this.caller);
-    };
-    this.resume = function(){
-        if (this.i === null){
-           // console.log('resume  time left : '+this.paused_timeLeft +' now : '+new Date().getTime());
-            this.i = window.setTimeout(this.callAndRestart, this.paused_timeLeft, this);
-        }
-    };
-    this.clearInterval = function(){
-           window.clearInterval(this.i);
-    };
-	this.isRunning = function(){
-		if(this.i !== null)
-			return true;
-		return false;
-	};
-} //function PauseableInterval()

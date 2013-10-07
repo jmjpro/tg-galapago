@@ -17,10 +17,16 @@
 		<script src="ext/zepto-touch-1.0.js"></script>
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
+		<script src="ext/store.js"></script>
+		<script src="ext/onScreenCache.js"></script>
+		<script src="ext/imageCollage.js"></script>
+		<script src="ext/canvasUtil.js"></script>
+		<script src="ext/audioPlayer.js"></script>
+		<script src="ext/priorityQueue.js"></script>
+		<script src="ext/pauseableInterval.js"></script>
+		<script src="ext/matrixUtil.js"></script>
 		<script src="../sdk/tgh5.js"></script>
 		<script src="js/util.js"></script>
-		<script src="js/store.js"></script>
-		<script src="js/onScreenCache.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
@@ -28,22 +34,18 @@
 		<script src="js/score.js"></script>
 		<script src="js/blobCollection.js"></script>
 		<script src="js/tilesEventProcessor.js"></script>
-		<script src="js/imageCollage.js"></script>
 		<script src="js/mapScreen.js"></script>
 		<script src="js/levelAnimation.js"></script>
 		<script src="js/loadingScreen.js"></script>
-		<script src="js/canvasUtil.js"></script>
 		<script src="js/powerUp.js"></script>
 		<script src="js/bonusFrenzy.js"></script>
 		<script src="js/bubbleTip.js"></script>
-		<script src="js/audioPlayer.js"></script>
-		<script src="js/priorityQueue.js"></script>
 		<!--script src="ext/profiler.js"--></script>
 		<!-- <script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script> -->
 
 		<script>
 			var sdkApi, galapagoVersion;
-			galapagoVersion = 'Ver. 2.0.3';
+			galapagoVersion = 'Ver. 2.0.4';
 			function loadGame(){
 				//redefine local storage to support cookie fallback
 				window.store = new Store();
@@ -107,14 +109,15 @@
 			<div id="div-hilight" style="z-index: 2;"></div>
 			<div id="current-score"></div>
 			<div id="level-name"></div>
+			<div id="power-up-label">PP points:<span id="ppoints"></span><br/><br/>PP timer:<span id="ptime"></span> sec</div>
 			<canvas id="layer-power-up" width="1" height="1" tabindex="2"></canvas>
 			<div id="div-danger-bar" width="1" height="1"></div>
 			<div id="div-animation-danger-bar" width="1" height="1"></div>
 			<canvas id="layer-collection-key" width="1" height="1"></canvas>
 			<canvas id="layer-power-up-animation" width="1" height="1"></canvas>
 			<canvas id="layer-bob-cervantes" width="1" height="1"></canvas>
-			<div id="div-menu" class="gameNav" tabindex="3"><div id="div-menucursor">MENU</div></div>
-			<div id="div-quit" class="gameNav" tabindex="4"><div id="div-quitcursor">QUIT</div></div>
+			<div id="game-nav-button-menu" class="game-nav-button" tabindex="3"><div id="game-nav-hilight-menu">MENU</div></div>
+			<div id="game-nav-button-quit" class="game-nav-button" tabindex="4"><div id="game-nav-hilight-quit">QUIT</div></div>
 		</div>
 
 		<div id="screen-main-menu" class="canvas-fullscreen">
