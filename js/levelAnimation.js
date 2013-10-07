@@ -588,6 +588,27 @@ LevelAnimation.prototype.animateDangerBarWarning = function(parentElement, left,
 	this.dangerBarWarningAnimation.start(true);
 };
 
+LevelAnimation.DANGER_BAR_MARK_TILE_INTERVAL = 150;
+LevelAnimation.DANGER_BAR_EMPTIED_ANI_RUN_TIME = 3000;
+LevelAnimation.prototype.animateDangerBarEmptied = function(parentElement, tiles, callback) {
+	var sprites, dangerBarEmptiedAnimations, dangerBarEmptiedAnimation, left, top;
+	dangerBarEmptiedAnimations = [];
+	sprites = LoadingScreen.gal.getSprites("collage/game-tile-mark-strip.png");
+	_.each(tiles, function(tile){
+		left = Board.GRID_LEFT - 5 + tile.getXCoord();
+		top = Board.GRID_TOP - 5 + tile.getYCoord();
+		dangerBarEmptiedAnimation = new AnimationSprites(parentElement, null, sprites, LevelAnimation.DANGER_BAR_MARK_TILE_INTERVAL, left, top, 2);
+		dangerBarEmptiedAnimations.push(dangerBarEmptiedAnimation);
+		dangerBarEmptiedAnimation.start(true);
+	});
+	setTimeout(function(){
+		_.each(dangerBarEmptiedAnimations, function(dangerBarEmptiedAnimation){
+			dangerBarEmptiedAnimation.stop();
+		})
+		callback();
+	},LevelAnimation.DANGER_BAR_EMPTIED_ANI_RUN_TIME);
+};
+
 LevelAnimation.prototype.stopDangerBarAnimations = function() {
 	if(this.dangerBarAnimation){
 		this.dangerBarAnimation.stop();
