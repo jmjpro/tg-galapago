@@ -1941,7 +1941,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			}
 		}
 		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
-			this.regenerateMatchingCreatureIfAny(tile, skipDraw);
+			this.regenerateMatchingCreatureIfAny(tile, null ,true);
 		}	
 	}
 	return tile; 
