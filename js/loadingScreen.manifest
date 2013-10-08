@@ -25,7 +25,9 @@
 	{
 		"name": "bg-map-screen",
 		"contents": [
-			"background/map.jpg"
+			"background/map.jpg",
+			"collage/map-hotspots-unlocked.png",
+			"collage/map-hotspots-selected.png"
 		]
 	},
 	{

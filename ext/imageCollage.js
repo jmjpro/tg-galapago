@@ -675,6 +675,18 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [52, 0, 52, 57]}
 		]
 	}
+	"collage/map-hotspots-unlocked.png": {
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
+			{"cell": [17, 0, 104, 57], "id" : "screen-game/danger-bar-warning-strip.png"}
+		]
+	},
+	"collage/map-hotspots-selected.png": {
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
+			{"cell": [17, 0, 104, 57], "id" : "screen-game/danger-bar-warning-strip.png"}
+		]
+	}
 };
 
 /**
