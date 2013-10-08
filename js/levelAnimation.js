@@ -30,7 +30,7 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/powerup-activated-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" }
 ];
 
-function LevelAnimation(layer){
+function LevelAnimation(){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -43,6 +43,7 @@ function LevelAnimation(layer){
 	this.initLightning();
 	this.blinkingImages = [];
 	this.animationSprites = {};
+	this.scoreTallyingAnimation = null;
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -128,9 +129,58 @@ LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 	}	
 }; //LevelAnimation.prototype.animateDropping()
 
-LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous){
+LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, board){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
+	if(displayScore){
+		this.stopScoreTallyingAnimation();
+		this.scoreTallyingAnimation = new ScoreTallyingAnimation(board, text);
+		this.scoreTallyingAnimation.start();
+	}
 } //LevelAnimation.prototype.animateScore()
+
+LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
+	if(this.scoreTallyingAnimation){
+		this.scoreTallyingAnimation.stop();
+	}
+};
+
+ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
+ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES = 10;
+ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 30;
+function ScoreTallyingAnimation(board, score){
+	this.interval = null;
+	this.currentScore = Number(board.scoreElement.html());
+	this.updatedScore = this.currentScore + Number(score);
+	this.board = board;
+	this.offset = Number(score) / ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES;
+}
+
+ScoreTallyingAnimation.prototype.start = function(){
+	var scoreTallyingAnimation = this;
+	if((this.offset % 10) != 0){
+		this.offset = this.offset + 10 - (this.offset % 10) ;
+	}
+	if(this.offset < ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES){
+		this.offset = ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES;
+	}
+	this.interval = setInterval(function(){
+		scoreTallyingAnimation.animate()
+	}, ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS);
+};
+
+ScoreTallyingAnimation.prototype.stop = function(){
+	clearInterval(this.interval);
+	this.board.scoreElement.html(this.updatedScore);
+};
+
+ScoreTallyingAnimation.prototype.animate = function(){
+	this.currentScore = this.currentScore + this.offset;
+	if(this.currentScore >= this.updatedScore){
+		this.stop();
+	}else{
+		this.board.scoreElement.html(this.currentScore);
+	}
+};
 
 LevelAnimation.prototype.stopCreatureSelectionAnimation = function(){
 	if(this.rolloverAnimation){

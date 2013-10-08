@@ -3328,6 +3328,7 @@ Board.prototype.randomCreature = function(creatureTypes) {
 }; //Board.prototype.randomCreature()
 
 Board.prototype.updateScore = function() {
+	this.level.levelAnimation.stopScoreTallyingAnimation();
 	this.score += Score.consolidateScores(this.scoreEvents);
 	this.displayScore();
 	return this; //chainable
@@ -3351,7 +3352,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 		}
 	}
 	function scoreAnimation(){
-		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true);
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board);
 	}
 	if(board.putInAnimationQ){
 		board.animationQ.push(scoreAnimation);
