@@ -14,16 +14,16 @@
 	white-space: nowrap;
 }
 
-.transparent {
-	opacity: 0.5;
-}
-
 ul.menu {
 	list-style-type: none;
 }
 
 ul.menu li {
 	border:1px solid #000;
+}
+
+.transparent {
+	opacity: 0.5;
 }
 
 .blur {
