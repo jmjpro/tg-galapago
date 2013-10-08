@@ -377,7 +377,7 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (dialogMenu.dialogNav.children()[i]);
-		liElement.onmousemove = function(){
+		liElement.onmouseover = function(){
 			dialogMenu.setNavItem($('#'+this.id));
 		}
 		liElement.onclick = function(){

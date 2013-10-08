@@ -120,7 +120,7 @@ DialogHelp.prototype.registerMouseHandlers = function() {
 	var dialogHelp = this;
 	for(var i =0 ; i< menuButtonSize ; i++){
 		var liElement = (dialogHelp.dialogNav.children()[i]);
-		liElement.onmousemove = function(){
+		liElement.onmouseover = function(){
 			dialogHelp.setNavItem($('#'+this.id));
 		}
 		liElement.onclick = function(){
