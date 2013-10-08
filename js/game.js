@@ -386,7 +386,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 			level = Galapago.levels[levelIt];
 			mapHotspotRegion = level.mapHotspotRegion;
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
-				if(level.isUnlocked){
+				if(level.isUnlocked && levelMap.hotspotLevel != level){
 					levelMap.setHotspotLevel(level);
 				}
 				break;
