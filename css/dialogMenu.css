@@ -404,3 +404,20 @@ ul.galapago-drop-down {
 #dialog-help .button-medium {
 	height: 61px;
 }
+
+#div-level-loading {
+	display: none;
+	position: absolute;
+	background: url("../res/img/background/dialog-small-no-title.png");
+	width: 544px;
+	height: 264px;
+	top: 228px;
+	left: 368px;
+	z-index: 999;
+	font-family: 'JungleFever';
+	font-size: 26px;
+	color: rgba(255,255,255, 100);
+	line-height: 264px;
+	text-align: center;
+	background-size: 100%;
+}

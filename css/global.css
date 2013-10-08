@@ -284,20 +284,3 @@ ul.menu li {
  	opacity: .2 !important;
     background: transparent none;
 }
-
-#div-level-loading {
-	display: none;
-	position: absolute;
-	background: url("../res/img/background/dialog-small-no-title.png");
-	width: 408px;
-	height: 201px;
-	top: 293px;
-	left: 504px;
-	z-index: 999;
-	font-family: 'JungleFever';
-	font-size: 39px;
-	color: rgba(255,255,255, 100);
-	line-height: 213px;
-	text-indent: 90px;
-	background-size: 100%;
-}
