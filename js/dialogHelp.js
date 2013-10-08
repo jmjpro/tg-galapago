@@ -9,7 +9,7 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 		case 'option-scroll' :
 			//scrollDiv.scrollTop += scrollDiv.clientHeight;
 			//dialogHelp.callback.call();
-			this.scrollDiv[0].scrollByPages(1);
+			this.scrollDiv[0].scrollBy(0, this.scrollDivHeightOffset);
 			break;
 		case 'option-help-close' :
 			this.hide();
@@ -47,6 +47,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
 	this.show();
+	this.scrollDivHeightOffset = this.scrollDiv[0].scrollHeight / DialogHelp.MAX_PAGE;  	
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
@@ -153,9 +154,9 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			dialogHelp.currentPage--;
 			dialogHelp.setArrow('down', true);
 			if( dialogHelp.currentPage >= 1 ) {
-				if(dialogHelp.scrollDiv[0].scrollByPages){
-					dialogHelp.scrollDiv[0].scrollByPages(-1);
-				}
+				//if(dialogHelp.scrollDiv[0].scrollBy){
+					dialogHelp.scrollDiv[0].scrollTop = (dialogHelp.currentPage -1) * dialogHelp.scrollDivHeightOffset;
+				//}
 			}
 			if( dialogHelp.currentPage === 1 ) {
 				dialogHelp.setArrow('up', false);
@@ -173,9 +174,9 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			dialogHelp.currentPage++;
 			dialogHelp.setArrow('up', true);
 			if( dialogHelp.currentPage <= DialogHelp.MAX_PAGE ) {
-				if(dialogHelp.scrollDiv[0].scrollByPages){
-					dialogHelp.scrollDiv[0].scrollByPages(1);
-				}
+				//if(dialogHelp.scrollDiv[0].scrollBy){
+					dialogHelp.scrollDiv[0].scrollTop = (dialogHelp.currentPage -1) * dialogHelp.scrollDivHeightOffset;
+				//}
 			}
 			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
 				dialogHelp.setArrow('down', false);
@@ -215,7 +216,7 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
 	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
 	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
+	$('#current-page').html(this.currentPage);
 	$('#page-count').html(DialogHelp.MAX_PAGE);
 	if( this.currentPage === 1) {
 		$('#version').html(galapagoVersion);
