@@ -674,7 +674,7 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 0, 52, 57]},
 			{"cell": [52, 0, 52, 57]}
 		]
-	}
+	},
 	"collage/map-hotspots-unlocked.png": {
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
