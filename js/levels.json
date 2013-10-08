@@ -12,7 +12,7 @@
 					{"right-down":[235,335]}
 				}
 			],
-			"dangerBarSeconds" : "30",
+			"dangerBarSeconds" : "400",
 			"difficulty":"0.5",
 			"creatureColors":["R","G","B","V","P"],
 			"blobPositions" : [
