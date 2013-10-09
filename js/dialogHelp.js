@@ -9,7 +9,7 @@ DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 		case 'option-scroll' :
 			//scrollDiv.scrollTop += scrollDiv.clientHeight;
 			//dialogHelp.callback.call();
-			this.scrollDiv[0].scrollBy(0, this.scrollDivHeightOffset);
+			this.scrollDiv[0].scrollByPages(1);
 			break;
 		case 'option-help-close' :
 			this.hide();
@@ -47,7 +47,8 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
 	this.show();
-	this.scrollDivHeightOffset = this.scrollDiv[0].scrollHeight / DialogHelp.MAX_PAGE;  	
+	this.scrollDivHeightOffset = 262;
+	DialogHelp.MAX_PAGE = Math.ceil(this.scrollDiv[0].scrollHeight /  this.scrollDivHeightOffset); 	
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
@@ -216,7 +217,7 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
 	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
 	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(this.currentPage);
+	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
 	$('#page-count').html(DialogHelp.MAX_PAGE);
 	if( this.currentPage === 1) {
 		$('#version').html(galapagoVersion);
