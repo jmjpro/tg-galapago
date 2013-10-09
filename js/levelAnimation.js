@@ -955,7 +955,7 @@ BoardBuildAnimation.prototype.animate = function(){
 				if(!tileToBeReplaced){
 					this.layer.clearRect( x, y +  this.height , this.width, this.height );	
 				}
-				else if(tileToBeReplaced && (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+				else if( tileToBeReplaced && !tileToBeReplaced.isCollectionKeyCreature() ) {
 					goldTile = this.board.getGoldTile(tileToBeReplaced);
 					Tile.draw(x, y + this.height, goldTile, null, this.board, false);
 				}
@@ -966,8 +966,8 @@ BoardBuildAnimation.prototype.animate = function(){
 				if(tileToBeReplaced){
 					goldTile = this.board.getGoldTile(tileToBeReplaced);
 				}
-				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
-					if(tile.blob && !tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
+				if( !(tileToBeReplaced && tileToBeReplaced.isCollectionKeyCreature()) ) {
+					if( tile.blob && !tile.isCollectionKeyCreature() ) {
 						Tile.draw(x, y, goldTile, tile.blob.image, this.board, false);
 					}else{
 						Tile.draw(x, y, goldTile, null, this.board, false);

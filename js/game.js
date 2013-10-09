@@ -2635,7 +2635,7 @@ Board.prototype.dangerBarEmptied = function() {
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
 			 if(tile){
-			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+			   if( !( gameboard.getGoldTile(tile) || tile.isCollectionKeyCreature() ) ) {
 				  tile.clear();
 				}else{
 					tilesRemaining.push(tile);
@@ -2672,13 +2672,14 @@ Board.prototype.saveBoard = function() {
 				   x = tile.coordinates[1];
 				   key = y + '_' + x;
 			   restoreLookup[key]= null;
-			   if(gameboard.getGoldTile(tile) || tile.isPlain()){
-					  originalBlogconfig = originalblogPositions[x][y];
-				  if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
-				  restoreLookup[key]='11'; 
-				  }else{
-				   restoreLookup[key]=originalBlogconfig; 
-				  }
+			   if(gameboard.getGoldTile(tile) || tile.isPlain()) {
+					originalBlogconfig = originalblogPositions[x][y];
+					//TODO jj add constants here for '21' and '11' strings
+					if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
+						restoreLookup[key]='11'; 
+					} else {
+				   		restoreLookup[key]=originalBlogconfig; 
+					}
 				}
 				else if(tile.hasSuperFriend() || tile.isBlocked() || tile.isCocooned()){
 					restoreLookup[key]= tile.blobConfig;
@@ -3592,6 +3593,10 @@ Tile.prototype.isCreatureOnly = function()  {
 	return this.spriteNumber == Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 };
 
+Tile.prototype.isCollectionKeyCreature = function()  {
+	return this.isBlocked() || this.isCocooned() || this.hasSuperFriend();
+};
+
 Tile.prototype.hasLightningCreature = function()  {
 	return this.blob.creatureType && this.blob.creatureType.startsWith('t');
 };
@@ -3599,6 +3604,7 @@ Tile.prototype.hasLightningCreature = function()  {
 Tile.prototype.hasSuperFriend = function()  {
 	return this.blob && this.blob.blobType === 'SUPER_FRIEND';
 };
+
 
 //static
 Tile.posToPixels = function(pos, basePixels) {
