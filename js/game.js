@@ -129,8 +129,9 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
-	var theme, subTheme, backgroundBundle, themeBundle;
+	var theme, subTheme, backgroundBundle, themeBundle, resourceLoadingDialog;
 	console.debug( 'entering Galapago.setLevel()' );
+	resourceLoadingDialog = new DialogResourceLoading('#screen-game');
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
@@ -148,6 +149,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
+				resourceLoadingDialog.onResourceLoad();
 				Galapago.level.registerEventHandlers();
 			}
 		});
