@@ -22,10 +22,6 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
 	this.dialogId = 'dialog-help';
-	this.mouseClickHandler = window.onclick;
-	this.mouseMoveHandler = window.onmousemove;
-	window.onclick =null;
-	window.onmousemove = null;
 	this.windowKeyHandler= window.onkeydown;
 	this.dialogMenuDOM = $('#' + this.dialogId);
 	this.setDialogBackgroundImage();
@@ -104,8 +100,6 @@ DialogHelp.prototype.hide = function() {
 		window.onkeydown = this.windowKeyHandler;
 	}
 	this.callingScreen.removeClass('transparent');
-	window.onclick =this.mouseClickHandler; 
-	window.onmousemove = this.mouseMoveHandler;
 }; //DialogHelp.prototype.hide()
 
 DialogHelp.prototype.setNavItem = function(item) {
@@ -118,19 +112,22 @@ DialogHelp.prototype.setNavItem = function(item) {
 }; //DialogHelp.prototype.setNavItem()
 
 DialogHelp.prototype.registerMouseHandlers = function() {
-	var menuButtonSize = this.dialogNav.children().length;
 	var dialogHelp = this;
-	for(var i =0 ; i< menuButtonSize ; i++){
-		var liElement = (dialogHelp.dialogNav.children()[i]);
-		liElement.onmouseover = function(){
-			dialogHelp.setNavItem($('#'+this.id));
-		}
-		liElement.onclick = function(){
-			dialogHelp.currentNavItem[0]=this;
-			dialogHelp.selectHandler(dialogHelp);
-		}
-		
-	}
+	dialogHelp.dialogNav.children().each( function() {
+		$(this).on( 'mouseover', function() {
+			dialogHelp.setNavItem( $(this) );
+		});
+		$(this).on( 'click', function() {
+			dialogHelp.currentNavItem = $(this);
+			dialogHelp.selectHandler( dialogHelp );
+		});	
+	});
+	$( '#dialog-help-up' ).on( 'click', function() {
+		dialogHelp.handleUpArrow();
+	});
+	$( '#dialog-help-down' ).on( 'click', function() {
+		dialogHelp.handleDownArrow();
+	});
 } //DialogHelp.prototype.registerMouseHandlers()
 
 DialogHelp.prototype.registerEventHandlers = function() {
@@ -190,7 +187,6 @@ DialogHelp.prototype.handleUpArrow = function() {
 }; //DialogHelp.prototype.handleUpArrow()
 
 DialogHelp.prototype.handleDownArrow = function() {
-	this.handleDownArrow();
 	if( this.currentPage === this.maxPage ) {
 		return this;
 	}
@@ -211,16 +207,14 @@ DialogHelp.prototype.handleDownArrow = function() {
 }; //DialogHelp.prototype.handleDownArrow()
 
 DialogHelp.prototype.unregisterEventHandlers = function() {
-	var menuButtonSize, dialogHelp, i, liElement;
 	window.onkeydown = null;
 	$('div.help-text-scroll').off( 'scroll');
-	menuButtonSize = this.dialogNav.children().length;
-	dialogHelp = this;
-	for(i =0 ; i< menuButtonSize ; i++){
-		liElement = (dialogHelp.dialogNav.children()[i]);
-		liElement.onmousemove =null;
-		liElement.onclick = null;
-	}
+	this.dialogNav.children().each( function() {
+		$(this).off( 'mouseover' );
+		$(this).off( 'click' );
+	});
+	$( '#dialog-help-up' ).off( 'click' );
+	$( '#dialog-help-down' ).off( 'click' );
 }; //DialogHelp.prototype.unregisterEventHandlers()
 
 
@@ -242,7 +236,7 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 
 DialogHelp.prototype.setArrow = function(direction, isEnabled) {
 	var arrowSelector, galResourcePath, imageArrow;
-	arrowSelector = '#' + direction;
+	arrowSelector = '#dialog-help-' + direction;
 	galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-';
 	if( isEnabled ) {
 		galResourcePath += 'hilight';
