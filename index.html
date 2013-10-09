@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script>document.writeln('<title>' + document.domain + ': Galapago</title>');</script>
+		<script src="ext/queryString.js"></script>
+		<script>
+			var pageTitle;
+			pageTitle = '<title>' + document.domain + ': Galapago';
+			if( QueryString.cheat ) {
+				pageTitle += ' cheat mode';
+			}
+			pageTitle += '</title>';
+			document.writeln(pageTitle);
+		</script>
 		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
 		<link rel="stylesheet" type="text/css" href="css/global.css"/>
 		<link rel="stylesheet" type="text/css" href="css/dialogMenu.css"/>
@@ -10,7 +19,6 @@
 
 		<script src="ext/lodash.min.js"></script>
 		<script src="ext/imgpreload.js"></script>
-		<script src="ext/queryString.js"></script>
 		<script src="ext/q.min.js"></script>
 		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
 		<script src="ext/zepto-1.0.min.js"></script>
