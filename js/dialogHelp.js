@@ -4,13 +4,7 @@ DialogHelp.SCROLL_DIV_HEIGHT_OFFSET = 262;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
-	scrollDiv = $('#help-text-scroll')[0];
 	switch( optionId ) {
-		case 'option-scroll' :
-			//scrollDiv.scrollTop += scrollDiv.clientHeight;
-			//dialogHelp.callback.call();
-			this.scrollDiv[0].scrollByPages(1);
-			break;
 		case 'option-help-close' :
 			this.hide();
 			break;
@@ -55,12 +49,6 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.scrollDiv[0].focus();
 	this.setArrow( 'down', true);
 	this.setArrow( 'up', false);
-	/*
-	if( callback ) {
-		this.callback = callback;
-		this.callback.call();
-	}
-	*/
 } //function DialogHelp()
 
 DialogHelp.prototype.setDialogBackgroundImage = function() {
