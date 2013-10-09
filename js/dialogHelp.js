@@ -1,6 +1,6 @@
 /* begin DialogHelp.SELECT_HANDLERS[] */
 DialogHelp.SELECT_HANDLERS = [];
-DialogHelp.MAX_PAGE =6;
+DialogHelp.SCROLL_DIV_HEIGHT_OFFSET = 262;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
@@ -47,8 +47,8 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
 	this.show();
-	this.scrollDivHeightOffset = 262;
-	DialogHelp.MAX_PAGE = Math.ceil(this.scrollDiv[0].scrollHeight /  this.scrollDivHeightOffset); 	
+	this.scrollDivHeightOffset = DialogHelp.SCROLL_DIV_HEIGHT_OFFSET;
+	this.maxPage = Math.ceil(this.scrollDiv[0].scrollHeight /  this.scrollDivHeightOffset); 	
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
@@ -146,47 +146,19 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			evt.stopPropagation();
 			evt.preventDefault();
 			break;
-		case 38: // up arrow
+		case 38: // up arrow			
 			evt.stopPropagation();
 			evt.preventDefault();
-			if( dialogHelp.currentPage === 1 ) {
-				break;
-			}
-			dialogHelp.currentPage--;
-			dialogHelp.setArrow('down', true);
-			if( dialogHelp.currentPage >= 1 ) {
-				//if(dialogHelp.scrollDiv[0].scrollBy){
-					dialogHelp.scrollDiv[0].scrollTop = (dialogHelp.currentPage -1) * dialogHelp.scrollDivHeightOffset;
-				//}
-			}
-			if( dialogHelp.currentPage === 1 ) {
-				dialogHelp.setArrow('up', false);
-			}
-			else {
-				dialogHelp.setArrow('up', true);
-			}
+			dialogHelp.handleUpArrow();
 			break;
 		case 40: // down arrow
 			evt.stopPropagation();
 			evt.preventDefault();
-			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
-				break;
-			}
-			dialogHelp.currentPage++;
-			dialogHelp.setArrow('up', true);
-			if( dialogHelp.currentPage <= DialogHelp.MAX_PAGE ) {
-				//if(dialogHelp.scrollDiv[0].scrollBy){
-					dialogHelp.scrollDiv[0].scrollTop = (dialogHelp.currentPage -1) * dialogHelp.scrollDivHeightOffset;
-				//}
-			}
-			if( dialogHelp.currentPage === DialogHelp.MAX_PAGE ) {
-				dialogHelp.setArrow('down', false);
-			}
-			else {
-				dialogHelp.setArrow('down', true);
-			}
+			dialogHelp.handleDownArrow();
 			break;
 		case 8: // backspace
+			evt.stopPropagation();
+			evt.preventDefault();
 			dialogHelp.hide();
 			break;
 		}
@@ -196,6 +168,47 @@ DialogHelp.prototype.registerEventHandlers = function() {
 		dialogHelp.updateScrollDivPages();
 	});
 }; //DialogHelp.prototype.registerEventHandlers()
+
+DialogHelp.prototype.handleUpArrow = function() {
+	if( this.currentPage === 1 ) {
+		return this;
+	}
+	this.currentPage--;
+	this.setArrow('down', true);
+	if( this.currentPage >= 1 ) {
+		//if(this.scrollDiv[0].scrollBy){
+			this.scrollDiv[0].scrollTop = (this.currentPage -1) * this.scrollDivHeightOffset;
+		//}
+	}
+	if( this.currentPage === 1 ) {
+		this.setArrow('up', false);
+	}
+	else {
+		this.setArrow('up', true);
+	}
+	return this;
+}; //DialogHelp.prototype.handleUpArrow()
+
+DialogHelp.prototype.handleDownArrow = function() {
+	this.handleDownArrow();
+	if( this.currentPage === this.maxPage ) {
+		return this;
+	}
+	this.currentPage++;
+	this.setArrow('up', true);
+	if( this.currentPage <= this.maxPage ) {
+		//if(this.scrollDiv[0].scrollBy){
+			this.scrollDiv[0].scrollTop = (this.currentPage -1) * this.scrollDivHeightOffset;
+		//}
+	}
+	if( this.currentPage === this.maxPage ) {
+		this.setArrow('down', false);
+	}
+	else {
+		this.setArrow('down', true);
+	}
+	return this;
+}; //DialogHelp.prototype.handleDownArrow()
 
 DialogHelp.prototype.unregisterEventHandlers = function() {
 	var menuButtonSize, dialogHelp, i, liElement;
@@ -217,8 +230,8 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
 	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
 	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/262)+1);
-	$('#page-count').html(DialogHelp.MAX_PAGE);
+	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/DialogHelp.SCROLL_DIV_HEIGHT_OFFSET)+1);
+	$('#page-count').html(this.maxPage);
 	if( this.currentPage === 1) {
 		$('#version').html(galapagoVersion);
 	}
