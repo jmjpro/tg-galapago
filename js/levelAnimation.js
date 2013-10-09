@@ -941,7 +941,7 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 		for(row = 0; row < rowsToDisplay;row++){
 			tile = this.tileMatrix[col][row];
-			if(tile && tile.blob){
+			if(tile){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
 				if(y < tile.getYCoord()){
 					complete = true;
@@ -952,9 +952,14 @@ BoardBuildAnimation.prototype.animate = function(){
 				point[0] = tile.coordinates[0];
 				point[1] = Tile.getRow(y + this.height);
 				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
-				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+				if(!tileToBeReplaced){
 					this.layer.clearRect( x, y +  this.height , this.width, this.height );	
 				}
+				else if(tileToBeReplaced && (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+					goldTile = this.board.getGoldTile(tileToBeReplaced);
+					Tile.draw(x, y + this.height, goldTile, null, this.board, false);
+				}
+
 				point[1] = Tile.getRow(y);
 				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
 				goldTile = null;
@@ -962,7 +967,7 @@ BoardBuildAnimation.prototype.animate = function(){
 					goldTile = this.board.getGoldTile(tileToBeReplaced);
 				}
 				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
-					if(!tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
+					if(tile.blob && !tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
 						Tile.draw(x, y, goldTile, tile.blob.image, this.board, false);
 					}else{
 						Tile.draw(x, y, goldTile, null, this.board, false);
