@@ -3720,6 +3720,7 @@ function DangerBar(initialTimeMs, levelAnimation) {
 	this.div.css( 'background-image', 'url(' + this.danger_bar.src + ')' );
 	this.div.css( 'display', 'block' );
 	this.imageCrown = null;
+	this.fillImage = LoadingScreen.gal.getSprites("screen-game/danger-bar-fill-strip.png")[0];
 	this.drawImages();
 }
 
@@ -3759,6 +3760,8 @@ DangerBar.prototype.stop = function() {
 DangerBar.prototype.pause = function() {
 	console.debug('pausing danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
 	console.debug('currentTime pause   : '+new Date().getTime());
+	this.levelAnimation.stopDangerBarAnimations();
+	this.addImage(this.divAnimation.selector, this.fillImage, DangerBar.FILL_ADJUSTMENT_LEFT, this.fillTop, 2);
 	if(this.timer){
 		this.timer.pause();
 	}
@@ -3768,6 +3771,8 @@ DangerBar.prototype.pause = function() {
 DangerBar.prototype.resume = function() {
 	console.debug('resume danger bar timing with ' + this.timeRemainingMs/1000 + ' sec remaining');
 	console.debug('currentTime resume: '+new Date().getTime());
+	this.divAnimation.empty();
+	this.drawImages();
 	if(this.timer){
 		this.timer.resume();
 	}
