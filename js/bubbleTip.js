@@ -15,7 +15,7 @@ BubbleTip.prototype.showBubbleTip = function (text) {
 	if(!(this.content === '') && gameTipsSelectionEle.html() === 'On'){
 		this.levelAnimation.animateBobCervantes();
 		this.element.html(this.content);
-		this.element.css( 'display', 'block' );
+		this.element.show();
 	} 
 } //BubbleTip.prototype.showBubbleTip()
 
@@ -28,6 +28,5 @@ BubbleTip.prototype.clearBubbleTip = function (text) {
 } //BubbleTip.prototype.clearBubbleTip()
 
 BubbleTip.prototype.hideBubbleTip = function () {
-	var bubbleTip = $('#bubbleTip')[0];
-	this.element.css( 'display', 'none' );
+	this.element.hide();
 } //BubbleTip.prototype.hideBubbleTip()

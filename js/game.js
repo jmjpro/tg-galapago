@@ -2215,7 +2215,6 @@ Board.prototype.setComplete = function() {
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		//this.hilightDiv.show();
 	}
 }; //Board.prototype.setComplete()
 
@@ -2224,7 +2223,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	board = this;
 	this.powerupPointsAchievedInThisSwap = 0;
 	board.navigationLock = true;
-	console.debug("appling navigation lock");
+	console.debug("applying navigation lock");
 	tilePrev = this.tileSelected;
 	if( tile && tilePrev && !(tile === tilePrev) ) {
 		tile.setInactiveAsync();
@@ -3390,7 +3389,6 @@ Tile.prototype.setSelectedAsync = function() {
 	console.debug('selected tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawComplete(true);
-	//this.drawHilight();
 	Galapago.audioPlayer.playTileSelect();
 	deferred.resolve();
 	return deferred.promise;
@@ -3722,9 +3720,7 @@ ReshuffleService.prototype.start = function() {
 			if(!validMoveWithGoldFound){
 				swapForTripletInfo = MatchFinder.findMatch(reshuffleService.board);
 			}
-			if( swapForTripletInfo.tipInfo.initialTile ) {
-				validMoveFound = swapForTripletInfo.tipInfo.initialTile;
-			}
+			validMoveFound = swapForTripletInfo.tipInfo.initialTile !== null;
 			powerActive = reshuffleService.board.powerUp.isPowerAchieved();
 			if(validMoveFound){
 				initialTile = reshuffleService.board.getCreatureTileFromPoint(swapForTripletInfo.tipInfo.initialTile);
