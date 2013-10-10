@@ -1,5 +1,6 @@
 MapScreen.NAV_BUTTON_IDS = ['button-play-map', 'button-start-map', 'button-reset-map', 'button-menu-map', 'button-quit-map' ];
 MapScreen.GAL_PREFIX = 'screen-map/';
+MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT = 1200;
 
 function MapScreen() {
 	var mapNav, galFilePathCursor;

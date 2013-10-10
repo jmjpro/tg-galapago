@@ -1,28 +1,33 @@
+BubbleTip.DISPLAY_TIME_MS = 5000;
+
 function BubbleTip(levelAnimation) {
 	this.levelAnimation = levelAnimation;
-	this.gameTipsSelectionEle = $('#gameTipsSelection')[0];
-}
+	this.content = '';
+	this.element = $('#bubbleTip');
+} //function BubbleTip() constructor
+
 BubbleTip.prototype.showBubbleTip = function (text) {
+	var gameTipsSelectionEle;
+
     this.content = text;
-    var bubbleTip = $('#bubbleTip')[0];
-	if(this.content!='' && this.gameTipsSelectionEle.innerHTML === 'On'){
+	gameTipsSelectionEle = $('#gameTipsSelection');
+
+	if(!(this.content === '') && gameTipsSelectionEle.html() === 'On'){
 		this.levelAnimation.animateBobCervantes();
-		bubbleTip.innerHTML=this.content;
-		bubbleTip.style.display='block';
+		this.element.html(this.content);
+		this.element.css( 'display', 'block' );
 	} 
-}
+} //BubbleTip.prototype.showBubbleTip()
 
 BubbleTip.prototype.clearBubbleTip = function (text) {
-	if(!text || this.content == text){
-		this.content="";
+	if(!text || this.content === text){
+		this.content='';
 		this.hideBubbleTip();
 		this.levelAnimation.stopBobCervantes();
 	}
-}
+} //BubbleTip.prototype.clearBubbleTip()
 
 BubbleTip.prototype.hideBubbleTip = function () {
 	var bubbleTip = $('#bubbleTip')[0];
-	bubbleTip.style.display='none'; 
-}
-
-//showBubbleTip("SELECT THE HIGHLIGHTED CREATURE TO START A COCOON TILE MATCH. TO CLEAR IT, YOU MUST MAKE A MATCH OF THE COCOON'S COLOR NEXT TO IT!");
+	this.element.css( 'display', 'none' );
+} //BubbleTip.prototype.hideBubbleTip()

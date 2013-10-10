@@ -106,7 +106,10 @@ canvas.layer-board {
 
 #div-hilight{
 	position: absolute;
-	display:  none;
+	display: none;
+	width: 47px;
+	height: 47px;
+	background-size: cover;
 }
 #power-up-label{
 	font-family: 'ArchivoNarrowBold';
@@ -207,28 +210,6 @@ canvas.layer-board {
 	position: absolute;
 	left: 80px;
 	top: 0px;
-}
-#layerGrid{
-	left: 325px; 
-	top:100px;
-	z-index:2; 
-	position:absolute; 
-	border-collapse: collapse;
-}
-
-.rowDiv{
-	height:47px;
-	border: 0px;
-	padding: 0px;
-	margin: 0px;
-	border-spacing:0px;
-}
-.columnSpan{
-	height:47px;
-	width:47px;
-	padding:0px;
-	margin:0px;
-	position:absolute; 
 }
 
 .game-nav-button {
