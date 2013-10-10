@@ -113,7 +113,7 @@ div.dialog-title-wide {
 	left: 281px;
 	top: 47px;
 }
-
+v
 #dialog-level-won .dialog-content {
  	width: 350px;
  	font-size: 27px;
@@ -434,6 +434,7 @@ ul.galapago-drop-down {
 
 #dialog-help .button-medium {
 	height: 61px;
+	color: rgb(255,255,179);
 }
 
 #div-level-loading {
