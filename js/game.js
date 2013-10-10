@@ -1228,6 +1228,7 @@ Level.prototype.registerEventHandlers = function() {
 			default:
 		}
 	};
+	this.addImageMap();
 }; //Level.prototype.registerEventHandlers()
 
 Level.prototype.registerMenuQuitButtonHandlers = function() {
@@ -1372,6 +1373,75 @@ Level.prototype.flashBubbleTip = function(key){
 Level.isComplete = function(id) {
 	var timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	return store.getItem(timedMode + Galapago.profile + "level" + id + ".completed");	
+};
+
+LevelMap.prototype.addImageMap = function() {
+	var that = this;
+
+	var map = document.createElement('map');
+	map.name = 'hotspots';
+	var areaParts = [],
+		dx = 150,//TODO: taken from css #layer-map
+		dy = 0; //TODO: taken from css #layer-map
+
+	for( var levelIt = 0; levelIt < Galapago.levels.length; levelIt++ ) {
+		var coordinatesParts = [],
+			level = Galapago.levels[levelIt],
+			region = level.mapHotspotRegion;
+
+		for(var coordinateIndex = 0; coordinateIndex < region.length; coordinateIndex++) {
+			coordinatesParts.push(region[coordinateIndex][0] + dx);
+			coordinatesParts.push(region[coordinateIndex][1] + dy);
+		}
+
+		areaParts.push('<area id="levelhotspot-' + levelIt + '" coords="' + coordinatesParts.join(",") + '" shape="poly">')
+	}
+	map.innerHTML = areaParts.join('');
+
+	var img = document.createElement('img');
+	img.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 1279px; height: 720px; opacity: 0');
+	img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+	img.useMap = "#hotspots";
+
+	map.addEventListener('mouseover', function(e) {
+		if(e && e.target && e.target.id) {
+			var id = e.target.id,
+				parts = id.split("-");
+
+			console.log(id + "," + parts[0] + "," + parts[1]);
+			if(parts[0] === 'levelhotspot') {
+				var levelNumber = parseInt(parts[1]),
+					level = Galapago.levels[levelNumber];
+				//if(level.isUnlocked){
+					that.setHotspotLevel(level);
+				//}
+			}
+		}
+		e.preventDefault();
+		e.stopPropagation();
+	}, false);
+
+	map.addEventListener('click', function(e) {
+		if(e && e.target && e.target.id) {
+			var id = e.target.id,
+				parts = id.split("-");
+
+			if(parts[0] === 'levelhotspot') {
+				var levelNumber = parseInt(parts[1]),
+					level = Galapago.levels[levelNumber];
+				//if(level.isUnlocked){
+					that.setHotspotLevel(level);
+					that.handleKeyboardSelect();
+				//}
+			}
+		}
+		e.preventDefault();
+		e.stopPropagation();
+	}, false);
+
+
+	document.body.appendChild(map);
+	document.body.appendChild(img);
 };
 /* end class Level */
 
