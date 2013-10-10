@@ -1,4 +1,4 @@
-DialogResourceLoading.DIALOG_SHOW_WAIT_MS = 50;
+DialogResourceLoading.DIALOG_SHOW_WAIT_MS = 2000;
 DialogResourceLoading.LOADING_ANIMATION_MS = 300;
 function DialogResourceLoading(parentElementSelector){
 	this.levelLoaded = false;
