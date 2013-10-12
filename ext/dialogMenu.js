@@ -316,30 +316,23 @@ DialogMenu.prototype.setDialogBackgroundImage = function() {
 }; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
-	if( this.callingObject && this.callingObject.unregisterEventHandlers ) {
-		this.callingObject.unregisterEventHandlers();
-	}
 	this.registerEventHandlers();
 	this.dialogMenuDOM.show();
+	this.dialogMenuDOM.focus();
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.hide = function() {
-	this.unregisterEventHandlers();
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
 		this.callingObject.reshuffleService.start();
 		this.callingObject.powerUp.timerResume();
 	}
-	if(this.callingObject && this.callingObject.registerEventHandlers){
-		this.callingObject.registerEventHandlers();
-	}else{
-		window.onkeydown = this.windowKeyHandler;
+	if(this.callingObject.onDialogClose){
+		this.callingObject.onDialogClose();
 	}
 	this.callingScreen.removeClass('transparent');
-	window.onclick =this.mouseClickHandler; 
-	window.onmousemove = this.mouseMoveHandler;
 }; //DialogMenu.prototype.hide()
 
 DialogMenu.prototype.setNavItem = function(item) {
@@ -369,35 +362,25 @@ DialogMenu.prototype.setNavItem = function(item) {
 DialogMenu.prototype.registerMouseHandlers = function() {
 	var menuButtonSize = this.dialogNav.children().length;
 	var dialogMenu = this;
-
-	this.mouseClickHandler = window.onclick;
-	this.mouseMoveHandler = window.onmousemove;
-	window.onclick =null;
-	window.onmousemove = null;
-
-	for(var i =0 ; i< menuButtonSize ; i++){
-		var liElement = (dialogMenu.dialogNav.children()[i]);
-		liElement.onmouseover = function(){
-			dialogMenu.setNavItem($('#'+this.id));
-		}
-		liElement.onclick = function(){
-			dialogMenu.currentNavItem[0]=this;
-			dialogMenu.selectHandler(dialogMenu);
-		}
-		
-	}
+	var dialogNavChildren = dialogMenuDOM = $('#' + this.dialogId + ' ul li');
+	dialogNavChildren.off('mouseover');
+	dialogNavChildren.on('mouseover', function(){
+		dialogMenu.setNavItem($('#'+this.id));
+	});
+	dialogNavChildren.off('click');
+	dialogNavChildren.on('click', function(){
+		dialogMenu.currentNavItem[0]=this;
+		dialogMenu.selectHandler(dialogMenu);
+	});
 } //DialogMenu.prototype.registerMouseHandlers()
 
 DialogMenu.prototype.registerEventHandlers = function() {
 	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector, board;
 	dialogMenu = this;
-
-	this.windowKeyHandler = window.onkeydown;
-
 	lastIndex = dialogMenu.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
-	window.onkeydown = function(evt) {
+	this.dialogMenuDOM.on('keydown', function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
@@ -481,7 +464,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			evt.preventDefault();		
 			break;
 		} //switch()
-	}; //window.onkeydown()
+	});
 	this.registerMouseHandlers();
 }; //DialogMenu.prototype.registerEventHandlers()
 
@@ -543,18 +526,6 @@ DialogMenu.prototype.dialogGameOverSelect = function() {
 	});
 	//show map screen;
 };
-
-DialogMenu.prototype.unregisterEventHandlers = function() {
-	var menuButtonSize, dialogMenu, i, liElement;
-	window.onkeydown = null;
-	menuButtonSize = this.dialogNav.children().length;
-	dialogMenu = this;
-	for(i =0 ; i< menuButtonSize ; i++){
-		liElement = (dialogMenu.dialogNav.children()[i]);
-		liElement.onmousemove =null;
-		liElement.onclick = null;
-	}
-}; //MapScreen.prototype.unregisterEventHandlers()
 
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;

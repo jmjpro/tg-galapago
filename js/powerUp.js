@@ -11,7 +11,7 @@ Powerup.SHUFFLER_TOP = Powerup.FIRE_TOP + Powerup.NOTCH_SPACE_HEIGHT;
 Powerup.FLIPFLOP_SELECTED =1;
 Powerup.FIRE_SELECTED =2;
 Powerup.SHUFFLER_SELECTED =3;
-Powerup.POWER_POINTS = 36;
+Powerup.POWER_POINTS = 3;
 Powerup.POWER_COLOR_ACTIVE = 'red';
 Powerup.POWER_ACTIVATED = 1;
 Powerup.POWER_ROLLOVER= 2;
@@ -98,32 +98,27 @@ Powerup.prototype.activatePowerUpUsingCheatCode = function(){
 
 Powerup.prototype.addListener = function(arrowKey){
    var powerup = this;
-   //this.canvas.onfocus= function(){
-       //console.log('on focus called');
-	   	powerup.boardKeyHandler = window.onkeydown;
-	  	powerup.board.isPowerUpFocused = true;
-	   	window.onkeydown=null;
-	   	if(arrowKey){
-	   		this.currentFocus = -1;
-			switch(arrowKey) {
-				case "up":
-				    powerup.handleUp();  
-					break; 
-				case "down":
-					powerup.handleDown();  
-					break;
-			}
-	   }
-	   powerup.focus();
-	   powerup.focusOn= 1;
-	   powerup.registerEvents();
-   //}
-  // console.log('listener Added');
+  	powerup.board.isPowerUpFocused = true;
+   	if(arrowKey){
+   		this.currentFocus = -1;
+		switch(arrowKey) {
+			case "up":
+			    powerup.handleUp();  
+				break; 
+			case "down":
+				powerup.handleDown();  
+				break;
+		}
+	}
+	powerup.focus();
+	powerup.focusOn= 1;
+	powerup.registerEvents();
 };
 
 Powerup.prototype.registerEvents=function(){
    var powerup = this;
-   window.onkeydown = function(e) {
+   $('#layer-power-up-animation').off('keydown');
+   $('#layer-power-up-animation').on('keydown', function(e) {
 		switch(e.keyCode) {
 			case 37: // left arrow
 			    powerup.removeNavigation(e);  
@@ -149,28 +144,27 @@ Powerup.prototype.registerEvents=function(){
 			    break;
 			// User pressed "enter"
 			case 13:
-				  powerup.handleSelect();
-				  //powerup.currentFocus=0;
-				  powerup.nextFocus=0;
-				  window.onkeydown=null;
-				  powerup.canvas.onfocus=null;
-				  powerup.board.isPowerUpFocused = false;
-			      window.onkeydown = powerup.boardKeyHandler;
-			      break;
-		}
-	};   
+			  powerup.handleSelect();
+			  powerup.nextFocus=0;
+			  powerup.canvas.onfocus=null;
+			  powerup.board.isPowerUpFocused = false;
+			  powerup.board.focus();
+		      break;
+		};
+		e.preventDefault();
+		e.stopPropagation();
+	});   
 };
 
 Powerup.prototype.removeNavigation = function(e){
 	this.update();
 	this.currentFocus=0;
 	this.nextFocus=0;
-	window.onkeydown=null;
 	this.focusOn= 0;
 	this.board.isPowerUpFocused = false;
 	this.canvas.onfocus=null;
-	window.onkeydown = this.boardKeyHandler;
-	this.boardKeyHandler(e);
+	this.board.focus();
+	this.board.handleKeyboardEvent(e);
 }
 
 Powerup.prototype.powerUsed = function(){
@@ -256,7 +250,6 @@ Powerup.prototype.handleUp=function(){
 	}
 	return true;
 }
-
 
 Powerup.prototype.handleDown=function(){
 	this.nextFocus=0;
@@ -395,6 +388,7 @@ Powerup.prototype.focus = function(){
   
   }
   this.animatePowerStatus();
+  $('#layer-power-up-animation').focus();
 };
 
 Powerup.prototype.updatePowerup = function(tripletCount){
