@@ -66,7 +66,7 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 				board.level.dangerBar.resume();
 			}
 			board.reshuffleService.start();
-			board.powerUp.timerResume();
+			//board.powerUp.timerResume();
 			break;
 		case 'option-main-menu' :
 			that = this;
