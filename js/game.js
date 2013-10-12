@@ -3264,7 +3264,9 @@ Board.prototype.focus = function(evt) {
 
 Board.prototype.onDialogClose = function(evt) {
 	$('#layer-creature').focus();
-	this.setActiveTile(this.tileActive);
+	if(!this.level.levelCompleted){
+		this.setActiveTile(this.tileActive);
+	}
 };
 
 /* end class Board */
