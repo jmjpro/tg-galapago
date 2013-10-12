@@ -483,8 +483,9 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			this.setHotspotLevel(level);
-			if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
+			
+			if( QueryString.cheat || level.isUnlocked ) {
+				this.setHotspotLevel(level);
 				window.onclick = null;
 				window.onmousemove = null;
 				this.handleKeyboardSelect();
