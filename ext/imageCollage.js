@@ -2,7 +2,7 @@ ImageCollage.CREATURE_COORDINATES = [
 	{"cell": [0, 0, 46, 46]},
 	{"cell": [46, 0, 46, 46]},
 	{"cell": [92, 0, 46, 46]}
-]
+];
 
 ImageCollage.CREATURE_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_COORDINATES);
 
@@ -12,7 +12,7 @@ ImageCollage.CREATURE_ROLLOVER_COORDINATES = [
 	{"cell": [92, 0, 46, 46]},
 	{"cell": [138, 0, 46, 46]},
 	{"cell": [184, 0, 46, 46]}
-]
+];
 
 ImageCollage.CREATURE_ROLLOVER_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_ROLLOVER_COORDINATES);
 
@@ -22,7 +22,7 @@ ImageCollage.CREATURE_JUMP_COORDINATES = [
 	{"cell": [147, 0, 46, 92]},
 	{"cell": [215, 0, 46, 92]},
 	{"cell": [283, 0, 46, 92]}
-]
+];
 
 ImageCollage.CREATURE_JUMP_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_JUMP_COORDINATES);
 
@@ -634,13 +634,6 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 166, 235, 58]}
 		]
 	},
-	"collage/game-lightning-strip.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 235, 58]},
-			{"cell": [0, 58, 235, 58]},
-			{"cell": [0, 166, 235, 58]}
-		]
-	},
 	"collage/game-hint-strip.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 41, 18]},
@@ -674,18 +667,6 @@ ImageCollage.COLLAGE_ARRAY = {
 			{"cell": [0, 0, 52, 57]},
 			{"cell": [52, 0, 52, 57]}
 		]
-	},
-	"collage/map-hotspots-unlocked.png": {
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
-			{"cell": [17, 0, 104, 57], "id" : "screen-game/danger-bar-warning-strip.png"}
-		]
-	},
-	"collage/map-hotspots-selected.png": {
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 17, 12], "id": "screen-game/danger-bar-crown.png"},
-			{"cell": [17, 0, 104, 57], "id" : "screen-game/danger-bar-warning-strip.png"}
-		]
 	}
 };
 
@@ -702,7 +683,7 @@ function ImageCollage (collageDescriptor, image) {
 		lookUpTable = LoadingScreen.gal.lookupTable;
 
 	if(image){
-		this.image = image
+		this.image = image;
 	}else{
 		this.image = LoadingScreen.gal.get(collageId);
 	}
@@ -769,7 +750,7 @@ ImageCollage.prototype.getImage = function (imageId) {
  * @param {integer} index
  */
 ImageCollage.prototype.getImageForCache = function (imageContainer, index){
-	var imageCoordinate, image, x, y, width, height;
+	var imageCoordinate, x, y, width, height;
 
 	imageCoordinate = this.imageCoordinateArray[index];
 	x = imageCoordinate.cell[0];

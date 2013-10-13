@@ -265,6 +265,8 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 				],
 				function () {
 					that.registerEventHandlers();
+					that.buildImageMap();
+
 					Galapago.audioPlayer.playVolcanoLoop();
 
 					if (typeof onDialogOpenedCallBack !== 'undefined') {
@@ -379,7 +381,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 	levelMap = this;
 
 	
-	window.onmousemove = function(e) {
+	/*window.onmousemove = function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
 		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
@@ -403,15 +405,15 @@ LevelMap.prototype.registerEventHandlers = function() {
 		e.preventDefault();
 		e.stopPropagation();
 	}; //onmousemove
-	
+	*/
 
 	//levelMap.canvas.onclick = function(evt) {
-	window.onclick = function(evt) {
+	/*window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
 	}; //onclick
-
+	*/
 	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
@@ -718,6 +720,68 @@ LevelMap.getNextLevel = function() {
 LevelMap.reset = function() {
 	Galapago.eraseProfile(Galapago.profile);
 }; //LevelMap.reset()
+
+LevelMap.prototype.buildImageMap = function() {
+	var that = this;
+
+	var map = document.createElement('map');
+	map.id = 'hotspot-imagemap';
+	map.name = 'hotspots';
+	var areaParts = [];
+
+	for( var levelIt = 0; levelIt < Galapago.levels.length; levelIt++ ) {
+		var coordinatesParts = [],
+			level = Galapago.levels[levelIt],
+			region = level.mapHotspotRegion;
+
+		for(var coordinateIndex = 0; coordinateIndex < region.length; coordinateIndex++) {
+			coordinatesParts.push(region[coordinateIndex][0]);
+			coordinatesParts.push(region[coordinateIndex][1]);
+		}
+
+		areaParts.push('<area id="levelhotspot-' + levelIt + '" coords="' + coordinatesParts.join(",") + '" shape="poly">')
+	}
+	map.innerHTML = areaParts.join('');
+
+	var img = document.createElement('img');
+	img.id = 'hotspot-proxy-image';
+	img.setAttribute('style', 'position: fixed; top: 0; left: 150px; width: 1018px; height: 640px; opacity: 0;z-index = -999');
+	img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+	img.useMap = "#hotspots";
+
+	map.addEventListener('mouseover', function(e) {
+		that.changeHotspot( e, false );
+	}, false);
+
+	map.addEventListener('click', function(e) {
+		that.changeHotspot( e, true );
+	}, false);
+
+	this.screenDiv.append(map);
+	this.screenDiv.append(img);
+	map.focus();
+}; //LevelMap.prototype.buildImageMap()
+
+LevelMap.prototype.changeHotspot = function(e, isSelect) {
+	var id, parts, levelNumber, level;
+	if(e && e.target && e.target.id) {
+		id = e.target.id;
+		parts = id.split("-");
+
+		if(parts[0] === 'levelhotspot') {
+			levelNumber = parseInt(parts[1]);
+			level = Galapago.levels[levelNumber];
+			if( level.isUnlocked || QueryString.cheat ){
+				this.setHotspotLevel(level);
+				if( isSelect ) {
+					this.handleKeyboardSelect();
+				}
+			}
+		}
+	}
+	e.preventDefault();
+	e.stopPropagation();
+} //LevelMap.prototype.changeHotspot()
 
 /* end class LevelMap */
 
