@@ -265,6 +265,8 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 				],
 				function () {
 					that.registerEventHandlers();
+					that.addImageMap();
+
 					Galapago.audioPlayer.playVolcanoLoop();
 
 					if (typeof onDialogOpenedCallBack !== 'undefined') {
@@ -379,7 +381,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 	levelMap = this;
 
 	
-	window.onmousemove = function(e) {
+	/*window.onmousemove = function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
 		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
@@ -403,15 +405,15 @@ LevelMap.prototype.registerEventHandlers = function() {
 		e.preventDefault();
 		e.stopPropagation();
 	}; //onmousemove
-	
+	*/
 
 	//levelMap.canvas.onclick = function(evt) {
-	window.onclick = function(evt) {
+	/*window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
 	}; //onclick
-
+	*/
 	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
@@ -1228,7 +1230,6 @@ Level.prototype.registerEventHandlers = function() {
 			default:
 		}
 	};
-	this.addImageMap();
 }; //Level.prototype.registerEventHandlers()
 
 Level.prototype.registerMenuQuitButtonHandlers = function() {
@@ -1380,9 +1381,7 @@ LevelMap.prototype.addImageMap = function() {
 
 	var map = document.createElement('map');
 	map.name = 'hotspots';
-	var areaParts = [],
-		dx = 150,//TODO: taken from css #layer-map
-		dy = 0; //TODO: taken from css #layer-map
+	var areaParts = [];
 
 	for( var levelIt = 0; levelIt < Galapago.levels.length; levelIt++ ) {
 		var coordinatesParts = [],
@@ -1390,8 +1389,8 @@ LevelMap.prototype.addImageMap = function() {
 			region = level.mapHotspotRegion;
 
 		for(var coordinateIndex = 0; coordinateIndex < region.length; coordinateIndex++) {
-			coordinatesParts.push(region[coordinateIndex][0] + dx);
-			coordinatesParts.push(region[coordinateIndex][1] + dy);
+			coordinatesParts.push(region[coordinateIndex][0]);
+			coordinatesParts.push(region[coordinateIndex][1]);
 		}
 
 		areaParts.push('<area id="levelhotspot-' + levelIt + '" coords="' + coordinatesParts.join(",") + '" shape="poly">')
@@ -1399,7 +1398,7 @@ LevelMap.prototype.addImageMap = function() {
 	map.innerHTML = areaParts.join('');
 
 	var img = document.createElement('img');
-	img.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 1279px; height: 720px; opacity: 0');
+	img.setAttribute('style', 'position: fixed; top: 0; left: 150px; width: 1018px; height: 640px; opacity: 0;z-index = -999');
 	img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 	img.useMap = "#hotspots";
 
@@ -1440,8 +1439,9 @@ LevelMap.prototype.addImageMap = function() {
 	}, false);
 
 
-	document.body.appendChild(map);
-	document.body.appendChild(img);
+	this.screenDiv.append(map);
+	this.screenDiv.append(img);
+	map.focus();
 };
 /* end class Level */
 
