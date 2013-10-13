@@ -1895,53 +1895,7 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleMouseMoveEvent = function(evt) {
-	var board = this;
-	
-	if(board.animationQ.length){
-			return;
-		}
-	var	x = evt.pageX ;//- this.offsetLeft;
-	var y = evt.pageY ;
-	if(board.powerUp && board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
-		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
-			//alert('power up cliecked'+ x +"  "+ y);
-			if(!board.isPowerUpFocused){
-				//alert('adddinggg');
-				board.powerUp.addListener();
-				board.isPowerUpFocused = true;
-			}
-			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
-			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
-					//alert('flipflop power up');
-					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
-					board.powerUp.focus();
-					
-			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
-					//alert('fire power up');
-					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
-					board.powerUp.focus();
-					
-				
-			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
-					//alert('shuffler power up');
-					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
-					board.powerUp.focus();
-					
-			}
-			
-		}else if(board.isPowerUpFocused){
-			board.isPowerUpFocused =false;
-			board.powerUp.update();
-			board.powerUp.currentFocus=0;
-			board.powerUp.nextFocus=0;
-			board.powerUp.focusOn= 0;
-		}
-	}
 
-}; //Board.prototype.handleMouseMoveEvent()
 
 Board.prototype.handleMouseClickEvent = function(evt) {
 		var board = this;
@@ -1986,45 +1940,11 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 		}
 		}	
 		//powerup handling 
-		this.handleMouseClickForPowerUp(x,y);
+		//this.handleMouseClickForPowerUp(x,y);
 }; //Board.prototype.handleMouseClickEvent()
 
-Board.prototype.handleMouseClickForPowerUp = function(evt) {
 	var	x = evt.pageX ;//- this.offsetLeft;
 	var y = evt.pageY ;
-	var board = this;
-	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
-		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
-			//alert('power up cliecked'+ x +"  "+ y);
-			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
-			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
-					//alert('flipflop power up');
-					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-				
-			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
-					//alert('fire power up');
-					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-				
-				
-			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
-					//alert('shuffler power up');
-					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-			}
-		}
-	}
-}; //Board.prototype.handleMouseClickForPowerUp()
-
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;
