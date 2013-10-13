@@ -16,11 +16,11 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
 	this.dialogId = 'dialog-help';
-	this.dialogMenuDOM = $('#' + this.dialogId);
+	this.dialogHelpDOM = $('#' + this.dialogId);
 	this.setDialogBackgroundImage();
 	this.scrollDiv = $('#help-text-scroll');
 	this.currentPage=1;
-	this.dialogNav = this.dialogMenuDOM.find('ul');
+	this.dialogNav = this.dialogHelpDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
 	this.regularImageName = "button-regular";
@@ -59,7 +59,7 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 			galBackgroundPath = 'background/' + backgroundFileName;
 			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
 			if( backgroundImage ) {
-				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+				this.dialogHelpDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
 			}
 			else {
 				console.error( 'unable to find background image ' + galBackgroundPath );
@@ -73,14 +73,16 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 }; //DialogHelp.prototype.setDialogBackgroundImage()
 
 DialogHelp.prototype.show = function() {
-	this.dialogMenuDOM.show();
-	this.dialogMenuDOM.focus();
+	this.dialogHelpDOM.show();
+	this.dialogHelpDOM.focus();
+	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass('transparent');
 }; //DialogHelp.prototype.show()
 
 DialogHelp.prototype.hide = function() {
-	this.dialogMenuDOM.hide();
+	this.dialogHelpDOM.hide();
 	this.setNavItem(this.initialNavItem);
+	GameUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
 	if(this.callingObject.onDialogClose){
 		this.callingObject.onDialogClose()
@@ -124,8 +126,8 @@ DialogHelp.prototype.registerEventHandlers = function() {
 	lastIndex = dialogHelp.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
-	this.dialogMenuDOM.off('keydown');
-	this.dialogMenuDOM.on('keydown', function(evt) {
+	this.dialogHelpDOM.off('keydown');
+	this.dialogHelpDOM.on('keydown', function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogHelp.selectHandler(dialogHelp);

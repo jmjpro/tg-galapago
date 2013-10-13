@@ -115,12 +115,6 @@ MapScreen.prototype.registerEventHandlers = function() {
 			break;
 		}
 	});
-
-	$('img.nav-button').off( 'click' );
-	$('img.nav-button').on( 'click', function(evt) {
-		mapScreen.setNavItem(mapNav.children().find('img#' + evt.target.id).parent('li'));
-		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
-	});
 }; //MapScreen.prototype.registerEventHandlers()
 
 MapScreen.prototype.addMouseListener = function(){
@@ -139,6 +133,12 @@ MapScreen.prototype.addMouseListener = function(){
 	$('ul#map-nav li').off('mouseout');
 	$('ul#map-nav li').on('mouseout', function(evt){
 		mapScreen.focusMap(Galapago.levelMap);
+	});
+
+	$('ul#map-nav li').off( 'click' );
+	$('ul#map-nav li').on( 'click', function(evt) {
+		mapScreen.setNavItem( $(this) );
+		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
 	});
 }
 

@@ -284,6 +284,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	}
 
 	this.initialNavItem = this.currentNavItem;
+	this.eventBarrierDiv = null;
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
@@ -319,6 +320,7 @@ DialogMenu.prototype.show = function() {
 	this.registerEventHandlers();
 	this.dialogMenuDOM.show();
 	this.dialogMenuDOM.focus();
+	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
@@ -329,9 +331,10 @@ DialogMenu.prototype.hide = function() {
 		this.callingObject.reshuffleService.start();
 		this.callingObject.powerUp.timerResume();
 	}
-	if(this.callingObject.onDialogClose){
+	if(this.callingObject && this.callingObject.onDialogClose){
 		this.callingObject.onDialogClose();
 	}
+	GameUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.hide()
 
@@ -380,12 +383,13 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	lastIndex = dialogMenu.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
+	this.dialogMenuDOM.off('keydown');
 	this.dialogMenuDOM.on('keydown', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 37: // left arrow
 			switch ( dialogMenu.dialogId ) {
@@ -402,8 +406,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			else { //loop back to last item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 39: // right arrow
 			switch ( dialogMenu.dialogId ) {
@@ -420,8 +422,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			else { //loop back to first item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 8: // back/backspace key
 			switch ( dialogMenu.dialogId ) {
@@ -460,8 +460,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 					dialogMenu.selectHandler(dialogMenu);
 					break;					
 			}
-			evt.stopPropagation();
-			evt.preventDefault();		
 			break;
 		} //switch()
 	});

@@ -2362,9 +2362,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
+			board.level.levelCompleted = true;
 			if(board.level.id==1){
 				board.level.bubbleTip.showBubbleTip(i18n.t("Game Tips.BonusFrenzy tip"));
-				board.level.levelCompleted = true;
 			}else{
 				board.setComplete();
 			}
@@ -2401,12 +2401,12 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	}
 	board.setActiveTileByGivenCoordinate(coordinatesToActivate);
 	if( board.blobCollection.isEmpty()){
+		board.level.levelCompleted = true;
 		if(board.level.id==1){
 			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrenzy tip'));
-			board.level.levelCompleted = true;
 		}else{
 			board.setComplete();
-		}
+		}		
 	}
 }; //Board.prototype.updateScoreAndCollections()
 
