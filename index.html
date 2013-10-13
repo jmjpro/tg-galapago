@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script>document.writeln('<title>' + document.domain + ': Galapago</title>');</script>
+		<script src="ext/queryString.js"></script>
+		<script>
+			var pageTitle;
+			pageTitle = '<title>' + document.domain + ': Galapago';
+			if( QueryString.cheat ) {
+				pageTitle += ' cheat mode';
+			}
+			pageTitle += '</title>';
+			document.writeln(pageTitle);
+		</script>
 		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
 		<link rel="stylesheet" type="text/css" href="css/global.css"/>
 		<link rel="stylesheet" type="text/css" href="css/dialogMenu.css"/>
@@ -10,7 +19,6 @@
 
 		<script src="ext/lodash.min.js"></script>
 		<script src="ext/imgpreload.js"></script>
-		<script src="ext/queryString.js"></script>
 		<script src="ext/q.min.js"></script>
 		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
 		<script src="ext/zepto-1.0.min.js"></script>
@@ -18,6 +26,7 @@
 		<script src="ext/gal.js"></script>
 		<script src="ext/i18next-1.6.3.min.js"></script>
 		<script src="ext/store.js"></script>
+		<script src="ext/dialogResourceLoading.js"></script>
 		<script src="ext/onScreenCache.js"></script>
 		<script src="ext/imageCollage.js"></script>
 		<script src="ext/canvasUtil.js"></script>
@@ -25,10 +34,9 @@
 		<script src="ext/priorityQueue.js"></script>
 		<script src="ext/pauseableInterval.js"></script>
 		<script src="ext/matrixUtil.js"></script>
-		<script src="../sdk/tgh5.js"></script>
-		<script src="js/util.js"></script>
+		<script src="ext/util.js"></script>
+		<script src="ext/dialogMenu.js"></script>
 		<script src="js/game.js"></script>
-		<script src="js/dialogMenu.js"></script>
 		<script src="js/dialogHelp.js"></script>
 		<script src="js/mainMenuScreen.js"></script>
 		<script src="js/score.js"></script>
@@ -40,12 +48,12 @@
 		<script src="js/powerUp.js"></script>
 		<script src="js/bonusFrenzy.js"></script>
 		<script src="js/bubbleTip.js"></script>
-		<!--script src="ext/profiler.js"--></script>
-		<!-- <script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script> -->
+		<!--script src="ext/profiler.js"></script-->
+		<!--script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script-->
 
 		<script>
 			var sdkApi, galapagoVersion;
-			galapagoVersion = 'Ver. 2.0.4';
+			galapagoVersion = 'Ver. 2.0.5';
 			function loadGame(){
 				//redefine local storage to support cookie fallback
 				window.store = new Store();
@@ -119,7 +127,8 @@
 			<div id="game-nav-button-menu" class="game-nav-button" tabindex="3"><div id="game-nav-hilight-menu">MENU</div></div>
 			<div id="game-nav-button-quit" class="game-nav-button" tabindex="4"><div id="game-nav-hilight-quit">QUIT</div></div>
 		</div>
-
+		<div id="div-level-loading"></div>
+		
 		<div id="screen-main-menu" class="canvas-fullscreen">
 			<!-- hidden until after IFA exhibition
 			div id="button-change-player">
@@ -326,53 +335,51 @@
 		<div id="dialog-help" class="overlay2">
 			<div class="dialog-title dialog-title-wide" data-i18n="Dialog Help.Title">How to Play</div>
 			<div class="dialog-content">
-				<div id="help-text-scroll">
-					<div data-i18n="Dialog Help.Body Text">
-						<p>For Terms &amp; Conditions, Privacy Policy and Support go to <a href="http://www.GameTreeTV.com">www.GameTreeTV.com</a>.</p>
-						<h4>Object</h4>
-						<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano... reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island -- you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
-						<h4>Navigating Galapago</h4>
-						<p>To play a level just select any tile on the map.</p>
-						<p>New levels will unlock once you win a level.</p>
-						<p>Remember that camp fires appear on levels already completed.</p>
-						<h4>How To Play</h4>
-						<p>Swap adjacent creatures vertically or horizontally to match them.</p>
-						<h4>Gold Tiles</h4>
-						<p>You must make matches over the gold tiles in order to complete the board.</p>
-						<h4>Locked Tile</h4>
-						<p>These tricky tiles have a creature locked inside. They can't be moved, but you can use them in a match to clear them off the board.</p>
-						<h4>Cocoon Tile</h4>
-						<p>Cocoon Tiles can't be moved, and can't be matched – but matching three or more tiles adjacent to a Cocoon Tile will wake it up and clear it off your board.</p>
-						<h4>Winning The Level</h4>
-						<p>Clear the board of all the items in the collection key at the bottom of the board.</p>
-						<p>A checkmark indicates that the goal is completed.</p>
-						<p>The numbers show how many of each is left.</p>
-						<h4>Bonus Frenzy</h4>
-						<p>When you win a level, some creatures will flee the board - catch them using the arrow keys to charge up your powerups on the next level!</p>
-						<h4>Flip-flop Powerup</h4>
-						<p>Make multiple match combos to turn on this powerup!</p>
-						<p>The Flip-Flop lets you swap two creatures anywhere on the board - they don't need to be adjacent!</p>
-						<h4>Firepower Powerup</h4>
-						<p>Make multiple match combos to turn on Firepower!</p>
-						<p>Use Firepower to select a creature anywhere on the board and make it disappear.</p>
-						<h4>Shuffler Powerup</h4>
-						<p>Make multiple match combos to turn on the Shuffler!</p>
-						<p>Use Shuffler to reshuffle all the creatures on the board.</p>
-						<h4>Lightning Critters</h4>
-						<p>Be on the lookout for the powerful Lightning Critters!</p>
-						<p>Match three or more Lightning Critters and clear an entire row!</p>
-						<h4>Super Match Friend</h4>
-						<p>Use your Super Match Friend to clear all of one creature off the board!</p>
+				<div id="help-text-scroll" data-i18n="Dialog Help.Body Text">
+					<p>For Terms &amp; Conditions, Privacy Policy and Support go to www.GameTreeTV.com.</p>
+					<h4>Object</h4>
+					<p>Match and collect beautiful island creatures in this unforgettable journey. Watch your collection turn to gold as you travel from beach to jungle to volcano&hellip; reach the top before it erupts and win the ultimate treasure! Choose your difficulty and your destiny by selecting your own path around the island &#8212; you'll lose yourself in GALAPAGO's addictive gameplay and beautiful settings.</p>
+					<h4>Navigating Galapago</h4>
+					<p>To play a level just select any tile on the map.</p>
+					<p>New levels will unlock once you win a level.</p>
+					<p>Remember that camp fires appear on levels already completed.</p>
+					<h4>How To Play</h4>
+					<p>Swap adjacent creatures vertically or horizontally to match them.</p>
+					<h4>Gold Tiles</h4>
+					<p>You must make matches over the gold tiles in order to complete the board.</p>
+					<h4>Locked Tile</h4>
+					<p>These tricky tiles have a creature locked inside. They can't be moved, but you can use them in a match to clear them off the board.</p>
+					<h4>Cocoon Tile</h4>
+					<p>Cocoon Tiles can't be moved, and can't be matched &#8212; but matching three or more tiles adjacent to a Cocoon Tile will wake it up and clear it off your board.</p>
+					<h4>Winning The Level</h4>
+					<p>Clear the board of all the items in the collection key at the bottom of the board.</p>
+					<p>A checkmark indicates that the goal is completed.</p>
+					<p>The numbers show how many of each is left.</p>
+					<h4>Bonus Frenzy</h4>
+					<p>When you win a level, some creatures will flee the board &#8212; catch them using the arrow keys to charge up your powerups on the next level!</p>
+					<h4>Flip-flop Powerup</h4>
+					<p>Make multiple match combos to turn on this powerup!</p>
+					<p>The Flip-Flop lets you swap two creatures anywhere on the board &#8212; they don't need to be adjacent!</p>
+					<h4>Firepower Powerup</h4>
+					<p>Make multiple match combos to turn on Firepower!</p>
+					<p>Use Firepower to select a creature anywhere on the board and make it disappear.</p>
+					<h4>Shuffler Powerup</h4>
+					<p>Make multiple match combos to turn on the Shuffler!</p>
+					<p>Use Shuffler to reshuffle all the creatures on the board.</p>
+					<h4>Lightning Critters</h4>
+					<p>Be on the lookout for the powerful Lightning Critters!</p>
+					<p>Match three or more Lightning Critters and clear an entire row!</p>
+					<h4>Super Match Friend</h4>
+					<p>Use your Super Match Friend to clear all of one creature off the board!</p>
 
-						<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
-						<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
-					</div>
+					<p>I-play is a trademark and trading name of Oberon Media, Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.</p>
+					<p>&copy; TransGaming Interactive Corp. ALL RIGHTS RESERVED.</p>
 				</div>
 
 				<div id="paging">
-					<img class="up-down" id="up"/>
+					<img class="up-down" id="dialog-help-up"/>
 					<div id="pages">Page <span id="current-page"></span> of <span id="page-count"></span></div>
-					<img class="up-down" id="down"/>
+					<img class="up-down" id="dialog-help-down"/>
 				</div>
 				
 				<div id="version"></div>
@@ -384,6 +391,8 @@
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
+
+		<script src="../sdk/tgh5.js"></script>
 
 	</body>
 </html>

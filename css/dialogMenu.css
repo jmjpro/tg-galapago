@@ -1,3 +1,36 @@
+/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
+.overlay2 {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width:100%;
+	height:100%;
+	text-align:center;
+	z-index: 9999;
+	font-family: 'JungleFever';
+	font-size: 26px;
+	color: rgb(255,255,179);
+	white-space: nowrap;
+}
+
+ul.menu {
+	list-style-type: none;
+}
+
+ul.menu li {
+	border:1px solid #000;
+}
+
+.transparent {
+	opacity: 0.5;
+}
+
+.blur {
+ 	opacity: .2 !important;
+    background: transparent none;
+}
+
 .vertical-align-helper {
     display: inline-block;
     vertical-align: middle;
@@ -349,40 +382,39 @@ ul.galapago-drop-down {
 	width: 900px;
 	height: 480px;
 	overflow: hidden;
+	font-size: 23px;
+	color: rgb(2, 57, 80);
 }
 
 #help-text-scroll {
 	overflow-y: scroll;
 	overflow-x: hidden;
-	height: 300px;
+	height: 320px;
 	width: 875px;
-	margin: 20px 0px 20px 0px;
+	margin: 30px 0px 20px 0px;
 	padding: 0px 20px 0px 50px;
 	text-align: left;
 }
 
 #dialog-help div.dialog-content h4 {
-	margin: 0px;
-	color: black;
+	margin-bottom: 0px;
 }
 
 #dialog-help div.dialog-content p {
-	font-size: 14px;
-	color: black;
+	margin-top: 0px;
 }
 
 #dialog-help #paging {
-	font-size: 22px;
-	color: rgb(243,209,111);
+	color: rgb(222, 176, 98);
 }
 
 #pages {
-	width: 150px;
+	width: 180px;
 	display: inline-block;
 }
 
 #current-page{
-	color: rgb(255,255,255);	
+	color: rgb(255,255,179);
 }
 
 .up-down{
@@ -390,10 +422,9 @@ ul.galapago-drop-down {
 }
 
 #dialog-help #version {
-	font-size: 22px;
 	text-align: left;
-	color: rgb(243,209,111);
-	margin-top: 40px;
+	color: rgb(222, 176, 98);
+	margin-top: 20px;
 	padding-left: 50px;
 }
 
@@ -403,4 +434,22 @@ ul.galapago-drop-down {
 
 #dialog-help .button-medium {
 	height: 61px;
+	color: rgb(255,255,179);
+}
+
+#div-level-loading {
+	display: none;
+	position: absolute;
+	background: url("../res/img/background/dialog-small-no-title.png");
+	width: 544px;
+	height: 264px;
+	top: 228px;
+	left: 368px;
+	z-index: 999;
+	font-family: 'JungleFever';
+	font-size: 26px;
+	color: rgba(255,255,255, 100);
+	line-height: 264px;
+	text-align: center;
+	background-size: 100%;
 }

@@ -27,12 +27,47 @@
  * @param {number} [timeOutInMilliSeconds]
  * @constructor
  */
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.TIMEOUT_DEFAULT_MS = 700;
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.STYLE =
+	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
+	'-webkit-background-size: 1px 1px;' +
+	'-o-background-size: 1px 1px;' +
+	'-moz-background-size: 1px 1px;' +
+	'-khtml-background-size: 1px 1px;' +
+	'-ms-background-size: 1px 1px;' +
+	'background-size: 1px 1px;';
+
+/**
+ * @static
+ * @private
+ * @type {string}
+ */
+OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
+
+/**
+ * @static
+ * @private
+ * @type {number}
+ */
+OnScreenCache.nextId = 0;
+
 function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
 	var id = OnScreenCache.ID_PREFIX + OnScreenCache.nextId++,
 		element = document.createElement('div');
 
 	if(typeof timeOutInMilliSeconds === 'undefined') {
-		timeOutInMilliSeconds = 700;
+		timeOutInMilliSeconds = OnScreenCache.TIMEOUT_DEFAULT_MS;
 	}
 
 	element.id = id;
@@ -94,34 +129,6 @@ OnScreenCache.prototype.destroy = function() {
 	this.cacheElement = null;
 	this.id = null;
 };
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.STYLE =
-	'position: fixed; top: 0; left: 1279px; width: 1px; height: 1px;' +
-	'-webkit-background-size: 1px 1px;' +
-	'-o-background-size: 1px 1px;' +
-	'-moz-background-size: 1px 1px;' +
-	'-khtml-background-size: 1px 1px;' +
-	'-ms-background-size: 1px 1px;' +
-	'background-size: 1px 1px;';
-
-/**
- * @static
- * @private
- * @type {string}
- */
-OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
-
-/**
- * @static
- * @private
- * @type {number}
- */
-OnScreenCache.nextId = 0;
 
 /**
  * @private

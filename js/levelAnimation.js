@@ -30,7 +30,7 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/powerup-activated-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" }
 ];
 
-function LevelAnimation(layer){
+function LevelAnimation(){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -43,6 +43,7 @@ function LevelAnimation(layer){
 	this.initLightning();
 	this.blinkingImages = [];
 	this.animationSprites = {};
+	this.scoreTallyingAnimation = null;
 }
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
@@ -128,9 +129,58 @@ LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 	}	
 }; //LevelAnimation.prototype.animateDropping()
 
-LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous){
+LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, board){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
+	if(displayScore){
+		this.stopScoreTallyingAnimation();
+		this.scoreTallyingAnimation = new ScoreTallyingAnimation(board, text);
+		this.scoreTallyingAnimation.start();
+	}
 } //LevelAnimation.prototype.animateScore()
+
+LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
+	if(this.scoreTallyingAnimation){
+		this.scoreTallyingAnimation.stop();
+	}
+};
+
+ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
+ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES = 10;
+ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 30;
+function ScoreTallyingAnimation(board, score){
+	this.interval = null;
+	this.currentScore = Number(board.scoreElement.html());
+	this.updatedScore = this.currentScore + Number(score);
+	this.board = board;
+	this.offset = Number(score) / ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES;
+}
+
+ScoreTallyingAnimation.prototype.start = function(){
+	var scoreTallyingAnimation = this;
+	if((this.offset % 10) != 0){
+		this.offset = this.offset + 10 - (this.offset % 10) ;
+	}
+	if(this.offset < ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES){
+		this.offset = ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES;
+	}
+	this.interval = setInterval(function(){
+		scoreTallyingAnimation.animate()
+	}, ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS);
+};
+
+ScoreTallyingAnimation.prototype.stop = function(){
+	clearInterval(this.interval);
+	this.board.scoreElement.html(this.updatedScore);
+};
+
+ScoreTallyingAnimation.prototype.animate = function(){
+	this.currentScore = this.currentScore + this.offset;
+	if(this.currentScore >= this.updatedScore){
+		this.stop();
+	}else{
+		this.board.scoreElement.html(this.currentScore);
+	}
+};
 
 LevelAnimation.prototype.stopCreatureSelectionAnimation = function(){
 	if(this.rolloverAnimation){
@@ -588,6 +638,27 @@ LevelAnimation.prototype.animateDangerBarWarning = function(parentElement, left,
 	this.dangerBarWarningAnimation.start(true);
 };
 
+LevelAnimation.DANGER_BAR_MARK_TILE_INTERVAL = 150;
+LevelAnimation.DANGER_BAR_EMPTIED_ANI_RUN_TIME = 3000;
+LevelAnimation.prototype.animateDangerBarEmptied = function(parentElement, tiles, callback) {
+	var sprites, dangerBarEmptiedAnimations, dangerBarEmptiedAnimation, left, top;
+	dangerBarEmptiedAnimations = [];
+	sprites = LoadingScreen.gal.getSprites("collage/game-tile-mark-strip.png");
+	_.each(tiles, function(tile){
+		left = Board.GRID_LEFT - 5 + tile.getXCoord();
+		top = Board.GRID_TOP - 5 + tile.getYCoord();
+		dangerBarEmptiedAnimation = new AnimationSprites(parentElement, null, sprites, LevelAnimation.DANGER_BAR_MARK_TILE_INTERVAL, left, top, 2);
+		dangerBarEmptiedAnimations.push(dangerBarEmptiedAnimation);
+		dangerBarEmptiedAnimation.start(true);
+	});
+	setTimeout(function(){
+		_.each(dangerBarEmptiedAnimations, function(dangerBarEmptiedAnimation){
+			dangerBarEmptiedAnimation.stop();
+		})
+		callback();
+	},LevelAnimation.DANGER_BAR_EMPTIED_ANI_RUN_TIME);
+};
+
 LevelAnimation.prototype.stopDangerBarAnimations = function() {
 	if(this.dangerBarAnimation){
 		this.dangerBarAnimation.stop();
@@ -920,7 +991,7 @@ BoardBuildAnimation.prototype.animate = function(){
 		}
 		for(row = 0; row < rowsToDisplay;row++){
 			tile = this.tileMatrix[col][row];
-			if(tile && tile.blob){
+			if(tile){
 				y = LoadingScreen.STAGE_HEIGHT - BoardBuildAnimation.HEIGHT_OFFSET - (this.height * (this.noOfRows - row));
 				if(y < tile.getYCoord()){
 					complete = true;
@@ -931,17 +1002,22 @@ BoardBuildAnimation.prototype.animate = function(){
 				point[0] = tile.coordinates[0];
 				point[1] = Tile.getRow(y + this.height);
 				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
-				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
+				if(!tileToBeReplaced){
 					this.layer.clearRect( x, y +  this.height , this.width, this.height );	
 				}
+				else if( tileToBeReplaced && !tileToBeReplaced.isCollectionKeyCreature() ) {
+					goldTile = this.board.getGoldTile(tileToBeReplaced);
+					Tile.draw(x, y + this.height, goldTile, null, this.board, false);
+				}
+
 				point[1] = Tile.getRow(y);
 				tileToBeReplaced = this.board.getCreatureTileFromPoint(point);
 				goldTile = null;
 				if(tileToBeReplaced){
 					goldTile = this.board.getGoldTile(tileToBeReplaced);
 				}
-				if(!tileToBeReplaced || (!tileToBeReplaced.isBlocked() && !tileToBeReplaced.isCocooned() && !tileToBeReplaced.hasSuperFriend())){
-					if(!tile.isBlocked() && !tile.isCocooned() && !tile.hasSuperFriend()){
+				if( !(tileToBeReplaced && tileToBeReplaced.isCollectionKeyCreature()) ) {
+					if( tile.blob && !tile.isCollectionKeyCreature() ) {
 						Tile.draw(x, y, goldTile, tile.blob.image, this.board, false);
 					}else{
 						Tile.draw(x, y, goldTile, null, this.board, false);

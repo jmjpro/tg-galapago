@@ -4,7 +4,6 @@ BonusFrenzy.X_MAX = 748;
 BonusFrenzy.Y_MIN = 6;
 BonusFrenzy.Y_MAX = 523;
 BonusFrenzy.Y_OFFSET = 100;
-BonusFrenzy.FRENZY_COLOR_ACTIVE = 'red';
 BonusFrenzy.START_MOVING_DELAY_MS = 800;
 BonusFrenzy.CREATURE_LAYER_TOP = 100;
 BonusFrenzy.CREATURE_SCORE = 50;
@@ -29,11 +28,11 @@ function BonusFrenzy(board) {
 	this.drawBoard(board);
 	this.registerEvents();
 	this.startMoving();
-}
+} //function BonusFrenzy() constructor
 
 BonusFrenzy.prototype.getScore = function () {
 	return this.score;
-};
+}; //BonusFrenzy.prototype.getScore()
 
 BonusFrenzy.prototype.registerEvents = function () {
 	window.onkeydown= null;
@@ -73,26 +72,21 @@ BonusFrenzy.prototype.registerEvents = function () {
 
 
 BonusFrenzy.prototype.handleMouseClickEvent = function(evt) {
-		var bonusFrenzy = this;
-		var	x = evt.pageX ;//- this.offsetLeft;
-		var y = evt.pageY ;
-		console.log(BonusFrenzy.X_MAX+ " " + BonusFrenzy.Y_MAX);
-		if(x >BonusFrenzy.LEFT && x< (BonusFrenzy.LEFT+BonusFrenzy.X_MAX) && y> BonusFrenzy.Y_MIN && y< (BonusFrenzy.Y_MAX )){
-			var correctionX = -4; // don't know the reason
-			var correctionY = +6;
-			this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-			this.currentX = (x -(x % Board.TILE_WIDTH))/ Board.TILE_WIDTH * Board.TILE_WIDTH - BonusFrenzy.LEFT +correctionX;
-			this.currentY = (y -(y % Board.TILE_HEIGHT))/ Board.TILE_HEIGHT * Board.TILE_HEIGHT +correctionY;
-			console.log('this.currentX : '+this.currentX +" this.currentY "+this.currentY);
-			this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );		
-			this.checkForCreatureCatch(this.currentX , this.currentY );
-		}
-		//if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> BonusFrenzy.Y_MIN && y< (currentY+ Board.TILE_HEIGHT )){
-				
-					
-	
-		//}		
-}
+	var bonusFrenzy = this;
+	var	x = evt.pageX ;//- this.offsetLeft;
+	var y = evt.pageY ;
+	console.log(BonusFrenzy.X_MAX+ " " + BonusFrenzy.Y_MAX);
+	if(x >BonusFrenzy.LEFT && x< (BonusFrenzy.LEFT+BonusFrenzy.X_MAX) && y> BonusFrenzy.Y_MIN && y< (BonusFrenzy.Y_MAX )){
+		var correctionX = -4; // don't know the reason
+		var correctionY = +6;
+		this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+		this.currentX = (x -(x % Board.TILE_WIDTH))/ Board.TILE_WIDTH * Board.TILE_WIDTH - BonusFrenzy.LEFT +correctionX;
+		this.currentY = (y -(y % Board.TILE_HEIGHT))/ Board.TILE_HEIGHT * Board.TILE_HEIGHT +correctionY;
+		console.log('this.currentX : '+this.currentX +" this.currentY "+this.currentY);
+		this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );		
+		this.checkForCreatureCatch(this.currentX , this.currentY );
+	}
+} //BonusFrenzy.prototype.handleMouseClickEvent()
 
 BonusFrenzy.prototype.handleLeftArrow = function () {	
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -108,7 +102,7 @@ BonusFrenzy.prototype.handleLeftArrow = function () {
 	}
 	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-};
+}; //BonusFrenzy.prototype.handleLeftArrow()
 
 BonusFrenzy.prototype.handleUpArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -124,7 +118,7 @@ BonusFrenzy.prototype.handleUpArrow = function () {
 	}
 	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-};
+}; ////BonusFrenzy.prototype.handleUpArrow()
 
 BonusFrenzy.prototype.handleRightArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -140,7 +134,7 @@ BonusFrenzy.prototype.handleRightArrow = function () {
 	}
 	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-};
+}; //BonusFrenzy.prototype.handleRightArrow()
 
 BonusFrenzy.prototype.handleDownArrow = function () {
     this.layer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
@@ -156,7 +150,7 @@ BonusFrenzy.prototype.handleDownArrow = function () {
 	}
 	this.layer.drawImage( this.tile_hilight, this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT );
 	this.checkForCreatureCatch(this.currentX , this.currentY );
-};
+}; //BonusFrenzy.prototype.handleDownArrow()
 
 BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 	for (var key in this.randomCreatureMap){
@@ -171,14 +165,15 @@ BonusFrenzy.prototype.checkForCreatureCatch = function (x , y) {
 			this.board.level.levelAnimation.animateScore(x, y - Board.GRID_TOP, BonusFrenzy.CREATURE_SCORE, false);
 		}
 	}
-};
+}; //BonusFrenzy.prototype.checkForCreatureCatch()
 
 BonusFrenzy.prototype.sizeOfRandomCreatureMap = function () {
-  var len = 0;
-    for (var k in this.randomCreatureMap)
-      len++;
-  return len;
-};
+	var len = 0;
+	for (var k in this.randomCreatureMap) {
+		len++;
+	}
+	return len;
+}; //BonusFrenzy.prototype.sizeOfRandomCreatureMap
 
 BonusFrenzy.prototype.drawBoard = function(){
 	var creaturemap = [];

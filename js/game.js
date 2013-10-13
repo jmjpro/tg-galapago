@@ -20,7 +20,6 @@ Galapago.gameImageNames = [
 	'button-cursor'
 ];
 
-//Galapago.LAYER_BACKGROUND = 'layer-background';
 Galapago.RESOURCE_BUNDLE_BOARD_COMMON = 'board-common';
 
 /* ym: this class shouldn't be instantiated */
@@ -87,7 +86,6 @@ Galapago.init = function(isTimedMode, onDialogOpenedCallBack) {
 	}, function (status) {
 		console.log('failed to load JSON level config with status ' + status);
 	})/*.then(function() {
-		//Galapago.setLevel(levelName);
 	})*/.done();
 	//level 1 is always unlocked
 	Level.findById(1).isUnlocked = true;
@@ -129,8 +127,9 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 }; //Galapago.loadJsonAsync
 
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
-	var theme, subTheme, backgroundBundle, themeBundle;
+	var theme, subTheme, backgroundBundle, themeBundle, resourceLoadingDialog;
 	console.debug( 'entering Galapago.setLevel()' );
+	resourceLoadingDialog = new DialogResourceLoading('#screen-game');
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
 	console.log( 'level id: ' + this.level.id );
@@ -148,6 +147,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.levelAnimation = new LevelAnimation();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
+				resourceLoadingDialog.onResourceLoad();
 				Galapago.level.registerEventHandlers();
 			}
 		});
@@ -238,10 +238,14 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
-			var backgroundImage;
-			backgroundImage = LoadingScreen.gal.get('background/map.jpg');
+			var galAssetPath, backgroundImage;
+			galAssetPath = 'background/map.jpg';
+			backgroundImage = LoadingScreen.gal.get( galAssetPath );
 			if (backgroundImage) {
-				that.screenDiv.css('background-image', 'url(' + backgroundImage.src + ')');
+				that.screenDiv.css( 'background-image', 'url(' + backgroundImage.src + ')' );
+			}
+			else {
+				console.error( 'unable to load image ' + galAssetPath );
 			}
 
 			that.levelMapOnScreenCache = new OnScreenCache(
@@ -258,19 +262,21 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-buttons.png'),
 					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-2.png'),
 					LoadingScreen.gal.getSprites(Galapago.collageDirectory + 'map-board-1.png')
-				], function () {
+				],
+				function () {
+					that.registerEventHandlers();
+					that.buildImageMap();
 
-			that.registerEventHandlers();
-			Galapago.audioPlayer.playVolcanoLoop();
+					Galapago.audioPlayer.playVolcanoLoop();
 
 					if (typeof onDialogOpenedCallBack !== 'undefined') {
 						onDialogOpenedCallBack();
-		}
+					}
 
 					that.screenDiv.css('display', 'block');
 					that.canvas.focus();
 				},
-				1200
+				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
 			);
 		}
 	});
@@ -278,7 +284,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 }; //LevelMap.prototype.display()
 
 LevelMap.prototype.animateStartArrowIfNeeded = function(){
-	if(!Level.isComplete("1")){
+	if( !Level.isComplete("1") ) {
 		this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
 	}
 }	
@@ -375,7 +381,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 	levelMap = this;
 
 	
-	window.onmousemove = function(e) {
+	/*window.onmousemove = function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
 		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
@@ -386,7 +392,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 			level = Galapago.levels[levelIt];
 			mapHotspotRegion = level.mapHotspotRegion;
 			if( LevelMap.isPointInPoly(point, mapHotspotRegion) ) {
-				if(level.isUnlocked){
+				if(level.isUnlocked && levelMap.hotspotLevel != level){
 					levelMap.setHotspotLevel(level);
 				}
 				break;
@@ -399,15 +405,15 @@ LevelMap.prototype.registerEventHandlers = function() {
 		e.preventDefault();
 		e.stopPropagation();
 	}; //onmousemove
-	
+	*/
 
 	//levelMap.canvas.onclick = function(evt) {
-	window.onclick = function(evt) {
+	/*window.onclick = function(evt) {
 		levelMap.handleSelect(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
 	}; //onclick
-
+	*/
 	levelMap.canvas.onkeydown = function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
@@ -479,8 +485,9 @@ LevelMap.prototype.handleSelect = function(evt) {
 		level = Galapago.levels[levelIt];
 		if( LevelMap.isPointInPoly(point, level.mapHotspotRegion) ) {
 			//levelMap.drawHotspot(mapHotspotRegion);
-			this.setHotspotLevel(level);
-			if( QueryString.cheat || this.hotspotLevel.isUnlocked ) {
+			
+			if( QueryString.cheat || level.isUnlocked ) {
+				this.setHotspotLevel(level);
 				window.onclick = null;
 				window.onmousemove = null;
 				this.handleKeyboardSelect();
@@ -714,6 +721,68 @@ LevelMap.reset = function() {
 	Galapago.eraseProfile(Galapago.profile);
 }; //LevelMap.reset()
 
+LevelMap.prototype.buildImageMap = function() {
+	var that = this;
+
+	var map = document.createElement('map');
+	map.id = 'hotspot-imagemap';
+	map.name = 'hotspots';
+	var areaParts = [];
+
+	for( var levelIt = 0; levelIt < Galapago.levels.length; levelIt++ ) {
+		var coordinatesParts = [],
+			level = Galapago.levels[levelIt],
+			region = level.mapHotspotRegion;
+
+		for(var coordinateIndex = 0; coordinateIndex < region.length; coordinateIndex++) {
+			coordinatesParts.push(region[coordinateIndex][0]);
+			coordinatesParts.push(region[coordinateIndex][1]);
+		}
+
+		areaParts.push('<area id="levelhotspot-' + levelIt + '" coords="' + coordinatesParts.join(",") + '" shape="poly">')
+	}
+	map.innerHTML = areaParts.join('');
+
+	var img = document.createElement('img');
+	img.id = 'hotspot-proxy-image';
+	img.setAttribute('style', 'position: fixed; top: 0; left: 150px; width: 1018px; height: 640px; opacity: 0;z-index = -999');
+	img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+	img.useMap = "#hotspots";
+
+	map.addEventListener('mouseover', function(e) {
+		that.changeHotspot( e, false );
+	}, false);
+
+	map.addEventListener('click', function(e) {
+		that.changeHotspot( e, true );
+	}, false);
+
+	this.screenDiv.append(map);
+	this.screenDiv.append(img);
+	map.focus();
+}; //LevelMap.prototype.buildImageMap()
+
+LevelMap.prototype.changeHotspot = function(e, isSelect) {
+	var id, parts, levelNumber, level;
+	if(e && e.target && e.target.id) {
+		id = e.target.id;
+		parts = id.split("-");
+
+		if(parts[0] === 'levelhotspot') {
+			levelNumber = parseInt(parts[1]);
+			level = Galapago.levels[levelNumber];
+			if( level.isUnlocked || QueryString.cheat ){
+				this.setHotspotLevel(level);
+				if( isSelect ) {
+					this.handleKeyboardSelect();
+				}
+			}
+		}
+	}
+	e.preventDefault();
+	e.stopPropagation();
+} //LevelMap.prototype.changeHotspot()
+
 /* end class LevelMap */
 
 /* begin class MapCell */
@@ -853,24 +922,6 @@ Level.prototype.buildGoldImagePaths = function() {
 	return goldImagePaths;
 }; //Level.prototype.buildGoldImagePaths()
 
-Level.prototype.imgpreloadAsync = function(imagePaths) {
-	var deferred, imageObjectArray, imageObjectArrayAsString;
-	deferred = Q.defer();
-	imgpreload(imagePaths, function( images ) {
-		imageObjectArray = images;
-		imageObjectArrayAsString = 'imageObjectArray = ';
-		_.each(imageObjectArray, function(imageObject) {
-			imageObjectArrayAsString += imageObject.src + ', ';
-		});
-		console.debug( imageObjectArrayAsString );
-		if( imageObjectArray.length < 1 ) {
-			deferred.reject('error loading images ' + imagePaths);
-		}
-		deferred.resolve(imageObjectArray);
-	});
-	return deferred.promise;
-};
-
 Level.prototype.getCreatureImages = function(bgTheme) {
 	if(!(bgTheme  in Galapago.creatureImages)){
 		switch( bgTheme ) {
@@ -948,10 +999,6 @@ Level.prototype.loadImages = function() {
 		level.goldImages.push( LoadingScreen.gal.get( goldImagePath ) );
 	});
 
-	/*levelAnimationImages = [];
-	_.each( levelAnimationImagePaths, function( levelAnimationImagePath ) {
-		levelAnimationImages.push( LoadingScreen.gal.get( levelAnimationImagePath ) );
-	});*/
 	level.levelAnimation.initImages(level.bgTheme, level.creatureTypes);
 
 }; //Level.prototype.loadImages()
@@ -1010,7 +1057,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
 				level.board.displayNavButton( buttonType, false );
 			});
-			level.board.hilightDiv.css('display','block');
+			level.board.hilightDiv.show();
 			level.board.scoreElement.show();
 			level.board.levelNameElement.show();
 			level.board.display();
@@ -1054,14 +1101,16 @@ Level.prototype.won = function(){
 		sdkApi.requestModalAd("inGame").done( function() {
 			LevelMap.show( LevelMap.getNextLevel(), function() {
 				level.cleanup();
-		});
+			});
 		});
 	}
 	else {
 		// TODO: IGOR: Do we need cleanup here?!
-		LevelMap.show( LevelMap.getNextLevel(), function() {} );
+		LevelMap.show( LevelMap.getNextLevel(), function() {
+			level.cleanup();
+		} );
 	}
-}; //Level.prototypepx()
+}; //Level.prototype.won()
 
 Level.prototype.quit = function(){
 	this.board.saveBoard();
@@ -1136,9 +1185,15 @@ Level.prototype.registerEventHandlers = function() {
 	});
 	
 	window.onclick = function(evt){
-		board.handleMouseClickEvent(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
+		if(board.level.levelCompleted){
+			board.setComplete();
+			return;
+		}
+		else {
+			board.handleMouseClickEvent(evt);
+		}
 	};
 	window.onmousemove = function(evt){
 		board.handleMouseMoveEvent(evt);
@@ -1226,10 +1281,14 @@ Level.prototype.registerEventHandlers = function() {
 				//Galapago.setLevel('level_02');
 				break;
 			case 56: // 8
-				toggleDebugConsole('top');
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('top');
+				}
 				break;
 			case 57: // 9
-				toggleDebugConsole('bottom');
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('bottom');
+				}
 				break;
 			default:
 		}
@@ -1315,47 +1374,6 @@ function changeCanvasState(stateName) {
 	}
 } //changeCanvasState()
 
-function findAllPixels(element, deep, pixels, prevId) {
-	if(typeof deep === 'undefined') {
-		deep = 0;
-		pixels = 0;
-	}
-	var child, next;
-	child = element.firstElementChild;
-	while (child) {
-		if(child.nodeName.toLocaleLowerCase() === 'canvas') {
-			console.log("Found canvas id = " + child.id + ", pixels: " + (child.width * child.height) + " in div id = " + prevId);
-			pixels += child.width * child.height;
-		}
-		if(typeof child.style !== 'undefined' && typeof child.style.backgroundImage !== 'undefined' &&
-			child.style.backgroundImage !== null && child.style.backgroundImage !== "") {
-			var w = parseInt(window.getComputedStyle(child, null).width);
-			var h = parseInt(window.getComputedStyle(child, null).height);
-			if(w*h > 0) {
-				console.log("Found background-image of ELEMENT id = " + child.id + ", pixels: " + (w*h) + " in div id = " + prevId);
-				pixels += w*h;
-				//child.parentNode.removeChild(child);
-			}
-		}
-		if(child.nodeName.toLowerCase() === 'img' && child.naturalWidth !== 0) {
-			var im = child;
-			console.log("Found IMG id = " + child.id + ", pixels: " + (im.naturalWidth * child.naturalHeight) + " in div id = " + prevId);
-			pixels += im.naturalWidth * child.naturalHeight;
-		}
-
-		next = child.nextElementSibling;
-		deep++;
-		pixels = findAllPixels(child, deep, pixels, child.id);
-		deep--;
-		child = next;
-	}
-
-	if(deep === 0) {
-		console.log("Total number of pixels in canvases: " + pixels);
-	}
-	return pixels;
-}
-
 Level.prototype.styleCanvas = function(blobPositions) {
 	var canvasCreature, scoreBackgroundGalAssestPath, scoreBackgroundImage, numRows, numCols;
 	canvasCreature = this.board.creatureLayer.canvas;
@@ -1392,26 +1410,10 @@ Level.prototype.styleCanvas = function(blobPositions) {
 		}
 	}
 
-	console.debug('exiting Level.prototype.styleCanvas()');
-	hilightDiv = this.board.hilightDiv;
-	hilightDiv.css('width', Board.TILE_WIDTH + 'px');
-	hilightDiv.css('height', Board.TILE_HEIGHT + 'px');
-	hilightDiv.css('background-size', 'cover');
-	hilightDiv.css('background-image', 'url('+ this.gameImages.tile_selected.src + ')');
-}; //Level.prototype.styleCanvas()
+	this.board.hilightDiv.css('background-image', 'url('+ this.gameImages.tile_selected.src + ')');
 
-// returns a JS Image object
-Level.prototype.getImageByPath = function(images, imagePath) {
-	var image, imageIt, fullImagePath;
-	image = null;
-	for( imageIt = 0; imageIt < images.length; imageIt++ ) {
-		fullImagePath = FileUtil.stripFileName(document.URL) + imagePath;
-		if( images[imageIt].src === fullImagePath ) {
-			return images[imageIt];
-		}
-	}
-	return null;
-};
+	console.debug('exiting Level.prototype.styleCanvas()');
+}; //Level.prototype.styleCanvas()
 
 Level.prototype.getCreatureImage = function(creatureType, spriteNumber) {
 	var creatureImageKey = creatureType + '_' + spriteNumber;
@@ -1424,10 +1426,10 @@ Level.prototype.isNew = function() {
 	return !levelPlayed;
 };
 
-Level.prototype.flashBuubleTip = function(key){
+Level.prototype.flashBubbleTip = function(key){
 	var level = this;
 	level.bubbleTip.showBubbleTip(i18n.t(key));
-	Galapago.delay(5000).done(function() {
+	Galapago.delay(BubbleTip.DISPLAY_TIME_MS).done(function() {
 		level.bubbleTip.clearBubbleTip( i18n.t(key) );
 	});
 };
@@ -1566,7 +1568,7 @@ Board.prototype.addPowerups = function() {
 
 /* req 4.4.2
 As default, the cursor is shown on the top leftmost creature on board. However, on new game once in a session, in levels
-1,2 and 14 – 19, when Bubble Tips are displayed at the start of the level, the cursor appears on the creature that is
+1,2 and 14-19, when Bubble Tips are displayed at the start of the level, the cursor appears on the creature that is
 animated according to the displayed tip.
 */
 Board.prototype.setActiveTile = function(tile) {
@@ -1621,70 +1623,6 @@ Board.prototype.countGold = function() {
 	}
 	return goldCount;
 };
-
-Board.prototype.getLayer = function(blobType) {
-	var layer;
-	switch( blobType ) {
-		case 'GOLD':
-			layer = this.creatureLayer;
-			break;
-		case 'CREATURE':
-			layer = this.creatureLayer;
-			break;
-		default:
-			layer = this.creatureLayer;
-	}
-	return layer;
-};
-
-Board.prototype.completeAnimationAsync = function() {
-	var /*rotateAngle, */board, layer;
-	console.debug("running level complete animation");
-	board = Galapago.level.board;
-	layer = board.creatureLayer;
-	layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);	
-
-	this.rotateAngle = 0;
-	//setInterval(this.spinCreatures, 1000/30);
-/*
-	setInterval(this.drawFlyingCreatures, 1000/30);
-	if( board.creatureYOffset < 0) {
-		clearInterval(this.drawFlyingCreatures);
-	}
-
-	this.gridLayer.fillText('Level completed', 600, 350);*/
-	return this; //chainable
-}; //Board.prototype.completeAnimationAsync()
-
-Board.prototype.spinCreatures = function() {
-	var board, layer;
-	board = Galapago.level.board;
-	layer = board.creatureLayer;
-	layer.clearRect(0, 0, layer.canvas.width, layer.canvas.height);	
-	board.drawRotatedCreatures(layer, board.rotateAngle);
-	board.rotateAngle += 2;
-}; //Board.prototype.spinCreatures()
-
-Board.prototype.drawFlyingCreatures = function () { 
-	var board, ctx, rowIt, colIt, tile;
-	//ctx = this.creatureLayer;	
-	board = Galapago.level.board;
-	board.creatureYOffset -= Board.CREATURE_FLYOVER_STEP;
-	// save the current co-ordinate system before we screw with it
-	//ctx.save();
-	// move the board up by the creatureYOffset amount; 
-	for( rowIt = 0; rowIt < board.creatureTileMatrix.length; rowIt++ ) {
-		for( colIt = 0; colIt < board.creatureTileMatrix[rowIt].length; colIt++ ) {
-			if( rowIt % 2 === 0 && colIt % 2 === 0 ) {
-				ctx.translate(0, board.creatureYOffset);
-				tile = board.creatureTileMatrix[colIt][rowIt];
-				ctx.drawImage(tile.blob.image, tile.getXCoord(), tile.getYCoord(), Board.TILE_WIDTH, Board.TILE_HEIGHT);
-			}
-		}
-	}
-	// and restore the co-ords to how they were when we began
-	//ctx.restore(); 
-}; //Board.prototype.drawFlyingCreatures()
 
 Board.prototype.toString = function() {
 	var output;
@@ -1869,7 +1807,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 	var layer, tileMatrix, col, row, x, y, width, height, imageName, previousX, previousY, board, image, goldTile, previousGoldTile;
 
 	tileMatrix = this.getTileMatrix(blobType);
-	layer = this.getLayer(blobType);
+	layer = this.creatureLayer;
 	col = coordinates[0];
 	row = coordinates[1];
 	x = Tile.getXCoord(col);
@@ -1941,7 +1879,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			}
 		}
 		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
-			this.regenerateMatchingCreatureIfAny(tile, skipDraw);
+			this.regenerateMatchingCreatureIfAny(tile, null ,true);
 		}	
 	}
 	return tile; 
@@ -1998,7 +1936,7 @@ Board.prototype.removeTile = function(tile) {
 	var layer, tileMatrix, col, row;
 
 	tileMatrix = this.getTileMatrix(tile.blob.blobType);
-	layer = this.getLayer(tile.blob.blobType);
+	layer = this.creatureLayer;
 	console.debug("removing tile " + MatrixUtil.coordinatesToString(tile.coordinates));
 	col = tile.coordinates[0];
 	row = tile.coordinates[1];
@@ -2084,8 +2022,8 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 			for (var row = 0; row <= tileMatrix[col].length - 1; row++) {
 				var tile = tileMatrix[col][row];
 				if(tile){
-					var currentX = tile.getXCoord()+325;
-					var currentY = tile.getYCoord()+100;
+					var currentX = tile.getXCoord() + Board.GRID_LEFT;
+					var currentY = tile.getYCoord()+ Board.GRID_TOP;
 					
 					if(x>currentX && x< (currentX +Board.TILE_WIDTH) && y> currentY && y< (currentY+ Board.TILE_HEIGHT )){
 						if(board.initialSwapForTripletInfo && board.bubbleInitialTile){					        
@@ -2224,8 +2162,6 @@ Board.prototype.handleTriplets = function(tileFocals) {
 			if(dangerBar && dangerBar.isRunning() ) {
 				dangerBar.stop();
 			}
-			//board.setComplete();  // board is not updated with final score yet.
-			//board.completeAnimationAsync();
 			return tileTriplets;
 		}
 		this.handleChangedPointsArray(changedPointsArray);		
@@ -2309,7 +2245,7 @@ Board.prototype.setComplete = function() {
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.isTimedMode ) {
 			var timeleft = this.level.dangerBar.timeRemainingMs;
-			$('#time-bonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);		 
+			$('#time-bonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
 		} else {
 			$('#row-time-bonus').hide();
@@ -2344,7 +2280,6 @@ Board.prototype.setComplete = function() {
 		$('#level-score').html( this.score );
 		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
-		this.hilightDiv.show();
 	}
 }; //Board.prototype.setComplete()
 
@@ -2353,9 +2288,9 @@ Board.prototype.handleTileSelect = function(tile) {
 	board = this;
 	this.powerupPointsAchievedInThisSwap = 0;
 	board.navigationLock = true;
-	console.log("appling navigation lock in handle tile select 2273");
+	console.debug("applying navigation lock");
 	tilePrev = this.tileSelected;
-	if(tile){
+	if( tile && tilePrev && !(tile === tilePrev) ) {
 		tile.setInactiveAsync();
 	}
 	tileCoordinates = tile.coordinates;
@@ -2364,7 +2299,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		//board.sounds['cannot-select'].play();
 		Galapago.audioPlayer.playInvalidTileSelect();
 		board.navigationLock = false;
-		console.log('reverting navigation lock in handle tile select 2281');
+		console.debug('reverting navigation lock');
 		return;
 	}
 	
@@ -2495,11 +2430,11 @@ Board.prototype.handleTileSelect = function(tile) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
 			if(board.level.id==1){
-				board.level.bubbleTip.showBubbleTip(i18n.t("Game Tips.BonusFrienzy tip"));
+				board.level.bubbleTip.showBubbleTip(i18n.t("Game Tips.BonusFrenzy tip"));
 				board.level.levelCompleted = true;
 			}else{
-			board.setComplete();
-		}
+				board.setComplete();
+			}
 		}
 		this.powerUp.powerUsed();	
 		this.saveBoard();
@@ -2522,7 +2457,7 @@ Board.prototype.handleTileSelect = function(tile) {
 Board.prototype.setActiveTileByGivenCoordinate = function(coordinatesToActivate) {
 	this.tileActive = this.getCreatureTilesFromPoints( [coordinatesToActivate] )[0];
 	this.tileActive.setActiveAsync().done();
-}
+} //Board.prototype.setActiveTileByGivenCoordinate()
 
 Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	var board = this;
@@ -2534,11 +2469,11 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	board.setActiveTileByGivenCoordinate(coordinatesToActivate);
 	if( board.blobCollection.isEmpty()){
 		if(board.level.id==1){
-			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrienzy tip'));
+			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrenzy tip'));
 			board.level.levelCompleted = true;
 		}else{
-		board.setComplete();
-	}
+			board.setComplete();
+		}
 	}
 }; //Board.prototype.updateScoreAndCollections()
 
@@ -2624,17 +2559,21 @@ Board.prototype.handleLockedTilesForShuffle = function(tile, temp, changedPoints
 }; //Board.prototype.handleLockedTilesForShuffle
 
 Board.prototype.dangerBarEmptied = function() {
-	var timedMode, tileMatrix, gameboard;
+	var timedMode, tileMatrix, gameboard, tilesRemaining;
+	tilesRemaining = [];
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
+	this.reshuffleService.stop();
 	_.each(tileMatrix, function(columnArray){ //loop over rows
 	  _.each(columnArray, function(tile){ //loop over columns
 			 if(tile){
-			   if( !(gameboard.getGoldTile(tile) || tile.isBlocked() || tile.isCocooned()  || tile.hasSuperFriend()) ){
+			   if( !( gameboard.getGoldTile(tile) || tile.isCollectionKeyCreature() ) ) {
 				  tile.clear();
+				}else{
+					tilesRemaining.push(tile);
 				}
 			}
 		});
@@ -2642,14 +2581,16 @@ Board.prototype.dangerBarEmptied = function() {
 	var key = 'Game Tips.OutOfTime';
 	this.level.bubbleTip.showBubbleTip(i18n.t(key));					
 	window.onkeydown=null;	
-	gameboard.hilightDiv.css('display','none');
+	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
-	if( sdkApi.inDemoMode() ){
-		new DialogMenu('screen-game', gameboard, 'dialog-game-over');
+	function callback(){
+		if( sdkApi.inDemoMode() ){
+			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
+		}else{
+			new DialogMenu('screen-game', gameboard, 'dialog-time-out');
+		}
 	}
-	else{
-		new DialogMenu('screen-game', gameboard, 'dialog-time-out');
-	}
+	this.level.levelAnimation.animateDangerBarEmptied(this.screenDiv.selector, tilesRemaining, callback);
 }; //Board.prototype.dangerBarEmptied
 
 Board.prototype.saveBoard = function() {
@@ -2666,13 +2607,14 @@ Board.prototype.saveBoard = function() {
 				   x = tile.coordinates[1];
 				   key = y + '_' + x;
 			   restoreLookup[key]= null;
-			   if(gameboard.getGoldTile(tile) || tile.isPlain()){
-					  originalBlogconfig = originalblogPositions[x][y];
-				  if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
-				  restoreLookup[key]='11'; 
-				  }else{
-				   restoreLookup[key]=originalBlogconfig; 
-				  }
+			   if(gameboard.getGoldTile(tile) || tile.isPlain()) {
+					originalBlogconfig = originalblogPositions[x][y];
+					//TODO jj add constants here for '21' and '11' strings
+					if(gameboard.getGoldTile(tile) && originalBlogconfig == '21' && tile.isCreatureOnly()){
+						restoreLookup[key]='11'; 
+					} else {
+				   		restoreLookup[key]=originalBlogconfig; 
+					}
 				}
 				else if(tile.hasSuperFriend() || tile.isBlocked() || tile.isCocooned()){
 					restoreLookup[key]= tile.blobConfig;
@@ -2736,7 +2678,7 @@ Board.prototype.handleKeyboardSelect = function() {
 					}).done();
 				}else if(this.initialSwapForTripletInfo.tipInfo.swapTile == 'shown'){
 					var key = 'Game Tips.'+this.initialSwapForTripletInfo.tipInfo.key+' tip3';
-					this.level.flashBuubleTip(key);
+					this.level.flashBubbleTip(key);
 				}
 			}
 			break;
@@ -3246,8 +3188,7 @@ Board.prototype.animateSwapCreaturesAsync = function(tileSrc, tileDest) {
 	deferred = Q.defer();
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
-		
-	//this.creatureLayer.draw();
+
 	Q.delay(Tile.DELAY_AFTER_FLIP_MS).done(function() {
 		deferred.resolve();
 	});
@@ -3263,7 +3204,7 @@ Board.prototype.animateJumpCreaturesAsync = function(eligibleForAnimation, tileS
 	tileSrc.setUnselected();
 	tileDest.setUnselected();
 	if(eligibleForAnimation){
-		this.level.levelAnimation.animateCreaturesSwap(this.getLayer('CREATURE'), this, tileSrc, tileDest, function(){
+		this.level.levelAnimation.animateCreaturesSwap(this.creatureLayer, this, tileSrc, tileDest, function(){
 			callback();
 		} );
 	}else{
@@ -3322,6 +3263,7 @@ Board.prototype.randomCreature = function(creatureTypes) {
 }; //Board.prototype.randomCreature()
 
 Board.prototype.updateScore = function() {
+	this.level.levelAnimation.stopScoreTallyingAnimation();
 	this.score += Score.consolidateScores(this.scoreEvents);
 	this.displayScore();
 	return this; //chainable
@@ -3345,7 +3287,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 		}
 	}
 	function scoreAnimation(){
-		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true);
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board);
 	}
 	if(board.putInAnimationQ){
 		board.animationQ.push(scoreAnimation);
@@ -3489,7 +3431,7 @@ Tile.prototype.setActiveAsync = function(markTile) {
 	//console.debug('active tile ' + this.coordinates + ': ' + this.blob.creatureType);
 	deferred = Q.defer();
 	this.drawHilight();
-	this.board.level.levelAnimation.animateCreatureSelection(this.board.getLayer('CREATURE'), this.board, markTile);
+	this.board.level.levelAnimation.animateCreatureSelection(this.board.creatureLayer, this.board, markTile);
 	Q.delay(Tile.DELAY_AFTER_ACTIVATE_MS).done(function() {
 		deferred.resolve();
 	});
@@ -3586,6 +3528,10 @@ Tile.prototype.isCreatureOnly = function()  {
 	return this.spriteNumber == Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
 };
 
+Tile.prototype.isCollectionKeyCreature = function()  {
+	return this.isBlocked() || this.isCocooned() || this.hasSuperFriend();
+};
+
 Tile.prototype.hasLightningCreature = function()  {
 	return this.blob.creatureType && this.blob.creatureType.startsWith('t');
 };
@@ -3593,6 +3539,7 @@ Tile.prototype.hasLightningCreature = function()  {
 Tile.prototype.hasSuperFriend = function()  {
 	return this.blob && this.blob.blobType === 'SUPER_FRIEND';
 };
+
 
 //static
 Tile.posToPixels = function(pos, basePixels) {
@@ -3846,14 +3793,14 @@ ReshuffleService.prototype.start = function() {
 				reshuffleService.board.level.levelAnimation.stopMakeMatchAnimation();
 				reshuffleService.board.level.levelAnimation.animateMakeMatch(reshuffleService.board.creatureLayer, initialTile, swapTile);
 				if(validMoveWithGoldFound && (reshuffleService.board.level.id == 1 || reshuffleService.board.level.id == 2)){
-					board.level.flashBuubleTip('Game Tips.Make Matches');
+					board.level.flashBubbleTip('Game Tips.Make Matches');
 				}
 			}
 			if(powerActive && !validMoveFound){
-				board.level.bubbleTip.flashBuubleTip('Game Tips.Use PowerUps');
+				board.level.bubbleTip.flashBubbleTip('Game Tips.Use PowerUps');
 			}
 			if(!powerActive && !validMoveFound){
-				board.level.flashBuubleTip('Game Tips.Shuffling Board');
+				board.level.flashBubbleTip('Game Tips.Shuffling Board');
 				Galapago.audioPlayer.playReshuffle();
 				reshuffleService.board.shuffleBoard();
 				console.log("reshuffled");
