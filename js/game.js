@@ -148,7 +148,6 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
 				resourceLoadingDialog.onResourceLoad();
-				Galapago.level.registerEventHandlers();
 			}
 		});
 
@@ -986,6 +985,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			level.board.setActiveTile();
 			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
 			console.debug('exiting Level.prototype.display()');
+			Galapago.level.registerEventHandlers();
 			return level; //chainable
 		});
 	}
