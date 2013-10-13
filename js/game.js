@@ -688,6 +688,9 @@ LevelMap.getNextLevel = function() {
 		unlockedLevelIds = _.filter(unlockedLevelIds, function(levelId){
 			return !Level.isComplete(levelId);
 		});
+		if( unlockedLevelIds.length === 0 ) {
+			unlockedLevelIds.push(highestLevelCompleted);
+		}
 		console.debug('unlocked level ids for highest level completed = ' + unlockedLevelIds);
 		_.each( unlockedLevelIds, function( id ) {
 			unlockedLevels.push( Level.findById(id) );
@@ -1943,8 +1946,6 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 		//this.handleMouseClickForPowerUp(x,y);
 }; //Board.prototype.handleMouseClickEvent()
 
-	var	x = evt.pageX ;//- this.offsetLeft;
-	var y = evt.pageY ;
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
 	board = this;

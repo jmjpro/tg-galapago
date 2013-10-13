@@ -178,8 +178,7 @@ Powerup.prototype.addListener = function (arrowKey) {
 
 Powerup.prototype.registerEvents = function () {
     var powerup = this;
-    window.onkeydown = function (e) {
-   $('#layer-power-up-animation').on('keydown', function(e) {
+    $('#layer-power-up-animation').on('keydown', function(e) {
         switch (e.keyCode) {
         case 37: // left arrow
             powerup.removeNavigation(e);
@@ -210,11 +209,11 @@ Powerup.prototype.registerEvents = function () {
 			  powerup.board.isPowerUpFocused = false;
 			  powerup.board.focus();
 		      break;
-		};
+		}
 		e.preventDefault();
 		e.stopPropagation();
-	});   
-};
+	}); 
+}; //Powerup.prototype.registerEvents
 
 Powerup.prototype.removeNavigation = function (e) {
     this.update();
