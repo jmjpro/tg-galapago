@@ -178,8 +178,18 @@ Powerup.prototype.addListener = function (arrowKey) {
 
 Powerup.prototype.registerEvents = function () {
     var powerup = this;
-    $('#layer-power-up-animation').on('keydown', function(e) {
-        switch (e.keyCode) {
+	var powerUpDivs = ['div-flip-flop-animation-power-up','div-fire-animation-power-up','div-shuffle-animation-power-up'];	
+    _.each( powerUpDivs, function( animationDiv ) {
+		$('#'+animationDiv).off( 'keydown');
+		$('#'+animationDiv).on( 'keydown', function(evt) {
+			powerup.handleKeyBoardEvent(evt);
+		});
+	});
+}; //Powerup.prototype.registerEvents
+
+Powerup.prototype.handleKeyBoardEvent = function (e) {
+	var powerup = this;
+	switch (e.keyCode) {
         case 37: // left arrow
             powerup.removeNavigation(e);
             break;
@@ -209,12 +219,10 @@ Powerup.prototype.registerEvents = function () {
 			  powerup.board.isPowerUpFocused = false;
 			  powerup.board.focus();
 		      break;
-		}
-		e.preventDefault();
-		e.stopPropagation();
-	}); 
-}; //Powerup.prototype.registerEvents
-
+	}
+	e.preventDefault();
+	e.stopPropagation();
+}
 Powerup.prototype.removeNavigation = function (e) {
     this.update();
     this.currentFocus = 0;
@@ -371,7 +379,7 @@ Powerup.prototype.focus = function () {
             this.drawFlipFlop(Powerup.POWER_ROLLOVER);
         }
         this.currentFocus = Powerup.FLIPFLOP_SELECTED;
-
+		//this.divShuffler.focus();
         if (this.firePowerAchieved) {
             this.drawFire(Powerup.POWER_ACTIVATED);
         } else {
@@ -424,7 +432,7 @@ Powerup.prototype.focus = function () {
 
     }
     this.animatePowerStatus();
-  $('#layer-power-up-animation').focus();
+	
 };
 
 Powerup.prototype.updatePowerup = function (tripletCount) {
@@ -570,6 +578,7 @@ Powerup.prototype.drawFlipFlop = function (state) {
     if (state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
         if (state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
             this.divFlipFlop.css('border', '1px solid red;');
+			this.divFlipFlopAnimation.focus();
         }
         this.addImage(this.divFlipFlop.selector, this.swap_fill, 0 + Powerup.LEFT_ADJUSTMENT, Powerup.TOP_ADJUSTMENT, 2);
     }
@@ -582,6 +591,7 @@ Powerup.prototype.drawFire = function (state) {
     if (state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
         if (state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
             this.divFireUp.css('border', '1px solid red;');
+			this.divFireAnimation.focus();
         }
         this.addImage(this.divFireUp.selector, this.flame_fill, 0 + Powerup.LEFT_ADJUSTMENT, Powerup.TOP_ADJUSTMENT, 2);
     }
@@ -594,6 +604,7 @@ Powerup.prototype.drawShuffler = function (state) {
     if (state == Powerup.POWER_ACTIVATED || state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
         if (state == Powerup.POWER_ROLLOVER || state == Powerup.POWER_PRESSED) {
             this.divShuffler.css('border', '1px solid red;');
+			this.divShuffleAnimation.focus();
         }
         this.addImage(this.divShuffler.selector, this.shuffle_fill, 0 + Powerup.LEFT_ADJUSTMENT, Powerup.TOP_ADJUSTMENT, 2);
     }
