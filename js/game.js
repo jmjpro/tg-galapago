@@ -1013,7 +1013,14 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 	console.debug( 'after show #screen-game');
 	if( level.levelConfig.blobPositions ) {
 		level.loadImages();
-
+		level.board.addPowerups();
+		level.board.displayLevelName();
+		_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
+			level.board.displayNavButton( buttonType, false );
+		});
+		if (Galapago.isTimedMode) {
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
+		}
 		themeComplete = this.bgTheme + '-' + this.bgSubTheme,
 		resourcePath = 'background/' + themeComplete + '.jpg',
 		backgroundImage = LoadingScreen.gal.get(resourcePath);
@@ -1031,8 +1038,8 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		level.board.build( level.levelConfig.blobPositions );
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.animationQ = [];
+		level.board.displayBlobCollections();
 		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board, function () {
-			level.board.displayBlobCollections();
 			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
 				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 			}
@@ -1040,23 +1047,18 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			if (Galapago.isTimedMode) {
 				restoreLookupString = store.getItem(timedMode + Galapago.profile + "level" + level.id + "restore");
 				dangerBarTimeRemaining = null;
-			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
-			if(restoreLookupString){
-				restoreLookup = JSON.parse(restoreLookupString);
-				dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-				if(dangerBarTimeRemaining !== 'undefined'){
-					level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
-					level.dangerBar.start();
-				}
+				if(restoreLookupString){
+					restoreLookup = JSON.parse(restoreLookupString);
+					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
+					if(dangerBarTimeRemaining !== 'undefined'){
+						level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
+						level.dangerBar.start();
+					}
 				}
 			}
 			console.debug(level.toString());
 
-			level.board.addPowerups();
-			level.board.displayLevelName();
-			_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
-				level.board.displayNavButton( buttonType, false );
-			});
+
 			level.board.hilightDiv.show();
 			level.board.scoreElement.show();
 			level.board.levelNameElement.show();
