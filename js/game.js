@@ -1247,8 +1247,10 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		hilightId = idPrefix + 'hilight-' + buttonType;
 
 		handleMouseOver = function(buttonType) {
+			board.level.levelAnimation.stopMakeMatchAnimation();
 			if( board.tileActive ) {
 				board.tileActive.setInactiveAsync();
+				board.level.levelAnimation.stopCreatureSelectionAnimation();
 			}
 			board.displayNavButton( buttonType, true );
 			board.hotspot = 'hotspot-' + buttonType;
