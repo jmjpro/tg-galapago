@@ -402,7 +402,6 @@ LevelMap.prototype.registerEventHandlers = function() {
 		evt.preventDefault();
 		evt.stopPropagation();
 	}); //onclick
-	*/
 	$(Galapago.LAYER_MAP).off('keydown');
 	$(Galapago.LAYER_MAP).on('keydown', function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
