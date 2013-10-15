@@ -426,11 +426,17 @@ LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, in
 	return;
 }; //LevelAnimation.prototype.animateSprites()
 
-LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
-	var levelAnimation, powerAchievedAnimation, powerAchievedImageSpriteSheet, spriteFrame;
+LevelAnimation.prototype.animatePowerAchieved = function(parentElement ,coordinates){
+	var levelAnimation, powerAchievedAnimation, sprites, spriteFrame;
 	levelAnimation = this;
-	powerAchievedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-gained-strip.png"); 
-	spriteFrame = new Image();
+	sprites = LoadingScreen.gal.getSprites("collage/powerup-gained-strip.png"); 
+	powerAchievedAnimation = new AnimationSprites(parentElement, null, sprites, 100, coordinates[0], coordinates[1], 1.5);
+	if(!levelAnimation.powerAchievedAnimationList){
+		levelAnimation.powerAchievedAnimationList = new Array();
+	}
+	levelAnimation.powerAchievedAnimationList.push(powerAchievedAnimation);
+	powerAchievedAnimation.start(true);
+	/*spriteFrame = new Image();
 	spriteFrame.style.position = 'absolute';
 	spriteFrame.style.display = 'block';
 	$('#screen-game').append(spriteFrame);
@@ -442,43 +448,35 @@ LevelAnimation.prototype.animatePowerAchieved = function(layer ,coordinates){
 		}
 		levelAnimation.powerAchievedAnimation.push(powerAchievedAnimation);
 	}
-	animatePowerAchieved();
+	animatePowerAchieved();*/
 	return  powerAchievedAnimation;
 	
 }
 
 LevelAnimation.prototype.stopPowerAchieved = function(powerAchievedAnimation){
-	if(this.powerAchievedAnimation){
-			var index = this.powerAchievedAnimation.indexOf(powerAchievedAnimation)
-			this.powerAchievedAnimation[index].stop();
-			//this.powerAchievedAnimation[index] = null;
-			this.powerAchievedAnimation.splice( index, 1 );
+	if(this.powerAchievedAnimationList && powerAchievedAnimation){
+		var index = this.powerAchievedAnimationList.indexOf(powerAchievedAnimation)
+		this.powerAchievedAnimationList[index].stop();
+		//this.powerAchievedAnimation[index] = null;
+		this.powerAchievedAnimationList.splice( index, 1 );
 	}
 }
 
 LevelAnimation.prototype.stopAllPowerAchieved = function(){
-	if(this.powerAchievedAnimation){
-			for (var i=0; i < this.powerAchievedAnimation.length; i++){
-				this.powerAchievedAnimation[i].stop();
+	if(this.powerAchievedAnimationList){
+			for (var i=0; i < this.powerAchievedAnimationList.length; i++){
+				this.powerAchievedAnimationList[i].stop();
 			}
+		this.powerAchievedAnimationList = new Array();
 	}
 }
 ////
-LevelAnimation.prototype.animatePowerActivated = function(layer ,coordinates){
-	var levelAnimation, powerActivatedAnimation, powerActivatedImageSpriteSheet, spriteFrame;
+LevelAnimation.prototype.animatePowerActivated = function(parentElement ,coordinates){
+	var levelAnimation, sprites;
 	levelAnimation = this;
-	powerActivatedAnimation;
-	powerActivatedImageSpriteSheet = LoadingScreen.gal.getSprites("collage/powerup-activated-strip.png");
-	spriteFrame = new Image();
-	spriteFrame.style.position = 'absolute';
-	spriteFrame.style.display = 'block';
-	$('#screen-game').append(spriteFrame);
-	powerActivatedAnimation = new GameStartArrowAnimation(coordinates, powerActivatedImageSpriteSheet,spriteFrame,layer,animatePowerActivated);
-	function animatePowerActivated(){
-		powerActivatedAnimation.start();
-		levelAnimation.powerActivatedAnimation = powerActivatedAnimation;
-	}
-	animatePowerActivated();
+	sprites = LoadingScreen.gal.getSprites("collage/powerup-activated-strip.png");
+	levelAnimation.powerActivatedAnimation = new AnimationSprites(parentElement, null, sprites, 100, coordinates[0], coordinates[1], 1.5);
+	levelAnimation.powerActivatedAnimation .start(true);
 }
 
 LevelAnimation.prototype.stopPowerActivated = function(){

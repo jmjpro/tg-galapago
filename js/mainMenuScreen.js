@@ -53,19 +53,10 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 					LoadingScreen.gal.getSprites('collage/main-menu-1.png'),
 					LoadingScreen.gal.getSprites('collage/main-menu-2.png')
 				], function () {
-					/*
-					 if( callingScreenId == 'screen-loading') {
-					 mainMenuScreen.registerImageLoadEvents();
-					 }
-					 else {
-					 mainMenuScreen.setInitialNavItem();
-					 }
-					 */
 					mainMenuScreen.setImages();
 					mainMenuScreen.setInitialNavItem();
 					mainMenuScreen.show();
 
-					mainMenuScreen.windowKeyHandler = window.onkeydown;
 					mainMenuScreen.addMouseListener();
 					if (typeof onDialogOpenedCallBack !== 'undefined') {
 						onDialogOpenedCallBack();
@@ -80,35 +71,32 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 
 MainMenuScreen.prototype.addMouseListener = function(){
 	var mainMenuScreen = this;
-
-	_.each( _.keys(MainMenuScreen.BUTTON_NAV_MAP), function( buttonId ) {
-		mainMenuScreen.registerOnClickEvent(buttonId);
-		mainMenuScreen.registerMouseOverEvent(buttonId);
-	});
-
+	mainMenuScreen.registerOnClickEvent();
+	mainMenuScreen.registerMouseOverEvent();
 } //MainMenuScreen.prototype.addMouseListener()
 
-MainMenuScreen.prototype.registerOnClickEvent = function(id){
+MainMenuScreen.prototype.registerOnClickEvent = function(){
 	var mainMenuScreen = this;
-	$('#'+id)[0].onclick = function (evt){
-				mainMenuScreen.setNavItem($('#'+id));
-				mainMenuScreen.handleSelect();
-	}
+	$('[class^=main-menu]').off('click');
+	$('[class^=main-menu]').on('click', function (evt){
+		mainMenuScreen.setNavItem($('#'+ this.id));
+		mainMenuScreen.handleSelect();
+	});
 }
 
-MainMenuScreen.prototype.registerMouseOverEvent = function(id){
+MainMenuScreen.prototype.registerMouseOverEvent = function(){
 	var mainMenuScreen = this;
-	$('#'+id)[0].onmouseover = function (evt){
-				mainMenuScreen.setNavItem($('#'+id));
-				evt.preventDefault();
-				evt.stopPropagation();
-	}
+	$('[class^=main-menu]').off('mouseover');
+	$('[class^=main-menu]').on('mouseover', function (evt){
+		mainMenuScreen.setNavItem($('#'+ this.id));
+		evt.preventDefault();
+		evt.stopPropagation();
+	});
 }
 
 MainMenuScreen.prototype.setInitialNavItem = function(){
 	this.currentNavItem = null;
 	this.setNavItem(this.getNavItem(null, this.callingScreen));
-	//console.debug( 'mainMenuScreen.currentNavItem: ' + this.currentNavItem );
 }; //MainMenuScreen.prototype.setInitialNavItem()
 
 MainMenuScreen.prototype.setImages = function() {
@@ -135,9 +123,6 @@ MainMenuScreen.prototype.handleSelect = function() {
 
 	navItem = this.currentNavItem;
 	console.debug( navItem[0].id + ' selected' );
-	if( navItem[0].id != 'button-set-language' ) {
-		this.unregisterEventHandlers();
-	}
 	store.setItem( 'mainMenuScreenLastSelectedOption', navItem[0].id );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
@@ -186,17 +171,20 @@ MainMenuScreen.prototype.handleSelect = function() {
 	}
 }; //MainMenuScreen.prototype.handleSelect()
 
+MainMenuScreen.prototype.onDialogClose = function() {
+	this.mainMenuDOM.focus();
+};
+
 MainMenuScreen.prototype.show = function() {
-	this.callingObject && this.callingObject.unregisterEventHandlers();	
 	this.registerEventHandlers();
 	this.mainMenuDOM.show();
+	this.mainMenuDOM.focus();
 	this.callingScreen && this.callingScreen.hide();
 	//sdkApi.reportPageView(TGH5.Reporting.Screen.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
 	this.mainMenuOnScreenCache.destroy();
-	this.unregisterEventHandlers();
 	this.mainMenuDOM.hide();
 
 	// TODO: IGOR: MainMenuScreen: cleanup
@@ -205,16 +193,6 @@ MainMenuScreen.prototype.hide = function() {
 	});
 
 	LoadingScreen.gal.unload('bg-main-menu');
-
-	/*
-	if( this.callingObject.registerEventHandlers ){
-		this.callingObject.registerEventHandlers();
-	}
-	else {
-		window.onkeydown = this.windowKeyHandler;
-	}
-	this.callingScreen.show();
-	*/
 }; //MainMenuScreen.prototype.hide()
 
 MainMenuScreen.prototype.quit = function() {
@@ -301,7 +279,8 @@ MainMenuScreen.prototype.addHilight = function(navItem) {
 MainMenuScreen.prototype.registerEventHandlers = function() {
 	var mainMenuScreen;
 	mainMenuScreen = this;
-	window.onkeydown = function(evt) {
+	mainMenuScreen.mainMenuDOM.off('keydown');
+	mainMenuScreen.mainMenuDOM.on('keydown', function(evt) {
 		console.debug(mainMenuScreen.currentNavItem[0].id + ' hilighted');
 		switch( evt.keyCode ) {
 		case 13: // enter
@@ -335,16 +314,5 @@ MainMenuScreen.prototype.registerEventHandlers = function() {
 			evt.preventDefault();		
 			break;
 		}
-	};
-
-	//TODO mouse support
-	/*
-	$('img.nav-button').on( 'click', function(evt) {
-		
 	});
-	*/
 }; //MainMenuScreen.prototype.registerEventHandlers()
-
-MainMenuScreen.prototype.unregisterEventHandlers = function() {
-	window.onkeydown = null;
-}; //MainMenuScreen.prototype.unregisterEventHandlers()

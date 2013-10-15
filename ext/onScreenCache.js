@@ -53,7 +53,7 @@ OnScreenCache.STYLE =
  * @private
  * @type {string}
  */
-OnScreenCache.ID_PREFIX = "on-screen-cache" + Date.now() + Math.random();
+OnScreenCache.ID_PREFIX = ("on-screen-cache" + Date.now() + Math.random()).replace(".", "");
 
 /**
  * @static
@@ -89,10 +89,14 @@ function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
 	this.id = id;
 
 	if(typeof onCachedCallBack !== 'undefined') {
+		var eventBarrier = GameUtil.addEventBarrier(element.id);
 		//TODO: there is no way to determine that image is completely DRAWN on screen!
 		//TODO: currently this is just a timeout.
 		//TODO: NOTE: image LOADED is not the same as image DRAWN.
-		setTimeout(onCachedCallBack, timeOutInMilliSeconds);
+		setTimeout(function(){
+			GameUtil.removeEventBarrier(eventBarrier);
+			onCachedCallBack();
+		}, timeOutInMilliSeconds);
 	}
 }
 

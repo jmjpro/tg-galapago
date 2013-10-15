@@ -71,7 +71,6 @@ LoadingScreen.hide = function(evt) {
 	var that = this;
 
 	//TODO if api.inDemoMode() skip the main menu screen?
-	LoadingScreen.progressBar.unregisterEventHandlers();
 	if( evt ) {
 		evt.stopPropagation();
 		evt.preventDefault();		
@@ -131,8 +130,6 @@ function ProgressBar(){
 	//this.drawImages();
 	this.updateProgressBar(0);
 	this.isLoadingComplete = false;
-	this.registerEventHandlers();
-	/*this.canvas.focus();*/
 }
 
 ProgressBar.prototype.updateProgressBar = function(percentDownloaded) {
@@ -162,35 +159,3 @@ ProgressBar.prototype.loaded = function() {
 
 	LoadingScreen.hide();
 };
-
-ProgressBar.prototype.registerEventHandlers = function() {
-	var progressBar = this;
-	/*window.onclick= function(evt) {
-		progressBar.canvas.focus();
-	};
-
-	progressBar.canvas.onclick = function(evt) {
-		var x = evt.pageX;
-		var y = evt.pageY ;
-		if(x>=ProgressBar.LEFT && x<= (ProgressBar.LEFT + progressBar.canvas.width) && y>= ProgressBar.TOP && y<= (ProgressBar.TOP+ progressBar.canvas.height )){
-			if(progressBar.isLoadingComplete){
-				LoadingScreen.hide(evt);
-			}
-		}
-	};
-
-	progressBar.canvas.onkeydown = function(evt) {
-		switch( evt.keyCode ) {
-		case 13: // enter
-			if( progressBar.isLoadingComplete ){
-				LoadingScreen.hide(evt);
-			}
-			break;
-		}
-	};*/
-}; //ProgressBar.prototype.registerEventHandlers()
-
-ProgressBar.prototype.unregisterEventHandlers = function() {
-	this.canvas.onclick = null;
-	this.canvas.onkeydown = null;
-}; //ProgressBar.prototype.unregisterEventHandlers()

@@ -148,7 +148,6 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
 				resourceLoadingDialog.onResourceLoad();
-				Galapago.level.registerEventHandlers();
 			}
 		});
 
@@ -273,7 +272,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 						onDialogOpenedCallBack();
 					}
 
-					that.screenDiv.css('display', 'block');
+					that.screenDiv.show();
 					that.canvas.focus();
 				},
 				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
@@ -368,20 +367,11 @@ LevelMap.prototype.updateLevelStatus = function() {
 	return this; //chainable
 }; //LevelMap.prototype.updateLevelStatus()
 
-LevelMap.prototype.unregisterEventHandlers = function() {
-	var levelMap;
-	levelMap = this;
-	levelMap.canvas.onmousemove = null;
-	levelMap.canvas.onclick = null;
-	levelMap.canvas.onkeydown = null;
-}; //LevelMap.prototype.unregisterEventHandlers()
-
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
 	levelMap = this;
-
-	
-	/*window.onmousemove = function(e) {
+	$(Galapago.LAYER_MAP).off( 'mousemove');
+	$(Galapago.LAYER_MAP).on( 'mousemove', function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
 		y = e.pageY - levelMap.canvas.offsetTop;
 		point = new Array(2);
@@ -404,17 +394,17 @@ LevelMap.prototype.registerEventHandlers = function() {
 		}
 		e.preventDefault();
 		e.stopPropagation();
-	}; //onmousemove
-	*/
+	}); //onmousemove
 
-	//levelMap.canvas.onclick = function(evt) {
-	/*window.onclick = function(evt) {
+	$(Galapago.LAYER_MAP).off('click');
+	$(Galapago.LAYER_MAP).on('click', function(evt) {
 		levelMap.handleSelect(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
-	}; //onclick
+	}); //onclick
 	*/
-	levelMap.canvas.onkeydown = function(evt) {
+	$(Galapago.LAYER_MAP).off('keydown');
+	$(Galapago.LAYER_MAP).on('keydown', function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		Galapago.audioPlayer.playClick();
 		switch( evt.keyCode ) {
@@ -457,7 +447,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 				break;
 			default:
 		}
-	};
+	});
 }; //LevelMap.prototype.registerEventHandlers
 
 LevelMap.prototype.quit = function() {
@@ -488,8 +478,6 @@ LevelMap.prototype.handleSelect = function(evt) {
 			
 			if( QueryString.cheat || level.isUnlocked ) {
 				this.setHotspotLevel(level);
-				window.onclick = null;
-				window.onmousemove = null;
 				this.handleKeyboardSelect();
 			}
 			break;
@@ -517,7 +505,6 @@ LevelMap.prototype.handleKeyboardSelect = function() {
 
 LevelMap.prototype.cleanup = function() {
 	this.levelMapOnScreenCache.destroy();
-	this.unregisterEventHandlers();
 	// TODO: IGOR: LevelMap: added cleanup
 	this.screenDiv.css('background-image','');
 	this.canvas.width = this.canvas.height = 1;
@@ -553,7 +540,6 @@ LevelMap.prototype.handleDownArrow = function() {
 		}
 	}
 	else {
-		this.unregisterEventHandlers();
 		this.stopStartArrowAnimation();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
@@ -705,6 +691,9 @@ LevelMap.getNextLevel = function() {
 		unlockedLevelIds = _.filter(unlockedLevelIds, function(levelId){
 			return !Level.isComplete(levelId);
 		});
+		if( unlockedLevelIds.length === 0 ) {
+			unlockedLevelIds.push(highestLevelCompleted);
+		}
 		console.debug('unlocked level ids for highest level completed = ' + unlockedLevelIds);
 		_.each( unlockedLevelIds, function( id ) {
 			unlockedLevels.push( Level.findById(id) );
@@ -1066,6 +1055,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			level.board.setActiveTile();
 			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
 			console.debug('exiting Level.prototype.display()');
+			Galapago.level.registerEventHandlers();
 			return level; //chainable
 		});
 	}
@@ -1178,15 +1168,18 @@ Level.prototype.registerEventHandlers = function() {
 		console.log('x: ' + evt.clientX + ', y:' + evt.clientY);
 	};
 
-	$('#layer-grid').click(function(evt) {
+	$('#layer-creature').off('click');
+	$('#layer-creature').on('click', function(evt) {
 		board.handleClickOrTap(evt);
 	});
 
-	$('#layer-grid').tap(function(evt) { 
+	$('#layer-creature').off('click');
+	$('#layer-creature').on('tap', function(evt) { 
 		board.handleClickOrTap(evt);
 	});
 	
-	window.onclick = function(evt){
+	$('#layer-creature').off('click');
+	$('#layer-creature').on('click', function(evt){
 		evt.preventDefault();
 		evt.stopPropagation();
 		if(board.level.levelCompleted){
@@ -1196,105 +1189,27 @@ Level.prototype.registerEventHandlers = function() {
 		else {
 			board.handleMouseClickEvent(evt);
 		}
-	};
-	window.onmousemove = function(evt){
+	});
+
+	$('#layer-power-up-animation').off('click');
+	$('#layer-power-up-animation').on('click',function(evt){
+		board.handleMouseClickForPowerUp(evt);
+		evt.preventDefault();
+		evt.stopPropagation();
+	});
+
+	$('#layer-power-up-animation').off('mousemove');
+	$('#layer-power-up-animation').on('mousemove', function(evt){
 		board.handleMouseMoveEvent(evt);
 		evt.preventDefault();
 		evt.stopPropagation();
-	};
+	});
 
 	this.registerMenuQuitButtonHandlers();
-
-	window.onkeydown = function(evt) {
-		if(board.animationQ.length){
-			return;
-		}
-		if(board.level.levelCompleted){
-			board.setComplete();
-			return;
-		}
-		//board.creatureLayer.canvas.onkeydown = function(evt) {
-		console.debug('key pressed ' + evt.keyCode);
-		switch( evt.keyCode ) {
-			case 51:
-				if( QueryString.cheat === 'true' ) {
-					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-						ns.frameWork.debug.profiler.clear();
-					}
-				}
-				break;
-			case 52:
-				if( QueryString.cheat === 'true' ) {
-					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-						var report = ns.frameWork.debug.profiler.getPreparedReport();
-						for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
-							console.log(report[i].id + ": " + report[i].own.total);
-						}
-					}
-				}
-				break;
-			case 13: // enter
-				board.handleKeyboardSelect();
-				break;
-			case 37: // left arrow
-				board.handleLeftArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
-				break;
-			case 38: // up arrow
-				board.handleUpArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
-				break;
-			case 39: // right arrow
-				board.handleRightArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
-				break;
-			case 40: // down arrow
-				board.handleDownArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
-				break;
-			case 8: // back/backspace key
-				LevelMap.show(level, function() {
-				level.quit();
-				});
-				evt.stopPropagation();
-				evt.preventDefault();		
-				break;
-			//TODO code below here should removed before production
-			case 48: // numeric 0
-				if( QueryString.cheat === 'true' ) {
-					board.setComplete();
-				}
-				evt.stopPropagation();
-				evt.preventDefault();
-				break;
-			case 49: // numeric 1
-				if( QueryString.cheat === 'true' ) {
-					board.powerUp.activatePowerUpUsingCheatCode();
-				}
-				evt.stopPropagation();
-				evt.preventDefault();
-				//Galapago.setLevel('level_01');
-				break;
-			case 50: // numeric 2
-				//Galapago.setLevel('level_02');
-				break;
-			case 56: // 8
-				if( QueryString.cheat === 'true' ) {
-					toggleDebugConsole('top');
-				}
-				break;
-			case 57: // 9
-				if( QueryString.cheat === 'true' ) {
-					toggleDebugConsole('bottom');
-				}
-				break;
-			default:
-		}
-	};
+	$('#layer-creature').off('keydown');
+	$('#layer-creature').on('keydown', function(evt) {
+		board.handleKeyboardEvent(evt);
+	});
 }; //Level.prototype.registerEventHandlers()
 
 Level.prototype.registerMenuQuitButtonHandlers = function() {
@@ -1334,12 +1249,12 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 
 Level.prototype.unregisterEventHandlers = function() {
 	var idPrefix, buttonId;
-	document.onclick = null;
-	$('#layer-grid').off('click');
-	$('#layer-grid').off('tap');
-	window.onclick = null;
-	window.onmousemove = null;
-	window.onkeydown = null;
+	$('#layer-creature').off('click');
+	$('#layer-creature').off('tap');
+	$('#layer-creature').off('click');
+	$('#layer-power-up-animation').off('click');
+	$('#layer-power-up-animation').off('mousemove');
+	$('#layer-creature').off('keydown');
 	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
 		idPrefix = '#screen-game #game-nav-';
 		buttonId = idPrefix + 'button-' + buttonType;
@@ -1505,10 +1420,101 @@ function Board() {
 	this.powerupPointsAchievedInThisSwap = 0;
 } //Board constructor
 
+Board.prototype.handleKeyboardEvent = function(evt){
+	var board = this;
+	if(board.animationQ.length){
+		return;
+	}
+	if(board.level.levelCompleted){
+		board.setComplete();
+		return;
+	}
+	//board.creatureLayer.canvas.onkeydown = function(evt) {
+	console.debug('key pressed ' + evt.keyCode);
+	switch( evt.keyCode ) {
+		case 51:
+			if( QueryString.cheat === 'true' ) {
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					ns.frameWork.debug.profiler.clear();
+				}
+			}
+			break;
+		case 52:
+			if( QueryString.cheat === 'true' ) {
+				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+					var report = ns.frameWork.debug.profiler.getPreparedReport();
+					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+						console.log(report[i].id + ": " + report[i].own.total);
+					}
+				}
+			}
+			break;
+		case 13: // enter
+			board.handleKeyboardSelect();
+			break;
+		case 37: // left arrow
+			board.handleLeftArrow();
+			evt.preventDefault();
+			evt.stopPropagation();
+			break;
+		case 38: // up arrow
+			board.handleUpArrow();
+			evt.preventDefault();
+			evt.stopPropagation();
+			break;
+		case 39: // right arrow
+			board.handleRightArrow();
+			evt.preventDefault();
+			evt.stopPropagation();
+			break;
+		case 40: // down arrow
+			board.handleDownArrow();
+			evt.preventDefault();
+			evt.stopPropagation();
+			break;
+		case 8: // back/backspace key
+			LevelMap.show(level, function() {
+			level.quit();
+			});
+			evt.stopPropagation();
+			evt.preventDefault();		
+			break;
+		//TODO code below here should removed before production
+		case 48: // numeric 0
+			if( QueryString.cheat === 'true' ) {
+				board.setComplete();
+			}
+			evt.stopPropagation();
+			evt.preventDefault();
+			break;
+		case 49: // numeric 1
+			if( QueryString.cheat === 'true' ) {
+				board.powerUp.activatePowerUpUsingCheatCode();
+			}
+			evt.stopPropagation();
+			evt.preventDefault();
+			//Galapago.setLevel('level_01');
+			break;
+		case 50: // numeric 2
+			//Galapago.setLevel('level_02');
+			break;
+		case 56: // 8
+			if( QueryString.cheat === 'true' ) {
+				toggleDebugConsole('top');
+			}
+			break;
+		case 57: // 9
+			if( QueryString.cheat === 'true' ) {
+				toggleDebugConsole('bottom');
+			}
+			break;
+		default:
+	}
+}
+
 Board.prototype.registerEventHandlers = function() {
 	this.level.registerEventHandlers();
 }; //Board.prototype.unregisterEventHandlers()
-
 
 Board.prototype.unregisterEventHandlers = function() {
 	this.level.unregisterEventHandlers();
@@ -1959,56 +1965,7 @@ Board.prototype.addTileToLayer = function(tile, layer) {
 	return this; //chainable
 }; //Board.prototype.addTileToLayer()
 
-Board.prototype.handleMouseMoveEvent = function(evt) {
-	var board = this;
-	
-	if(board.animationQ.length){
-			return;
-		}
-	var	x = evt.pageX ;//- this.offsetLeft;
-	var y = evt.pageY ;
-	if(board.powerUp && board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
-		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
-			//alert('power up cliecked'+ x +"  "+ y);
-			if(!board.isPowerUpFocused){
-				//alert('adddinggg');
-				board.powerUp.addListener();
-				board.isPowerUpFocused = true;
-			}
-			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
-			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
-					//alert('flipflop power up');
-					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
-					board.powerUp.focus();
-					
-			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
-					//alert('fire power up');
-					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
-					board.powerUp.focus();
-					
-				
-			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
-					//alert('shuffler power up');
-					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
-					board.powerUp.focus();
-					
-			}
-			
-		}else if(board.isPowerUpFocused){
-			board.isPowerUpFocused =false;
-			board.powerUp.update();
-			board.powerUp.currentFocus=0;
-			board.powerUp.nextFocus=0;
-			window.onkeydown=null;
-			board.powerUp.focusOn= 0;
-			//board.powerUp.canvas.onfocus=null;
-			window.onkeydown = board.powerUp.boardKeyHandler;
-		}
-	}
 
-}; //Board.prototype.handleMouseMoveEvent()
 
 Board.prototype.handleMouseClickEvent = function(evt) {
 		var board = this;
@@ -2053,43 +2010,8 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 		}
 		}	
 		//powerup handling 
-		this.handleMouseClickForPowerUp(x,y);
+		//this.handleMouseClickForPowerUp(x,y);
 }; //Board.prototype.handleMouseClickEvent()
-
-Board.prototype.handleMouseClickForPowerUp = function(x,y) {
-	var board = this;
-	if(board.powerUp.isPowerAchieved() && (!board.powerUp.isPowerSelected())){ // entertain only if powerup is achived and no powerup is selected 
-		if(x> Powerup.LEFT && x< (Powerup.LEFT+Powerup.POWER_UP_WIDTH) && y>Powerup.TOP && y< (Powerup.TOP+Powerup.POWER_UP_HEIGHT)){ // only if mouse (x,y) lies in powerup canvas
-			//alert('power up cliecked'+ x +"  "+ y);
-			var absFlipFlopTop = Powerup.TOP +Powerup.FLIPFLOP_TOP; //calculate absolute flipflop top 
-			var absFireTop = Powerup.TOP +Powerup.FIRE_TOP;
-			var absFhufflerTop = Powerup.TOP +Powerup.SHUFFLER_TOP ;
-			if(board.powerUp.flipflopPowerAchieved && y> absFlipFlopTop  && y< (absFlipFlopTop+Powerup.POWER_ICON_HEIGHT )){ // in flipflop power
-					//alert('flipflop power up');
-					board.powerUp.currentFocus = Powerup.FLIPFLOP_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-				
-			}else if(board.powerUp.firePowerAchieved && y>absFireTop && y< (absFireTop+Powerup.POWER_ICON_HEIGHT)){ // in fire power
-					//alert('fire power up');
-					board.powerUp.currentFocus = Powerup.FIRE_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-				
-				
-			}else if(board.powerUp.shufflerPowerAchieved && y>absFhufflerTop && y< (absFhufflerTop+Powerup.POWER_ICON_HEIGHT)){ // in shuffler power
-					//alert('shuffler power up');
-					board.powerUp.currentFocus = Powerup.SHUFFLER_SELECTED;
-					board.powerUp.focusOn= 1;
-					board.powerUp.handleSelect();
-					board.isPowerUpFocused = false;
-			}
-			
-		}
-	}
-}; //Board.prototype.handleMouseClickForPowerUp()
 
 Board.prototype.handleTriplets = function(tileFocals) {
 	var board, dangerBar, tileTriplets, tileSetsToBeRemoved, changedPointsArray;
@@ -2237,9 +2159,6 @@ Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
 	this.level.cleanup(true);
 	if(!this.bonusFrenzy){
-		window.onkeydown= null;
-		window.onclick = null;
-		window.onmousemove = null;
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);
@@ -2431,9 +2350,9 @@ Board.prototype.handleTileSelect = function(tile) {
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
+			board.level.levelCompleted = true;
 			if(board.level.id==1){
 				board.level.bubbleTip.showBubbleTip(i18n.t("Game Tips.BonusFrenzy tip"));
-				board.level.levelCompleted = true;
 			}else{
 				board.setComplete();
 			}
@@ -2470,12 +2389,12 @@ Board.prototype.updateScoreAndCollections = function(coordinatesToActivate) {
 	}
 	board.setActiveTileByGivenCoordinate(coordinatesToActivate);
 	if( board.blobCollection.isEmpty()){
+		board.level.levelCompleted = true;
 		if(board.level.id==1){
 			board.level.bubbleTip.showBubbleTip(i18n.t('Game Tips.BonusFrenzy tip'));
-			board.level.levelCompleted = true;
 		}else{
 			board.setComplete();
-		}
+		}		
 	}
 }; //Board.prototype.updateScoreAndCollections()
 
@@ -2582,7 +2501,7 @@ Board.prototype.dangerBarEmptied = function() {
 	 });
 	var key = 'Game Tips.OutOfTime';
 	this.level.bubbleTip.showBubbleTip(i18n.t(key));					
-	window.onkeydown=null;	
+	this.unregisterEventHandlers();	
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
@@ -3325,7 +3244,18 @@ Board.prototype.handleClickOrTap = function(evt) {
 	}
 	console.debug(message);
 	return;
-}; //Board.prototype.handleClickOrTap()
+};//Board.prototype.handleClickOrTap()
+
+Board.prototype.focus = function(evt) {
+	$('#layer-creature').focus();
+};
+
+Board.prototype.onDialogClose = function(evt) {
+	$('#layer-creature').focus();
+	if(!this.level.levelCompleted){
+		this.setActiveTile(this.tileActive);
+	}
+};
 
 /* end class Board */
 

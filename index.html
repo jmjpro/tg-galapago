@@ -103,33 +103,42 @@
 				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
 				<span id="map-level-score-label"></span><span id="map-level-score"></span>
 			</div>
-			<ul id="map-nav">
-				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button" onclick="Galapago.levelMap.handleKeyboardSelect();"><p>PLAY</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button" onclick="Galapago.levelMap.setHotspotLevel(LevelMap.getNextLevel());Galapago.levelMap.handleKeyboardSelect();"><p>START NEXT LEVEL</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-map-other-animation', Galapago.levelMap, 'dialog-reset-game', 'button-medium-hilight')"><p>RESET MAP</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button" onclick="Galapago.levelMap.cleanupAnimationAndSound();MainMenuScreen.init('screen-map', Galapago.mapScreen);"><p>MENU</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button" onclick="window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit', 'button-huge-hilight');"><p>QUIT</p></div></div></li>
+			<ul id="map-nav" tabindex="0">
+				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button"><p>PLAY</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button"><p>START NEXT LEVEL</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button"><p>RESET MAP</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button"><p>MENU</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button"><p>QUIT</p></div></div></li>
 			</ul>
 		</div>
 
-		<div id="screen-game" class="canvas-fullscreen">
+		<div id="screen-game" class="canvas-fullscreen" tabindex="0">
 			<canvas id="layer-creature" width="1" height="1" tabindex="1"></canvas>
 			<div id="div-hilight" style="z-index: 2;"></div>
 			<div id="current-score"></div>
 			<div id="level-name"></div>
 			<div id="power-up-label">PP points:<span id="ppoints"></span><br/><br/>PP timer:<span id="ptime"></span> sec</div>
-			<canvas id="layer-power-up" width="1" height="1" tabindex="2"></canvas>
+			
+			<div id="div-power-up"></div>
+			<div id="div-flip-flop-power-up"></div>
+			<div id="div-fire-power-up"></div>
+			<div id="div-shuffle-power-up"></div>
+			<div id="div-flip-flop-animation-power-up" tabindex="3"></div>
+			<div id="div-fire-animation-power-up" tabindex="4"></div>
+			<div id="div-shuffle-animation-power-up"tabindex="5" ></div>
+			
+			
 			<div id="div-danger-bar" width="1" height="1"></div>
 			<div id="div-animation-danger-bar" width="1" height="1"></div>
 			<canvas id="layer-collection-key" width="1" height="1"></canvas>
-			<canvas id="layer-power-up-animation" width="1" height="1"></canvas>
+			
 			<canvas id="layer-bob-cervantes" width="1" height="1"></canvas>
-			<div id="game-nav-button-menu" class="game-nav-button" tabindex="3"><div id="game-nav-hilight-menu">MENU</div></div>
-			<div id="game-nav-button-quit" class="game-nav-button" tabindex="4"><div id="game-nav-hilight-quit">QUIT</div></div>
+			<div id="game-nav-button-menu" class="game-nav-button" tabindex="6"><div id="game-nav-hilight-menu">MENU</div></div>
+			<div id="game-nav-button-quit" class="game-nav-button" tabindex="7"><div id="game-nav-hilight-quit">QUIT</div></div>
 		</div>
 		<div id="div-level-loading"></div>
 		
-		<div id="screen-main-menu" class="canvas-fullscreen">
+		<div id="screen-main-menu" class="canvas-fullscreen" tabindex="0">
 			<!-- hidden until after IFA exhibition
 			div id="button-change-player">
 				<span id="hello-player">Hello Tim!</span>
@@ -209,7 +218,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-quit" class="overlay2">
+		<div id="dialog-quit" class="overlay2" tabindex="0">
 			<div class="dialog-content">
 				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
 				<ul class="vertical-button-nav">
@@ -220,7 +229,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<div id="dialog-game-menu" class="overlay2">
+		<div id="dialog-game-menu" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</div>
 			<div class="dialog-content">
 				<ul class="vertical-button-nav">
@@ -238,7 +247,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-time-out" class="overlay2">
+		<div id="dialog-time-out" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog Time Out.Title">Out of Time</div>
 			<div class="dialog-content">
 				<div data-i18n="Dialog Time Out.BodyText">
@@ -252,7 +261,7 @@
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
-		<div id="dialog-game-over" class="overlay2">
+		<div id="dialog-game-over" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog Game Over.Title">Game Over</div>
 			<div class="dialog-content">
 				<ul class="vertical-button-nav">
@@ -262,7 +271,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-level-won" class="overlay2">
+		<div id="dialog-level-won" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
 			<div class="dialog-content">
 				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
@@ -281,7 +290,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-you-won" class="overlay2">
+		<div id="dialog-you-won" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog You Won.Title">You Won!</div>
 			<div class="dialog-content">
 				<span data-i18n="Dialog You Won.BodyText">
@@ -301,7 +310,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-new-game" class="overlay2">
+		<div id="dialog-new-game" class="overlay2" tabindex="0">
 			<div class="dialog-content">
 				<span data-i18n="Dialog New Game.BodyText">
 					Do you want<br/>	to start a new game?
@@ -314,7 +323,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-reset-game" class="overlay2">
+		<div id="dialog-reset-game" class="overlay2" tabindex="0">
 			<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
 			<div class="dialog-content">
 				<div data-i18n="Dialog Reset Game.Body Text">
@@ -332,7 +341,7 @@
 		<div id="bubbleTip" class="bubbleTip">
 		</div>
 
-		<div id="dialog-help" class="overlay2">
+		<div id="dialog-help" class="overlay2" tabindex="0">
 			<div class="dialog-title dialog-title-wide" data-i18n="Dialog Help.Title">How to Play</div>
 			<div class="dialog-content">
 				<div id="help-text-scroll" data-i18n="Dialog Help.Body Text">
