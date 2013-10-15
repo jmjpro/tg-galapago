@@ -375,6 +375,17 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 		dialogMenu.currentNavItem[0]=this;
 		dialogMenu.selectHandler(dialogMenu);
 	});
+	switch(this.dialogId){
+		case 'dialog-game-menu' :
+			function handleMouseClick(){
+				dialogMenu.handleGameMenuLeftRightNavigation();
+			}
+			$('#arrow-left').off('click');
+			$('#arrow-left').on('click', handleMouseClick);
+			$('#arrow-right').off('click');
+			$('#arrow-right').on('click', handleMouseClick);
+			break;
+	}
 } //DialogMenu.prototype.registerMouseHandlers()
 
 DialogMenu.prototype.registerEventHandlers = function() {
