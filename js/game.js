@@ -1233,9 +1233,9 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 
 		handleMouseOver = function(buttonType) {
 			board.level.levelAnimation.stopMakeMatchAnimation();
+			board.level.levelAnimation.stopCreatureSelectionAnimation();
 			if( board.tileActive ) {
 				board.tileActive.setInactiveAsync();
-				board.level.levelAnimation.stopCreatureSelectionAnimation();
 			}
 			board.displayNavButton( buttonType, true );
 			board.hotspot = 'hotspot-' + buttonType;
