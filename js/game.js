@@ -1113,12 +1113,6 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	this.board.hilightDiv.hide();
-	if(!isBonusFrenzyOn) {
-		this.board.screenDiv.hide();
-		$("#screen-game").children("canvas").each(function() {
-			this.width = this.height = 1;
-		});
-	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
@@ -1135,7 +1129,13 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
-	this.board = null;
+	if(!isBonusFrenzyOn) {
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
+		this.board = null;
+	}
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
