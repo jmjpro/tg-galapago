@@ -1027,7 +1027,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		level.board.buildInitialSwapForTriplet( level.levelConfig.initialSwapForTripletInfo );
 		level.board.animationQ = [];
 		level.board.displayBlobCollections();
-		level.levelAnimation.animateBoardBuild(level.board.creatureLayer, level.board, function () {
+		level.board.animateBoardBuild(function () {
 			if (!MatrixUtil.isSameDimensions(level.board.creatureTileMatrix, level.board.goldTileMatrix)) {
 				throw new Error('creatureTileMatrix dimensions must match goldTileMatrix dimensions');
 			}
@@ -1419,6 +1419,7 @@ function Board() {
 	this.navigationLock = false;  // for multiple cursor on game screen
 	this.animationQ = [];
 	this.powerupPointsAchievedInThisSwap = 0;
+	this.isBoardBuildAnimationNeeded = true;
 } //Board constructor
 
 Board.prototype.handleKeyboardEvent = function(evt){
@@ -1663,6 +1664,7 @@ Board.prototype.build = function(tilePositions) {
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
     restoreLookupString = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	if(restoreLookupString){
+		this.isBoardBuildAnimationNeeded = false;
 		restoreLookup = JSON.parse(restoreLookupString);
 		this.score = restoreLookup['score'];
 		this.displayScore();
@@ -1716,15 +1718,15 @@ Board.prototype.build = function(tilePositions) {
 			}
 			
 			coordinates = [colIt, rowIt];
+			if( typeof cellObject.gold != 'undefined' ) {
+				this.addTile(coordinates, 'GOLD', cellObject.gold);
+			}
 			if( cellObject.hasCreature ) {
 				if(null === this.firstTileCoordinates){
 					this.firstTileCoordinates = coordinates;
 				}
 				spriteNumber = Tile.CREATUREONLY_TILE_SPRITE_NUMBER;
-				this.addTile(coordinates, 'CREATURE', null, spriteNumber, null, true);
-			}
-			if( typeof cellObject.gold != 'undefined' ) {
-				this.addTile(coordinates, 'GOLD', cellObject.gold);
+				this.addTile(coordinates, 'CREATURE', null, spriteNumber, null, this.isBoardBuildAnimationNeeded);
 			}
 			if( cellObject.hasTileOnly ) {
 				spriteNumber = Tile.PLAIN_TILE_SPRITE_NUMBER; //no creature
@@ -1873,7 +1875,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
-		if( blob && blob.image ) {
+		if( blob && blob.image && blob.blobType != 'GOLD') {
 			goldTile = board.getGoldTile(tile);
 			image = blob.image;
 			if(!skipDraw){
@@ -1888,7 +1890,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			}
 		}
 		if(spriteNumber === Tile.BLOCKED_TILE_SPRITE_NUMBER || (blob && blob.blobType === 'SUPER_FRIEND')){
-			this.regenerateMatchingCreatureIfAny(tile, null ,true);
+			this.regenerateMatchingCreatureIfAny(tile, null , this.isBoardBuildAnimationNeeded);
 		}	
 	}
 	return tile; 
@@ -3127,6 +3129,17 @@ Board.prototype.animateJumpCreaturesAsync = function(eligibleForAnimation, tileS
 	tileDest.setUnselected();
 	if(eligibleForAnimation){
 		this.level.levelAnimation.animateCreaturesSwap(this.creatureLayer, this, tileSrc, tileDest, function(){
+			callback();
+		} );
+	}else{
+		callback();
+	}
+};
+
+Board.prototype.animateBoardBuild = function(callback) {
+	var deferred;
+	if(this.isBoardBuildAnimationNeeded){
+		this.level.levelAnimation.animateBoardBuild(this.creatureLayer, this, function(){
 			callback();
 		} );
 	}else{
