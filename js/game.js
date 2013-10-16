@@ -1192,13 +1192,20 @@ Level.prototype.registerEventHandlers = function() {
 
 	$('#layer-creature').off('mouseout');
 	$('#layer-creature').on('mouseout', function(evt){
-		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
-		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight')) && board.tileActive){
-			board.tileActive.setInactiveAsync();
-		}
 		evt.preventDefault();
 		evt.stopPropagation();
+		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
+		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight' && currrentElement.id != 'layer-creature'))){
+			board.onBoardOut();
+		}
 	});
+
+	$('#layer-creature').off('mouseover');
+	$('#layer-creature').on('mouseover', function(evt){
+		evt.preventDefault();
+		evt.stopPropagation();
+		board.onBoardIn();
+	});	
 
 	this.registerMenuQuitButtonHandlers();
 	$('#layer-creature').off('keydown');
@@ -1218,11 +1225,6 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		hilightId = idPrefix + 'hilight-' + buttonType;
 
 		handleMouseOver = function(buttonType) {
-			board.level.levelAnimation.stopMakeMatchAnimation();
-			board.level.levelAnimation.stopCreatureSelectionAnimation();
-			if( board.tileActive ) {
-				board.tileActive.setInactiveAsync();
-			}
 			board.displayNavButton( buttonType, true );
 			board.hotspot = 'hotspot-' + buttonType;
 		};
@@ -1232,7 +1234,6 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		});
 		$( buttonId ).on( 'mouseout', function(e) {
 			board.displayNavButton( buttonType, false );
-			board.setActiveTile(board.tileActive);
 			board.hotspot = null;
 		});
 		$( buttonId ).on( 'click', function(e) {
@@ -1250,6 +1251,7 @@ Level.prototype.unregisterEventHandlers = function() {
 	$('#layer-creature').off('tap');
 	$('#layer-creature').off('click');
 	$('#layer-creature').off('mouseout');
+	$('#layer-creature').off('mouseover');
 	$('#layer-creature').off('keydown');
 	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
 		idPrefix = '#screen-game #game-nav-';
@@ -3264,6 +3266,17 @@ Board.prototype.onDialogClose = function(evt) {
 	}
 };
 
+Board.prototype.onBoardOut = function() {
+	this.level.levelAnimation.stopMakeMatchAnimation();
+	this.level.levelAnimation.stopCreatureSelectionAnimation();
+	if(this.tileActive){
+		this.tileActive.setInactiveAsync();
+	}
+}
+
+Board.prototype.onBoardIn = function() {
+	this.setActiveTile(this.tileActive);
+}
 /* end class Board */
 
 /*
