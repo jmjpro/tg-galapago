@@ -144,7 +144,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				LoadingScreen.gal.clearOnLoaded( backgroundBundle );
 				console.debug( backgroundBundle + ' resource bundle loaded' );
 				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-				Galapago.level.levelAnimation = new LevelAnimation();
+				Galapago.level.levelAnimation = LevelAnimation.getInstance();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
 				resourceLoadingDialog.onResourceLoad();
@@ -154,7 +154,6 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
-
 
 Galapago.printLevelConfigs = function (levelConfigs) {
 	_.each( levelConfigs, function(levelConfig) {
@@ -214,7 +213,7 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.images = [];
 	this.levelCounter = 0;
 	//this.setImages(LoadingScreen.mapScreenImageNames);
-	this.levelAnimation = new LevelAnimation();
+	this.levelAnimation = LevelAnimation.getInstance();
 	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
 } //LevelMap constructor
@@ -233,7 +232,6 @@ LevelMap.prototype.startAnimations = function() {
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
-	that.startAnimations();
 	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
@@ -274,6 +272,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 
 					that.screenDiv.show();
 					that.canvas.focus();
+					that.startAnimations();
 				},
 				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
 			);

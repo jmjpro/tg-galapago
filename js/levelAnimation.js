@@ -30,6 +30,8 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/powerup-activated-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" }
 ];
 
+LevelAnimation.instance = null;
+//LevelAnimation should never be instantiated
 function LevelAnimation(){
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
@@ -43,8 +45,15 @@ function LevelAnimation(){
 	this.initLightning();
 	this.blinkingImages = [];
 	this.animationSprites = {};
-	this.scoreTallyingAnimation = null;
+	this.scoreTallyingAnimation = null;	
 }
+
+LevelAnimation.getInstance = function(){
+	if(!LevelAnimation.instance){
+		LevelAnimation.instance = new LevelAnimation();
+	}
+	return LevelAnimation.instance;
+};
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
 	var headsBase, canvasBC, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
@@ -319,6 +328,9 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 
 LevelAnimation.prototype.animateBonFire = function(parentElementSelector, completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
+	if(levelAnimation.bonFireAnimation){
+		levelAnimation.bonFireAnimation.stop();
+	}
 	function animateRandomBornFires(){
 		var coordinates = [];
 
@@ -354,6 +366,9 @@ LevelAnimation.prototype.animateBonFire = function(parentElementSelector, comple
 
 LevelAnimation.prototype.animateBombs2 = function(parentElement){
 	var that = this;
+	if(that.bombAnimation){
+		that.bombAnimation.stop();
+	}
 	function animateBomb( callback ) {
 		var randomBombId;
 		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
@@ -366,6 +381,7 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
+	this.stopAnimateSprite(galAssetPath);
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		sprites = LoadingScreen.gal.getSprites(galAssetPath);
@@ -396,11 +412,12 @@ LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
 	if(animationSprite){
 		animationSprite.stop();
 	}
-	animationSprite = null;
-} //LevelAnimation.prototype.stopAnimateSprite()
+	this.animationSprites[galAssetPath] = null;
+}; //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var blinkingImage, image, animationConfig, frameInterval, magnificationFactor, isContinuous;
+	this.stopBlinkingImage(galAssetPath);
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		image = LoadingScreen.gal.get(galAssetPath);
@@ -425,6 +442,14 @@ LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, in
 	this.blinkingImages.push( blinkingImage );
 	return;
 }; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.stopBlinkingImage = function(galAssetPath){
+	var blinkingImage = this.blinkingImages[galAssetPath];
+	if(blinkingImage){
+		blinkingImage.stop();
+	}
+	this.blinkingImages[galAssetPath] = null;
+} //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animatePowerAchieved = function(parentElement ,coordinates){
 	var levelAnimation, powerAchievedAnimation, sprites, spriteFrame;
@@ -670,11 +695,15 @@ LevelAnimation.prototype.stopDangerBarAnimations = function() {
 
 LevelAnimation.prototype.stopAllAnimations = function(){
 	for(key in this.animationSprites){
-		this.animationSprites[key].stop();
+		if(this.animationSprites[key]){
+			this.animationSprites[key].stop();
+		}
 	}
 	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
 		_.each( this.blinkingImages, function( blinkingImage ) {
-			blinkingImage.stop();
+			if(blinkingImage){
+				blinkingImage.stop();
+			}
 		});
 	}
 	this.blinkingImages = null;
