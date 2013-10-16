@@ -1038,7 +1038,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 				if(restoreLookupString){
 					restoreLookup = JSON.parse(restoreLookupString);
 					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-					if(dangerBarTimeRemaining !== 'undefined'){
+					if(dangerBarTimeRemaining){
 						level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
 						level.dangerBar.start();
 					}
