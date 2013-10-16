@@ -1135,7 +1135,9 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
-	this.board = null;
+	if(!isBonusFrenzyOn) {
+		this.board = null;
+	}
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
