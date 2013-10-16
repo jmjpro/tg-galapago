@@ -2365,6 +2365,7 @@ Board.prototype.handleTileSelect = function(tile) {
 	else {
 		if((tile === tilePrev) && (this.powerUp.isFlipFlopSelected())){
 			board.powerUp.powerSelected = 0;
+			board.level.levelAnimation.stopPowerActivated();
 			board.powerUp.update();
 		}
 		tilePrev.setUnselected();
