@@ -395,11 +395,9 @@ ul.galapago-drop-down {
 }
 
 #help-text-scroll {
-	overflow: hidden;
 	height: 314px; /* needs to match DialogHelp.SCROLL_DIV_PAGE_HEIGHT */
 	width: 775px;
-	margin: 30px 0px 20px 0px;
-	padding: 0px 20px 0px 50px;
+	margin: 30px 0px 30px 0px;
 	text-align: left;
 }
 
@@ -434,7 +432,6 @@ ul.galapago-drop-down {
 	text-align: left;
 	color: rgb(222, 176, 98);
 	margin-top: 20px;
-	padding-left: 50px;
 }
 
 #dialog-help #close-positioner {
