@@ -2483,6 +2483,7 @@ Board.prototype.dangerBarEmptied = function() {
 	tilesRemaining = [];
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
+	gameboard.level.levelCompleted = true;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
