@@ -43,7 +43,7 @@ function LevelAnimation(){
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
 	this.initLightning();
-	this.blinkingImages = [];
+	this.blinkingImages = {};
 	this.animationSprites = {};
 	this.scoreTallyingAnimation = null;	
 }
@@ -439,7 +439,7 @@ LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, in
 	else {
 		console.error( 'unable to find animationConfig for ' + galAssetPath );
 	}
-	this.blinkingImages.push( blinkingImage );
+	this.blinkingImages[galAssetPath] = blinkingImage;
 	return;
 }; //LevelAnimation.prototype.animateSprites()
 
@@ -699,14 +699,11 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 			this.animationSprites[key].stop();
 		}
 	}
-	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
-		_.each( this.blinkingImages, function( blinkingImage ) {
-			if(blinkingImage){
-				blinkingImage.stop();
-			}
-		});
+	for(key in this.blinkingImages){
+		if(this.blinkingImages[key]){
+			this.blinkingImages[key].stop();
+		}
 	}
-	this.blinkingImages = null;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
