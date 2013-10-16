@@ -1200,20 +1200,6 @@ Level.prototype.registerEventHandlers = function() {
 		evt.stopPropagation();
 	});
 
-	$('#layer-power-up-animation').off('click');
-	$('#layer-power-up-animation').on('click',function(evt){
-		board.handleMouseClickForPowerUp(evt);
-		evt.preventDefault();
-		evt.stopPropagation();
-	});
-
-	$('#layer-power-up-animation').off('mousemove');
-	$('#layer-power-up-animation').on('mousemove', function(evt){
-		board.handleMouseMoveEvent(evt);
-		evt.preventDefault();
-		evt.stopPropagation();
-	});
-
 	this.registerMenuQuitButtonHandlers();
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
@@ -1263,8 +1249,7 @@ Level.prototype.unregisterEventHandlers = function() {
 	$('#layer-creature').off('click');
 	$('#layer-creature').off('tap');
 	$('#layer-creature').off('click');
-	$('#layer-power-up-animation').off('click');
-	$('#layer-power-up-animation').off('mousemove');
+	$('#layer-creature').off('mouseout');
 	$('#layer-creature').off('keydown');
 	_.each( Board.NAV_BUTTON_TYPES, function(buttonType) {
 		idPrefix = '#screen-game #game-nav-';
@@ -2021,9 +2006,7 @@ Board.prototype.handleMouseClickEvent = function(evt) {
 			if(found) {
 				break;
 		}
-		}	
-		//powerup handling 
-		//this.handleMouseClickForPowerUp(x,y);
+	}	
 }; //Board.prototype.handleMouseClickEvent()
 
 Board.prototype.handleTriplets = function(tileFocals) {
