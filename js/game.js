@@ -1005,9 +1005,6 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
 			level.board.displayNavButton( buttonType, false );
 		});
-		if (Galapago.isTimedMode) {
-			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
-		}
 		themeComplete = this.bgTheme + '-' + this.bgSubTheme,
 		resourcePath = 'background/' + themeComplete + '.jpg',
 		backgroundImage = LoadingScreen.gal.get(resourcePath);
@@ -1019,6 +1016,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 
 		if(typeof onDialogOpenedCallBack !== 'undefined') {
 			onDialogOpenedCallBack();
+		}
+		if (Galapago.isTimedMode) {
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 		}
 		level.styleCanvas( level.levelConfig.blobPositions );
 		level.board.init( level.levelConfig.blobPositions );
