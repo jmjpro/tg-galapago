@@ -1038,7 +1038,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 				if(restoreLookupString){
 					restoreLookup = JSON.parse(restoreLookupString);
 					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-					if(dangerBarTimeRemaining !== 'undefined'){
+					if(dangerBarTimeRemaining){
 						level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
 						level.dangerBar.start();
 					}
@@ -2484,6 +2484,7 @@ Board.prototype.dangerBarEmptied = function() {
 	tilesRemaining = [];
 	tileMatrix =this.creatureTileMatrix;
 	gameboard = this;
+	gameboard.level.levelCompleted = true;
 	timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	store.removeItem( timedMode + Galapago.profile + "level" + this.level.id + "restore" );
 	this.level.levelAnimation.stopAllAnimations();
