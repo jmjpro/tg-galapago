@@ -1112,9 +1112,8 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.unregisterEventHandlers();
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
-	if(isBonusFrenzyOn) {
-		this.board.hilightDiv.hide();
-	}else{
+	this.board.hilightDiv.hide();
+	if(!isBonusFrenzyOn) {
 		this.board.screenDiv.hide();
 		$("#screen-game").children("canvas").each(function() {
 			this.width = this.height = 1;
