@@ -509,7 +509,7 @@ LevelMap.prototype.cleanup = function() {
 	this.canvas.width = this.canvas.height = 1;
 	LoadingScreen.gal.unload('bg-map-screen');
 	this.screenDiv.hide();
-	this.cleanupAnimationAndSound();
+	this.cleanupAnimationAndSound()
 }; //LevelMap.prototype.cleanup()
 
 LevelMap.prototype.cleanupAnimationAndSound = function() {
@@ -1136,6 +1136,7 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
+	this.board = null;
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
