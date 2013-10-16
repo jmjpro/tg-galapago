@@ -1190,6 +1190,16 @@ Level.prototype.registerEventHandlers = function() {
 		}
 	});
 
+	$('#layer-creature').off('mouseout');
+	$('#layer-creature').on('mouseout', function(evt){
+		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
+		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight')) && board.tileActive){
+			board.tileActive.setInactiveAsync();
+		}
+		evt.preventDefault();
+		evt.stopPropagation();
+	});
+
 	$('#layer-power-up-animation').off('click');
 	$('#layer-power-up-animation').on('click',function(evt){
 		board.handleMouseClickForPowerUp(evt);
