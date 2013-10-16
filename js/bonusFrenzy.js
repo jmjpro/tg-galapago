@@ -35,18 +35,16 @@ BonusFrenzy.prototype.getScore = function () {
 }; //BonusFrenzy.prototype.getScore()
 
 BonusFrenzy.prototype.registerEvents = function () {
-	window.onkeydown= null;
-	window.onclick = null;
-	window.onmousemove = null;
 	var bonusFrenzy = this;
 	this.currentX = this.board.tileActive.getXCoord() ;
 	this.currentY = this.board.tileActive.getYCoord() + BonusFrenzy.Y_OFFSET;
 	this.board.tileActive.eraseHilight();
-	//bonusFrenzy.board.creatureLayer.clearRect(this.currentX, this.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
-	window.onclick = function(evt){
+	$('#layer-creature').off('click');
+	$('#layer-creature').on('click', function(evt){
 		bonusFrenzy.handleMouseClickEvent(evt);
-	}
-	window.onkeydown = function(evt) {
+	});
+	$('#layer-creature').off('keydown');
+	$('#layer-creature').on('keydown', function(evt) {
 		console.debug('key pressed ' + evt.keyCode);
 		switch( evt.keyCode ) {
 			case 37: // left arrow
@@ -67,7 +65,7 @@ BonusFrenzy.prototype.registerEvents = function () {
 				break;			
 			default:
 		}
-	};
+	});
 }; //BonusFrenzy.prototype.registerEvents()
 
 
@@ -249,14 +247,12 @@ BonusFrenzy.prototype.startMoving = function(){
 		}
 		
 		if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
-	         window.clearInterval(bonusFrenzy.intervalHandle);
-			 window.onkeydown= null;
-			 window.onclick = null;
+	         clearInterval(bonusFrenzy.intervalHandle);
 			 console.log('score : '+bonusFrenzy.score);
 			 //bonusFrenzy.board.level.won()
 			 bonusFrenzy.board.setComplete();
 	     }
 	} //function fly()
 
-	this.intervalHandle = window.setInterval( fly , BonusFrenzy.START_MOVING_DELAY_MS );
+	this.intervalHandle = setInterval( fly , BonusFrenzy.START_MOVING_DELAY_MS );
 } //BonusFrenzy.prototype.startMoving()

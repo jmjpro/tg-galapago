@@ -1,6 +1,5 @@
 /* begin DialogHelp.SELECT_HANDLERS[] */
 DialogHelp.SELECT_HANDLERS = [];
-DialogHelp.SCROLL_DIV_HEIGHT_OFFSET = 262;
 DialogHelp.SELECT_HANDLERS['dialog-help'] = function(dialogHelp) {
 	var optionId, scrollDiv;
 	optionId = dialogHelp.currentNavItem[0].id;
@@ -16,12 +15,11 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.callingScreen = $('#' + callingScreenId);
 	this.callingObject = callingObject;
 	this.dialogId = 'dialog-help';
-	this.windowKeyHandler= window.onkeydown;
-	this.dialogMenuDOM = $('#' + this.dialogId);
+	this.dialogHelpDOM = $('#' + this.dialogId);
 	this.setDialogBackgroundImage();
 	this.scrollDiv = $('#help-text-scroll');
 	this.currentPage=1;
-	this.dialogNav = this.dialogMenuDOM.find('ul');
+	this.dialogNav = this.dialogHelpDOM.find('ul');
 	this.hilightClass = "button-medium-hilight";
 	this.hilightImageName = "button-hilight";
 	this.regularImageName = "button-regular";
@@ -37,8 +35,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.registerEventHandlers();
 	this.registerMouseHandlers();
 	this.show();
-	this.scrollDivHeightOffset = DialogHelp.SCROLL_DIV_HEIGHT_OFFSET;
-	this.maxPage = Math.ceil(this.scrollDiv[0].scrollHeight /  this.scrollDivHeightOffset); 	
+	this.maxPage = $("[id^=help-text-scroll-page]").length; 	
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
 	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
@@ -49,7 +46,13 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.scrollDiv[0].focus();
 	this.setArrow( 'down', true);
 	this.setArrow( 'up', false);
+	this.showCurrentPage();
 } //function DialogHelp()
+
+DialogHelp.prototype.showCurrentPage = function(){
+	$("[id^=help-text-scroll-page]").hide();
+	$("#help-text-scroll-page" + this.currentPage).show()[0].scrollIntoView();
+}
 
 DialogHelp.prototype.setDialogBackgroundImage = function() {
 	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
@@ -60,7 +63,7 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 			galBackgroundPath = 'background/' + backgroundFileName;
 			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
 			if( backgroundImage ) {
-				this.dialogMenuDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
+				this.dialogHelpDOM.css( 'background-image', 'url(' + backgroundImage.src + ')');
 			}
 			else {
 				console.error( 'unable to find background image ' + galBackgroundPath );
@@ -74,20 +77,20 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 }; //DialogHelp.prototype.setDialogBackgroundImage()
 
 DialogHelp.prototype.show = function() {
-	this.dialogMenuDOM.show();
+	this.dialogHelpDOM.show();
+	this.dialogHelpDOM.focus();
+	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass('transparent');
 }; //DialogHelp.prototype.show()
 
 DialogHelp.prototype.hide = function() {
-	this.unregisterEventHandlers();
-	this.dialogMenuDOM.hide();
+	this.dialogHelpDOM.hide();
 	this.setNavItem(this.initialNavItem);
-	if(this.callingObject.registerEventHandlers){
-		this.callingObject.registerEventHandlers();
-	}else{
-		window.onkeydown = this.windowKeyHandler;
-	}
+	GameUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
+	if(this.callingObject.onDialogClose){
+		this.callingObject.onDialogClose()
+	}
 }; //DialogHelp.prototype.hide()
 
 DialogHelp.prototype.setNavItem = function(item) {
@@ -101,18 +104,21 @@ DialogHelp.prototype.setNavItem = function(item) {
 
 DialogHelp.prototype.registerMouseHandlers = function() {
 	var dialogHelp = this;
-	dialogHelp.dialogNav.children().each( function() {
-		$(this).on( 'mouseover', function() {
-			dialogHelp.setNavItem( $(this) );
-		});
-		$(this).on( 'click', function() {
-			dialogHelp.currentNavItem = $(this);
-			dialogHelp.selectHandler( dialogHelp );
-		});	
+	var dialogNavChildren = $('#' + this.dialogId + ' ul li'); 
+	dialogNavChildren.off( 'mouseover');
+	dialogNavChildren.on( 'mouseover', function() {
+		dialogHelp.setNavItem( $(this) );
 	});
+	dialogNavChildren.off( 'click');
+	dialogNavChildren.on( 'click', function() {
+		dialogHelp.currentNavItem = $(this);
+		dialogHelp.selectHandler( dialogHelp );
+	});
+	$( '#dialog-help-up' ).off( 'click');	
 	$( '#dialog-help-up' ).on( 'click', function() {
 		dialogHelp.handleUpArrow();
 	});
+	$( '#dialog-help-down' ).off( 'click' );
 	$( '#dialog-help-down' ).on( 'click', function() {
 		dialogHelp.handleDownArrow();
 	});
@@ -124,7 +130,8 @@ DialogHelp.prototype.registerEventHandlers = function() {
 	lastIndex = dialogHelp.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
-	window.onkeydown = function(evt) {
+	this.dialogHelpDOM.off('keydown');
+	this.dialogHelpDOM.on('keydown', function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogHelp.selectHandler(dialogHelp);
@@ -147,72 +154,39 @@ DialogHelp.prototype.registerEventHandlers = function() {
 			dialogHelp.hide();
 			break;
 		}
-	};
-
-	dialogHelp.scrollDiv.on( 'scroll', function(evt) {
-		dialogHelp.updateScrollDivPages();
 	});
 }; //DialogHelp.prototype.registerEventHandlers()
 
 DialogHelp.prototype.handleUpArrow = function() {
-	if( this.currentPage === 1 ) {
-		return this;
-	}
-	this.currentPage--;
-	this.setArrow('down', true);
-	if( this.currentPage >= 1 ) {
-		//if(this.scrollDiv[0].scrollBy){
-			this.scrollDiv[0].scrollTop = (this.currentPage -1) * this.scrollDivHeightOffset;
-		//}
-	}
-	if( this.currentPage === 1 ) {
-		this.setArrow('up', false);
-	}
-	else {
-		this.setArrow('up', true);
+	if( this.currentPage > 1 ) {
+		this.currentPage--;
+		this.setArrow('down', true);
+		this.showCurrentPage();
+		this.updateScrollDivPages();
+		if( this.currentPage === 1 ) {
+			this.setArrow('up', false);
+		}
 	}
 	return this;
 }; //DialogHelp.prototype.handleUpArrow()
 
 DialogHelp.prototype.handleDownArrow = function() {
-	if( this.currentPage === this.maxPage ) {
-		return this;
-	}
-	this.currentPage++;
-	this.setArrow('up', true);
-	if( this.currentPage <= this.maxPage ) {
-		//if(this.scrollDiv[0].scrollBy){
-			this.scrollDiv[0].scrollTop = (this.currentPage -1) * this.scrollDivHeightOffset;
-		//}
-	}
-	if( this.currentPage === this.maxPage ) {
-		this.setArrow('down', false);
-	}
-	else {
-		this.setArrow('down', true);
+	if( this.currentPage < this.maxPage ) {
+		this.currentPage++;
+		this.setArrow('up', true);
+		this.showCurrentPage();
+		this.updateScrollDivPages();
+		if( this.currentPage === this.maxPage ) {
+			this.setArrow('down', false);
+		}
 	}
 	return this;
 }; //DialogHelp.prototype.handleDownArrow()
 
-DialogHelp.prototype.unregisterEventHandlers = function() {
-	window.onkeydown = null;
-	$('div.help-text-scroll').off( 'scroll');
-	this.dialogNav.children().each( function() {
-		$(this).off( 'mouseover' );
-		$(this).off( 'click' );
-	});
-	$( '#dialog-help-up' ).off( 'click' );
-	$( '#dialog-help-down' ).off( 'click' );
-}; //DialogHelp.prototype.unregisterEventHandlers()
-
-
 DialogHelp.prototype.updateScrollDivPages = function() {
 	var scrollDiv, currentPage, pageCount;
 	scrollDiv = this.scrollDiv[0];
-	console.debug( "scrollTop: " + scrollDiv.scrollTop + ", clientHeight: " + scrollDiv.clientHeight + ", scrollHeight: " + scrollDiv.scrollHeight );
-	//pageCount = Math.ceil( scrollDiv.scrollHeight / scrollDiv.clientHeight );
-	//currentPage = Math.floor( (scrollDiv.scrollTop + scrollDiv.clientHeight ) / scrollDiv.scrollHeight * pageCount );
-	$('#current-page').html(Math.ceil(scrollDiv.scrollTop/DialogHelp.SCROLL_DIV_HEIGHT_OFFSET)+1);
+	$('#current-page').html(this.currentPage);
 	$('#page-count').html(this.maxPage);
 	if( this.currentPage === 1) {
 		$('#version').html(galapagoVersion);

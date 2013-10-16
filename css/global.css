@@ -58,6 +58,79 @@ html, body {
 	top : 110px;
 }
 
+#div-power-up {
+	position: absolute;
+	z-index: 2;
+	width : 70px;
+	height : 280px ;
+	left : 124px;
+	top : 232px;
+}
+#div-flip-flop-power-up{
+	position: absolute;
+	z-index: 3;
+	left : 124px;
+	top : 262px;
+	width : 70px;
+	height : 70px ;
+}
+#div-flip-flop-animation-power-up{
+	position: absolute;
+	z-index: 4;
+	width : 70px;
+	height : 70px ;
+	left : 124px;
+	top : 262px;
+}
+
+
+#div-fire-power-up{
+	position: absolute;
+	z-index: 3;
+	left : 124px;
+	top : 337px;
+	width : 70px;
+	height : 70px ;
+}
+#div-fire-animation-power-up{
+	position: absolute;
+	z-index: 4;
+	width : 70px;
+	height : 70px ;
+	left : 124px;
+	top : 337px;
+}
+
+#div-shuffle-power-up{
+	position: absolute;
+	z-index: 3;
+	left : 124px;
+	top : 412px;
+	width : 70px;
+	height : 70px ;
+}
+#div-shuffle-animation-power-up{
+	position: absolute;
+	z-index: 4;
+	width : 70px;
+	height : 70px ;
+	left : 124px;
+	top : 412px;
+}
+#div-fill-power-up{
+	-webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    width: 38px;
+	height:38px;
+	left:140px;
+	top:275px;
+	position: absolute;
+	z-index: 4;
+	background-size: auto;
+	overflow:hidden;
+}
+
 canvas, div, li {
 	background-repeat: no-repeat;
 	background-position: top left;

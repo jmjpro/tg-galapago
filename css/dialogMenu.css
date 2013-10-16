@@ -14,6 +14,15 @@
 	white-space: nowrap;
 }
 
+.event-barrier {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
 ul.menu {
 	list-style-type: none;
 }
@@ -51,7 +60,6 @@ ul.vertical-button-nav > li {
 #dialog-quit {
 	width: 717px;
 	height: 590px;
-	/* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
 	left: 281px; /*(1279-717/2)*/
 	top: 65px; /*(720-590/2)*/
 
@@ -379,7 +387,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-help div.dialog-content {
-	width: 900px;
+	width: 800px;
 	height: 480px;
 	overflow: hidden;
 	font-size: 23px;
@@ -387,21 +395,20 @@ ul.galapago-drop-down {
 }
 
 #help-text-scroll {
-	overflow-y: scroll;
-	overflow-x: hidden;
-	height: 320px;
-	width: 875px;
-	margin: 30px 0px 20px 0px;
-	padding: 0px 20px 0px 50px;
+	height: 314px; /* needs to match DialogHelp.SCROLL_DIV_PAGE_HEIGHT */
+	width: 775px;
+	margin: 30px 0px 30px 0px;
 	text-align: left;
 }
 
 #dialog-help div.dialog-content h4 {
-	margin-bottom: 0px;
+	margin: 1.15em 0em 0em 0em;
+	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content p */
 }
 
 #dialog-help div.dialog-content p {
-	margin-top: 0px;
+	margin: 0em 0em 0em 0em;
+	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content h4 */
 }
 
 #dialog-help #paging {
@@ -425,7 +432,6 @@ ul.galapago-drop-down {
 	text-align: left;
 	color: rgb(222, 176, 98);
 	margin-top: 20px;
-	padding-left: 50px;
 }
 
 #dialog-help #close-positioner {

@@ -80,3 +80,20 @@ function findAllPixels(element, deep, pixels, prevId) {
 	}
 	return pixels;
 }
+
+function GameUtil(){
+
+}
+
+GameUtil.addEventBarrier = function(parentElementSelector) {
+	var parentElement = $('#' + parentElementSelector);
+	var eventBarrierDiv = $('<div>');
+	eventBarrierDiv[0].id = parentElement[0].id + '-transparency';
+	eventBarrierDiv.addClass('event-barrier');
+	parentElement.append(eventBarrierDiv);
+	return eventBarrierDiv;
+};
+
+GameUtil.removeEventBarrier = function(eventBarrierDiv) {
+	eventBarrierDiv.remove();
+};

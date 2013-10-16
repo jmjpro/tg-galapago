@@ -80,8 +80,8 @@ MapScreen.prototype.registerEventHandlers = function() {
 	mapScreen = this;
 	levelMap = Galapago.levelMap;
 	mapNav = $('#map-nav');
-	//mapNav.onkeydown = function(evt) {
-	window.onkeydown = function(evt) {
+	mapNav.off('keydown');
+	mapNav.on('keydown', function(evt) {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
@@ -114,42 +114,39 @@ MapScreen.prototype.registerEventHandlers = function() {
 			mapScreen.toMainMenuScreen(levelMap);
 			break;
 		}
-	};
-
-	$('img.nav-button').on( 'click', function(evt) {
-		mapScreen.setNavItem(mapNav.children().find('img#' + evt.target.id).parent('li'));
-		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
 	});
 }; //MapScreen.prototype.registerEventHandlers()
 
 MapScreen.prototype.addMouseListener = function(){
 	var mapScreen = this;
-	mapNav = $('#map-nav');
-	_.each(mapNav.children('li'), function( element ) {
-		element.onmouseover = function(evt){
-			var levelMap = Galapago.levelMap;
-			levelMap.unregisterEventHandlers();
-			levelMap.stopStartArrowAnimation();	
-			levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
-			mapScreen.registerEventHandlers();
-			mapScreen.setNavItem( $(this) );
-			evt.preventDefault();
-			evt.stopPropagation();
-		}
-		
-		element.onmouseout = function(evt){
-			mapScreen.focusMap(Galapago.levelMap);
-		}
+	$('ul#map-nav li').off('mouseover');
+	$('ul#map-nav li').on( 'mouseover', function(evt){
+		var levelMap = Galapago.levelMap;
+		levelMap.stopStartArrowAnimation();	
+		levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
+		mapScreen.setNavItem( $(this) );
+		$('ul#map-nav').focus();
+		evt.preventDefault();
+		evt.stopPropagation();
+	});
 	
+	$('ul#map-nav li').off('mouseout');
+	$('ul#map-nav li').on('mouseout', function(evt){
+		mapScreen.focusMap(Galapago.levelMap);
+	});
+
+	$('ul#map-nav li').off( 'click' );
+	$('ul#map-nav li').on( 'click', function(evt) {
+		mapScreen.setNavItem( $(this) );
+		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
 	});
 }
 
 MapScreen.prototype.focusMap = function(levelMap) {
 	this.currentNavItem.css( 'background-image','');
-	this.unregisterEventHandlers();
 	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
+	levelMap.canvas.focus();
 	//levelMap.startAnimations();
-	levelMap.registerEventHandlers();
 }; //MapScreen.prototype.focusMap()
 
 MapScreen.prototype.toMainMenuScreen = function(levelMap) {
@@ -157,7 +154,3 @@ MapScreen.prototype.toMainMenuScreen = function(levelMap) {
 		levelMap.cleanup();
 	});
 }; //MapScreen.prototype.toMainMenuScreen()
-
-MapScreen.prototype.unregisterEventHandlers = function() {
-	window.onkeydown = null;
-}; //MapScreen.prototype.unregisterEventHandlers()

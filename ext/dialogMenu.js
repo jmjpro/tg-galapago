@@ -284,6 +284,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	}
 
 	this.initialNavItem = this.currentNavItem;
+	this.eventBarrierDiv = null;
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
@@ -316,30 +317,25 @@ DialogMenu.prototype.setDialogBackgroundImage = function() {
 }; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
-	if( this.callingObject && this.callingObject.unregisterEventHandlers ) {
-		this.callingObject.unregisterEventHandlers();
-	}
 	this.registerEventHandlers();
 	this.dialogMenuDOM.show();
+	this.dialogMenuDOM.focus();
+	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass('transparent');
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.hide = function() {
-	this.unregisterEventHandlers();
 	this.dialogMenuDOM.hide();
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
 		this.callingObject.reshuffleService.start();
 		this.callingObject.powerUp.timerResume();
 	}
-	if(this.callingObject && this.callingObject.registerEventHandlers){
-		this.callingObject.registerEventHandlers();
-	}else{
-		window.onkeydown = this.windowKeyHandler;
+	if(this.callingObject && this.callingObject.onDialogClose){
+		this.callingObject.onDialogClose();
 	}
+	GameUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
-	window.onclick =this.mouseClickHandler; 
-	window.onmousemove = this.mouseMoveHandler;
 }; //DialogMenu.prototype.hide()
 
 DialogMenu.prototype.setNavItem = function(item) {
@@ -369,40 +365,42 @@ DialogMenu.prototype.setNavItem = function(item) {
 DialogMenu.prototype.registerMouseHandlers = function() {
 	var menuButtonSize = this.dialogNav.children().length;
 	var dialogMenu = this;
-
-	this.mouseClickHandler = window.onclick;
-	this.mouseMoveHandler = window.onmousemove;
-	window.onclick =null;
-	window.onmousemove = null;
-
-	for(var i =0 ; i< menuButtonSize ; i++){
-		var liElement = (dialogMenu.dialogNav.children()[i]);
-		liElement.onmouseover = function(){
-			dialogMenu.setNavItem($('#'+this.id));
-		}
-		liElement.onclick = function(){
-			dialogMenu.currentNavItem[0]=this;
-			dialogMenu.selectHandler(dialogMenu);
-		}
-		
+	var dialogNavChildren = dialogMenuDOM = $('#' + this.dialogId + ' ul li');
+	dialogNavChildren.off('mouseover');
+	dialogNavChildren.on('mouseover', function(){
+		dialogMenu.setNavItem($('#'+this.id));
+	});
+	dialogNavChildren.off('click');
+	dialogNavChildren.on('click', function(){
+		dialogMenu.currentNavItem[0]=this;
+		dialogMenu.selectHandler(dialogMenu);
+	});
+	switch(this.dialogId){
+		case 'dialog-game-menu' :
+			function handleMouseClick(){
+				dialogMenu.handleGameMenuLeftRightNavigation();
+			}
+			$('#arrow-left').off('click');
+			$('#arrow-left').on('click', handleMouseClick);
+			$('#arrow-right').off('click');
+			$('#arrow-right').on('click', handleMouseClick);
+			break;
 	}
 } //DialogMenu.prototype.registerMouseHandlers()
 
 DialogMenu.prototype.registerEventHandlers = function() {
 	var dialogMenu, lastIndex, lastItemSelector, firstItemSelector, board;
 	dialogMenu = this;
-
-	this.windowKeyHandler = window.onkeydown;
-
 	lastIndex = dialogMenu.dialogNav.children().length;
 	lastItemSelector = '*:nth-child(' + lastIndex + ')';
 	firstItemSelector = '*:nth-child(1)';
-	window.onkeydown = function(evt) {
+	this.dialogMenuDOM.off('keydown');
+	this.dialogMenuDOM.on('keydown', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 37: // left arrow
 			switch ( dialogMenu.dialogId ) {
@@ -419,8 +417,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			else { //loop back to last item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(lastItemSelector));
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 39: // right arrow
 			switch ( dialogMenu.dialogId ) {
@@ -437,8 +433,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			else { //loop back to first item
 				dialogMenu.setNavItem(dialogMenu.dialogNav.children(firstItemSelector));
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 8: // back/backspace key
 			switch ( dialogMenu.dialogId ) {
@@ -477,11 +471,9 @@ DialogMenu.prototype.registerEventHandlers = function() {
 					dialogMenu.selectHandler(dialogMenu);
 					break;					
 			}
-			evt.stopPropagation();
-			evt.preventDefault();		
 			break;
 		} //switch()
-	}; //window.onkeydown()
+	});
 	this.registerMouseHandlers();
 }; //DialogMenu.prototype.registerEventHandlers()
 
@@ -543,18 +535,6 @@ DialogMenu.prototype.dialogGameOverSelect = function() {
 	});
 	//show map screen;
 };
-
-DialogMenu.prototype.unregisterEventHandlers = function() {
-	var menuButtonSize, dialogMenu, i, liElement;
-	window.onkeydown = null;
-	menuButtonSize = this.dialogNav.children().length;
-	dialogMenu = this;
-	for(i =0 ; i< menuButtonSize ; i++){
-		liElement = (dialogMenu.dialogNav.children()[i]);
-		liElement.onmousemove =null;
-		liElement.onclick = null;
-	}
-}; //MapScreen.prototype.unregisterEventHandlers()
 
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;
