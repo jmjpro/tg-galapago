@@ -1872,7 +1872,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
-		if( blob && blob.image && blob.blobType != 'GOLD') {
+		if( blob && blob.image) {
 			goldTile = board.getGoldTile(tile);
 			image = blob.image;
 			if(!skipDraw){
