@@ -3711,7 +3711,7 @@ DangerBar.prototype.applyCheat = function() {
 	if(this.timeRemainingMs >= 30000){
 		this.timeRemainingMs -= 30000;
 		this.update();
-	}else if(this.timeRemainingMs < 30000){
+	}else if(this.timeRemainingMs < 30000 && this.timeRemainingMs > 5000){
 		this.timeRemainingMs -= 5000;
 		this.update();
 	}
