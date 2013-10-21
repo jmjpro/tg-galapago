@@ -451,7 +451,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 LevelMap.prototype.quit = function() {
 	this.cleanup();
-	sdkApi.exit();
+	sdkApi && sdkApi.exit();
 	return this; //chainable
 };
 
@@ -1521,7 +1521,7 @@ Board.prototype.unregisterEventHandlers = function() {
 
 Board.prototype.quit = function() {
 	this.level.cleanup(false);
-	sdkApi.exit();
+	sdkApi && sdkApi.exit();
 	return this; //chainable
 }; //Board.prototype.quit()
 
@@ -2505,7 +2505,7 @@ Board.prototype.dangerBarEmptied = function() {
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
-		if( sdkApi.inDemoMode() ){
+		if( sdkApi && sdkApi.inDemoMode() ){
 			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 		}else{
 			new DialogMenu('screen-game', gameboard, 'dialog-time-out');
@@ -2562,7 +2562,7 @@ Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			//sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
+			//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}

@@ -38,7 +38,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.maxPage = $("[id^=help-text-scroll-page]").length; 	
 	this.selectHandler = DialogHelp.SELECT_HANDLERS[this.dialogId];
 	this.callback = null;
-	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
+	if( sdkApi && sdkReportingPage ) { 
 		//sdkApi.reportPageView(TGH5.Reporting.Screen.Help);
 	}
 	this.scrollDiv[0].scrollTop=0;
