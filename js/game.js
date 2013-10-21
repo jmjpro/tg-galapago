@@ -691,7 +691,7 @@ LevelMap.getNextLevel = function() {
 			return !Level.isComplete(levelId);
 		});
 		if( unlockedLevelIds.length === 0 ) {
-			unlockedLevelIds.push(highestLevelCompleted);
+			unlockedLevelIds.push(highestLevelCompleted.id);
 		}
 		console.debug('unlocked level ids for highest level completed = ' + unlockedLevelIds);
 		_.each( unlockedLevelIds, function( id ) {
