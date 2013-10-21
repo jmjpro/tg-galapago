@@ -1495,7 +1495,11 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			//Galapago.setLevel('level_01');
 			break;
 		case 50: // numeric 2
-			//Galapago.setLevel('level_02');
+			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
+				board.level.dangerBar.applyCheat();
+			}
+			evt.stopPropagation();
+			evt.preventDefault();
 			break;
 		case 56: // 8
 			if( QueryString.cheat === 'true' ) {
@@ -3702,6 +3706,16 @@ DangerBar.prototype.update = function(sender) {
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+DangerBar.prototype.applyCheat = function() {
+	if(this.timeRemainingMs >= 30000){
+		this.timeRemainingMs -= 30000;
+		this.update();
+	}else if(this.timeRemainingMs < 30000){
+		this.timeRemainingMs -= 5000;
+		this.update();
+	}
+};
 
 DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top, magnificationFactor ){
 	var image;
