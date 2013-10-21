@@ -62,7 +62,7 @@
 						jsErrLog.info = "Galapago debugging";                
 				}
 				if( typeof TGH5 !== 'undefined' ) {
-					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../sdk/" }).done(function (api) {
+					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../../sdk/" }).done(function (api) {
 						sdkApi = api;
 				        // SDK successfully initialized
 				        api.preferredLanguage().always(function (language) {
@@ -417,7 +417,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<script src="../sdk/tgh5.js"></script>
+		<script src="../../sdk/tgh5.js"></script>
 
 	</body>
 </html>
