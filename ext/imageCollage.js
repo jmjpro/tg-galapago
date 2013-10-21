@@ -59,10 +59,13 @@ ImageCollage.COLLAGE_ARRAY = {
 	},
 	"collage/dialog-arrow-buttons.png":{
 		"imageCoordinateArray": [
-			{"cell": [98, 0, 33, 34], "id": "dialog/arrow-button-up-hilight.png"},
-			{"cell": [131, 0, 33, 34], "id": "dialog/arrow-button-up-disable.png"},
-			{"cell": [164, 0, 33, 34], "id": "dialog/arrow-button-down-hilight.png"},
-			{"cell": [197, 0, 33, 34], "id": "dialog/arrow-button-down-disable.png"}
+			{"cell": [4, 4, 41, 41], "id": "dialog/arrow-button-up-hilight.png"},
+			{"cell": [53, 4, 44, 44], "id": "dialog/arrow-button-down-hilight.png"},
+			{"cell": [98, 0, 33, 33], "id": "dialog/arrow-button-up-active.png"},
+			{"cell": [98, 0, 33, 33], "id": "dialog/arrow-button-up-active.png"},
+			{"cell": [131, 0, 33, 33], "id": "dialog/arrow-button-up-disable.png"},
+			{"cell": [164, 0, 33, 33], "id": "dialog/arrow-button-down-active.png"},
+			{"cell": [197, 0, 33, 33], "id": "dialog/arrow-button-down-disable.png"}
 		]
 	},
 	"collage/keypad-buttons.png":{
