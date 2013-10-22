@@ -2290,6 +2290,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		return;
 	}else if(this.powerUp.isFireSelected()){
 		this.level.levelAnimation.stopAllAnimations();
+		board.powerUp.timerPause();
 		this.reshuffleService.stop();
 		Galapago.audioPlayer.playFirePowerUsed();
 		this.scoreEvents = [];
@@ -2327,6 +2328,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		if(dangerBar){
 			dangerBar.resume();
 		}
+		board.powerUp.timerResume();
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
@@ -2337,6 +2339,7 @@ Board.prototype.handleTileSelect = function(tile) {
 				board.setComplete();
 			}
 		}
+		
 		this.powerUp.powerUsed();	
 		this.saveBoard();
 		this.reshuffleService.start();
