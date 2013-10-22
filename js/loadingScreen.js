@@ -25,7 +25,7 @@ function LoadingScreen() {
 }
 
 LoadingScreen.init = function() {
-	//sdkApi.reportPageView(TGH5.Reporting.Screen.Loading);
+	//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.Loading);
 	LoadingScreen.localization();
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.screenDiv = $('#screen-loading');

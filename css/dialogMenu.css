@@ -388,8 +388,7 @@ ul.galapago-drop-down {
 
 #dialog-help div.dialog-content {
 	width: 800px;
-	height: 480px;
-	overflow: hidden;
+	margin-top: 30px;
 	font-size: 23px;
 	color: rgb(2, 57, 80);
 }
@@ -397,22 +396,23 @@ ul.galapago-drop-down {
 #help-text-scroll {
 	height: 314px; /* needs to match DialogHelp.SCROLL_DIV_PAGE_HEIGHT */
 	width: 775px;
-	margin: 30px 0px 30px 0px;
 	text-align: left;
 }
 
 #dialog-help div.dialog-content h4 {
-	margin: 1.15em 0em 0em 0em;
+	margin: 0em 0em 0em 0em;
 	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content p */
 }
 
 #dialog-help div.dialog-content p {
-	margin: 0em 0em 0em 0em;
+	margin: 0em 0em 1.15em 0em;
 	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content h4 */
 }
 
 #dialog-help #paging {
 	color: rgb(222, 176, 98);
+	height: 44px;
+	line-height: 44px;
 }
 
 #pages {
@@ -422,6 +422,12 @@ ul.galapago-drop-down {
 
 #current-page{
 	color: rgb(255,255,179);
+}
+
+.dialog-help-arrow-container {
+	width: 44px;
+	height: 44px;
+	display: inline-block;
 }
 
 .up-down{
@@ -435,7 +441,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-help #close-positioner {
-	margin-top: -35px;
+	margin-top: -37px;
 }
 
 #dialog-help .button-medium {

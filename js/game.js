@@ -451,7 +451,7 @@ LevelMap.prototype.registerEventHandlers = function() {
 
 LevelMap.prototype.quit = function() {
 	this.cleanup();
-	sdkApi.exit();
+	sdkApi && sdkApi.exit();
 	return this; //chainable
 };
 
@@ -691,7 +691,7 @@ LevelMap.getNextLevel = function() {
 			return !Level.isComplete(levelId);
 		});
 		if( unlockedLevelIds.length === 0 ) {
-			unlockedLevelIds.push(highestLevelCompleted);
+			unlockedLevelIds.push(highestLevelCompleted.id);
 		}
 		console.debug('unlocked level ids for highest level completed = ' + unlockedLevelIds);
 		_.each( unlockedLevelIds, function( id ) {
@@ -1495,7 +1495,11 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			//Galapago.setLevel('level_01');
 			break;
 		case 50: // numeric 2
-			//Galapago.setLevel('level_02');
+			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
+				board.level.dangerBar.applyCheat();
+			}
+			evt.stopPropagation();
+			evt.preventDefault();
 			break;
 		case 56: // 8
 			if( QueryString.cheat === 'true' ) {
@@ -1521,7 +1525,7 @@ Board.prototype.unregisterEventHandlers = function() {
 
 Board.prototype.quit = function() {
 	this.level.cleanup(false);
-	sdkApi.exit();
+	sdkApi && sdkApi.exit();
 	return this; //chainable
 }; //Board.prototype.quit()
 
@@ -1872,7 +1876,7 @@ Board.prototype.addTile = function(coordinates, blobType, blob, spriteNumber, ti
 			tile.drawBorder(Tile.BORDER_COLOR, Tile.BORDER_WIDTH);
 		}
 		console.debug( 'adding new tile ' + imageName + ' at ' + MatrixUtil.coordinatesToString(coordinates));
-		if( blob && blob.image && blob.blobType != 'GOLD') {
+		if( blob && blob.image) {
 			goldTile = board.getGoldTile(tile);
 			image = blob.image;
 			if(!skipDraw){
@@ -2505,7 +2509,7 @@ Board.prototype.dangerBarEmptied = function() {
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
-		if( sdkApi.inDemoMode() ){
+		if( sdkApi && sdkApi.inDemoMode() ){
 			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 		}else{
 			new DialogMenu('screen-game', gameboard, 'dialog-time-out');
@@ -2562,7 +2566,7 @@ Board.prototype.handleKeyboardSelect = function() {
     var board = this;
 	switch( this.hotspot ) {
 		case Board.HOTSPOT_MENU:
-			//sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
+			//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.GameMenu);
 			if(this.level.dangerBar){
 				this.level.dangerBar.pause();
 			}
@@ -3588,6 +3592,8 @@ DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.IMAGE_MAGNIFICATION = 2;
 DangerBar.CROWN_LEFT = 12;
 DangerBar.CROWN_IMAGE_MAGNIFICATION = 1.6;
+DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC = 30;
+DangerBar.CHEAT_DECREASE_TIME_LOW_SEC = 5;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
@@ -3702,6 +3708,16 @@ DangerBar.prototype.update = function(sender) {
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+DangerBar.prototype.applyCheat = function() {
+	if(this.timeRemainingMs >= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000;
+		this.update();
+	}else if(this.timeRemainingMs < DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000 && this.timeRemainingMs > DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000;
+		this.update();
+	}
+};
 
 DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top, magnificationFactor ){
 	var image;

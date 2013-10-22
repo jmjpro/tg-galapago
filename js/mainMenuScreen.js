@@ -180,7 +180,7 @@ MainMenuScreen.prototype.show = function() {
 	this.mainMenuDOM.show();
 	this.mainMenuDOM.focus();
 	this.callingScreen && this.callingScreen.hide();
-	//sdkApi.reportPageView(TGH5.Reporting.Screen.MainMenu);
+	//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.MainMenu);
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.hide = function() {
@@ -197,7 +197,7 @@ MainMenuScreen.prototype.hide = function() {
 
 MainMenuScreen.prototype.quit = function() {
 	this.hide();
-	sdkApi.exit();
+	sdkApi && sdkApi.exit();
 }; //MainMenuScreen.prototype.show()
 
 MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {

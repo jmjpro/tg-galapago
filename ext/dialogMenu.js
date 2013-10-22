@@ -117,7 +117,7 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 			that = null;
 		}
 	});
-   /* sdkApi.requestModalAd("inGame").done(function(){
+   /* sdkApi && sdkApi.requestModalAd("inGame").done(function(){
 		LevelMap.show(level, function() {
 			if(that !== null) {
 				that.hide();
@@ -288,7 +288,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.show();
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
-	if( sdkReportingPage && typeof sdkApi !== 'undefined' ) { 
+	if( sdkApi && sdkReportingPage ) {
 		//sdkApi.reportPageView(sdkReportingPage);
 	}
 	if( callback ) {
@@ -524,7 +524,7 @@ DialogMenu.prototype.dialogLevelWonSelect = function() {
 DialogMenu.prototype.dialogGameOverSelect = function() {
 	var level, that = this;
 	level = this.callingObject.level;
-	sdkApi.requestModalAd("inGame").done(function(){
+	sdkApi && sdkApi.requestModalAd("inGame").done(function(){
 		LevelMap.show(level, function() {
 			if(that !== null) {
 				that.hide();
