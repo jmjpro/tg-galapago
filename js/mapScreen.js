@@ -85,6 +85,7 @@ MapScreen.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
+			evt.preventDefault();
 			evt.stopPropagation();
 			break;
 		case 37: // left arrow
@@ -92,24 +93,28 @@ MapScreen.prototype.registerEventHandlers = function() {
 				mapScreen.setNavItem(mapScreen.currentNavItem.prev());
 			}
 			evt.preventDefault();
+			evt.stopPropagation();
 			break;
 		case 38: // up arrow
 			mapScreen.focusMap( levelMap );
 			evt.preventDefault();
+			evt.stopPropagation();
 			break;
 		case 39: // right arrow
 			if( mapScreen.currentNavItem.index() < mapNav.children().length - 1 ) {
 				mapScreen.setNavItem(mapScreen.currentNavItem.next());
 			}
 			evt.preventDefault();
+			evt.stopPropagation();
 			break;
 		case 40: // down arrow
 			mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
 			evt.preventDefault();
+			evt.stopPropagation();
 			break;
 		case 8: // back/backspace key
-			evt.stopPropagation();
 			evt.preventDefault();
+			evt.stopPropagation();
 			mapScreen.unsetNavItem();
 			mapScreen.toMainMenuScreen(levelMap);
 			break;
