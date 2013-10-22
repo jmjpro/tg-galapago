@@ -1495,7 +1495,11 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			//Galapago.setLevel('level_01');
 			break;
 		case 50: // numeric 2
-			//Galapago.setLevel('level_02');
+			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
+				board.level.dangerBar.applyCheat();
+			}
+			evt.stopPropagation();
+			evt.preventDefault();
 			break;
 		case 56: // 8
 			if( QueryString.cheat === 'true' ) {
@@ -3588,6 +3592,8 @@ DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.IMAGE_MAGNIFICATION = 2;
 DangerBar.CROWN_LEFT = 12;
 DangerBar.CROWN_IMAGE_MAGNIFICATION = 1.6;
+DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC = 30;
+DangerBar.CHEAT_DECREASE_TIME_LOW_SEC = 5;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
@@ -3702,6 +3708,16 @@ DangerBar.prototype.update = function(sender) {
 	}
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
+
+DangerBar.prototype.applyCheat = function() {
+	if(this.timeRemainingMs >= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000;
+		this.update();
+	}else if(this.timeRemainingMs < DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000 && this.timeRemainingMs > DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000;
+		this.update();
+	}
+};
 
 DangerBar.prototype.addImage = function(parentElementSelector, sprite, left, top, magnificationFactor ){
 	var image;
