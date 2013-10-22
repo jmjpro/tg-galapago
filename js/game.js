@@ -2504,6 +2504,7 @@ Board.prototype.dangerBarEmptied = function() {
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
+		gameboard.level.bubbleTip.clearBubbleTip(i18n.t(key));
 		if( sdkApi.inDemoMode() ){
 			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 		}else{

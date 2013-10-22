@@ -33,6 +33,9 @@ LevelAnimation.ANIMATION_CONFIG = [
 LevelAnimation.instance = null;
 //LevelAnimation should never be instantiated
 function LevelAnimation(){
+	if (LevelAnimation.instance) {
+        return LevelAnimation.instance;
+    }
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -45,12 +48,13 @@ function LevelAnimation(){
 	this.initLightning();
 	this.blinkingImages = {};
 	this.animationSprites = {};
-	this.scoreTallyingAnimation = null;	
+	this.scoreTallyingAnimation = null;
+	LevelAnimation.instance = this;	
 }
 
 LevelAnimation.getInstance = function(){
 	if(!LevelAnimation.instance){
-		LevelAnimation.instance = new LevelAnimation();
+		new LevelAnimation();
 	}
 	return LevelAnimation.instance;
 };
