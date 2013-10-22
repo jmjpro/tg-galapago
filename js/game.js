@@ -3592,6 +3592,8 @@ DangerBar.CAP_BOTTOM_TOP = 495;
 DangerBar.IMAGE_MAGNIFICATION = 2;
 DangerBar.CROWN_LEFT = 12;
 DangerBar.CROWN_IMAGE_MAGNIFICATION = 1.6;
+DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC = 30;
+DangerBar.CHEAT_DECREASE_TIME_LOW_SEC = 5;
 
 //the references to style.top and style.left in this class' images are only meant for variable storage
 //and layout in a canvas, not via CSS, thus they leave off 'px' from the positions
@@ -3708,11 +3710,11 @@ DangerBar.prototype.update = function(sender) {
 }; //DangerBar.prototype.update()
 
 DangerBar.prototype.applyCheat = function() {
-	if(this.timeRemainingMs >= 30000){
-		this.timeRemainingMs -= 30000;
+	if(this.timeRemainingMs >= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000;
 		this.update();
-	}else if(this.timeRemainingMs < 30000 && this.timeRemainingMs > 5000){
-		this.timeRemainingMs -= 5000;
+	}else if(this.timeRemainingMs < DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000 && this.timeRemainingMs > DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000){
+		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_LOW_SEC * 1000;
 		this.update();
 	}
 };
