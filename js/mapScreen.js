@@ -146,6 +146,7 @@ MapScreen.prototype.focusMap = function(levelMap) {
 	this.currentNavItem.css( 'background-image','');
 	levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion);
 	levelMap.canvas.focus();
+	levelMap.animateStartArrowIfNeeded();
 	//levelMap.startAnimations();
 }; //MapScreen.prototype.focusMap()
 
