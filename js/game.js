@@ -1124,10 +1124,6 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
     }
 	this.levelAnimation.stopAllAnimations();
 	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
-	if(this.levelAnimation.powerAchievedAnimation){
-		this.levelAnimation.stopAllPowerAchieved();
-		this.levelAnimation.powerAchievedAnimation = null;
-	}
 	this.board.reshuffleService.stop();
 	if(!isBonusFrenzyOn) {
 		this.board.screenDiv.hide();
@@ -2155,8 +2151,8 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
-	this.level.cleanup(true);
 	if(!this.bonusFrenzy){
+		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
 		$('#level').html(this.score);

@@ -712,6 +712,9 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.powerActivatedAnimation.stop();
 		this.powerActivatedAnimation = null;
 	}
+	
+	this.stopAllPowerAchieved();
+	
 	if(this.dangerBarAnimation){
 		this.dangerBarAnimation.stop();
 		this.dangerBarAnimation = null;
