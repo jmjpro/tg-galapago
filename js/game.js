@@ -1157,23 +1157,24 @@ Level.prototype.registerEventHandlers = function() {
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt) {
 		board.handleClickOrTap(evt);
+		return false;
 	});
 
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('tap', function(evt) { 
 		board.handleClickOrTap(evt);
+		return false;
 	});
 	
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt){
 		if(board.level.levelCompleted){
 			board.setComplete();
-			return false;
 		}
 		else {
 			board.handleMouseClickEvent(evt);
-			return false;
 		}
+		return false;
 	});
 
 	$('#layer-creature').off('mouseout');
@@ -1215,7 +1216,8 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		};
 
 		$( buttonId ).on( 'mouseover', function() {
-			handleMouseOver(buttonType)
+			handleMouseOver(buttonType);
+			return false;
 		});
 		$( buttonId ).on( 'mouseout', function(e) {
 			board.displayNavButton( buttonType, false );

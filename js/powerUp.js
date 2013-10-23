@@ -82,17 +82,42 @@ function Powerup(board, powerupPoints) {
 
 Powerup.prototype.registerMouseListeners = function () {
 	var powerUp = this;
-	powerUp.divFlipFlopAnimation.on('mouseover',function(){powerUp.handleMouseOver(this);});
-	powerUp.divFlipFlopAnimation.on('click',function(){powerUp.handleMouseClick(this);});
-	powerUp.divFireAnimation.on('mouseover',function(){powerUp.handleMouseOver(this);});
-	powerUp.divFireAnimation.on('click',function(){powerUp.handleMouseClick(this);});
-	powerUp.divShuffleAnimation.on('mouseover',function(){powerUp.handleMouseOver(this);});
-	powerUp.divShuffleAnimation.on('click',function(){powerUp.handleMouseClick(this);});
-	
-	powerUp.divFlipFlopAnimation.on('mouseout',function(){powerUp.handleMouseOut(this);});
-	powerUp.divFireAnimation.on('mouseout',function(){powerUp.handleMouseOut(this);});
-	powerUp.divShuffleAnimation.on('mouseout',function(){powerUp.handleMouseOut(this);});
-	
+	powerUp.divFlipFlopAnimation.on('mouseover',function(){
+        powerUp.handleMouseOver(this);
+        return false;
+    });
+	powerUp.divFlipFlopAnimation.on('click',function(){
+        powerUp.handleMouseClick(this);
+        return false;
+    });
+	powerUp.divFireAnimation.on('mouseover',function(){
+        powerUp.handleMouseOver(this);
+        return false;
+    });
+	powerUp.divFireAnimation.on('click',function(){
+        powerUp.handleMouseClick(this);
+        return false;
+    });
+	powerUp.divShuffleAnimation.on('mouseover',function(){
+        powerUp.handleMouseOver(this);
+        return false;
+    });
+	powerUp.divShuffleAnimation.on('click',function(){
+        powerUp.handleMouseClick(this);
+        return false;
+    });
+	powerUp.divFlipFlopAnimation.on('mouseout',function(){
+        powerUp.handleMouseOut(this);
+        return false;
+    });
+	powerUp.divFireAnimation.on('mouseout',function(){
+        powerUp.handleMouseOut(this);
+        return false;
+    });
+	powerUp.divShuffleAnimation.on('mouseout',function(){
+        powerUp.handleMouseOut(this);
+        return false;
+    });
 };
 
 Powerup.prototype.handleMouseOut = function(element){

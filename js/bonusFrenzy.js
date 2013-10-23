@@ -42,6 +42,7 @@ BonusFrenzy.prototype.registerEvents = function () {
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt){
 		bonusFrenzy.handleMouseClickEvent(evt);
+		return false;
 	});
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
@@ -49,22 +50,19 @@ BonusFrenzy.prototype.registerEvents = function () {
 		switch( evt.keyCode ) {
 			case 37: // left arrow
 				bonusFrenzy.handleLeftArrow();
-				return false;
 				break;
 			case 38: // up arrow
 				bonusFrenzy.handleUpArrow();
-				return false;
 				break;
 			case 39: // right arrow
 				bonusFrenzy.handleRightArrow();
-				return false;
 				break;
 			case 40: // down arrow
 				bonusFrenzy.handleDownArrow();
-				return false;
 				break;	
 			default:
 		}
+		return false;
 	});
 }; //BonusFrenzy.prototype.registerEvents()
 
