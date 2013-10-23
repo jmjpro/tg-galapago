@@ -369,11 +369,13 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 	dialogNavChildren.off('mouseover');
 	dialogNavChildren.on('mouseover', function(){
 		dialogMenu.setNavItem($('#'+this.id));
+		return false;
 	});
 	dialogNavChildren.off('click');
 	dialogNavChildren.on('click', function(){
 		dialogMenu.currentNavItem[0]=this;
 		dialogMenu.selectHandler(dialogMenu);
+		return false;
 	});
 	switch(this.dialogId){
 		case 'dialog-game-menu' :
