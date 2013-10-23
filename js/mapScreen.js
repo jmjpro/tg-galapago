@@ -85,40 +85,29 @@ MapScreen.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
-			evt.preventDefault();
-			evt.stopPropagation();
 			break;
 		case 37: // left arrow
 			if( mapScreen.currentNavItem.index() > 0 ) {
 				mapScreen.setNavItem(mapScreen.currentNavItem.prev());
 			}
-			evt.preventDefault();
-			evt.stopPropagation();
 			break;
 		case 38: // up arrow
 			mapScreen.focusMap( levelMap );
-			evt.preventDefault();
-			evt.stopPropagation();
 			break;
 		case 39: // right arrow
 			if( mapScreen.currentNavItem.index() < mapNav.children().length - 1 ) {
 				mapScreen.setNavItem(mapScreen.currentNavItem.next());
 			}
-			evt.preventDefault();
-			evt.stopPropagation();
 			break;
 		case 40: // down arrow
 			mapScreen.setNavItem(mapNav.children('li:nth-child(1)'));
-			evt.preventDefault();
-			evt.stopPropagation();
 			break;
 		case 8: // back/backspace key
-			evt.preventDefault();
-			evt.stopPropagation();
 			mapScreen.unsetNavItem();
 			mapScreen.toMainMenuScreen(levelMap);
 			break;
 		}
+		return false;
 	});
 }; //MapScreen.prototype.registerEventHandlers()
 
@@ -131,19 +120,20 @@ MapScreen.prototype.addMouseListener = function(){
 		levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
 		mapScreen.setNavItem( $(this) );
 		$('ul#map-nav').focus();
-		evt.preventDefault();
-		evt.stopPropagation();
+		return false;
 	});
 	
 	$('ul#map-nav li').off('mouseout');
 	$('ul#map-nav li').on('mouseout', function(evt){
 		mapScreen.focusMap(Galapago.levelMap);
+		return false;
 	});
 
 	$('ul#map-nav li').off( 'click' );
 	$('ul#map-nav li').on( 'click', function(evt) {
 		mapScreen.setNavItem( $(this) );
 		mapScreen.handleNavButtonSelect(mapScreen.currentNavItem);
+		return false;
 	});
 }
 

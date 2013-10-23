@@ -157,29 +157,25 @@ DialogHelp.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogHelp.selectHandler(dialogHelp);
-			evt.stopPropagation();
-			evt.preventDefault();
+			return false;
 			break;
 		case 38: // up arrow			
-			evt.stopPropagation();
-			evt.preventDefault();
 			if (keyCount === 0) {
                 dialogHelp.handleUpArrow();
             }
-            keyCount++;		
+            keyCount++;
+            return false;
 			break;
 		case 40: // down arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			if (keyCount === 0) {
 				dialogHelp.handleDownArrow();
 			}
 			keyCount++;
+			return false;
 			break;
 		case 8: // backspace
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.hide();
+			return false;
 			break;
 		}
 	});
@@ -187,16 +183,14 @@ DialogHelp.prototype.registerEventHandlers = function() {
 	this.dialogHelpDOM.on('keyup', function(evt) {
 		switch( evt.keyCode ) {
 		case 38: // up arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.setArrow('up', false);
 			keyCount = 0;
+			return false;
 			break;
 		case 40: // down arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.setArrow('down', false);
 			keyCount = 0;
+			return false;
 			break;
 		}
 	});

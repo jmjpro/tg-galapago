@@ -49,20 +49,20 @@ BonusFrenzy.prototype.registerEvents = function () {
 		switch( evt.keyCode ) {
 			case 37: // left arrow
 				bonusFrenzy.handleLeftArrow();
-				evt.preventDefault();
+				return false;
 				break;
 			case 38: // up arrow
 				bonusFrenzy.handleUpArrow();
-				evt.preventDefault();
+				return false;
 				break;
 			case 39: // right arrow
 				bonusFrenzy.handleRightArrow();
-				evt.preventDefault();
+				return false;
 				break;
 			case 40: // down arrow
 				bonusFrenzy.handleDownArrow();
-				evt.preventDefault();
-				break;			
+				return false;
+				break;	
 			default:
 		}
 	});

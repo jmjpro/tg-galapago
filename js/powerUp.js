@@ -185,6 +185,7 @@ Powerup.prototype.registerEvents = function () {
 		$('#'+animationDiv).off( 'keydown');
 		$('#'+animationDiv).on( 'keydown', function(evt) {
 			powerup.handleKeyBoardEvent(evt);
+            return false;
 		});
 	});
 }; //Powerup.prototype.registerEvents
@@ -195,8 +196,7 @@ Powerup.prototype.handleKeyBoardEvent = function (e) {
         case 37: // left arrow
             powerup.removeNavigation(e);
             break;
-            // User pressed "up" arrow
-        case 38:
+        case 38: // up arrow
             if (powerup.handleUp()) {
                 powerup.focus();
             } else {
@@ -206,25 +206,22 @@ Powerup.prototype.handleKeyBoardEvent = function (e) {
         case 39: // right arrow
             powerup.removeNavigation(e);
             break;
-            // User pressed "down" arrow
-        case 40:
+        case 40: // down arrow
             if (powerup.handleDown()) {
                 powerup.focus();
             } else {
                 powerup.removeNavigation(e);
             }
             break;
-            // User pressed "enter"
-        case 13:
+        case 13: //enter
 			  powerup.handleSelect();
 			  powerup.nextFocus=0;
 			  powerup.board.isPowerUpFocused = false;
 			  powerup.board.focus();
 		      break;
-	}
-	e.preventDefault();
-	e.stopPropagation();
-}
+	} //switch (e.keyCode)()
+} //Powerup.prototype.handleKeyBoardEvent()
+
 Powerup.prototype.removeNavigation = function (e) {
     this.update();
     this.currentFocus = 0;

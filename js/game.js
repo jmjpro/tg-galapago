@@ -392,15 +392,13 @@ LevelMap.prototype.registerEventHandlers = function() {
 				//levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
-		e.preventDefault();
-		e.stopPropagation();
+		return false;
 	}); //onmousemove
 
 	$(Galapago.LAYER_MAP).off('click');
 	$(Galapago.LAYER_MAP).on('click', function(evt) {
 		levelMap.handleSelect(evt);
-		evt.preventDefault();
-		evt.stopPropagation();
+		return false;
 	}); //onclick
 	$(Galapago.LAYER_MAP).off('keydown');
 	$(Galapago.LAYER_MAP).on('keydown', function(evt) {
@@ -409,31 +407,20 @@ LevelMap.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 			case 13: // enter
 				levelMap.handleKeyboardSelect();
-				evt.stopPropagation();
 				break;
 			case 37: // left arrow
 				levelMap.handleLeftArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 38: // up arrow
 				levelMap.handleUpArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 39: // right arrow
 				levelMap.handleRightArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 40: // down arrow
 				levelMap.handleDownArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 8: // back/backspace key
-				evt.stopPropagation();
-				evt.preventDefault();
 				Galapago.mapScreen.toMainMenuScreen(levelMap);
 				break;
 			case 50: // numeric 2
@@ -446,7 +433,8 @@ LevelMap.prototype.registerEventHandlers = function() {
 				break;
 			default:
 		}
-	});
+		return false;
+	}); //$(Galapago.LAYER_MAP).on('keydown', function(evt) {
 }; //LevelMap.prototype.registerEventHandlers
 
 LevelMap.prototype.quit = function() {
@@ -767,8 +755,7 @@ LevelMap.prototype.changeHotspot = function(e, isSelect) {
 			}
 		}
 	}
-	e.preventDefault();
-	e.stopPropagation();
+	return false;
 } //LevelMap.prototype.changeHotspot()
 
 /* end class LevelMap */
@@ -1179,38 +1166,36 @@ Level.prototype.registerEventHandlers = function() {
 	
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
 		if(board.level.levelCompleted){
 			board.setComplete();
-			return;
+			return false;
 		}
 		else {
 			board.handleMouseClickEvent(evt);
+			return false;
 		}
 	});
 
 	$('#layer-creature').off('mouseout');
-	$('#layer-creature').on('mouseout', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
+	$('#layer-creature').on('mouseout', function(evt) {
 		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
 		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight' && currrentElement.id != 'layer-creature'))){
 			board.onBoardOut();
 		}
+		return false;
 	});
 
 	$('#layer-creature').off('mouseover');
 	$('#layer-creature').on('mouseover', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
 		board.onBoardIn();
+		return false;
 	});	
 
 	this.registerMenuQuitButtonHandlers();
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
 		board.handleKeyboardEvent(evt);
+		return false;
 	});
 }; //Level.prototype.registerEventHandlers()
 
@@ -1235,12 +1220,12 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		$( buttonId ).on( 'mouseout', function(e) {
 			board.displayNavButton( buttonType, false );
 			board.hotspot = null;
+			return false;
 		});
 		$( buttonId ).on( 'click', function(e) {
 			handleMouseOver(buttonType); //in case another button was hilighted already with keyboard
 			board.handleKeyboardSelect();
-			e.preventDefault();
-			e.stopPropagation();
+			return false;
 		});
 	});
 } //Level.prototype.registerMenuQuitButtonHandlers()
@@ -1453,67 +1438,61 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			break;
 		case 37: // left arrow
 			board.handleLeftArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 38: // up arrow
 			board.handleUpArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 39: // right arrow
 			board.handleRightArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 40: // down arrow
 			board.handleDownArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 8: // back/backspace key
 			LevelMap.show(level, function() {
 			level.quit();
 			});
-			evt.stopPropagation();
-			evt.preventDefault();		
+			return false;
 			break;
 		//TODO code below here should removed before production
 		case 48: // numeric 0
 			if( QueryString.cheat === 'true' ) {
 				board.setComplete();
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
+			return false;
 			break;
 		case 49: // numeric 1
 			if( QueryString.cheat === 'true' ) {
 				board.powerUp.activatePowerUpUsingCheatCode();
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
+			return false;
 			//Galapago.setLevel('level_01');
 			break;
 		case 50: // numeric 2
 			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
 				board.level.dangerBar.applyCheat();
 			}
-			evt.stopPropagation();
-			evt.preventDefault();
+			return false;
 			break;
 		case 56: // 8
 			if( QueryString.cheat === 'true' ) {
 				toggleDebugConsole('top');
 			}
+			return false;
 			break;
 		case 57: // 9
 			if( QueryString.cheat === 'true' ) {
 				toggleDebugConsole('bottom');
 			}
+			return false;
 			break;
 		default:
 	}
-}
+} //Board.prototype.handleKeyboardEvent()
 
 Board.prototype.registerEventHandlers = function() {
 	this.level.registerEventHandlers();
