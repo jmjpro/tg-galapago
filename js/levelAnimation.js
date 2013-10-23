@@ -146,7 +146,7 @@ LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
 
 ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
 ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES = 10;
-ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 300;
+ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 30;
 function ScoreTallyingAnimation(scoreElement, score){
 	this.interval = null;
 	this.currentScore = Number(scoreElement.html());

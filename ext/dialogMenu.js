@@ -571,8 +571,7 @@ DialogMenu.prototype.animateScores = function() {
 		_.each( scoreElementsToAnimate, function( scoreElementRecord ) {
 			board.level.levelAnimation.stopScoreTallyingAnimation();
 			scoreElement = $( '#' + scoreElementRecord.scoreElementId );
-			board.level.levelAnimation.scoreTallyingAnimation = new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text);
-			board.level.levelAnimation.scoreTallyingAnimation.start();
+			(new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text)).start();
 		});
 	}
 
