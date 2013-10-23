@@ -710,7 +710,12 @@ LevelMap.reset = function() {
 
 LevelMap.prototype.buildImageMap = function() {
 	var that = this;
-
+    if($('#hotspot-imagemap').length >0){
+	   $('#hotspot-imagemap').remove();
+	}
+	if($('#hotspot-proxy-image').length >0){
+	   $('#hotspot-proxy-image').remove();
+	}
 	var map = document.createElement('map');
 	map.id = 'hotspot-imagemap';
 	map.name = 'hotspots';
