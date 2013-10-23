@@ -465,3 +465,8 @@ ul.galapago-drop-down {
 	text-align: center;
 	background-size: 100%;
 }
+
+#score-breakdown td {
+	min-width: 160px;
+	max-width: 160px;
+}
