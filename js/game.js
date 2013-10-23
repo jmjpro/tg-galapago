@@ -144,7 +144,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				LoadingScreen.gal.clearOnLoaded( backgroundBundle );
 				console.debug( backgroundBundle + ' resource bundle loaded' );
 				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-				Galapago.level.levelAnimation = new LevelAnimation();
+				Galapago.level.levelAnimation = LevelAnimation.getInstance();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
 				resourceLoadingDialog.onResourceLoad();
@@ -154,7 +154,6 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
-
 
 Galapago.printLevelConfigs = function (levelConfigs) {
 	_.each( levelConfigs, function(levelConfig) {
@@ -214,7 +213,7 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.images = [];
 	this.levelCounter = 0;
 	//this.setImages(LoadingScreen.mapScreenImageNames);
-	this.levelAnimation = new LevelAnimation();
+	this.levelAnimation = LevelAnimation.getInstance();
 	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
 } //LevelMap constructor
@@ -233,7 +232,6 @@ LevelMap.prototype.startAnimations = function() {
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
-	that.startAnimations();
 	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
@@ -274,6 +272,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 
 					that.screenDiv.show();
 					that.canvas.focus();
+					that.startAnimations();
 				},
 				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
 			);
@@ -1006,9 +1005,6 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
 			level.board.displayNavButton( buttonType, false );
 		});
-		if (Galapago.isTimedMode) {
-			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
-		}
 		themeComplete = this.bgTheme + '-' + this.bgSubTheme,
 		resourcePath = 'background/' + themeComplete + '.jpg',
 		backgroundImage = LoadingScreen.gal.get(resourcePath);
@@ -1020,6 +1016,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 
 		if(typeof onDialogOpenedCallBack !== 'undefined') {
 			onDialogOpenedCallBack();
+		}
+		if (Galapago.isTimedMode) {
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 		}
 		level.styleCanvas( level.levelConfig.blobPositions );
 		level.board.init( level.levelConfig.blobPositions );
@@ -1038,7 +1037,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 				if(restoreLookupString){
 					restoreLookup = JSON.parse(restoreLookupString);
 					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-					if(dangerBarTimeRemaining){
+					if(dangerBarTimeRemaining !== 'undefined'){
 						level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
 						level.dangerBar.start();
 					}
@@ -1112,7 +1111,14 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.unregisterEventHandlers();
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
+	if(isBonusFrenzyOn) {
 	this.board.hilightDiv.hide();
+	}else{
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
+	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
@@ -1129,13 +1135,7 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 		this.levelAnimation.powerAchievedAnimation = null;
 	}
 	this.board.reshuffleService.stop();
-	if(!isBonusFrenzyOn) {
-		this.board.screenDiv.hide();
-		$("#screen-game").children("canvas").each(function() {
-			this.width = this.height = 1;
-		});
-		this.board = null;
-	}
+	//this.board = null;
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
@@ -2509,6 +2509,7 @@ Board.prototype.dangerBarEmptied = function() {
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
+		gameboard.level.bubbleTip.clearBubbleTip(i18n.t(key));
 		if( sdkApi && sdkApi.inDemoMode() ){
 			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 		}else{
