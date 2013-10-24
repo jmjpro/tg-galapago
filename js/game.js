@@ -2183,19 +2183,19 @@ Board.prototype.setComplete = function() {
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
 		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		var totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
-		if(totalScore){
+		this.totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
+		if(this.totalScore){
 			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
-				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
+				this.totalScore=Number(this.totalScore)+this.score - Number(levelHighestScore);
 			}
 			else {
-				totalScore=Number(totalScore)+this.score;
+				this.totalScore=Number(this.totalScore)+this.score;
 			}
-			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
 		else {
-			totalScore=this.score;
-			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			this.totalScore=this.score;
+			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
 		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
 			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
@@ -2203,10 +2203,6 @@ Board.prototype.setComplete = function() {
 		else if(!levelHighestScore){
 			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
-		$('#bonus-frenzy').html( this.bonusFrenzy.getScore() );
-		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
-		$('#level-score').html( this.score );
-		$('#total-score').html( totalScore );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
 	}
 }; //Board.prototype.setComplete()
@@ -3229,7 +3225,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 		}
 	}
 	function scoreAnimation(){
-		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board);
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board.scoreElement);
 	}
 	if(board.putInAnimationQ){
 		board.animationQ.push(scoreAnimation);

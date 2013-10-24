@@ -286,6 +286,12 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.initialNavItem = this.currentNavItem;
 	this.eventBarrierDiv = null;
 	this.show();
+
+	//TODO: ideally we should subclass DialogMenu with a DialogLevelWon class and move this logic there
+	if( this.dialogId === 'dialog-level-won' ) {
+		this.animateScores();
+	}
+
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
 	if( sdkApi && sdkReportingPage ) {
@@ -538,7 +544,7 @@ DialogMenu.prototype.dialogGameOverSelect = function() {
 
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;
-	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} )
+	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} );
 	return dialogDescriptor['button-class'];
 }; //DialogMenu.getButtonClass()
 
@@ -547,4 +553,32 @@ DialogMenu.loadImages = function(imageIds){
 		var imgElementID = '#' + imageId;
 		$(imgElementID)[0].src = LoadingScreen.gal.get(DialogMenu.IMAGE_PATH_PREFIX + imageId + '.png').src;
 	});
+};
+
+DialogMenu.prototype.animateScores = function() {
+	var board, scoreElement;
+
+	board = this.callingObject;	
+
+	function scoreAnimation(){
+		var scoreElementsToAnimate;
+		scoreElementsToAnimate = [
+			{ scoreElementId: 'bonus-frenzy', text: board.bonusFrenzy.getScore() },
+			{ scoreElementId: 'bonus-points', text: Score.BONUS_FRENZY_CREATURE_POINTS * board.bonusFrenzy.getScore() },
+			{ scoreElementId: 'level-score', text: board.score },
+			{ scoreElementId: 'total-score', text: board.totalScore }
+		];
+		_.each( scoreElementsToAnimate, function( scoreElementRecord ) {
+			board.level.levelAnimation.stopScoreTallyingAnimation();
+			scoreElement = $( '#' + scoreElementRecord.scoreElementId );
+			(new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text)).start();
+		});
+	}
+
+	if( board.putInAnimationQ ){
+		board.animationQ.push(scoreAnimation);
+	}
+	else{
+		scoreAnimation();
+	}
 };

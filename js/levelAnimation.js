@@ -142,11 +142,11 @@ LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 	}	
 }; //LevelAnimation.prototype.animateDropping()
 
-LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, board){
+LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, scoreElement){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
 	if(displayScore){
 		this.stopScoreTallyingAnimation();
-		this.scoreTallyingAnimation = new ScoreTallyingAnimation(board, text);
+		this.scoreTallyingAnimation = new ScoreTallyingAnimation(scoreElement, text);
 		this.scoreTallyingAnimation.start();
 	}
 } //LevelAnimation.prototype.animateScore()
@@ -160,11 +160,11 @@ LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
 ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
 ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES = 10;
 ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 30;
-function ScoreTallyingAnimation(board, score){
+function ScoreTallyingAnimation(scoreElement, score){
 	this.interval = null;
-	this.currentScore = Number(board.scoreElement.html());
+	this.currentScore = Number(scoreElement.html());
 	this.updatedScore = this.currentScore + Number(score);
-	this.board = board;
+	this.scoreElement = scoreElement;
 	this.offset = Number(score) / ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES;
 }
 
@@ -183,7 +183,7 @@ ScoreTallyingAnimation.prototype.start = function(){
 
 ScoreTallyingAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
-	this.board.scoreElement.html(this.updatedScore);
+	this.scoreElement.html(this.updatedScore);
 };
 
 ScoreTallyingAnimation.prototype.animate = function(){
@@ -191,7 +191,7 @@ ScoreTallyingAnimation.prototype.animate = function(){
 	if(this.currentScore >= this.updatedScore){
 		this.stop();
 	}else{
-		this.board.scoreElement.html(this.currentScore);
+		this.scoreElement.html(this.currentScore);
 	}
 };
 
