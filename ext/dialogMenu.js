@@ -375,16 +375,19 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 	dialogNavChildren.off('mouseover');
 	dialogNavChildren.on('mouseover', function(){
 		dialogMenu.setNavItem($('#'+this.id));
+		return false;
 	});
 	dialogNavChildren.off('click');
 	dialogNavChildren.on('click', function(){
 		dialogMenu.currentNavItem[0]=this;
 		dialogMenu.selectHandler(dialogMenu);
+		return false;
 	});
 	switch(this.dialogId){
 		case 'dialog-game-menu' :
 			function handleMouseClick(){
 				dialogMenu.handleGameMenuLeftRightNavigation();
+				return false;
 			}
 			$('#arrow-left').off('click');
 			$('#arrow-left').on('click', handleMouseClick);
@@ -402,8 +405,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	firstItemSelector = '*:nth-child(1)';
 	this.dialogMenuDOM.off('keydown');
 	this.dialogMenuDOM.on('keydown', function(evt) {
-		evt.stopPropagation();
-		evt.preventDefault();
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
@@ -479,7 +480,8 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			}
 			break;
 		} //switch()
-	});
+		return false;
+	}); //this.dialogMenuDOM.on('keydown', function(evt) {
 	this.registerMouseHandlers();
 }; //DialogMenu.prototype.registerEventHandlers()
 

@@ -108,40 +108,48 @@ DialogHelp.prototype.registerMouseHandlers = function() {
 	dialogNavChildren.off( 'mouseover');
 	dialogNavChildren.on( 'mouseover', function() {
 		dialogHelp.setNavItem( $(this) );
+		return false;
 	});
 	dialogNavChildren.off( 'click');
 	dialogNavChildren.on( 'click', function() {
 		dialogHelp.currentNavItem = $(this);
 		dialogHelp.selectHandler( dialogHelp );
+		return false;
 	});
 	$( '#dialog-help-up' ).off( 'click');
 	$( '#dialog-help-up' ).on( 'click', function() {
 		dialogHelp.handleUpArrow();
+		return false;
 	});
 	$( '#dialog-help-up' ).off( 'mouseover');
 	$( '#dialog-help-up' ).on( 'mouseover', function() {
 		if( dialogHelp.currentPage > 1 ) {
 			dialogHelp.setArrow( 'up', true );
 		}
+		return false;
 	});
 	$( '#dialog-help-up' ).off( 'mouseout');
 	$( '#dialog-help-up' ).on( 'mouseout', function() {
 		dialogHelp.setArrow( 'up', false );
+		return false;
 	});
 
 	$( '#dialog-help-down' ).off( 'click' );
 	$( '#dialog-help-down' ).on( 'click', function() {
 		dialogHelp.handleDownArrow();
+		return false;
 	});
 	$( '#dialog-help-down' ).off( 'mouseover');
 	$( '#dialog-help-down' ).on( 'mouseover', function() {
 		if( dialogHelp.currentPage < dialogHelp.maxPage ) {
 			dialogHelp.setArrow( 'down', true );
 		}
+		return false;
 	});
 	$( '#dialog-help-down' ).off( 'mouseout');
 	$( '#dialog-help-down' ).on( 'mouseout', function() {
 		dialogHelp.setArrow( 'down', false );
+		return false;
 	});
 } //DialogHelp.prototype.registerMouseHandlers()
 
@@ -157,48 +165,38 @@ DialogHelp.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogHelp.selectHandler(dialogHelp);
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 38: // up arrow			
-			evt.stopPropagation();
-			evt.preventDefault();
 			if (keyCount === 0) {
                 dialogHelp.handleUpArrow();
             }
-            keyCount++;		
+            keyCount++;
 			break;
 		case 40: // down arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			if (keyCount === 0) {
 				dialogHelp.handleDownArrow();
 			}
 			keyCount++;
 			break;
 		case 8: // backspace
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.hide();
 			break;
 		}
+		return false;
 	});
 	this.dialogHelpDOM.off('keyup');
 	this.dialogHelpDOM.on('keyup', function(evt) {
 		switch( evt.keyCode ) {
 		case 38: // up arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.setArrow('up', false);
 			keyCount = 0;
 			break;
 		case 40: // down arrow
-			evt.stopPropagation();
-			evt.preventDefault();
 			dialogHelp.setArrow('down', false);
 			keyCount = 0;
 			break;
 		}
+		return false;
 	});
 }; //DialogHelp.prototype.registerEventHandlers()
 

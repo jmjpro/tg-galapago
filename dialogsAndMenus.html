@@ -68,8 +68,7 @@
 			switch( evt.keyCode ) {
 			case 13: // enter
 				alert('You hit enter');
-				evt.stopPropagation();
-				evt.preventDefault();
+				return false;
 				break;
 			}
 		}
