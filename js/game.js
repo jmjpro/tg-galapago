@@ -752,6 +752,7 @@ LevelMap.prototype.changeHotspot = function(e, isSelect) {
 			levelNumber = parseInt(parts[1]);
 			level = Galapago.levels[levelNumber];
 			if( level.isUnlocked || QueryString.cheat ){
+				Galapago.mapScreen.focusMap(Galapago.levelMap);
 				this.setHotspotLevel(level);
 				if( isSelect ) {
 					this.handleKeyboardSelect();
@@ -1190,6 +1191,11 @@ Level.prototype.registerEventHandlers = function() {
 
 	$('#layer-creature').off('mouseover');
 	$('#layer-creature').on('mouseover', function(evt){
+		if(board.hotspot!=null){
+			board.displayNavButton( 'menu', false );
+			board.displayNavButton( 'quit', false );
+			board.hotspot = null;
+		}
 		board.onBoardIn();
 		return false;
 	});	
