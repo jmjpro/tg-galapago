@@ -369,6 +369,25 @@ LevelMap.prototype.updateLevelStatus = function() {
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
 	levelMap = this;
+	$("#screen-map").off( 'keydown');
+	$("#screen-map").on( 'keydown', function(evt) {
+		switch( evt.keyCode ) {
+			case 8: // back/backspace key
+				evt.stopPropagation();
+				evt.preventDefault();
+				Galapago.mapScreen.toMainMenuScreen(levelMap);
+				break;
+			case 50: // numeric 2
+				Galapago.audioPlayer.disable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				break;
+			case 51: // numeric 3
+				Galapago.audioPlayer.enable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				break;
+			default:
+		}
+	});
 	$(Galapago.LAYER_MAP).off( 'mousemove');
 	$(Galapago.LAYER_MAP).on( 'mousemove', function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
@@ -429,19 +448,6 @@ LevelMap.prototype.registerEventHandlers = function() {
 				levelMap.handleDownArrow();
 				evt.preventDefault();
 				evt.stopPropagation();
-				break;
-			case 8: // back/backspace key
-				evt.stopPropagation();
-				evt.preventDefault();
-				Galapago.mapScreen.toMainMenuScreen(levelMap);
-				break;
-			case 50: // numeric 2
-				Galapago.audioPlayer.disable();
-				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
-				break;
-			case 51: // numeric 3
-				Galapago.audioPlayer.enable();
-				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 				break;
 			default:
 		}
@@ -1173,6 +1179,47 @@ Level.prototype.registerEventHandlers = function() {
 		console.log('x: ' + evt.clientX + ', y:' + evt.clientY);
 	};
 
+	$('#screen-game').off('keydown');
+	$('#screen-game').on('keydown', function(evt) {
+		switch( evt.keyCode ) {
+			case 51:
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						ns.frameWork.debug.profiler.clear();
+					}
+				}
+				break;
+			case 52:
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						var report = ns.frameWork.debug.profiler.getPreparedReport();
+						for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+							console.log(report[i].id + ": " + report[i].own.total);
+						}
+					}
+				}
+				break;
+			case 8: // back/backspace key
+				LevelMap.show(board.level, function() {
+					board.level.quit();
+				});
+				evt.stopPropagation();
+				evt.preventDefault();		
+				break;
+			case 56: // 8
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('top');
+				}
+				break;
+			case 57: // 9
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('bottom');
+				}
+				break;
+			default:
+		}
+	});
+
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt) {
 		board.handleClickOrTap(evt);
@@ -1442,23 +1489,6 @@ Board.prototype.handleKeyboardEvent = function(evt){
 	//board.creatureLayer.canvas.onkeydown = function(evt) {
 	console.debug('key pressed ' + evt.keyCode);
 	switch( evt.keyCode ) {
-		case 51:
-			if( QueryString.cheat === 'true' ) {
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					ns.frameWork.debug.profiler.clear();
-				}
-			}
-			break;
-		case 52:
-			if( QueryString.cheat === 'true' ) {
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					var report = ns.frameWork.debug.profiler.getPreparedReport();
-					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
-						console.log(report[i].id + ": " + report[i].own.total);
-					}
-				}
-			}
-			break;
 		case 13: // enter
 			board.handleKeyboardSelect();
 			break;
@@ -1482,13 +1512,6 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			evt.preventDefault();
 			evt.stopPropagation();
 			break;
-		case 8: // back/backspace key
-			LevelMap.show(level, function() {
-			level.quit();
-			});
-			evt.stopPropagation();
-			evt.preventDefault();		
-			break;
 		//TODO code below here should removed before production
 		case 48: // numeric 0
 			if( QueryString.cheat === 'true' ) {
@@ -1511,16 +1534,6 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			}
 			evt.stopPropagation();
 			evt.preventDefault();
-			break;
-		case 56: // 8
-			if( QueryString.cheat === 'true' ) {
-				toggleDebugConsole('top');
-			}
-			break;
-		case 57: // 9
-			if( QueryString.cheat === 'true' ) {
-				toggleDebugConsole('bottom');
-			}
 			break;
 		default:
 	}
