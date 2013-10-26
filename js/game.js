@@ -1168,12 +1168,32 @@ Level.prototype.registerEventHandlers = function() {
 	$('#screen-game').off('keydown');
 	$('#screen-game').on('keydown', function(evt) {
 		switch( evt.keyCode ) {
+			case 48: // numeric 0
+				if( QueryString.cheat === 'true' ) {
+					board.setComplete();
+				}
+				return false;
+				break;
+			case 49: // numeric 1
+				if( QueryString.cheat === 'true' ) {
+					board.powerUp.activatePowerUpUsingCheatCode();
+				}
+				return false;
+				//Galapago.setLevel('level_01');
+				break;
+			case 50: // numeric 2
+				if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
+					board.level.dangerBar.applyCheat();
+				}
+				return false;
+				break;
 			case 51:
 				if( QueryString.cheat === 'true' ) {
 					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
 						ns.frameWork.debug.profiler.clear();
 					}
 				}
+				return false;
 				break;
 			case 52:
 				if( QueryString.cheat === 'true' ) {
@@ -1184,23 +1204,25 @@ Level.prototype.registerEventHandlers = function() {
 						}
 					}
 				}
+				return false;
 				break;
 			case 8: // back/backspace key
 				LevelMap.show(board.level, function() {
 					board.level.quit();
 				});
-				evt.stopPropagation();
-				evt.preventDefault();		
+				return false;
 				break;
 			case 56: // 8
 				if( QueryString.cheat === 'true' ) {
 					toggleDebugConsole('top');
 				}
+				return false;
 				break;
 			case 57: // 9
 				if( QueryString.cheat === 'true' ) {
 					toggleDebugConsole('bottom');
 				}
+				return false;
 				break;
 			default:
 		}
@@ -1252,7 +1274,7 @@ Level.prototype.registerEventHandlers = function() {
 	this.registerMenuQuitButtonHandlers();
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
-		board.handleKeyboardEvent(evt);
+		return board.handleKeyboardEvent(evt);
 	});
 }; //Level.prototype.registerEventHandlers()
 
@@ -1267,6 +1289,7 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		hilightId = idPrefix + 'hilight-' + buttonType;
 
 		handleMouseOver = function(buttonType) {
+			board.tileActive.setInactiveAsync().then(function() {}).done();
 			board.displayNavButton( buttonType, true );
 			board.hotspot = 'hotspot-' + buttonType;
 		};
@@ -1466,17 +1489,18 @@ function Board() {
 Board.prototype.handleKeyboardEvent = function(evt){
 	var board = this;
 	if(board.animationQ.length){
-		return;
+		return false;
 	}
 	if(board.level.levelCompleted){
 		board.setComplete();
-		return;
+		return false;
 	}
 	//board.creatureLayer.canvas.onkeydown = function(evt) {
 	console.debug('key pressed ' + evt.keyCode);
 	switch( evt.keyCode ) {
 		case 13: // enter
 			board.handleKeyboardSelect();
+			return false;
 			break;
 		case 37: // left arrow
 			board.handleLeftArrow();
@@ -1494,27 +1518,8 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			board.handleDownArrow();
 			return false;
 			break;
-		//TODO code below here should removed before production
-		case 48: // numeric 0
-			if( QueryString.cheat === 'true' ) {
-				board.setComplete();
-			}
-			return false;
-			break;
-		case 49: // numeric 1
-			if( QueryString.cheat === 'true' ) {
-				board.powerUp.activatePowerUpUsingCheatCode();
-			}
-			return false;
-			//Galapago.setLevel('level_01');
-			break;
-		case 50: // numeric 2
-			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
-				board.level.dangerBar.applyCheat();
-			}
-			return false;
-			break;
 		default:
+			return true;
 	}
 } //Board.prototype.handleKeyboardEvent()
 
