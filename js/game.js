@@ -1104,8 +1104,9 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
-	this.board.hilightDiv.hide();
-	}else{
+		this.board.hilightDiv.hide();
+	}
+	else {
 		this.board.screenDiv.hide();
 		$("#screen-game").children("canvas").each(function() {
 			this.width = this.height = 1;
@@ -1405,6 +1406,7 @@ function Board() {
 	this.animationQ = [];
 	this.powerupPointsAchievedInThisSwap = 0;
 	this.isBoardBuildAnimationNeeded = true;
+	this.bonusFrenzy = null;
 } //Board constructor
 
 Board.prototype.handleKeyboardEvent = function(evt){
@@ -1557,6 +1559,11 @@ Board.prototype.displayNavButton = function(buttonType, isActive) {
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.powerUpScore);
 	Level.powerUpScore=0;
+	/*
+	if( this.bonusFrenzy ) {
+		this.bonusFrenzy.score = 0;
+	}
+	*/
 };
 
 /* req 4.4.2
@@ -2145,7 +2152,7 @@ Board.prototype.setComplete = function() {
 		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
-		$('#level').html(this.score);
+		$('#level-score').html(this.score);
 		Level.powerUpScore = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
 		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
 		if( Galapago.isTimedMode ) {
@@ -2161,6 +2168,7 @@ Board.prototype.setComplete = function() {
 		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
 		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
 		this.totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
+		$('#total-score').html( this.totalScore );
 		if(this.totalScore){
 			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
 				this.totalScore=Number(this.totalScore)+this.score - Number(levelHighestScore);
@@ -2180,6 +2188,8 @@ Board.prototype.setComplete = function() {
 		else if(!levelHighestScore){
 			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
 		}
+		$( '#bonus-frenzy' ).html( this.bonusFrenzy.getScore() );
+		$( '#bonus-points' ).html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
 		new DialogMenu('screen-game', this, 'dialog-level-won');
 	}
 }; //Board.prototype.setComplete()

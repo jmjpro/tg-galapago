@@ -214,10 +214,8 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 		case 'reset-game-option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			levelMap.cleanup();
-			//Galapago.init(Galapago.gameMode);
+			Galapago.levelMap.cleanup();
 			LevelMap.show(Level.findById(1));
-			//level.showLevelMap(Level.findById(1));
 			this.hide();
 			break;
 	}
@@ -565,14 +563,20 @@ DialogMenu.prototype.animateScores = function() {
 	function scoreAnimation(){
 		var scoreElementsToAnimate;
 		scoreElementsToAnimate = [
-			{ scoreElementId: 'bonus-frenzy', text: board.bonusFrenzy.getScore() },
+			{ scoreElementId: 'level-score', text: $('#level-score').html() },
 			{ scoreElementId: 'bonus-points', text: Score.BONUS_FRENZY_CREATURE_POINTS * board.bonusFrenzy.getScore() },
-			{ scoreElementId: 'level-score', text: board.score },
+			{ scoreElementId: 'total-level-score', text: board.score },
 			{ scoreElementId: 'total-score', text: board.totalScore }
 		];
 		_.each( scoreElementsToAnimate, function( scoreElementRecord ) {
 			board.level.levelAnimation.stopScoreTallyingAnimation();
 			scoreElement = $( '#' + scoreElementRecord.scoreElementId );
+			if( scoreElementRecord.scoreElementId === 'total-score') {
+				scoreElement.html('0');
+			}
+			else {
+				scoreElement.html();
+			}
 			(new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text)).start();
 		});
 	}

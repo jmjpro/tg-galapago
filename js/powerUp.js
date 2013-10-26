@@ -130,7 +130,7 @@ Powerup.prototype.handleMouseOut = function(element){
 	window.onkeydown=null;
 	this.focusOn= 0;
 	window.onkeydown = this.boardKeyHandler;
-	this.board.tileActive.setActiveAsync().done();
+	//this.board.tileActive.setActiveAsync().done();
 };
 Powerup.prototype.handleMouseOver = function(element){
 	if(this.isPowerAchieved() && (!this.isPowerSelected())){
