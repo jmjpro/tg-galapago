@@ -1253,7 +1253,6 @@ Level.prototype.registerEventHandlers = function() {
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
 		board.handleKeyboardEvent(evt);
-		return false;
 	});
 }; //Level.prototype.registerEventHandlers()
 
@@ -1515,8 +1514,6 @@ Board.prototype.handleKeyboardEvent = function(evt){
 			}
 			return false;
 			break;
-			return false;
-			return false;
 		default:
 	}
 } //Board.prototype.handleKeyboardEvent()
