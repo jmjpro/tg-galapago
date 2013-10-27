@@ -347,8 +347,12 @@ LevelMap.prototype.updateLevelStatus = function() {
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
-		$('#map-level-score-label').html('Score:');
-		$('#map-level-score').html(levelScore);
+		$('#map-level-score-label').show().html('Score:');
+		$('#map-level-score').show().html(levelScore);
+	}
+	else {
+		$('#map-level-score-label').hide();
+		$('#map-level-score').hide();
 	}
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
@@ -1110,6 +1114,7 @@ Level.prototype.quit = function(){
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.unregisterEventHandlers();
+	this.board.scoreElement.html(0);
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
 	if(isBonusFrenzyOn) {
@@ -2176,13 +2181,12 @@ Board.prototype.setComplete = function() {
 		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
-		$('#level-score').html(this.score);
 		Level.powerUpScore = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
-		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
+		this.bonusFrenzyPoints = Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore();
+		this.totalLevelScore = this.score + this.bonusFrenzyPoints;
 		if( Galapago.isTimedMode ) {
-			var timeleft = this.level.dangerBar.timeRemainingMs;
-			$('#time-bonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
-			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
+			this.timeBonus = this.level.dangerBar.timeRemainingMs / Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR;
+			this.totalLevelScore += this.timeBonus;
 		} else {
 			$('#row-time-bonus').hide();
 		}
@@ -2190,31 +2194,39 @@ Board.prototype.setComplete = function() {
 		this.level.isCompleted = true;
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
-		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		this.totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
-		$('#total-score').html( this.totalScore );
-		if(this.totalScore){
-			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
-				this.totalScore=Number(this.totalScore)+this.score - Number(levelHighestScore);
+		/* FDD 4.8.5.1 Level scoring and Total Score are updated with the new achieved score even if it is lower than
+		previous achieved score in that level. If a level is re-played, the new achieved score is added to the total
+		score while the previous score of that level is deducted from total score. I.e no accumulative scoring for the
+		same level. All values which are presented with a tallying effect start counting together.*/
+		levelHighestScore = Number( store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore") );
+		this.previousTotalScore = Number( store.getItem( timedMode + Galapago.profile + ".totalScore" ) );
+		if(this.previousTotalScore){
+			$('#total-score').html( this.previousTotalScore );
+			if( levelHighestScore && (levelHighestScore <= this.totalLevelScore) ) {
+				this.totalScore = this.previousTotalScore + this.totalLevelScore - levelHighestScore;
 			}
 			else {
-				this.totalScore=Number(this.totalScore)+this.score;
+				this.totalScore = this.previousTotalScore + this.totalLevelScore;
 			}
 			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
 		else {
-			this.totalScore=this.score;
+			$('#total-score').html( 0 );
+			this.totalScore = this.totalLevelScore;
 			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
-		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
+		if(levelHighestScore && (Number(levelHighestScore) < Number(this.totalLevelScore)) ){
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.totalLevelScore );
 		}
 		else if(!levelHighestScore){
-			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.totalLevelScore );
 		}
+		$('#level-score').html(0);
 		$( '#bonus-frenzy' ).html( this.bonusFrenzy.getScore() );
-		$( '#bonus-points' ).html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
-		new DialogMenu('screen-game', this, 'dialog-level-won');
+		$( '#bonus-points' ).html( 0 );
+		$( '#time-bonus' ).html( 0 );
+		$( '#total-level-score' ).html( 0 );
+		new DialogMenu( 'screen-game', this, 'dialog-level-won' );
 	}
 }; //Board.prototype.setComplete()
 

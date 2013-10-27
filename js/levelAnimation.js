@@ -145,7 +145,7 @@ LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, scoreElement){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
 	if(displayScore){
-		this.stopScoreTallyingAnimation();
+		//this.stopScoreTallyingAnimation();
 		this.scoreTallyingAnimation = new ScoreTallyingAnimation(scoreElement, text);
 		this.scoreTallyingAnimation.start();
 	}

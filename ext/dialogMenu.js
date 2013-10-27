@@ -563,20 +563,18 @@ DialogMenu.prototype.animateScores = function() {
 	function scoreAnimation(){
 		var scoreElementsToAnimate;
 		scoreElementsToAnimate = [
-			{ scoreElementId: 'level-score', text: $('#level-score').html() },
-			{ scoreElementId: 'bonus-points', text: Score.BONUS_FRENZY_CREATURE_POINTS * board.bonusFrenzy.getScore() },
-			{ scoreElementId: 'total-level-score', text: board.score },
-			{ scoreElementId: 'total-score', text: board.totalScore }
+			{ scoreElementId: 'level-score', text: board.score },
+			{ scoreElementId: 'bonus-points', text: board.bonusFrenzyPoints },
+			{ scoreElementId: 'time-bonus', text: board.timeBonus },
+			{ scoreElementId: 'total-level-score', text: board.totalLevelScore }
 		];
+		// total-score starts with previous total score so we only advance the odometer with any difference in the total score (FDD 4.8.5.1)
+		if( board.totalScore > board.previousTotalScore ) {
+			scoreElementsToAnimate.push( { scoreElementId: 'total-score', text: board.totalScore - board.previousTotalScore } );
+		}
 		_.each( scoreElementsToAnimate, function( scoreElementRecord ) {
 			board.level.levelAnimation.stopScoreTallyingAnimation();
 			scoreElement = $( '#' + scoreElementRecord.scoreElementId );
-			if( scoreElementRecord.scoreElementId === 'total-score') {
-				scoreElement.html('0');
-			}
-			else {
-				scoreElement.html();
-			}
 			(new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text)).start();
 		});
 	}
