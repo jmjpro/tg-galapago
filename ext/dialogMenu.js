@@ -60,24 +60,32 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 	switch( optionId ) {
 		case 'option-continue-playing' :
 			this.hide();
-			board.hotspot = null;
-			board.display();
-			if(board.level.dangerBar){
-				board.level.dangerBar.resume();
+			if(dialogMenu.callingObject instanceof Board){
+				board.hotspot = null;
+				board.display();
+				if(board.level.dangerBar){
+					board.level.dangerBar.resume();
+				}
+				board.reshuffleService.start();
+				board.powerUp.timerResume();
+			}else if(dialogMenu.callingObject instanceof MapScreen){
+				Galapago.mapScreen.focusMap( Galapago.levelMap );
 			}
-			board.reshuffleService.start();
-			board.powerUp.timerResume();
 			break;
 		case 'option-main-menu' :
 			that = this;
 			this.hide();
-			board.level.quit();
-			// TODO: IGOR not fixed - strange behaviour
-			MainMenuScreen.init('screen-game', board.level, function() {
-				if (that !== null) {
-					that = null;
-				}
-			});
+			if(dialogMenu.callingObject instanceof Board){
+				board.level.quit();
+				// TODO: IGOR not fixed - strange behaviour
+				MainMenuScreen.init('screen-game', board.level, function() {
+					if (that !== null) {
+						that = null;
+					}
+				});
+			}else if(dialogMenu.callingObject instanceof MapScreen){
+					dialogMenu.callingObject.toMainMenuScreen(Galapago.levelMap);
+			}
 			break;
 		case 'option-new-game' :
 			this.hide();
@@ -137,23 +145,34 @@ DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 		case 'new-game-option-yes' :
 			console.log("starting new game");
 			//this.hide();
-			board.level.cleanup();
-			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-			store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
+			if(dialogMenu.callingObject instanceof Board){
+				board.level.cleanup();
+				mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+				store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
 
 
-			var that = this;
-			Galapago.setLevel(board.level.id, function() {
-				if(that !== null) {
-					that.callingObject = null;
-					that.hide();
-					that = null;
-				}
-			});
+				var that = this;
+				Galapago.setLevel(board.level.id, function() {
+					if(that !== null) {
+						that.callingObject = null;
+						that.hide();
+						that = null;
+					}
+				});
+			}else if(dialogMenu.callingObject instanceof MapScreen){
+			    this.hide();
+			    Galapago.eraseScores(Galapago.profile);
+				Galapago.mapScreen.focusMap( Galapago.levelMap );
+			}	
+			
 			break;
 		case 'new-game-option-no' :
 			this.hide();
-			board.display();
+			if(dialogMenu.callingObject instanceof Board){
+				board.display();
+			}else if(dialogMenu.callingObject instanceof MapScreen){
+				Galapago.mapScreen.focusMap( Galapago.levelMap );
+			}
 			break;
 	}
 };
