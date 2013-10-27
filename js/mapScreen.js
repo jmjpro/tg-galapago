@@ -65,7 +65,8 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-menu-map' :
 			//console.log( 'selected menu map button');
-			this.toMainMenuScreen(levelMap);
+			//this.toMainMenuScreen(levelMap);
+			new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
@@ -74,6 +75,10 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 	}
 }; //MapScreen.prototype.handleNavButtonSelect()
+
+MapScreen.prototype.onDialogClose = function(evt) {
+	Galapago.mapScreen.focusMap( Galapago.levelMap );
+};
 
 MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav, levelMap;

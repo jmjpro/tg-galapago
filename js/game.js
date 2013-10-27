@@ -171,6 +171,20 @@ Galapago.delay = function(delayMs) {
 	});
 	return deferred.promise;
 };
+Galapago.eraseScores = function(profile) {
+	var keyIt;
+	var keyList = new  Array();
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
+		if(keyIt.indexOf(profile)>0 && (keyIt.indexOf('highScore')>0 || keyIt.indexOf('totalScore')>0)){ 
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		store.removeItem(keyList[i]);
+	}
+};
 
 Galapago.eraseProfile = function(profile) {
 	var keyIt;
