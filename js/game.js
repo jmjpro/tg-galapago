@@ -2202,12 +2202,7 @@ Board.prototype.setComplete = function() {
 		this.previousTotalScore = Number( store.getItem( timedMode + Galapago.profile + ".totalScore" ) );
 		if(this.previousTotalScore){
 			$('#total-score').html( this.previousTotalScore );
-			if( levelHighestScore && (levelHighestScore <= this.totalLevelScore) ) {
-				this.totalScore = this.previousTotalScore + this.totalLevelScore - levelHighestScore;
-			}
-			else {
-				this.totalScore = this.previousTotalScore + this.totalLevelScore;
-			}
+			this.totalScore = this.previousTotalScore + this.totalLevelScore - levelHighestScore;
 			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
 		else {
