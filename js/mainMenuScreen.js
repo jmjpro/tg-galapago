@@ -81,6 +81,7 @@ MainMenuScreen.prototype.registerOnClickEvent = function(){
 	$('[class^=main-menu]').on('click', function (evt){
 		mainMenuScreen.setNavItem($('#'+ this.id));
 		mainMenuScreen.handleSelect();
+		return false;
 	});
 }
 
@@ -89,8 +90,7 @@ MainMenuScreen.prototype.registerMouseOverEvent = function(){
 	$('[class^=main-menu]').off('mouseover');
 	$('[class^=main-menu]').on('mouseover', function (evt){
 		mainMenuScreen.setNavItem($('#'+ this.id));
-		evt.preventDefault();
-		evt.stopPropagation();
+		return false;
 	});
 }
 
@@ -285,34 +285,24 @@ MainMenuScreen.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mainMenuScreen.handleSelect();
-			evt.stopPropagation();
-			evt.preventDefault();
+			return false;
 			break;
 		case 37: // left arrow
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('LEFT'));
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 38: // up arrow
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('UP'));
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 39: // right arrow
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('RIGHT'));
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 40: // down arrow
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('DOWN'));
-			evt.stopPropagation();
-			evt.preventDefault();
 			break;
 		case 8: // back/backspace key
 			mainMenuScreen.quit();
-			evt.stopPropagation();
-			evt.preventDefault();		
 			break;
 		}
+		return false;
 	});
 }; //MainMenuScreen.prototype.registerEventHandlers()

@@ -59,22 +59,14 @@ LoadingScreen.registerEvent = function(){
 		if (result.success) {
 			console.debug('common resource bundle loaded');
 			LoadingScreen.progressBar.loaded();
-			//LoadingScreen.gal.download('board-common');
-			//LoadingScreen.gal.download('beach-common');
-			//LoadingScreen.gal.download('forest-common');
-			//LoadingScreen.gal.download('cave-common');
 		}
 	});
 };
 
-LoadingScreen.hide = function(evt) {
+LoadingScreen.hide = function() {
 	var that = this;
 
 	//TODO if api.inDemoMode() skip the main menu screen?
-	if( evt ) {
-		evt.stopPropagation();
-		evt.preventDefault();		
-	}
 
 	MainMenuScreen.init('screen-loading', LoadingScreen.progressBar, function() {
 		var timerId = null;

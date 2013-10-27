@@ -30,7 +30,12 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/powerup-activated-strip.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "false" }
 ];
 
+LevelAnimation.instance = null;
+//LevelAnimation should never be instantiated
 function LevelAnimation(){
+	if (LevelAnimation.instance) {
+        return LevelAnimation.instance;
+    }
 	this.rolloverAnimation = null;
 	this.bonFireAnimation = null;
 	this.bonFireParentAnimationInterval = null;
@@ -41,10 +46,18 @@ function LevelAnimation(){
 	this.makeMatchAnimation = null;
 	this.sparklesAnimation = null;
 	this.initLightning();
-	this.blinkingImages = [];
+	this.blinkingImages = {};
 	this.animationSprites = {};
 	this.scoreTallyingAnimation = null;
+	LevelAnimation.instance = this;	
 }
+
+LevelAnimation.getInstance = function(){
+	if(!LevelAnimation.instance){
+		new LevelAnimation();
+	}
+	return LevelAnimation.instance;
+};
 
 LevelAnimation.prototype.initBobCervantes = function(layer) {
 	var headsBase, canvasBC, bcLeftHeadImageSprites, bcRightHeadImageSprites, bcMouthImageSprites, layerBobCervantes, imgLeftHeadEyes, imgRightHeadEyes, imgRightHeadMouth;
@@ -129,11 +142,11 @@ LevelAnimation.prototype.animateDropping = function(animationQ, deferred, cnt){
 	}	
 }; //LevelAnimation.prototype.animateDropping()
 
-LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, board){
+LevelAnimation.prototype.animateScore = function(x, y, text, isContinuous, displayScore, scoreElement){
 	(new ScoreAnimation(x, y, text)).start(isContinuous);
 	if(displayScore){
-		this.stopScoreTallyingAnimation();
-		this.scoreTallyingAnimation = new ScoreTallyingAnimation(board, text);
+		//this.stopScoreTallyingAnimation();
+		this.scoreTallyingAnimation = new ScoreTallyingAnimation(scoreElement, text);
 		this.scoreTallyingAnimation.start();
 	}
 } //LevelAnimation.prototype.animateScore()
@@ -147,11 +160,11 @@ LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
 ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
 ScoreTallyingAnimation.SCORE_TALLYING_MIN_FRAMES = 10;
 ScoreTallyingAnimation.SCORE_TALLYING_INTERVAL_MS = 30;
-function ScoreTallyingAnimation(board, score){
+function ScoreTallyingAnimation(scoreElement, score){
 	this.interval = null;
-	this.currentScore = Number(board.scoreElement.html());
+	this.currentScore = Number(scoreElement.html());
 	this.updatedScore = this.currentScore + Number(score);
-	this.board = board;
+	this.scoreElement = scoreElement;
 	this.offset = Number(score) / ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES;
 }
 
@@ -170,7 +183,7 @@ ScoreTallyingAnimation.prototype.start = function(){
 
 ScoreTallyingAnimation.prototype.stop = function(){
 	clearInterval(this.interval);
-	this.board.scoreElement.html(this.updatedScore);
+	this.scoreElement.html(this.updatedScore);
 };
 
 ScoreTallyingAnimation.prototype.animate = function(){
@@ -178,7 +191,7 @@ ScoreTallyingAnimation.prototype.animate = function(){
 	if(this.currentScore >= this.updatedScore){
 		this.stop();
 	}else{
-		this.board.scoreElement.html(this.currentScore);
+		this.scoreElement.html(this.currentScore);
 	}
 };
 
@@ -319,6 +332,9 @@ LevelAnimation.prototype.animateCreaturesSwap = function(layer, board, tile, til
 
 LevelAnimation.prototype.animateBonFire = function(parentElementSelector, completedLevelIds, highestCompletedId){
 	var levelAnimation = this;
+	if(levelAnimation.bonFireAnimation){
+		levelAnimation.bonFireAnimation.stop();
+	}
 	function animateRandomBornFires(){
 		var coordinates = [];
 
@@ -354,6 +370,9 @@ LevelAnimation.prototype.animateBonFire = function(parentElementSelector, comple
 
 LevelAnimation.prototype.animateBombs2 = function(parentElement){
 	var that = this;
+	if(that.bombAnimation){
+		that.bombAnimation.stop();
+	}
 	function animateBomb( callback ) {
 		var randomBombId;
 		randomBombId = Math.ceil( Math.random() * LevelAnimation.BOMB_COUNT );
@@ -366,6 +385,7 @@ LevelAnimation.prototype.animateBombs2 = function(parentElement){
 
 LevelAnimation.prototype.animateSprites = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var animationSprite, sprites, animationConfig, frameInterval, magnificationFactor, isContinuous;
+	this.stopAnimateSprite(galAssetPath);
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		sprites = LoadingScreen.gal.getSprites(galAssetPath);
@@ -396,11 +416,12 @@ LevelAnimation.prototype.stopAnimateSprite = function(galAssetPath){
 	if(animationSprite){
 		animationSprite.stop();
 	}
-	animationSprite = null;
-} //LevelAnimation.prototype.stopAnimateSprite()
+	this.animationSprites[galAssetPath] = null;
+}; //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, initLeft, initTop, callback){
 	var blinkingImage, image, animationConfig, frameInterval, magnificationFactor, isContinuous;
+	this.stopBlinkingImage(galAssetPath);
 	animationConfig = _.find( LevelAnimation.ANIMATION_CONFIG, {'id' : galAssetPath} );
 	if( animationConfig ) {
 		image = LoadingScreen.gal.get(galAssetPath);
@@ -422,9 +443,17 @@ LevelAnimation.prototype.animateBlink = function(parentElement, galAssetPath, in
 	else {
 		console.error( 'unable to find animationConfig for ' + galAssetPath );
 	}
-	this.blinkingImages.push( blinkingImage );
+	this.blinkingImages[galAssetPath] = blinkingImage;
 	return;
 }; //LevelAnimation.prototype.animateSprites()
+
+LevelAnimation.prototype.stopBlinkingImage = function(galAssetPath){
+	var blinkingImage = this.blinkingImages[galAssetPath];
+	if(blinkingImage){
+		blinkingImage.stop();
+	}
+	this.blinkingImages[galAssetPath] = null;
+} //LevelAnimation.prototype.stopAnimateSprite()
 
 LevelAnimation.prototype.animatePowerAchieved = function(parentElement ,coordinates){
 	var levelAnimation, powerAchievedAnimation, sprites, spriteFrame;
@@ -670,14 +699,15 @@ LevelAnimation.prototype.stopDangerBarAnimations = function() {
 
 LevelAnimation.prototype.stopAllAnimations = function(){
 	for(key in this.animationSprites){
-		this.animationSprites[key].stop();
+		if(this.animationSprites[key]){
+			this.animationSprites[key].stop();
+		}
 	}
-	if( this.blinkingImages && this.blinkingImages.length > 0 ) {
-		_.each( this.blinkingImages, function( blinkingImage ) {
-			blinkingImage.stop();
-		});
+	for(key in this.blinkingImages){
+		if(this.blinkingImages[key]){
+			this.blinkingImages[key].stop();
+		}
 	}
-	this.blinkingImages = null;
 	if(this.rolloverAnimation){
 		this.rolloverAnimation.stop();
 		this.rolloverAnimation = null;
@@ -712,6 +742,9 @@ LevelAnimation.prototype.stopAllAnimations = function(){
 		this.powerActivatedAnimation.stop();
 		this.powerActivatedAnimation = null;
 	}
+	
+	this.stopAllPowerAchieved();
+	
 	if(this.dangerBarAnimation){
 		this.dangerBarAnimation.stop();
 		this.dangerBarAnimation = null;

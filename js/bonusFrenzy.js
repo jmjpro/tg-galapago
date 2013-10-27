@@ -7,6 +7,7 @@ BonusFrenzy.Y_OFFSET = 100;
 BonusFrenzy.START_MOVING_DELAY_MS = 800;
 BonusFrenzy.CREATURE_LAYER_TOP = 100;
 BonusFrenzy.CREATURE_SCORE = 50;
+BonusFrenzy.NUM_CREATURES_TO_ANIMATE = 30;
 
 function BonusFrenzy(board) {
 	var rows, cols;
@@ -42,6 +43,7 @@ BonusFrenzy.prototype.registerEvents = function () {
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt){
 		bonusFrenzy.handleMouseClickEvent(evt);
+		return false;
 	});
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
@@ -49,22 +51,19 @@ BonusFrenzy.prototype.registerEvents = function () {
 		switch( evt.keyCode ) {
 			case 37: // left arrow
 				bonusFrenzy.handleLeftArrow();
-				evt.preventDefault();
 				break;
 			case 38: // up arrow
 				bonusFrenzy.handleUpArrow();
-				evt.preventDefault();
 				break;
 			case 39: // right arrow
 				bonusFrenzy.handleRightArrow();
-				evt.preventDefault();
 				break;
 			case 40: // down arrow
 				bonusFrenzy.handleDownArrow();
-				evt.preventDefault();
-				break;			
+				break;	
 			default:
 		}
+		return false;
 	});
 }; //BonusFrenzy.prototype.registerEvents()
 
@@ -174,19 +173,21 @@ BonusFrenzy.prototype.sizeOfRandomCreatureMap = function () {
 }; //BonusFrenzy.prototype.sizeOfRandomCreatureMap
 
 BonusFrenzy.prototype.drawBoard = function(){
-	var creaturemap = [];
-	var layer = this.layer;
-	var i =0;
-	var board = this.board;
-	while( i <30 ){ //TODO: create a constant from this "magic" number
-		var randomTileId = Math.ceil( Math.random() * 99); //TODO: will this work properly for a 13x11 board?
-		var row = randomTileId % 10;
-		var col= (randomTileId - (row)) / 10;
-		var tile ;
+	var creaturemap, layer, i, board, randomTileId, row, col, tile, numRows, numCols;
+	creaturemap = [];
+	layer = this.layer;
+	i = 0;
+	board = this.board;
+	numCols = board.creatureTileMatrix.length;
+	numRows = board.creatureTileMatrix[0].length;
+	while( i < BonusFrenzy.NUM_CREATURES_TO_ANIMATE ){ //TODO: create a constant from this "magic" number
+		randomTileId = Math.ceil( Math.random() * numCols * numRows); //TODO: will this work properly for a 13x11 board?
+		row = randomTileId % numRows;
+		col= Math.floor((randomTileId - row) / numCols);
 		if(typeof this.board.creatureTileMatrix[col] !== 'undefined' && typeof this.board.creatureTileMatrix[col][row] != 'undefined'){
 			tile = this.board.creatureTileMatrix[col][row];
 		}
-		if(tile && typeof creaturemap[col+"_"+row] === 'undefined'){
+		if(tile && tile.isCreatureOnly() && typeof creaturemap[col+"_"+row] === 'undefined'){
 			creaturemap[col+"_"+row] = tile ;
 			i++;
 		}
@@ -195,8 +196,8 @@ BonusFrenzy.prototype.drawBoard = function(){
 	_.each(this.board.creatureTileMatrix, function(columnArray){
 		_.each(columnArray, function(tile){
 			if(tile){
-				var col = tile.coordinates[0];
-				var row = tile.coordinates[1];
+				col = tile.coordinates[0];
+				row = tile.coordinates[1];
 				if(creaturemap[col+"_"+row] == undefined){
 					layer.drawImage(board.level.gameImages.tile_regular, tile.getXCoord(), tile.getYCoord()+BonusFrenzy.CREATURE_LAYER_TOP, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 				}else{

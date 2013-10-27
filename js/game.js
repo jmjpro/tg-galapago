@@ -144,7 +144,7 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 				LoadingScreen.gal.clearOnLoaded( backgroundBundle );
 				console.debug( backgroundBundle + ' resource bundle loaded' );
 				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-				Galapago.level.levelAnimation = new LevelAnimation();
+				Galapago.level.levelAnimation = LevelAnimation.getInstance();
 				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
 				Galapago.level.display(onDialogOpenedCallBack);
 				resourceLoadingDialog.onResourceLoad();
@@ -154,7 +154,6 @@ Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	LoadingScreen.gal.download(backgroundBundle);
 	console.debug( 'exiting Galapago.setLevel()' );
 };
-
 
 Galapago.printLevelConfigs = function (levelConfigs) {
 	_.each( levelConfigs, function(levelConfig) {
@@ -214,7 +213,7 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.images = [];
 	this.levelCounter = 0;
 	//this.setImages(LoadingScreen.mapScreenImageNames);
-	this.levelAnimation = new LevelAnimation();
+	this.levelAnimation = LevelAnimation.getInstance();
 	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
 } //LevelMap constructor
@@ -233,7 +232,6 @@ LevelMap.prototype.startAnimations = function() {
 LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 	var that = this;
 	that.screenDiv.css('display', 'none');
-	that.startAnimations();
 	that.drawHotspots();
 	LoadingScreen.gal.onLoaded('bg-map-screen', function(result) {
 		if (result.success) {
@@ -274,6 +272,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 
 					that.screenDiv.show();
 					that.canvas.focus();
+					that.startAnimations();
 				},
 				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
 			);
@@ -348,8 +347,12 @@ LevelMap.prototype.updateLevelStatus = function() {
 	var mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 	levelScore = store.getItem( mode + Galapago.profile + "level" + this.hotspotLevel.id + ".highScore");
 	if(levelScore){
-		$('#map-level-score-label').html('Score:');
-		$('#map-level-score').html(levelScore);
+		$('#map-level-score-label').show().html('Score:');
+		$('#map-level-score').show().html(levelScore);
+	}
+	else {
+		$('#map-level-score-label').hide();
+		$('#map-level-score').hide();
 	}
 	this.hotspotLevel.isCompleted = Level.isComplete(this.hotspotLevel.id);
 	if( this.hotspotLevel.isCompleted ) {
@@ -370,6 +373,25 @@ LevelMap.prototype.updateLevelStatus = function() {
 LevelMap.prototype.registerEventHandlers = function() {
 	var levelMap, x, y, point, mapHotspotRegion, levelIt, level;
 	levelMap = this;
+	$("#screen-map").off( 'keydown');
+	$("#screen-map").on( 'keydown', function(evt) {
+		switch( evt.keyCode ) {
+			case 8: // back/backspace key
+				evt.stopPropagation();
+				evt.preventDefault();
+				Galapago.mapScreen.toMainMenuScreen(levelMap);
+				break;
+			case 50: // numeric 2
+				Galapago.audioPlayer.disable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				break;
+			case 51: // numeric 3
+				Galapago.audioPlayer.enable();
+				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				break;
+			default:
+		}
+	});
 	$(Galapago.LAYER_MAP).off( 'mousemove');
 	$(Galapago.LAYER_MAP).on( 'mousemove', function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
@@ -392,15 +414,13 @@ LevelMap.prototype.registerEventHandlers = function() {
 				//levelMap.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
 			}
 		}
-		e.preventDefault();
-		e.stopPropagation();
+		return false;
 	}); //onmousemove
 
 	$(Galapago.LAYER_MAP).off('click');
 	$(Galapago.LAYER_MAP).on('click', function(evt) {
 		levelMap.handleSelect(evt);
-		evt.preventDefault();
-		evt.stopPropagation();
+		return false;
 	}); //onclick
 	$(Galapago.LAYER_MAP).off('keydown');
 	$(Galapago.LAYER_MAP).on('keydown', function(evt) {
@@ -409,44 +429,23 @@ LevelMap.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 			case 13: // enter
 				levelMap.handleKeyboardSelect();
-				evt.stopPropagation();
 				break;
 			case 37: // left arrow
 				levelMap.handleLeftArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 38: // up arrow
 				levelMap.handleUpArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 39: // right arrow
 				levelMap.handleRightArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
 				break;
 			case 40: // down arrow
 				levelMap.handleDownArrow();
-				evt.preventDefault();
-				evt.stopPropagation();
-				break;
-			case 8: // back/backspace key
-				evt.stopPropagation();
-				evt.preventDefault();
-				Galapago.mapScreen.toMainMenuScreen(levelMap);
-				break;
-			case 50: // numeric 2
-				Galapago.audioPlayer.disable();
-				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
-				break;
-			case 51: // numeric 3
-				Galapago.audioPlayer.enable();
-				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
 				break;
 			default:
 		}
-	});
+		return false;
+	}); //$(Galapago.LAYER_MAP).on('keydown', function(evt) {
 }; //LevelMap.prototype.registerEventHandlers
 
 LevelMap.prototype.quit = function() {
@@ -711,7 +710,12 @@ LevelMap.reset = function() {
 
 LevelMap.prototype.buildImageMap = function() {
 	var that = this;
-
+    if($('#hotspot-imagemap').length >0){
+	   $('#hotspot-imagemap').remove();
+	}
+	if($('#hotspot-proxy-image').length >0){
+	   $('#hotspot-proxy-image').remove();
+	}
 	var map = document.createElement('map');
 	map.id = 'hotspot-imagemap';
 	map.name = 'hotspots';
@@ -760,6 +764,7 @@ LevelMap.prototype.changeHotspot = function(e, isSelect) {
 			levelNumber = parseInt(parts[1]);
 			level = Galapago.levels[levelNumber];
 			if( level.isUnlocked || QueryString.cheat ){
+				Galapago.mapScreen.focusMap(Galapago.levelMap);
 				this.setHotspotLevel(level);
 				if( isSelect ) {
 					this.handleKeyboardSelect();
@@ -767,8 +772,7 @@ LevelMap.prototype.changeHotspot = function(e, isSelect) {
 			}
 		}
 	}
-	e.preventDefault();
-	e.stopPropagation();
+	return false;
 } //LevelMap.prototype.changeHotspot()
 
 /* end class LevelMap */
@@ -1006,9 +1010,6 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 		_.each( Board.NAV_BUTTON_TYPES, function( buttonType ) {
 			level.board.displayNavButton( buttonType, false );
 		});
-		if (Galapago.isTimedMode) {
-			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
-		}
 		themeComplete = this.bgTheme + '-' + this.bgSubTheme,
 		resourcePath = 'background/' + themeComplete + '.jpg',
 		backgroundImage = LoadingScreen.gal.get(resourcePath);
@@ -1020,6 +1021,9 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 
 		if(typeof onDialogOpenedCallBack !== 'undefined') {
 			onDialogOpenedCallBack();
+		}
+		if (Galapago.isTimedMode) {
+			level.dangerBar = new DangerBar(level.levelConfig.dangerBarSeconds * 1000, level.levelAnimation);
 		}
 		level.styleCanvas( level.levelConfig.blobPositions );
 		level.board.init( level.levelConfig.blobPositions );
@@ -1038,7 +1042,7 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 				if(restoreLookupString){
 					restoreLookup = JSON.parse(restoreLookupString);
 					dangerBarTimeRemaining = restoreLookup['dangerBarTimeRemaining'];
-					if(dangerBarTimeRemaining){
+					if(dangerBarTimeRemaining !== 'undefined'){
 						level.dangerBar.timeRemainingMs  = dangerBarTimeRemaining;
 						level.dangerBar.start();
 					}
@@ -1110,9 +1114,18 @@ Level.prototype.quit = function(){
 
 Level.prototype.cleanup = function(isBonusFrenzyOn){
 	this.unregisterEventHandlers();
+	this.board.scoreElement.html(0);
 	this.board.scoreElement.hide();
 	this.board.levelNameElement.hide();
-	this.board.hilightDiv.hide();
+	if(isBonusFrenzyOn) {
+		this.board.hilightDiv.hide();
+	}
+	else {
+		this.board.screenDiv.hide();
+		$("#screen-game").children("canvas").each(function() {
+			this.width = this.height = 1;
+		});
+	}
 	this.bubbleTip.hideBubbleTip();
 	if(this.dangerBar){
 		this.dangerBar.stop();
@@ -1124,18 +1137,8 @@ Level.prototype.cleanup = function(isBonusFrenzyOn){
     }
 	this.levelAnimation.stopAllAnimations();
 	this.board.creatureLayer.clearRect(0, 0, this.board.creatureLayer.canvas.width, this.board.creatureLayer.canvas.height);
-	if(this.levelAnimation.powerAchievedAnimation){
-		this.levelAnimation.stopAllPowerAchieved();
-		this.levelAnimation.powerAchievedAnimation = null;
-	}
 	this.board.reshuffleService.stop();
-	if(!isBonusFrenzyOn) {
-		this.board.screenDiv.hide();
-		$("#screen-game").children("canvas").each(function() {
-			this.width = this.height = 1;
-		});
-		this.board = null;
-	}
+	//this.board = null;
 	Galapago.audioPlayer.stop();
 }; //Level.prototype.cleanup()
 
@@ -1167,50 +1170,116 @@ Level.prototype.registerEventHandlers = function() {
 		console.log('x: ' + evt.clientX + ', y:' + evt.clientY);
 	};
 
+	$('#screen-game').off('keydown');
+	$('#screen-game').on('keydown', function(evt) {
+		switch( evt.keyCode ) {
+			case 48: // numeric 0
+				if( QueryString.cheat === 'true' ) {
+					board.setComplete();
+				}
+				return false;
+				break;
+			case 49: // numeric 1
+				if( QueryString.cheat === 'true' ) {
+					board.powerUp.activatePowerUpUsingCheatCode();
+				}
+				return false;
+				//Galapago.setLevel('level_01');
+				break;
+			case 50: // numeric 2
+				if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
+					board.level.dangerBar.applyCheat();
+				}
+				return false;
+				break;
+			case 51:
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						ns.frameWork.debug.profiler.clear();
+					}
+				}
+				return false;
+				break;
+			case 52:
+				if( QueryString.cheat === 'true' ) {
+					if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
+						var report = ns.frameWork.debug.profiler.getPreparedReport();
+						for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
+							console.log(report[i].id + ": " + report[i].own.total);
+						}
+					}
+				}
+				return false;
+				break;
+			case 8: // back/backspace key
+				LevelMap.show(board.level, function() {
+					board.level.quit();
+				});
+				return false;
+				break;
+			case 56: // 8
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('top');
+				}
+				return false;
+				break;
+			case 57: // 9
+				if( QueryString.cheat === 'true' ) {
+					toggleDebugConsole('bottom');
+				}
+				return false;
+				break;
+			default:
+		}
+	});
+
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt) {
 		board.handleClickOrTap(evt);
+		return false;
 	});
 
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('tap', function(evt) { 
 		board.handleClickOrTap(evt);
+		return false;
 	});
 	
 	$('#layer-creature').off('click');
 	$('#layer-creature').on('click', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
 		if(board.level.levelCompleted){
 			board.setComplete();
-			return;
 		}
 		else {
 			board.handleMouseClickEvent(evt);
 		}
+		return false;
 	});
 
 	$('#layer-creature').off('mouseout');
-	$('#layer-creature').on('mouseout', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
+	$('#layer-creature').on('mouseout', function(evt) {
 		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
 		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight' && currrentElement.id != 'layer-creature'))){
 			board.onBoardOut();
 		}
+		return false;
 	});
 
 	$('#layer-creature').off('mouseover');
 	$('#layer-creature').on('mouseover', function(evt){
-		evt.preventDefault();
-		evt.stopPropagation();
+		if(board.hotspot!=null){
+			board.displayNavButton( 'menu', false );
+			board.displayNavButton( 'quit', false );
+			board.hotspot = null;
+		}
 		board.onBoardIn();
+		return false;
 	});	
 
 	this.registerMenuQuitButtonHandlers();
 	$('#layer-creature').off('keydown');
 	$('#layer-creature').on('keydown', function(evt) {
-		board.handleKeyboardEvent(evt);
+		return board.handleKeyboardEvent(evt);
 	});
 }; //Level.prototype.registerEventHandlers()
 
@@ -1225,22 +1294,24 @@ Level.prototype.registerMenuQuitButtonHandlers = function() {
 		hilightId = idPrefix + 'hilight-' + buttonType;
 
 		handleMouseOver = function(buttonType) {
+			board.tileActive.setInactiveAsync().then(function() {}).done();
 			board.displayNavButton( buttonType, true );
 			board.hotspot = 'hotspot-' + buttonType;
 		};
 
 		$( buttonId ).on( 'mouseover', function() {
-			handleMouseOver(buttonType)
+			handleMouseOver(buttonType);
+			return false;
 		});
 		$( buttonId ).on( 'mouseout', function(e) {
 			board.displayNavButton( buttonType, false );
 			board.hotspot = null;
+			return false;
 		});
 		$( buttonId ).on( 'click', function(e) {
 			handleMouseOver(buttonType); //in case another button was hilighted already with keyboard
 			board.handleKeyboardSelect();
-			e.preventDefault();
-			e.stopPropagation();
+			return false;
 		});
 	});
 } //Level.prototype.registerMenuQuitButtonHandlers()
@@ -1417,103 +1488,45 @@ function Board() {
 	this.animationQ = [];
 	this.powerupPointsAchievedInThisSwap = 0;
 	this.isBoardBuildAnimationNeeded = true;
+	this.bonusFrenzy = null;
 } //Board constructor
 
 Board.prototype.handleKeyboardEvent = function(evt){
 	var board = this;
 	if(board.animationQ.length){
-		return;
+		return false;
 	}
 	if(board.level.levelCompleted){
 		board.setComplete();
-		return;
+		return false;
 	}
 	//board.creatureLayer.canvas.onkeydown = function(evt) {
 	console.debug('key pressed ' + evt.keyCode);
 	switch( evt.keyCode ) {
-		case 51:
-			if( QueryString.cheat === 'true' ) {
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					ns.frameWork.debug.profiler.clear();
-				}
-			}
-			break;
-		case 52:
-			if( QueryString.cheat === 'true' ) {
-				if(ns && ns.frameWork && ns.frameWork.debug && ns.frameWork.debug.profiler) {
-					var report = ns.frameWork.debug.profiler.getPreparedReport();
-					for(var i = Math.min(20, report.length) - 1; i >= 0; i--) {
-						console.log(report[i].id + ": " + report[i].own.total);
-					}
-				}
-			}
-			break;
 		case 13: // enter
 			board.handleKeyboardSelect();
+			return false;
 			break;
 		case 37: // left arrow
 			board.handleLeftArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 38: // up arrow
 			board.handleUpArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 39: // right arrow
 			board.handleRightArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
+			return false;
 			break;
 		case 40: // down arrow
 			board.handleDownArrow();
-			evt.preventDefault();
-			evt.stopPropagation();
-			break;
-		case 8: // back/backspace key
-			LevelMap.show(level, function() {
-			level.quit();
-			});
-			evt.stopPropagation();
-			evt.preventDefault();		
-			break;
-		//TODO code below here should removed before production
-		case 48: // numeric 0
-			if( QueryString.cheat === 'true' ) {
-				board.setComplete();
-			}
-			evt.stopPropagation();
-			evt.preventDefault();
-			break;
-		case 49: // numeric 1
-			if( QueryString.cheat === 'true' ) {
-				board.powerUp.activatePowerUpUsingCheatCode();
-			}
-			evt.stopPropagation();
-			evt.preventDefault();
-			//Galapago.setLevel('level_01');
-			break;
-		case 50: // numeric 2
-			if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
-				board.level.dangerBar.applyCheat();
-			}
-			evt.stopPropagation();
-			evt.preventDefault();
-			break;
-		case 56: // 8
-			if( QueryString.cheat === 'true' ) {
-				toggleDebugConsole('top');
-			}
-			break;
-		case 57: // 9
-			if( QueryString.cheat === 'true' ) {
-				toggleDebugConsole('bottom');
-			}
+			return false;
 			break;
 		default:
+			return true;
 	}
-}
+} //Board.prototype.handleKeyboardEvent()
 
 Board.prototype.registerEventHandlers = function() {
 	this.level.registerEventHandlers();
@@ -1575,6 +1588,11 @@ Board.prototype.displayNavButton = function(buttonType, isActive) {
 Board.prototype.addPowerups = function() {
 	this.powerUp=new Powerup(this , Level.powerUpScore);
 	Level.powerUpScore=0;
+	/*
+	if( this.bonusFrenzy ) {
+		this.bonusFrenzy.score = 0;
+	}
+	*/
 };
 
 /* req 4.4.2
@@ -2159,17 +2177,16 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
-	this.level.cleanup(true);
 	if(!this.bonusFrenzy){
+		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
 	}else{
-		$('#level').html(this.score);
 		Level.powerUpScore = (Score.BONUS_FRENZY_POWERUP_MULTIPLIER * this.bonusFrenzy.getScore());
-		this.score += (Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore()) ;
+		this.bonusFrenzyPoints = Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore();
+		this.totalLevelScore = this.score + this.bonusFrenzyPoints;
 		if( Galapago.isTimedMode ) {
-			var timeleft = this.level.dangerBar.timeRemainingMs;
-			$('#time-bonus').html(timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
-			this.score += (timeleft/Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR);
+			this.timeBonus = this.level.dangerBar.timeRemainingMs / Score.LEVEL_COMPLETE_TIME_BONUS_DIVISOR;
+			this.totalLevelScore += this.timeBonus;
 		} else {
 			$('#row-time-bonus').hide();
 		}
@@ -2177,32 +2194,34 @@ Board.prototype.setComplete = function() {
 		this.level.isCompleted = true;
 		timedMode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 		store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".completed", true );
-		levelHighestScore = store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore");
-		var totalScore = store.getItem( timedMode + Galapago.profile + ".totalScore" );
-		if(totalScore){
-			if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ) {
-				totalScore=Number(totalScore)+this.score - Number(levelHighestScore);
-			}
-			else {
-				totalScore=Number(totalScore)+this.score;
-			}
-			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+		/* FDD 4.8.5.1 Level scoring and Total Score are updated with the new achieved score even if it is lower than
+		previous achieved score in that level. If a level is re-played, the new achieved score is added to the total
+		score while the previous score of that level is deducted from total score. I.e no accumulative scoring for the
+		same level. All values which are presented with a tallying effect start counting together.*/
+		levelHighestScore = Number( store.getItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore") );
+		this.previousTotalScore = Number( store.getItem( timedMode + Galapago.profile + ".totalScore" ) );
+		if(this.previousTotalScore){
+			$('#total-score').html( this.previousTotalScore );
+			this.totalScore = this.previousTotalScore + this.totalLevelScore - levelHighestScore;
+			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
 		else {
-			totalScore=this.score;
-			store.setItem( timedMode + Galapago.profile + ".totalScore", totalScore );
+			$('#total-score').html( 0 );
+			this.totalScore = this.totalLevelScore;
+			store.setItem( timedMode + Galapago.profile + ".totalScore", this.totalScore );
 		}
-		if(levelHighestScore && (Number(levelHighestScore) < Number(this.score)) ){
-			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score );
+		if(levelHighestScore && (Number(levelHighestScore) < Number(this.totalLevelScore)) ){
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.totalLevelScore );
 		}
 		else if(!levelHighestScore){
-			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.score);
+			store.setItem( timedMode + Galapago.profile + "level" + this.level.id + ".highScore", this.totalLevelScore );
 		}
-		$('#bonus-frenzy').html( this.bonusFrenzy.getScore() );
-		$('#bonus-points').html( Score.BONUS_FRENZY_CREATURE_POINTS * this.bonusFrenzy.getScore() );
-		$('#level-score').html( this.score );
-		$('#total-score').html( totalScore );
-		new DialogMenu('screen-game', this, 'dialog-level-won');
+		$('#level-score').html(0);
+		$( '#bonus-frenzy' ).html( this.bonusFrenzy.getScore() );
+		$( '#bonus-points' ).html( 0 );
+		$( '#time-bonus' ).html( 0 );
+		$( '#total-level-score' ).html( 0 );
+		new DialogMenu( 'screen-game', this, 'dialog-level-won' );
 	}
 }; //Board.prototype.setComplete()
 
@@ -2312,6 +2331,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		return;
 	}else if(this.powerUp.isFireSelected()){
 		this.level.levelAnimation.stopAllAnimations();
+		board.powerUp.timerPause();
 		this.reshuffleService.stop();
 		Galapago.audioPlayer.playFirePowerUsed();
 		this.scoreEvents = [];
@@ -2349,6 +2369,7 @@ Board.prototype.handleTileSelect = function(tile) {
 		if(dangerBar){
 			dangerBar.resume();
 		}
+		board.powerUp.timerResume();
 		if( board.scoreEvents.length > 0 ) {
 			board.updateScoreAndCollections(tileCoordinates);
 		}else if(board.blobCollection.isEmpty()){
@@ -2359,6 +2380,7 @@ Board.prototype.handleTileSelect = function(tile) {
 				board.setComplete();
 			}
 		}
+		
 		this.powerUp.powerUsed();	
 		this.saveBoard();
 		this.reshuffleService.start();
@@ -2509,6 +2531,7 @@ Board.prototype.dangerBarEmptied = function() {
 	gameboard.hilightDiv.hide();
 	$('#final-score').html(gameboard.score);
 	function callback(){
+		gameboard.level.bubbleTip.clearBubbleTip(i18n.t(key));
 		if( sdkApi && sdkApi.inDemoMode() ){
 			new DialogMenu('screen-game', gameboard, 'dialog-game-over');
 		}else{
@@ -3223,7 +3246,7 @@ Board.prototype.animateScores = function(scoreEvent, matchingTilesSet) {
 		}
 	}
 	function scoreAnimation(){
-		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board);
+		board.level.levelAnimation.animateScore(xCoord, yCoord, scoreEvent.score(), true, true, board.scoreElement);
 	}
 	if(board.putInAnimationQ){
 		board.animationQ.push(scoreAnimation);

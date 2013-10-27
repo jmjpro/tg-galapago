@@ -53,7 +53,7 @@
 
 		<script>
 			var sdkApi, galapagoVersion;
-			galapagoVersion = 'Ver. 2.0.8';
+			galapagoVersion = 'Ver. 2.0.9';
 			function loadGame(){
 				//redefine local storage to support cookie fallback
 				window.store = new Store();
@@ -276,12 +276,12 @@
 			<div class="dialog-title" data-i18n="Dialog Level Won.Title">Level Won!</div>
 			<div class="dialog-content">
 				<span data-i18n="Dialog Level Won.NicelyPlayed">Nicely played,<br/>you are uncovering Galapago's mysteries.</span>
-				<table>
-					<tr><th>Level</th><td id="level"></td></tr>
+				<table id="score-breakdown">
+					<tr><th>Level</th><td id="level-score"></td></tr>
 					<tr><th>Bonus Frenzy</th><td id="bonus-frenzy"></td></tr>
 					<tr><th>Bonus Points</th><td id="bonus-points"></td></tr>
 					<tr id="row-time-bonus"><th>Time Bonus</th><td id="time-bonus"></td></tr>
-					<tr><th>Level Score</th><td id="level-score"></td></tr>
+					<tr><th>Level Score</th><td id="total-level-score"></td></tr>
 					<tr><th>Score</th><td id="total-score"></td></tr>
 				</table>
 				<ul class="vertical-button-nav">

@@ -214,10 +214,8 @@ DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
 		case 'reset-game-option-yes' :
 			console.log("reset game");
 			LevelMap.reset();
-			levelMap.cleanup();
-			//Galapago.init(Galapago.gameMode);
+			Galapago.levelMap.cleanup();
 			LevelMap.show(Level.findById(1));
-			//level.showLevelMap(Level.findById(1));
 			this.hide();
 			break;
 	}
@@ -286,6 +284,12 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.initialNavItem = this.currentNavItem;
 	this.eventBarrierDiv = null;
 	this.show();
+
+	//TODO: ideally we should subclass DialogMenu with a DialogLevelWon class and move this logic there
+	if( this.dialogId === 'dialog-level-won' ) {
+		this.animateScores();
+	}
+
 	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	this.callback = null;
 	if( sdkApi && sdkReportingPage ) {
@@ -369,16 +373,19 @@ DialogMenu.prototype.registerMouseHandlers = function() {
 	dialogNavChildren.off('mouseover');
 	dialogNavChildren.on('mouseover', function(){
 		dialogMenu.setNavItem($('#'+this.id));
+		return false;
 	});
 	dialogNavChildren.off('click');
 	dialogNavChildren.on('click', function(){
 		dialogMenu.currentNavItem[0]=this;
 		dialogMenu.selectHandler(dialogMenu);
+		return false;
 	});
 	switch(this.dialogId){
 		case 'dialog-game-menu' :
 			function handleMouseClick(){
 				dialogMenu.handleGameMenuLeftRightNavigation();
+				return false;
 			}
 			$('#arrow-left').off('click');
 			$('#arrow-left').on('click', handleMouseClick);
@@ -396,8 +403,6 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	firstItemSelector = '*:nth-child(1)';
 	this.dialogMenuDOM.off('keydown');
 	this.dialogMenuDOM.on('keydown', function(evt) {
-		evt.stopPropagation();
-		evt.preventDefault();
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
@@ -473,7 +478,8 @@ DialogMenu.prototype.registerEventHandlers = function() {
 			}
 			break;
 		} //switch()
-	});
+		return false;
+	}); //this.dialogMenuDOM.on('keydown', function(evt) {
 	this.registerMouseHandlers();
 }; //DialogMenu.prototype.registerEventHandlers()
 
@@ -538,7 +544,7 @@ DialogMenu.prototype.dialogGameOverSelect = function() {
 
 DialogMenu.getButtonClass = function(dialogId) {
 	var dialogDescriptor;
-	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} )
+	dialogDescriptor = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : dialogId} );
 	return dialogDescriptor['button-class'];
 }; //DialogMenu.getButtonClass()
 
@@ -547,4 +553,36 @@ DialogMenu.loadImages = function(imageIds){
 		var imgElementID = '#' + imageId;
 		$(imgElementID)[0].src = LoadingScreen.gal.get(DialogMenu.IMAGE_PATH_PREFIX + imageId + '.png').src;
 	});
+};
+
+DialogMenu.prototype.animateScores = function() {
+	var board, scoreElement;
+
+	board = this.callingObject;	
+
+	function scoreAnimation(){
+		var scoreElementsToAnimate;
+		scoreElementsToAnimate = [
+			{ scoreElementId: 'level-score', text: board.score },
+			{ scoreElementId: 'bonus-points', text: board.bonusFrenzyPoints },
+			{ scoreElementId: 'time-bonus', text: board.timeBonus },
+			{ scoreElementId: 'total-level-score', text: board.totalLevelScore }
+		];
+		// total-score starts with previous total score so we only advance the odometer with any difference in the total score (FDD 4.8.5.1)
+		if( board.totalScore > board.previousTotalScore ) {
+			scoreElementsToAnimate.push( { scoreElementId: 'total-score', text: board.totalScore - board.previousTotalScore } );
+		}
+		_.each( scoreElementsToAnimate, function( scoreElementRecord ) {
+			board.level.levelAnimation.stopScoreTallyingAnimation();
+			scoreElement = $( '#' + scoreElementRecord.scoreElementId );
+			(new ScoreTallyingAnimation(scoreElement, scoreElementRecord.text)).start();
+		});
+	}
+
+	if( board.putInAnimationQ ){
+		board.animationQ.push(scoreAnimation);
+	}
+	else{
+		scoreAnimation();
+	}
 };
