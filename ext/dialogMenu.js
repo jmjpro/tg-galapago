@@ -221,14 +221,15 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
-	var optionId, level;
+	var optionId, level, levelMap;
 	optionId = dialogMenu.currentNavItem[0].id;
 	level = dialogMenu.callingObject.hotspotLevel;
+	levelMap = Galapago.levelMap;
 	 
 	switch( optionId ) {
 		case 'reset-game-option-no' :
 			this.hide();
-			Galapago.mapScreen.focusMap( Galapago.levelMap );
+			Galapago.mapScreen.focusMap( levelMap );
 			break;
 		case 'reset-game-option-yes' :
 			console.log("reset game");
