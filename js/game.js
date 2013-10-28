@@ -811,7 +811,10 @@ Level.MENU_BUTTON_X = 124;
 Level.MENU_BUTTON_Y = 600;
 */
 Level.SUPER_FRIEND_SUFFIX = '-friend';
-Level.powerUpScore =0;
+
+//powerUpScore is not a constant its a static variable to hold the bonus frenzy points for powerup for next level.
+Level.powerUpScore =0; 
+ 
 function Level(id) {
 	this.id = id;
 	this.name = '';
