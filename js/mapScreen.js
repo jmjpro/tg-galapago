@@ -45,32 +45,24 @@ MapScreen.prototype.unsetNavItem = function() {
 MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	var itemId, levelMap;
 	itemId = navItem.find('div.nav-button')[0].id;
-	//levelMap = Galapago.levelMap;
+	levelMap = Galapago.levelMap;
 	console.log('itemId:' + itemId);
 	this.unsetNavItem();
 	switch( itemId ) {
 		case 'button-play-map' :
-			//console.log( 'selected play map button');
-			this.handleKeyboardSelect();
+			levelMap.handleKeyboardSelect();
 			break;
 		case 'button-start-map' :
-			//console.log( 'selected start map button');
-			this.setHotspotLevel(LevelMap.getNextLevel());
-			this.handleKeyboardSelect();
+			levelMap.setHotspotLevel(LevelMap.getNextLevel());
+			levelMap.handleKeyboardSelect();
 			break;
 		case 'button-reset-map' :
-			//console.log( 'selected reset map button');
-			//levelMap.levelAnimation.stopAllAnimations();
-			window.dialog = new DialogMenu('layer-map-other-animation', this, 'dialog-reset-game');
+			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
-			//console.log( 'selected menu map button');
-			//this.toMainMenuScreen(levelMap);
 			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
-			//MainMenuScreen.show();
 			break;
 		case 'button-quit-map' :
-			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
