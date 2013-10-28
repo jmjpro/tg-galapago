@@ -80,6 +80,10 @@ MapScreen.prototype.onDialogClose = function(evt) {
 	Galapago.mapScreen.focusMap( Galapago.levelMap );
 };
 
+MapScreen.prototype.onDialogClose = function(evt) {
+	Galapago.mapScreen.focusMap( Galapago.levelMap );
+};
+
 MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav, levelMap;
 	mapScreen = this;
