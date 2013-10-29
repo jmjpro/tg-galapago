@@ -155,6 +155,7 @@ LevelAnimation.prototype.stopScoreTallyingAnimation = function(){
 	if(this.scoreTallyingAnimation){
 		this.scoreTallyingAnimation.stop();
 	}
+	this.scoreTallyingAnimation = null;
 };
 
 ScoreTallyingAnimation.SCORE_TALLYING_MAX_FRAMES = 50;
