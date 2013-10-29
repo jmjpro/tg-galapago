@@ -123,7 +123,6 @@ MapScreen.prototype.addMouseListener = function(){
 	$('ul#map-nav li').off('mouseover');
 	$('ul#map-nav li').on( 'mouseover', function(evt){
 		var levelMap = Galapago.levelMap;
-		levelMap.stopStartArrowAnimation();	
 		levelMap.drawHotspot(levelMap.hotspotLevel.mapHotspotRegion, true);
 		mapScreen.setNavItem( $(this) );
 		$('ul#map-nav').focus();

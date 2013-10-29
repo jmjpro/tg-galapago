@@ -221,16 +221,9 @@ function LevelMap(level, onDialogOpenedCallBack) {
 	this.canvas.width = LevelMap.WIDTH;
 	this.canvas.height = LevelMap.HEIGHT;
 	this.layer = this.canvas.getContext('2d');
-
-	/*
-	this.animationCanvas = $('#' + 'layer-map-animation')[0];
-	this.otherAnimationCanvas = $('#' + 'layer-map-other-animation')[0];
-	this.otherAnimationLayer = this.otherAnimationCanvas.getContext('2d');
-	*/
 	this.hotspotPointsArray = [];
 	this.images = [];
 	this.levelCounter = 0;
-	//this.setImages(LoadingScreen.mapScreenImageNames);
 	this.levelAnimation = LevelAnimation.getInstance();
 	this.display(onDialogOpenedCallBack);
 	this.profile = 'Default';
@@ -303,11 +296,7 @@ LevelMap.prototype.animateStartArrowIfNeeded = function(){
 	if( !Level.isComplete("1") ) {
 		this.levelAnimation.animateSprites(this.screenDiv.selector, Galapago.collageDirectory + 'map-start-arrow-strip.png');
 	}
-}	
-
-LevelMap.prototype.stopStartArrowAnimation = function(){
-	this.levelAnimation.stopAnimateSprite(Galapago.collageDirectory + 'map-start-arrow-strip.png');
-}
+} //LevelMap.prototype.animateStartArrowIfNeeded()
 
 LevelMap.prototype.drawHotspots = function(){
 	var levelMap = this;
@@ -318,7 +307,7 @@ LevelMap.prototype.drawHotspots = function(){
 		}
 	});
 	this.setHotspotLevel(this.hotspotLevel);
-};
+}; //LevelMap.prototype.drawHotspots()
 
 LevelMap.prototype.drawBlinkingArrows = function(level){
 	var levelMap = this;
@@ -569,7 +558,6 @@ LevelMap.prototype.handleDownArrow = function() {
 		}
 	}
 	else {
-		this.stopStartArrowAnimation();
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		$('ul#map-nav').focus();
 		mapScreen = Galapago.mapScreen ;
