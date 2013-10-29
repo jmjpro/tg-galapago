@@ -150,11 +150,18 @@
     	]
     },
     {
-		"name": "audio",
+		"name": "map-audio",
+		"contents": [
+			"Click.mp3",
+	    	"Volcano_01.mp3",
+			"Volcano_Eruption.mp3"
+    	]
+    },
+    {
+		"name": "game-audio",
 		"contents": [
 			"BurnIcon.mp3",
 			"Cannot_select.mp3",
-			"Click.mp3",
 			"Cocoon_Tile.mp3",
 			"Combo1.mp3",
 			"Lightning.mp3",
@@ -176,9 +183,7 @@
 			"SuperMatch.mp3",
 			"Swap.mp3",
 			"Warning.mp3",
-			"Win.mp3",
-	    	"Volcano_01.mp3",
-			"Volcano_Eruption.mp3"
+			"Win.mp3"
     	]
     }
     ],

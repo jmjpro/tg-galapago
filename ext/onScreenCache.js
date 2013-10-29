@@ -89,12 +89,12 @@ function OnScreenCache(imagesArray, onCachedCallBack, timeOutInMilliSeconds) {
 	this.id = id;
 
 	if(typeof onCachedCallBack !== 'undefined') {
-		var eventBarrier = GameUtil.addEventBarrier(element.id);
+		var eventBarrier = ScreenUtil.addEventBarrier(element.id);
 		//TODO: there is no way to determine that image is completely DRAWN on screen!
 		//TODO: currently this is just a timeout.
 		//TODO: NOTE: image LOADED is not the same as image DRAWN.
 		setTimeout(function(){
-			GameUtil.removeEventBarrier(eventBarrier);
+			ScreenUtil.removeEventBarrier(eventBarrier);
 			onCachedCallBack();
 		}, timeOutInMilliSeconds);
 	}

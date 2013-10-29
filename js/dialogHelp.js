@@ -79,14 +79,14 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 DialogHelp.prototype.show = function() {
 	this.dialogHelpDOM.show();
 	this.dialogHelpDOM.focus();
-	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
+	this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass('transparent');
 }; //DialogHelp.prototype.show()
 
 DialogHelp.prototype.hide = function() {
 	this.dialogHelpDOM.hide();
 	this.setNavItem(this.initialNavItem);
-	GameUtil.removeEventBarrier(this.eventBarrier);
+	ScreenUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
 	if(this.callingObject.onDialogClose){
 		this.callingObject.onDialogClose()

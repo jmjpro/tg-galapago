@@ -35,7 +35,7 @@
 		<script src="ext/pauseableInterval.js"></script>
 		<script src="ext/matrixUtil.js"></script>
 		<script src="ext/util.js"></script>
-		<script src="ext/dialogMenu.js"></script>
+		<script src="js/dialogMenu.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/dialogHelp.js"></script>
 		<script src="js/mainMenuScreen.js"></script>
@@ -87,14 +87,14 @@
 
 		<div id="debug-console"></div>
 
-		<div id="screen-loading" class="canvas-fullscreen">
-			<canvas id="layer-progress-bar" style="z-index: 2;" tabindex="1"></canvas>
+		<div id="screen-loading" class="canvas-fullscreen" tabindex="0">
+			<canvas id="layer-progress-bar" style="z-index: 2;"></canvas>
 			<span id="copyright">I-play is a trademark and trading name of Oberon Media,Inc. and its subsidiaries. &copy; 2008 Oberon Media. All Rights Reserved.<br/>
 			&copy; 2013 TransGaming Interactive Corp. All RIGHTS RESERVED.</span>
 		</div>
 
-		<div id="screen-map" class="canvas-fullscreen">
-			<canvas id="layer-map" width="1" height="1" tabindex="1"></canvas>
+		<div id="screen-map" class="canvas-fullscreen" tabindex="1">
+			<canvas id="layer-map" width="1" height="1" tabindex="2"></canvas>
 			<div id="lava-animation"></div>
 			<div id="bombs-animation"></div>
 			<div id="map-level-info">
@@ -103,7 +103,7 @@
 				<div class="difficulty-stars" id="map-difficulty-level-gold"></div>
 				<span id="map-level-score-label"></span><span id="map-level-score"></span>
 			</div>
-			<ul id="map-nav" tabindex="0">
+			<ul id="map-nav" tabindex="3">
 				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button"><p>PLAY</p></div></div></li>
 				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button"><p>START NEXT LEVEL</p></div></div></li>
 				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button"><p>RESET MAP</p></div></div></li>
@@ -124,9 +124,9 @@
 			<div id="div-fire-power-up"></div>
 			<div id="div-shuffle-power-up"></div>
 			<div id="div-fill-power-up"></div>
-			<div id="div-flip-flop-animation-power-up" tabindex="3"></div>
-			<div id="div-fire-animation-power-up" tabindex="4"></div>
-			<div id="div-shuffle-animation-power-up"tabindex="5" ></div>
+			<div id="div-flip-flop-animation-power-up" tabindex="2"></div>
+			<div id="div-fire-animation-power-up" tabindex="3"></div>
+			<div id="div-shuffle-animation-power-up"tabindex="4" ></div>
 			
 			
 			<div id="div-danger-bar" width="1" height="1"></div>
@@ -134,8 +134,8 @@
 			<canvas id="layer-collection-key" width="1" height="1"></canvas>
 			
 			<canvas id="layer-bob-cervantes" width="1" height="1"></canvas>
-			<div id="game-nav-button-menu" class="game-nav-button" tabindex="6"><div id="game-nav-hilight-menu">MENU</div></div>
-			<div id="game-nav-button-quit" class="game-nav-button" tabindex="7"><div id="game-nav-hilight-quit">QUIT</div></div>
+			<div id="game-nav-button-menu" class="game-nav-button" tabindex="5"><div id="game-nav-hilight-menu">MENU</div></div>
+			<div id="game-nav-button-quit" class="game-nav-button" tabindex="6"><div id="game-nav-hilight-quit">QUIT</div></div>
 		</div>
 		<div id="div-level-loading"></div>
 		
@@ -172,7 +172,7 @@
 			-->
 		</div>
 
-		<div id="dialog-leaderboards" class="overlay2">
+		<div id="dialog-leaderboards" class="overlay2" tabindex="0">
 			<div class="dialog-title dialog-title-wide" data-i18n="Dialog Leaderboards.Title">Top Scores</div>
 			<div class="dialog-content">
 				<!--div class="button-big" data-i18n="Dialog Leaderboards.Timed">Timed</div-->
@@ -219,7 +219,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-quit" class="overlay2" tabindex="0">
+		<div id="dialog-quit" class="overlay2" tabindex="1">
 			<div class="dialog-content">
 				<span data-i18n="Dialog Quit.Title" style="width: 360px; text-align: center">Your game will be saved, are you sure you want to quit the game?</span>
 				<ul class="vertical-button-nav">
@@ -230,7 +230,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<div id="dialog-game-menu" class="overlay2" tabindex="0">
+		<div id="dialog-game-menu" class="overlay2" tabindex="1">
 			<div class="dialog-title" data-i18n="Dialog Game Menu.Title">Menu</div>
 			<div class="dialog-content">
 				<ul class="vertical-button-nav">
@@ -324,7 +324,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 		
-		<div id="dialog-reset-game" class="overlay2" tabindex="0">
+		<div id="dialog-reset-game" class="overlay2" tabindex="1">
 			<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
 			<div class="dialog-content">
 				<div data-i18n="Dialog Reset Game.Body Text">

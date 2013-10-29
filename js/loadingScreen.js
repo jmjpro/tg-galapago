@@ -63,6 +63,19 @@ LoadingScreen.registerEvent = function(){
 	});
 };
 
+LoadingScreen.loadAudioBundle = function(resourceBundle, callback) {
+	LoadingScreen.gal.onLoaded( resourceBundle, function(result) {
+		if (result.success) {
+			LoadingScreen.gal.clearOnLoaded( 'map-audio' );
+			if( callback ) {
+				callback.call();
+			}
+		}
+	});
+
+	LoadingScreen.gal.download( resourceBundle );
+}; //LoadingScreen.loadAudioBundle()
+
 LoadingScreen.hide = function() {
 	var that = this;
 
@@ -94,6 +107,7 @@ LoadingScreen.localization = function(){
 		$('#' + dialogId).i18n();
 	});
 }; //LoadingScreen.localization
+
 /// end LoadingScreen class
 
 /// progress bar

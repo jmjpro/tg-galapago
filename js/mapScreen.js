@@ -112,6 +112,12 @@ MapScreen.prototype.registerEventHandlers = function() {
 	});
 }; //MapScreen.prototype.registerEventHandlers()
 
+MapScreen.prototype.unregisterEventHandlers = function() {
+	console.debug( 'unregistered map screen event handlers' );
+	$( '#map-nav' ).off( 'keydown' );
+	Galapago.levelMap.unregisterEventHandlers();
+}; //MapScreen.prototype.unregisterEventHandlers()
+
 MapScreen.prototype.addMouseListener = function(){
 	var mapScreen = this;
 	$('ul#map-nav li').off('mouseover');

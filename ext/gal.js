@@ -150,16 +150,17 @@
 				else if ((',' + audioExts + ',').indexOf(',' + keyArray[keyArray.length - 1] + ',') > -1) {
 					url = that.manifest.assetRootAudio + key;
 					var audio = new Audio();
-					audio.onload = function () {
+					audio.addEventListener('canplaythrough', function () {
 						that.lookupTable[key] = audio;
 						fireCallback_(that.progress, bundleName, {
 							current : index + 1,
 							total   : bundle.length
 						});
 						loop(index + 1);
-					};
+					});
 					audio.src = url;
 					audio.id = key;
+					console.debug( "attempting load of audio " + url);
 				} else {
 					url = that.manifest.assetRootImage + key;
 

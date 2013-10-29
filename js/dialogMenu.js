@@ -341,11 +341,16 @@ DialogMenu.prototype.setDialogBackgroundImage = function() {
 }; //DialogMenu.prototype.setDialogBackgroundImage()
 
 DialogMenu.prototype.show = function() {
+	/*
+	if( this.callingObject.unregisterEventHandlers ) {
+		this.callingObject.unregisterEventHandlers();
+	}*/
 	this.registerEventHandlers();
+	this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
+	this.callingScreen.addClass('transparent');
 	this.dialogMenuDOM.show();
 	this.dialogMenuDOM.focus();
-	this.eventBarrier = GameUtil.addEventBarrier(this.dialogId);
-	this.callingScreen.addClass('transparent');
+	console.debug( 'element ' + document.activeElement.id + ' has focus' );
 }; //DialogMenu.prototype.show()
 
 DialogMenu.prototype.hide = function() {
@@ -358,7 +363,7 @@ DialogMenu.prototype.hide = function() {
 	if(this.callingObject && this.callingObject.onDialogClose){
 		this.callingObject.onDialogClose();
 	}
-	GameUtil.removeEventBarrier(this.eventBarrier);
+	ScreenUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.hide()
 
@@ -423,6 +428,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	firstItemSelector = '*:nth-child(1)';
 	this.dialogMenuDOM.off('keydown');
 	this.dialogMenuDOM.on('keydown', function(evt) {
+		console.debug( 'DialogMenu.prototype.registerEventHandlers keydown ' + evt.keyCode );
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);
