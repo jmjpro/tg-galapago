@@ -166,7 +166,7 @@ MainMenuScreen.prototype.handleSelect = function() {
 			//TODO add event handlers here to change the language with left and right arrows, and enter to select the language
 			break;
 		case 'button-quit' :
-			new DialogMenu('main-menu-screen', this, 'dialog-quit');
+			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-quit');
 			break;
 	}
 }; //MainMenuScreen.prototype.handleSelect()
@@ -202,11 +202,6 @@ MainMenuScreen.prototype.quit = function() {
 
 MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	var navItem, currentElementId, nextElementId;
-	/*
-	if( store.getItem( 'mainMenuScreenLastSelectedOption' ) === null ) {
-		navItem = $('#button-timed');
-	}
-	*/
 	if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		if( callingScreen[0].id === 'screen-loading' ) {
 			navItem = $( '#button-timed' );
@@ -214,19 +209,6 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 		else {
 			navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedOption' ) );
 		}
-		/*
-		switch( callingScreen[0].id ) {
-			case 'screen-loading' :
-				navItem = $( '#button-timed' );
-				break;
-			case 'screen-game' :
-				navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedMode' ) );
-				break;
-			default :
-				navItem = $( '#' + store.getItem( 'mainMenuScreenLastSelectedOption' ) );
-				break;
-		}
-		*/
 	}
 	else if ( direction ) {
 		currentElementId = this.currentNavItem[0].id;
@@ -285,7 +267,7 @@ MainMenuScreen.prototype.registerEventHandlers = function() {
 		switch( evt.keyCode ) {
 		case 13: // enter
 			mainMenuScreen.handleSelect();
-			return false;
+			//return false;
 			break;
 		case 37: // left arrow
 			mainMenuScreen.setNavItem(mainMenuScreen.getNavItem('LEFT'));

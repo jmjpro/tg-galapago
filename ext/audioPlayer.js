@@ -13,11 +13,11 @@ function AudioPlayer(isEnabled){
 	if( !isEnabled ) {
 		this.disable(true);
 	}
-}
+} //constructor
 
 /* if audio is globally disabled we switch the definitions of AudioPlayer.play() and AudioPlayer.playInLoop() with these */
-//AudioPlayer.prototype.tempPlay = function(){};
-//AudioPlayer.prototype.tempPlayInLoop = function(){};
+AudioPlayer.prototype.tempPlay = function(){};
+AudioPlayer.prototype.tempPlayInLoop = function(){};
 
 AudioPlayer.prototype.disable = function(isInit) {
 	if( isInit || this.isEnabled ) {
@@ -29,7 +29,7 @@ AudioPlayer.prototype.disable = function(isInit) {
 		this.play = function(){};
 		this.playInLoop = function(){};
 	}
-};
+}; //AudioPlayer.prototype.disable()
 
 AudioPlayer.prototype.enable = function() {
 	if( ! this.isEnabled ) {
@@ -37,7 +37,7 @@ AudioPlayer.prototype.enable = function() {
 		this.play = AudioPlayer.prototype.tempPlay;
 		this.playInLoop = AudioPlayer.prototype.tempPlayInLoop;
 	}
-};
+}; //AudioPlayer.prototype.enable()
 
 AudioPlayer.prototype.play = function(){
 	var audioPlayer = this;
@@ -55,7 +55,7 @@ AudioPlayer.prototype.play = function(){
 			}
 		}
 	}
-};
+}; //AudioPlayer.prototype.play()
 
 AudioPlayer.prototype.stop = function(){
 	this.queue.clear();
@@ -63,12 +63,12 @@ AudioPlayer.prototype.stop = function(){
 		this.currentAudio.pause();
 		this.currentAudio = null;
 	}
-};
+}; //AudioPlayer.prototype.stop()
 
 AudioPlayer.prototype.playEnded = function(){
 	this.audioPlayer.currentAudio = null;
 	this.audioPlayer.play();
-};
+}; //AudioPlayer.prototype.playEnded()
 
 AudioPlayer.prototype.playInLoop = function(key){
 	audioPlayer = this;
@@ -85,13 +85,13 @@ AudioPlayer.prototype.playInLoop = function(key){
 		this.currentAudioInLoop.loop = true;
 		this.currentAudioInLoop.play();
 	}
-};
+}; //AudioPlayer.prototype.playInLoop()
 
 AudioPlayer.prototype.stopLoop = function(){
 	if(this.currentAudioInLoop){
 		this.currentAudioInLoop.pause();
 	}
-};
+}; //AudioPlayer.prototype.stopLoop()
 
 
 AudioPlayer.prototype.playInvalidTileSelect = function(){

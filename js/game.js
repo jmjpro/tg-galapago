@@ -82,6 +82,11 @@ Galapago.init = function(isTimedMode, onDialogOpenedCallBack) {
 	Galapago.loadJsonAsync(configFilePath).then(function (data) {
 		Galapago.setLevelsFromJson(data);
 		level = LevelMap.getNextLevel();
+
+		if( QueryString.isAudioEnabled ) {
+			LoadingScreen.loadAudioBundle('map-audio');
+		}
+
 		Galapago.levelMap = new LevelMap(level, onDialogOpenedCallBack);
 	}, function (status) {
 		console.log('failed to load JSON level config with status ' + status);
@@ -128,31 +133,29 @@ Galapago.loadJsonAsync = function(jsonFilePath) {
 
 Galapago.setLevel = function(levelId, onDialogOpenedCallBack) {
 	var theme, subTheme, backgroundBundle, themeBundle, resourceLoadingDialog;
-	console.debug( 'entering Galapago.setLevel()' );
 	resourceLoadingDialog = new DialogResourceLoading('#screen-game');
 	this.level = Level.findById(levelId);
 	this.level.levelCompleted = false;
-	console.log( 'level id: ' + this.level.id );
+	console.debug( 'level id: ' + this.level.id );
 	theme = this.level.bgTheme;
 	subTheme = this.level.bgSubTheme;
 	backgroundBundle = theme + '-' + subTheme;
 	themeBundle = theme + '-common';
-	console.log( 'backgroundBundle: ' + backgroundBundle );
 
 	LoadingScreen.gal.onLoaded( backgroundBundle, function(result) {
-			if (result.success) {
-				LoadingScreen.gal.clearOnLoaded( backgroundBundle );
-				console.debug( backgroundBundle + ' resource bundle loaded' );
-				//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
-				Galapago.level.levelAnimation = LevelAnimation.getInstance();
-				Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
-				Galapago.level.display(onDialogOpenedCallBack);
-				resourceLoadingDialog.onResourceLoad();
-			}
-		});
+		if (result.success) {
+			LoadingScreen.gal.clearOnLoaded( backgroundBundle );
+			console.debug( backgroundBundle + ' resource bundle loaded' );
+			//LoadingScreen.gal.download(Galapago.RESOURCE_BUNDLE_BOARD_COMMON);
+			Galapago.level.levelAnimation = LevelAnimation.getInstance();
+			Galapago.level.bubbleTip = new BubbleTip(Galapago.level.levelAnimation);
+			Galapago.level.display(onDialogOpenedCallBack);
+			resourceLoadingDialog.onResourceLoad();
+		}
+	});
 
 	LoadingScreen.gal.download(backgroundBundle);
-	console.debug( 'exiting Galapago.setLevel()' );
+	LoadingScreen.loadAudioBundle('game-audio');
 };
 
 Galapago.printLevelConfigs = function (levelConfigs) {
@@ -170,7 +173,22 @@ Galapago.delay = function(delayMs) {
 		deferred.resolve();
 	});
 	return deferred.promise;
-};
+}; //Galapago.delay()
+
+Galapago.eraseScores = function(profile) {
+	var keyIt;
+	var keyList = new  Array();
+	var storeKeys = store.getKeys();
+	for (var i = 0; i < storeKeys.length; i++) {
+		keyIt = storeKeys[i];
+		if(keyIt.indexOf(profile)>0 && (keyIt.indexOf('highScore')>0 || keyIt.indexOf('totalScore')>0)){ 
+			keyList.push(keyIt);
+		}
+	}
+	for (var i = 0; i < keyList.length; i++) {
+		store.removeItem(keyList[i]);
+	}
+}; //Galapago.eraseScores()
 
 Galapago.eraseProfile = function(profile) {
 	var keyIt;
@@ -186,7 +204,7 @@ Galapago.eraseProfile = function(profile) {
 	for (var i = 0; i < keyList.length; i++) {
 		store.removeItem(keyList[i]);
 	}
-};
+}; //Galapago.eraseProfile()
 /* end class Galapago */
 
 LevelMap.LEFT = 150;
@@ -377,8 +395,6 @@ LevelMap.prototype.registerEventHandlers = function() {
 	$("#screen-map").on( 'keydown', function(evt) {
 		switch( evt.keyCode ) {
 			case 8: // back/backspace key
-				evt.stopPropagation();
-				evt.preventDefault();
 				Galapago.mapScreen.toMainMenuScreen(levelMap);
 				break;
 			case 50: // numeric 2
@@ -388,11 +404,17 @@ LevelMap.prototype.registerEventHandlers = function() {
 			case 51: // numeric 3
 				Galapago.audioPlayer.enable();
 				console.debug( 'Galapago.audioPlayer.isEnabled: ' + Galapago.audioPlayer.isEnabled );
+				if( !LoadingScreen.gal.get('Volcano_01.mp3')) {
+					LoadingScreen.loadAudioBundle('map-audio', function() {
+						Galapago.audioPlayer.playVolcanoLoop();
+					});
+				}
 				break;
 			default:
 		}
+		return false;
 	});
-	$(Galapago.LAYER_MAP).off( 'mousemove');
+	$(Galapago.LAYER_MAP).off( 'mousemove' );
 	$(Galapago.LAYER_MAP).on( 'mousemove', function(e) {
 		x = e.pageX - levelMap.canvas.offsetLeft;
 		y = e.pageY - levelMap.canvas.offsetTop;
@@ -417,14 +439,14 @@ LevelMap.prototype.registerEventHandlers = function() {
 		return false;
 	}); //onmousemove
 
-	$(Galapago.LAYER_MAP).off('click');
-	$(Galapago.LAYER_MAP).on('click', function(evt) {
+	$(Galapago.LAYER_MAP).off( 'click' );
+	$(Galapago.LAYER_MAP).on( 'click', function(evt) {
 		levelMap.handleSelect(evt);
 		return false;
 	}); //onclick
-	$(Galapago.LAYER_MAP).off('keydown');
-	$(Galapago.LAYER_MAP).on('keydown', function(evt) {
-		console.debug('key pressed ' + evt.keyCode);
+	$(Galapago.LAYER_MAP).off( 'keydown' );
+	$(Galapago.LAYER_MAP).on( 'keydown', function(evt) {
+		//console.debug( 'key pressed ' + evt.keyCode );
 		Galapago.audioPlayer.playClick();
 		switch( evt.keyCode ) {
 			case 13: // enter
@@ -443,10 +465,19 @@ LevelMap.prototype.registerEventHandlers = function() {
 				levelMap.handleDownArrow();
 				break;
 			default:
+				return true;
 		}
 		return false;
 	}); //$(Galapago.LAYER_MAP).on('keydown', function(evt) {
 }; //LevelMap.prototype.registerEventHandlers
+
+LevelMap.prototype.unregisterEventHandlers = function() {
+	console.debug( 'unregistered map screen event handlers' );
+	$("#screen-map").off( 'keydown');
+	$(Galapago.LAYER_MAP).off( 'mousemove');
+	$(Galapago.LAYER_MAP).off( 'click' );
+	$(Galapago.LAYER_MAP).off( 'keydown' );
+} //LevelMap.prototype.unregisterEventHandlers()
 
 LevelMap.prototype.quit = function() {
 	this.cleanup();
@@ -560,9 +591,8 @@ LevelMap.prototype.setHotspotLevel = function(level) {
 			this.drawHotspot(this.hotspotLevel.mapHotspotRegion, true);
 		}
 		this.hotspotLevel = level;
-		console.debug("hotspot on level " + this.hotspotLevel.id);
-		//this.layer.clearRect( 0, 0, LoadingScreen.STAGE_WIDTH, Galapago.STAGE_HEIGHT);
-		console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
+		//console.debug("hotspot on level " + this.hotspotLevel.id);
+		//console.debug(MatrixUtil.pointsArrayToString(this.hotspotLevel.mapHotspotRegion));
 		this.drawHotspot(this.hotspotLevel.mapHotspotRegion);
 		this.updateLevelStatus();
 	}
@@ -803,15 +833,11 @@ Level.BG_THEME_CAVE_CREATURES = ["blue-crystal", "green-frog", "pink-spike", "re
 Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend", "teal-friend", "violet-friend", "yellow-friend"];
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
-/*
-Level.NAV_LEFT = 119;
-Level.NAV_TOP = 520;
-Level.NAV_MARGIN_BOTTOM = 10;
-Level.MENU_BUTTON_X = 124;
-Level.MENU_BUTTON_Y = 600;
-*/
 Level.SUPER_FRIEND_SUFFIX = '-friend';
-Level.powerUpScore =0;
+
+//powerUpScore is not a constant its a static variable to hold the bonus frenzy points for powerup for next level.
+Level.powerUpScore =0; 
+ 
 function Level(id) {
 	this.id = id;
 	this.name = '';
@@ -1177,20 +1203,16 @@ Level.prototype.registerEventHandlers = function() {
 				if( QueryString.cheat === 'true' ) {
 					board.setComplete();
 				}
-				return false;
 				break;
 			case 49: // numeric 1
 				if( QueryString.cheat === 'true' ) {
 					board.powerUp.activatePowerUpUsingCheatCode();
 				}
-				return false;
-				//Galapago.setLevel('level_01');
 				break;
 			case 50: // numeric 2
 				if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
 					board.level.dangerBar.applyCheat();
 				}
-				return false;
 				break;
 			case 51:
 				if( QueryString.cheat === 'true' ) {
@@ -1198,7 +1220,6 @@ Level.prototype.registerEventHandlers = function() {
 						ns.frameWork.debug.profiler.clear();
 					}
 				}
-				return false;
 				break;
 			case 52:
 				if( QueryString.cheat === 'true' ) {
@@ -1209,28 +1230,25 @@ Level.prototype.registerEventHandlers = function() {
 						}
 					}
 				}
-				return false;
 				break;
 			case 8: // back/backspace key
 				LevelMap.show(board.level, function() {
 					board.level.quit();
 				});
-				return false;
 				break;
 			case 56: // 8
 				if( QueryString.cheat === 'true' ) {
 					toggleDebugConsole('top');
 				}
-				return false;
 				break;
 			case 57: // 9
 				if( QueryString.cheat === 'true' ) {
 					toggleDebugConsole('bottom');
 				}
-				return false;
 				break;
 			default:
 		}
+		return false;
 	});
 
 	$('#layer-creature').off('click');

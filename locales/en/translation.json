@@ -168,7 +168,7 @@
   },
   "Reset Warning Dialog":{
 		"Title"  :  "WARNING!",
-		"WarningText"  :  "RESETTING THE MAP WILL ERASE YOUR PROGRESS AND WILL START A NEW GAME!DO YOU WISH TO RESET THE MAP?",
+		"WarningText"  :  "RESETTING THE MAP WILL ERASE YOUR PROGRESS AND WILL START A NEW GAME! DO YOU WISH TO RESET THE MAP?",
 		"OptionNo"  :  "No",
 		"OptionYes"  :  "Yes"
   },

@@ -50,30 +50,31 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 	this.unsetNavItem();
 	switch( itemId ) {
 		case 'button-play-map' :
-			//console.log( 'selected play map button');
 			levelMap.handleKeyboardSelect();
 			break;
 		case 'button-start-map' :
-			//console.log( 'selected start map button');
 			levelMap.setHotspotLevel(LevelMap.getNextLevel());
 			levelMap.handleKeyboardSelect();
 			break;
 		case 'button-reset-map' :
-			//console.log( 'selected reset map button');
-			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
-			//console.log( 'selected menu map button');
-			this.toMainMenuScreen(levelMap);
-			//MainMenuScreen.show();
+			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 		case 'button-quit-map' :
-			//levelMap.levelAnimation.stopAllAnimations();
 			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
 }; //MapScreen.prototype.handleNavButtonSelect()
+
+MapScreen.prototype.onDialogClose = function(evt) {
+	Galapago.mapScreen.focusMap( Galapago.levelMap );
+};
+
+MapScreen.prototype.onDialogClose = function(evt) {
+	Galapago.mapScreen.focusMap( Galapago.levelMap );
+};
 
 MapScreen.prototype.registerEventHandlers = function() {
 	var mapScreen, mapNav, levelMap;
@@ -110,6 +111,12 @@ MapScreen.prototype.registerEventHandlers = function() {
 		return false;
 	});
 }; //MapScreen.prototype.registerEventHandlers()
+
+MapScreen.prototype.unregisterEventHandlers = function() {
+	console.debug( 'unregistered map screen event handlers' );
+	$( '#map-nav' ).off( 'keydown' );
+	Galapago.levelMap.unregisterEventHandlers();
+}; //MapScreen.prototype.unregisterEventHandlers()
 
 MapScreen.prototype.addMouseListener = function(){
 	var mapScreen = this;
