@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
 		<script src="ext/queryString.js"></script>
 		<script>
 			var pageTitle;
@@ -12,35 +11,73 @@
 			pageTitle += '</title>';
 			document.writeln(pageTitle);
 		</script>
-		<link rel="stylesheet" href="css/debugConsole.css"/>
-		<link rel="stylesheet" href="css/global.css"/>
-		<link rel="stylesheet" href="css/dialogMenu.css"/>
-		<link rel="stylesheet" href="css/mainMenuScreen.css"/>
-		<link rel="stylesheet" href="css/map.css"/>
+		<link rel="stylesheet" type="text/css" href="css/debugConsole.css"/>
+		<link rel="stylesheet" type="text/css" href="css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="css/dialogMenu.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mainMenuScreen.css"/>
+		<link rel="stylesheet" type="text/css" href="css/map.css"/>
+
+		<script src="ext/lodash.min.js"></script>
+		<script src="ext/q.min.js"></script>
+		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
+		<script src="ext/zepto-1.0.min.js"></script>
+		<script src="ext/zepto-touch-1.0.js"></script>
+		<script src="ext/gal.js"></script>
+		<script src="ext/i18next-1.6.3.min.js"></script>
+		<script src="ext/store.js"></script>
+		<script src="ext/dialogResourceLoading.js"></script>
+		<script src="ext/onScreenCache.js"></script>
+		<script src="ext/imageCollage.js"></script>
+		<script src="ext/canvasUtil.js"></script>
+		<script src="ext/audioPlayer.js"></script>
+		<script src="ext/priorityQueue.js"></script>
+		<script src="ext/pauseableInterval.js"></script>
+		<script src="ext/matrixUtil.js"></script>
+		<script src="ext/util.js"></script>
+		<script src="js/dialogMenu.js"></script>
+		<script src="js/game.js"></script>
+		<script src="js/dialogHelp.js"></script>
+		<script src="js/mainMenuScreen.js"></script>
+		<script src="js/score.js"></script>
+		<script src="js/blobCollection.js"></script>
+		<script src="js/tilesEventProcessor.js"></script>
+		<script src="js/mapScreen.js"></script>
+		<script src="js/levelAnimation.js"></script>
+		<script src="js/loadingScreen.js"></script>
+		<script src="js/powerUp.js"></script>
+		<script src="js/bonusFrenzy.js"></script>
+		<script src="js/bubbleTip.js"></script>
+		<!--script src="ext/profiler.js"></script-->
+		<!--script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script-->
 
 		<script>
 			var sdkApi, galapagoVersion;
 			galapagoVersion = 'Ver. 2.0.10';
 			function loadGame(){
+				var languageOverride;
+				languageOverride = 'fr';
 				//redefine local storage to support cookie fallback
 				window.store = new Store();
 				if( typeof jsErrLog !== 'undefined' ) {
 						jsErrLog.debugMode = false;
 						jsErrLog.info = "Galapago debugging";                
 				}
-				if( typeof TGH5 !== 'undefined' ) {
+				if( typeof TGH5 === 'undefined' ) {
+					i18n.init({ lng: languageOverride , fallbackLng: 'en'});
+				}
+				else {
 					TGH5.Api.init("Galapago", {supportedLanguages: ["en", "ru", "es", "fr", "de"]}, { sdkHome: "../../sdk/" }).done(function (api) {
 						sdkApi = api;
 				        // SDK successfully initialized
 				        api.preferredLanguage().always(function (language) {
 					        /* Update the UI to use the selected language */
-					        //i18n.init({ lng: 'en' , fallbackLng: 'en'});
+					        language = languageOverride ? languageOverride : language;
+					        i18n.init({ lng: language , fallbackLng: 'en'});
 					    });
 				    }).fail(function (error) {
 				        console.log(error);
 				    });
 				}
-				i18n.init({ lng: 'en' , fallbackLng: 'en'});
 		    	LoadingScreen.init();
 			}
 		</script>
@@ -294,13 +331,13 @@
 		<div id="dialog-reset-game" class="overlay2" tabindex="1">
 			<div class="dialog-title" data-i18n="Dialog Reset Game.Title">Warning!</div>
 			<div class="dialog-content">
-				<div data-i18n="Dialog Reset Game.Body Text">
+				<div data-i18n="Dialog Reset Game.BodyText">
 					<p>Resetting the map will erase your progress and will start a new game!</p>
 					<p>Do you wish to reset the map?</p>
 				</div>
 				<ul class="vertical-button-nav">
-					<li id="reset-game-option-no" data-i18n="Dialog Reset Game.No"   class="button-medium button-medium-hilight">No</li>
-					<li id="reset-game-option-yes" data-i18n="Dialog Reset Game.Yes"   class="button-medium">Yes</li>
+					<li id="reset-game-option-no" data-i18n="Dialog Reset Game.OptionNo" class="button-medium button-medium-hilight">No</li>
+					<li id="reset-game-option-yes" data-i18n="Dialog Reset Game.OptionYes" class="button-medium">Yes</li>
 				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
@@ -384,39 +421,7 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<script src="ext/lodash.min.js" async defer></script>
-		<script src="ext/q.min.js" async defer></script>
-		<!--script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
-		<script src="ext/zepto-1.0.min.js" async defer></script>
-		<script src="ext/zepto-touch-1.0.js" async defer></script>
-		<script src="ext/gal.js" async defer></script>
-		<script src="ext/i18next-1.6.3.min.js" async defer></script>
-		<script src="ext/store.js" async defer></script>
-		<script src="ext/dialogResourceLoading.js" async defer></script>
-		<script src="ext/onScreenCache.js" async defer></script>
-		<script src="ext/imageCollage.js" async defer></script>
-		<script src="ext/canvasUtil.js" async defer></script>
-		<script src="ext/audioPlayer.js" async defer></script>
-		<script src="ext/priorityQueue.js" async defer></script>
-		<script src="ext/pauseableInterval.js" async defer></script>
-		<script src="ext/matrixUtil.js" async defer></script>
-		<script src="ext/util.js" async defer></script>
-		<script src="js/dialogMenu.js" async defer></script>
-		<script src="js/game.js" async defer></script>
-		<script src="js/dialogHelp.js" async defer></script>
-		<script src="js/mainMenuScreen.js" async defer></script>
-		<script src="js/score.js" async defer></script>
-		<script src="js/blobCollection.js" async defer></script>
-		<script src="js/tilesEventProcessor.js" async defer></script>
-		<script src="js/mapScreen.js" async defer></script>
-		<script src="js/levelAnimation.js" async defer></script>
-		<script src="js/loadingScreen.js" async defer></script>
-		<script src="js/powerUp.js" async defer></script>
-		<script src="js/bonusFrenzy.js" async defer></script>
-		<script src="js/bubbleTip.js" async defer></script>
-		<script src="../../sdk/tgh5.js" async defer></script>
-		<!--script src="ext/profiler.js"></script-->
-		<!--script type="text/javascript" src="http://192.168.40.100:8082/console.io.js"></script-->
+		<script src="../../sdk/tgh5.js"></script>
 
 	</body>
 </html>

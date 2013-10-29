@@ -148,9 +148,9 @@
 		"OptionMenu"  :  "Menu",
 		"OptionQuit"  :  "Quitter"
   },
-  "Reset Warning Dialog":{
+  "Dialog Reset Game":{
 		"Title"  :  "AVERTISSEMENT !",
-		"WarningText"  :  "EN RÉINITIALISANT LA CARTE, VOUS COMMENCEREZ UNE NOUVELLE PARTIE ET VOTRE PROGRESSION SERA PERDUE !RÉINITIALISER LA CARTE ?",
+		"BodyText"  :  "EN RÉINITIALISANT LA CARTE, VOUS COMMENCEREZ UNE NOUVELLE PARTIE ET VOTRE PROGRESSION SERA PERDUE !RÉINITIALISER LA CARTE ?",
 		"OptionNo"  :  "Non",
 		"OptionYes"  :  "Oui"
   },

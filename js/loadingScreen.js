@@ -4,7 +4,7 @@ LoadingScreen.STAGE_WIDTH = 1279;
 LoadingScreen.STAGE_HEIGHT = 720;
 LoadingScreen.BACKGROUND_PATH_PREFIX = 'res/img/screen-loading/';
 LoadingScreen.BACKGROUND_PATH_SUFFIX = '.jpg)';
-LoadingScreen.DIALOG_IDS = ['option-continue-playing', 'option-main-menu', 'option-new-game', 'option-how-to-play', 'option-options', 'dialog-title', 'dialog-leaderboards'];
+LoadingScreen.DIALOG_IDS = ['option-continue-playing', 'option-main-menu', 'option-new-game', 'option-how-to-play', 'option-options', 'dialog-title', 'dialog-leaderboards', 'dialog-quit', 'dialog-reset-game'];
 
 LoadingScreen.mapScreenImageNames = {
 	'button-menu-map' : 'button-menu-map.png',
@@ -26,7 +26,6 @@ function LoadingScreen() {
 
 LoadingScreen.init = function() {
 	//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.Loading);
-	LoadingScreen.localization();
 	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
 	this.screenDiv = $('#screen-loading');
 	this.screenDiv.width = LoadingScreen.STAGE_WIDTH;
@@ -47,6 +46,7 @@ LoadingScreen.registerEvent = function(){
 			if( backgroundImage ) {
 				LoadingScreen.screenDiv.css( 'background-image','url(' + backgroundImage.src + ')' );
 			}
+			LoadingScreen.localization();
 			LoadingScreen.gal.download('common');
 			LoadingScreen.progressBar = new ProgressBar();
 		}
