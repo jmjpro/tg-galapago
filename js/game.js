@@ -834,7 +834,10 @@ Level.SUPER_FRIENDS = ["blue-friend", "green-friend", "pink-friend", "red-friend
 Level.COLORS = ["blue", "green", "pink", "red", "teal", "violet", "yellow"];
 Level.BLOB_TYPES = ['CREATURE', 'GOLD'];
 Level.SUPER_FRIEND_SUFFIX = '-friend';
-Level.powerUpScore =0;
+
+//powerUpScore is not a constant its a static variable to hold the bonus frenzy points for powerup for next level.
+Level.powerUpScore =0; 
+ 
 function Level(id) {
 	this.id = id;
 	this.name = '';
