@@ -132,7 +132,11 @@ MapScreen.prototype.addMouseListener = function(){
 	
 	$('ul#map-nav li').off('mouseout');
 	$('ul#map-nav li').on('mouseout', function(evt){
-		mapScreen.focusMap(Galapago.levelMap);
+		if( !evt ) var evt = window.event;
+		var relTarg = evt.relatedTarget || evt.toElement;
+		if( relTarg && (relTarg.id === "screen-map" || relTarg.id === "hotspot-proxy-image") ) {
+			mapScreen.focusMap(Galapago.levelMap);
+		}
 		return false;
 	});
 

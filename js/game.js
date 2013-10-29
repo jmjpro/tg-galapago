@@ -1276,8 +1276,9 @@ Level.prototype.registerEventHandlers = function() {
 
 	$('#layer-creature').off('mouseout');
 	$('#layer-creature').on('mouseout', function(evt) {
-		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
-		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight' && currrentElement.id != 'layer-creature'))){
+		if( !evt ) var evt = window.event;
+		var relTarg = evt.relatedTarget || evt.toElement;
+		if( !relTarg || (relTarg && relTarg.id != 'div-hilight' && relTarg.id != 'layer-creature') ){
 			board.onBoardOut();
 		}
 		return false;
