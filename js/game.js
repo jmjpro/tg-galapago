@@ -317,6 +317,7 @@ LevelMap.prototype.drawHotspots = function(){
 			levelMap.drawHotspot(level.mapHotspotRegion, true);
 		}
 	});
+	this.drawHotspotForUnlockedLevels();
 	this.setHotspotLevel(this.hotspotLevel);
 };
 
@@ -584,6 +585,19 @@ LevelMap.prototype.handleLeftArrow = function() {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
 	}
 }; //LevelMap.prototype.handleLeftArrow()
+
+LevelMap.prototype.drawHotspotForUnlockedLevels = function(level) {
+	var levelMap, level, unlockedLevel;
+	levelMap = this;
+	level = LevelMap.getHighestLevelCompleted();
+	if(level){
+		_.each(level.unlocksLevels, function(unlocksLevelId){
+			unlockedLevel = Level.findById(unlocksLevelId);
+			levelMap.drawHotspot( unlockedLevel.mapHotspotRegion);
+			levelMap.drawHotspot( unlockedLevel.mapHotspotRegion, true);
+		});
+	}
+}
 
 LevelMap.prototype.setHotspotLevel = function(level) {
 	if( level && level.mapHotspotRegion.length > 2 ) {
