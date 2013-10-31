@@ -2196,6 +2196,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
+	this.level.levelCompleted = true;
 	if(!this.bonusFrenzy){
 		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
