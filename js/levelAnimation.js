@@ -17,7 +17,7 @@ LevelAnimation.ANIMATION_CONFIG = [
 	{ id: "collage/map-bomb-left-two-strip.png", frameInterval: "200", initLeft: "536", initTop: "80", mf: "2", isContinuous : "false" },
 	{ id: "collage/map-bomb-mid-strip.png", frameInterval: "200", initLeft: "715", initTop: "162", mf: "2", isContinuous : "false" },
 	{ id: "collage/map-bomb-right-strip.png", frameInterval: "200", initLeft: "754", initTop: "142", mf: "2", isContinuous : "false" },
-	{ id: "screen-map/next-level-arrow-down.png", frameInterval: "100", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
+	{ id: "screen-map/next-level-arrow-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-left-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-right-down.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
 	{ id: "screen-map/next-level-arrow-left-up.png", frameInterval: "330", initLeft: "", initTop: "", mf: "1", isContinuous : "true" },
