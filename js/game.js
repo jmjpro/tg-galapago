@@ -330,6 +330,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 		_.each(unlocksLevelsArrows, function(unlockLevelArrow){
 			for(levelId in unlockLevelArrow){
 				if(!Level.isComplete(levelId)){
+					console.debug( 'preparing to draw blinking arrow toward level ' + levelId);
 					levelInfo = unlockLevelArrow[levelId];
 					for(arrow in levelInfo){						
 						var assetPath = MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png';
@@ -1037,7 +1038,6 @@ Level.prototype.loadImages = function() {
 
 Level.prototype.display = function(onDialogOpenedCallBack) {
 	var level, timedMode, themeComplete, resourcePath, backgroundImage, restoreLookupString, restoreLookup;
-	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
 	level.board.displayScore();
@@ -1134,16 +1134,22 @@ Level.prototype.won = function(){
     level = this;
 	if( sdkApi ) {
 		sdkApi.requestModalAd("inGame").done( function() {
-			LevelMap.show( LevelMap.getNextLevel(), function() {
-				level.cleanup();
+			MainMenuScreen.init('screen-game', LevelMap.getNextLevel(), function() {
+				level.cleanup()
 			});
+			/*LevelMap.show( LevelMap.getNextLevel(), function() {
+				level.cleanup();
+			});*/
 		});
 	}
 	else {
 		// TODO: IGOR: Do we need cleanup here?!
-		LevelMap.show( LevelMap.getNextLevel(), function() {
+		MainMenuScreen.init('screen-game', LevelMap.getNextLevel(), function() {
+			level.cleanup()
+		});
+		/*LevelMap.show( LevelMap.getNextLevel(), function() {
 			level.cleanup();
-		} );
+		} );*/
 	}
 }; //Level.prototype.won()
 
@@ -1225,7 +1231,7 @@ Level.prototype.registerEventHandlers = function() {
 				break;
 			case 50: // numeric 2
 				if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
-					board.level.dangerBar.applyCheat();
+					board.level.dangerBar.reduceRemainingTimeCheat();
 				}
 				break;
 			case 51:
@@ -1576,6 +1582,7 @@ Board.prototype.quit = function() {
 }; //Board.prototype.quit()
 
 Board.prototype.display = function() {
+	this.screenDiv.removeClass( 'transparent' );
 	this.creatureLayer.canvas.focus();
 	this.level.levelAnimation.initBobCervantes(/*this.backgroundLayer*/);
 	this.reshuffleService.start();
@@ -3766,7 +3773,7 @@ DangerBar.prototype.update = function(sender) {
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
 
-DangerBar.prototype.applyCheat = function() {
+DangerBar.prototype.reduceRemainingTimeCheat = function() {
 	if(this.timeRemainingMs >= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000){
 		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000;
 		this.update();

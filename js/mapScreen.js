@@ -57,7 +57,9 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			levelMap.handleKeyboardSelect();
 			break;
 		case 'button-reset-map' :
-			window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
+			levelMap.cleanupAnimationAndSound();
+			//window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
+			window.dialog = new DialogMenu('layer-map-other-animation', this, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
 			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
@@ -69,11 +71,10 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 }; //MapScreen.prototype.handleNavButtonSelect()
 
 MapScreen.prototype.onDialogClose = function(evt) {
-	Galapago.mapScreen.focusMap( Galapago.levelMap );
-};
-
-MapScreen.prototype.onDialogClose = function(evt) {
-	Galapago.mapScreen.focusMap( Galapago.levelMap );
+	var levelMap = Galapago.levelMap;
+	Galapago.mapScreen.focusMap( levelMap );
+	Galapago.audioPlayer.playVolcanoLoop();
+	levelMap.startAnimations();
 };
 
 MapScreen.prototype.registerEventHandlers = function() {
