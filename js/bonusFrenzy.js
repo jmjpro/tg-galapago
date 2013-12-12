@@ -250,7 +250,8 @@ BonusFrenzy.prototype.startMoving = function(){
 		if(bonusFrenzy.sizeOfRandomCreatureMap()==0){
 	         clearInterval(bonusFrenzy.intervalHandle);
 			 console.log('score : '+bonusFrenzy.score);
-			 //bonusFrenzy.board.level.won()
+			 layer.clearRect(bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
+			 layer.drawImage(board.level.gameImages.tile_regular, bonusFrenzy.currentX, bonusFrenzy.currentY, Board.TILE_WIDTH, Board.TILE_HEIGHT);
 			 bonusFrenzy.board.setComplete();
 	     }
 	} //function fly()

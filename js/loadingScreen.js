@@ -110,12 +110,9 @@ LoadingScreen.localization = function(){
 
 /// end LoadingScreen class
 
-/// progress bar
-ProgressBar.LEFT = 410;
-ProgressBar.TOP = 530;
+/// progress bar TODO refactor to DOM
+ProgressBar.TOP = 530;  //TODO move to CSS
 ProgressBar.MESSAGE_TOP = 28;
-ProgressBar.LOADING_MESSAGE_LEFT =575;
-ProgressBar.CLICK_MESSAGE_LEFT = 515;
 
 function ProgressBar(){
 	this.loadingProgressBar = LoadingScreen.gal.get("screen-loading/loading-progress-bar.png");
@@ -125,9 +122,9 @@ function ProgressBar(){
 
 	this.canvas = $('#layer-progress-bar')[0];
 	this.canvas.focus();
-	this.canvas.width = this.loadingProgressBar.naturalWidth;//ProgressBar.WIDTH;
+	this.canvas.width = this.loadingProgressBar.naturalWidth;
 	this.canvas.height = this.loadingProgressBar.naturalHeight;
-	this.canvas.style.left = ProgressBar.LEFT + 'px';
+	this.canvas.style.left = (LoadingScreen.STAGE_WIDTH - this.loadingProgressBar.naturalWidth) / 2 + 'px';
 	this.canvas.style.top = ProgressBar.TOP + 'px';
 	this.layer = this.canvas.getContext('2d');
 	this.layer.fillStyle = 'rgb(255,255,255)';
@@ -162,6 +159,5 @@ ProgressBar.prototype.progress = function(percentDownloaded) {
 ProgressBar.prototype.loaded = function() {
 	this.updateProgressBar(1);
 	this.isLoadingComplete=true;
-
 	LoadingScreen.hide();
 };

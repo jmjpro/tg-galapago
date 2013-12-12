@@ -88,17 +88,17 @@ DialogMenu.SELECT_HANDLERS['dialog-game-menu'] = function(dialogMenu) {
 			}
 			break;
 		case 'option-new-game' :
-			this.hide();
-			new DialogMenu(mainCanvasId, board, 'dialog-new-game');
+			//this.hide();
+			new DialogMenu(this.dialogId, this, 'dialog-new-game');
 			break;
 		case 'option-how-to-play' :
-			this.hide();
-			new DialogHelp(mainCanvasId, board);
+			//this.hide();
+			new DialogHelp(this.dialogId, this);
 			break;
-		case 'option-options' :
+		/*case 'option-options' :
 			this.hide();
 			board.display();
-			break;
+			break;*/
 	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-level-won'] = function(dialogMenu) {
@@ -118,6 +118,15 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var level, that;
 	that = this;
 	level = dialogMenu.callingObject.level;
+	// show main menu screen FDD 4.8.8.1
+	board = dialogMenu.callingObject;
+	MainMenuScreen.init('screen-game', board.level, function() {
+		if (that !== null) {
+			that.hide();
+			that = null;
+		}
+	});	
+	/*
 	LevelMap.show(level, function() {
 		if(that !== null) {
 			that.hide();
@@ -125,54 +134,25 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 			that = null;
 		}
 	});
-   /* sdkApi && sdkApi.requestModalAd("inGame").done(function(){
-		LevelMap.show(level, function() {
-			if(that !== null) {
-				that.hide();
-				level.cleanup();
-				that = null;
-			}
-		});
-		//level.showLevelMap();
-	});*/
-	//show map screen;
+	*/
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
 	var optionId, board, mode;
 	optionId = dialogMenu.currentNavItem[0].id;
-	board = dialogMenu.callingObject;
+	board = Galapago.level.board;
 	switch( optionId ) {
 		case 'new-game-option-yes' :
 			console.log("starting new game");
-			//this.hide();
-			if(dialogMenu.callingObject instanceof Board){
+		    this.hide();
+		    this.callingScreen.hide();
+		    Galapago.eraseScores(Galapago.profile);
+			//Galapago.mapScreen.focusMap( Galapago.levelMap );
+			LevelMap.show( LevelMap.getNextLevel(), function() {
 				board.level.cleanup();
-				mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
-				store.removeItem( mode + Galapago.profile + "level" + board.level.id + "restore" );
-
-
-				var that = this;
-				Galapago.setLevel(board.level.id, function() {
-					if(that !== null) {
-						that.callingObject = null;
-						that.hide();
-						that = null;
-					}
-				});
-			}else if(dialogMenu.callingObject instanceof MapScreen){
-			    this.hide();
-			    Galapago.eraseScores(Galapago.profile);
-				Galapago.mapScreen.focusMap( Galapago.levelMap );
-			}	
-			
+			});
 			break;
 		case 'new-game-option-no' :
 			this.hide();
-			if(dialogMenu.callingObject instanceof Board){
-				board.display();
-			}else if(dialogMenu.callingObject instanceof MapScreen){
-				Galapago.mapScreen.focusMap( Galapago.levelMap );
-			}
 			break;
 	}
 };
@@ -221,9 +201,9 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	}
 };
 DialogMenu.SELECT_HANDLERS['dialog-reset-game'] = function(dialogMenu) {
-	var optionId, level, levelMap;
+	var optionId, levelMap;
 	optionId = dialogMenu.currentNavItem[0].id;
-	level = dialogMenu.callingObject.hotspotLevel;
+	dialogMenu.callingObject.hotspotLevel;
 	levelMap = Galapago.levelMap;
 	 
 	switch( optionId ) {
@@ -347,7 +327,7 @@ DialogMenu.prototype.show = function() {
 	}*/
 	this.registerEventHandlers();
 	this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
-	this.callingScreen.addClass('transparent');
+	this.callingScreen.addClass( 'transparent' );
 	this.dialogMenuDOM.show();
 	this.dialogMenuDOM.focus();
 	console.debug( 'element ' + document.activeElement.id + ' has focus' );
@@ -366,6 +346,15 @@ DialogMenu.prototype.hide = function() {
 	ScreenUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
 }; //DialogMenu.prototype.hide()
+
+DialogMenu.prototype.onDialogClose = function() {
+	if( this.dialogId === 'dialog-game-menu' ) {
+		this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
+		this.callingScreen.addClass('transparent');
+		$( '#' + this.dialogId ).focus();
+		this.setNavItem( $( '#option-continue-playing' ) );
+	}
+}; //DialogMenu.prototype.onDialogClose()
 
 DialogMenu.prototype.setNavItem = function(item) {
 	this.currentNavItem.removeClass(this.hilightClass); // remove hilight from old item
@@ -554,9 +543,16 @@ DialogMenu.prototype.dialogLevelWonSelect = function() {
 }; //DialogMenu.prototype.dialogLevelWonSelect()
 
 DialogMenu.prototype.dialogGameOverSelect = function() {
-	var level, that = this;
-	level = this.callingObject.level;
+	var board, that = this;
+	board = this.callingObject;
 	sdkApi && sdkApi.requestModalAd("inGame").done(function(){
+		MainMenuScreen.init('screen-game', board.level, function() {
+			if (that !== null) {
+				that.hide();
+				that = null;
+			}
+		});
+		/*
 		LevelMap.show(level, function() {
 			if(that !== null) {
 				that.hide();
@@ -564,6 +560,7 @@ DialogMenu.prototype.dialogGameOverSelect = function() {
 				that = null;
 			}
 		});
+		*/
 	});
 	//show map screen;
 };

@@ -317,6 +317,7 @@ LevelMap.prototype.drawHotspots = function(){
 			levelMap.drawHotspot(level.mapHotspotRegion, true);
 		}
 	});
+	this.drawHotspotForUnlockedLevels();
 	this.setHotspotLevel(this.hotspotLevel);
 };
 
@@ -329,6 +330,7 @@ LevelMap.prototype.drawBlinkingArrows = function(level){
 		_.each(unlocksLevelsArrows, function(unlockLevelArrow){
 			for(levelId in unlockLevelArrow){
 				if(!Level.isComplete(levelId)){
+					console.debug( 'preparing to draw blinking arrow toward level ' + levelId);
 					levelInfo = unlockLevelArrow[levelId];
 					for(arrow in levelInfo){						
 						var assetPath = MapScreen.GAL_PREFIX + 'next-level-arrow-' + arrow + '.png';
@@ -584,6 +586,19 @@ LevelMap.prototype.handleLeftArrow = function() {
 		this.setHotspotLevel(this.hotspotLevel.neighbors.west);
 	}
 }; //LevelMap.prototype.handleLeftArrow()
+
+LevelMap.prototype.drawHotspotForUnlockedLevels = function(level) {
+	var levelMap, level, unlockedLevel;
+	levelMap = this;
+	level = LevelMap.getHighestLevelCompleted();
+	if(level){
+		_.each(level.unlocksLevels, function(unlocksLevelId){
+			unlockedLevel = Level.findById(unlocksLevelId);
+			levelMap.drawHotspot( unlockedLevel.mapHotspotRegion);
+			levelMap.drawHotspot( unlockedLevel.mapHotspotRegion, true);
+		});
+	}
+}
 
 LevelMap.prototype.setHotspotLevel = function(level) {
 	if( level && level.mapHotspotRegion.length > 2 ) {
@@ -1023,7 +1038,6 @@ Level.prototype.loadImages = function() {
 
 Level.prototype.display = function(onDialogOpenedCallBack) {
 	var level, timedMode, themeComplete, resourcePath, backgroundImage, restoreLookupString, restoreLookup;
-	console.debug( 'entering Level.prototype.display()');
 	level = this;
 	level.setBoard(new Board());
 	level.board.displayScore();
@@ -1120,16 +1134,22 @@ Level.prototype.won = function(){
     level = this;
 	if( sdkApi ) {
 		sdkApi.requestModalAd("inGame").done( function() {
-			LevelMap.show( LevelMap.getNextLevel(), function() {
-				level.cleanup();
+			MainMenuScreen.init('screen-game', LevelMap.getNextLevel(), function() {
+				level.cleanup()
 			});
+			/*LevelMap.show( LevelMap.getNextLevel(), function() {
+				level.cleanup();
+			});*/
 		});
 	}
 	else {
 		// TODO: IGOR: Do we need cleanup here?!
-		LevelMap.show( LevelMap.getNextLevel(), function() {
+		MainMenuScreen.init('screen-game', LevelMap.getNextLevel(), function() {
+			level.cleanup()
+		});
+		/*LevelMap.show( LevelMap.getNextLevel(), function() {
 			level.cleanup();
-		} );
+		} );*/
 	}
 }; //Level.prototype.won()
 
@@ -1211,7 +1231,7 @@ Level.prototype.registerEventHandlers = function() {
 				break;
 			case 50: // numeric 2
 				if( QueryString.cheat === 'true' && Galapago.isTimedMode) {
-					board.level.dangerBar.applyCheat();
+					board.level.dangerBar.reduceRemainingTimeCheat();
 				}
 				break;
 			case 51:
@@ -1276,8 +1296,9 @@ Level.prototype.registerEventHandlers = function() {
 
 	$('#layer-creature').off('mouseout');
 	$('#layer-creature').on('mouseout', function(evt) {
-		var currrentElement = document.elementFromPoint(evt.pageX, evt.pageY);
-		if((!currrentElement || (currrentElement && currrentElement.id != 'div-hilight' && currrentElement.id != 'layer-creature'))){
+		if( !evt ) var evt = window.event;
+		var relTarg = evt.relatedTarget || evt.toElement;
+		if( !relTarg || (relTarg && relTarg.id != 'div-hilight' && relTarg.id != 'layer-creature') ){
 			board.onBoardOut();
 		}
 		return false;
@@ -1561,6 +1582,7 @@ Board.prototype.quit = function() {
 }; //Board.prototype.quit()
 
 Board.prototype.display = function() {
+	this.screenDiv.removeClass( 'transparent' );
 	this.creatureLayer.canvas.focus();
 	this.level.levelAnimation.initBobCervantes(/*this.backgroundLayer*/);
 	this.reshuffleService.start();
@@ -2195,6 +2217,7 @@ Board.getVerticalPointsSets = function(tileSetsToBeRemoved) {
 
 Board.prototype.setComplete = function() {
 	var levelHighestScore, timedMode;
+	this.level.levelCompleted = true;
 	if(!this.bonusFrenzy){
 		this.level.cleanup(true);
 		this.bonusFrenzy = new BonusFrenzy(this);
@@ -3750,7 +3773,7 @@ DangerBar.prototype.update = function(sender) {
 	return dangerBar; //chainable
 }; //DangerBar.prototype.update()
 
-DangerBar.prototype.applyCheat = function() {
+DangerBar.prototype.reduceRemainingTimeCheat = function() {
 	if(this.timeRemainingMs >= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000){
 		this.timeRemainingMs -= DangerBar.CHEAT_DECREASE_TIME_STANDARD_SEC * 1000;
 		this.update();

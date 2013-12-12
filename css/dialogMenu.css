@@ -376,7 +376,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-reset-game div.dialog-content {
-	width: 500px;
+	width: 442px;
 }
 
 #dialog-help {
@@ -388,7 +388,7 @@ ul.galapago-drop-down {
 
 #dialog-help div.dialog-content {
 	width: 800px;
-	margin-top: 30px;
+	margin: 30px 0 0 30px;
 	font-size: 23px;
 	color: rgb(2, 57, 80);
 }
@@ -416,7 +416,7 @@ ul.galapago-drop-down {
 }
 
 #pages {
-	width: 180px;
+	width: 151px;
 	display: inline-block;
 }
 
@@ -445,7 +445,9 @@ ul.galapago-drop-down {
 }
 
 #dialog-help .button-medium {
-	height: 61px;
+	height: 44px;
+	width: 152px;
+	line-height: 35px;
 	color: rgb(255,255,179);
 }
 
