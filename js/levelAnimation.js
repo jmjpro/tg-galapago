@@ -1373,9 +1373,11 @@ AnimationDiv.prototype.addText = function(text){
 }
 
 AnimationDiv.prototype.destroy = function(){
-	this.div.remove();
-	this.div = null;
-}
+	if( this.div ) {
+		this.div.remove();
+		this.div = null;
+	}
+} //AnimationDiv.prototype.destroy()
 
 /*
 	begin class AnimationSprites
