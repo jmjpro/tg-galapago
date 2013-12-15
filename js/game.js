@@ -1097,14 +1097,12 @@ Level.prototype.display = function(onDialogOpenedCallBack) {
 			level.board.display();
 			level.board.setActiveTile();
 			store.setItem(timedMode + Galapago.profile + "level" + level.id + ".levelPlayed", "1");
-			console.debug('exiting Level.prototype.display()');
 			Galapago.level.registerEventHandlers();
 			return level; //chainable
 		});
 	}
 	else
 	{
-		console.debug('exiting Level.prototype.display()');
 		return level; //chainable
 	}
 }; //Level.prototype.display()

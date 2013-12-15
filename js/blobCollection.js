@@ -9,7 +9,7 @@ BlobCollection.ITEM_WIDTH = 47;
 BlobCollection.ITEM_HEIGHT = 47;
 */
 BlobCollection.ITEM_SPACE = 12;
-BlobCollection.MAX_ITEMS = 10;
+BlobCollection.MAX_ITEMS = 11;
 //BlobCollection.ITEM_COUNT_X_OFFSET= 25;
 BlobCollection.LEFT_OFFSET= -50;
 
