@@ -13,13 +13,12 @@ MainMenuScreen.IMAGE_MAP = {
 };
 
 MainMenuScreen.HILIGHT_IMAGE_MAP = {
-	"button-change-player-regular.png" : "change-player-selected.png",
+	"button-change-player-regular.png" : "button-change-player-selected.png",
 	"button-options-regular.png" : "button-options-selected.png",
 	"button-relaxed-regular.png" : "button-relaxed-selected.png",
 	"button-timed-regular.png" : "button-timed-selected.png"
 };
 
-/* navigation after IFA exhibition
 MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "UP" : "button-change-player", "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
@@ -29,7 +28,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-set-language" : { "UP" : "button-how-to-play", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-top-scores", "LEFT" : "button-set-language" }
 };
-*/
+/* old nav
 MainMenuScreen.BUTTON_NAV_MAP = {
 	//"button-change-player" : { "DOWN" : "button-timed" },
 	"button-timed" : { "RIGHT" : "button-relaxed", "DOWN" : "button-how-to-play" },
@@ -37,6 +36,7 @@ MainMenuScreen.BUTTON_NAV_MAP = {
 	"button-how-to-play" : { "UP" : "button-timed", "RIGHT" : "button-quit" },
 	"button-quit" : { "UP" : "button-relaxed", "LEFT" : "button-how-to-play" }
 };
+*/
 
 function MainMenuScreen() {}
 
@@ -126,6 +126,12 @@ MainMenuScreen.prototype.handleSelect = function() {
 	store.setItem( 'mainMenuScreenLastSelectedOption', navItem[0].id );
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
+			if( Galapago.profile ) {
+				window.dialog = new DialogMenu( 'main-menu-screen', this, 'dialog-profile-list' );
+			}
+			else {
+				window.dialog = new DialogMenu( 'main-menu-screen', this, 'dialog-profile-create-init' );
+			}
 			break;
 		case 'button-timed' :
 			isTimedMode = true;

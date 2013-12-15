@@ -472,3 +472,14 @@ ul.galapago-drop-down {
 	min-width: 160px;
 	max-width: 160px;
 }
+
+#dialog-profile-create-init {
+	width: 719px;
+	height: 626px;
+	left: 280px; /*(1279-719/2)*/
+	top: 47px; /*(720-626/2)*/
+}
+
+#dialog-profile-create-init .dialog-title {
+	top: 30px;
+}

@@ -107,25 +107,23 @@
 		<div id="div-level-loading"></div>
 		
 		<div id="screen-main-menu" class="canvas-fullscreen" tabindex="0">
-			<!-- hidden until after IFA exhibition
-			div id="button-change-player">
-				<span id="hello-player">Hello Tim!</span>
-				<span id="click-here">Click here to change player</span>
-			</div-->
+			<div id="button-change-player" class="main-menu-player">
+				<div id="change-player-text">
+					<span id="hello-player">Hello Efrat!<br/></span>
+					<span id="click-here">Click here to change player</span>
+				</div>
+			</div>
 			<div id="button-timed" class="main-menu-mode"></div>
 			<div id="button-relaxed" class="main-menu-mode"></div>
 			<table id="main-menu-button-group">
 				<tr>
 					<td id="button-how-to-play" class="main-menu-button">How To Play</td>
-					<td id="button-quit" class="main-menu-button">Quit</td>
-					<!-- hidden until after IFA exhibition td id="button-top-scores" class="main-menu-button">Top Scores</td-->
+					<td id="button-top-scores" class="main-menu-button">Top Scores</td>
 				</tr>
-				<!-- hidden until after IFA exhibition
 				<tr>
 					<td id="button-set-language" class="main-menu-button">Set Language</td>
 					<td id="button-quit" class="main-menu-button">Quit</td>
 				</tr>
-			-->
 			</table>
 
 			<!--
@@ -382,6 +380,23 @@
 				</div>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+
+		<div id="dialog-profile-create-init" class="overlay2" tabindex="1">
+			<div class="dialog-title" data-i18n="Dialog Profile Create Init.Title">Please enter<br/>your name</div>
+			<div class="dialog-content">
+				<img src="res/img/dialog/keypad.jpg"/>
+
+				<div id="close-positioner">
+					<ul class="vertical-button-nav">
+						<li id="option-close" data-i18n="Dialog Profile Create Init.Close" class="button-medium button-medium-hilight">Close</li>
+					</ul>
+				</div>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+		
+		<div id="bubbleTip" class="bubbleTip">
 		</div>
 
 		<script src="ext/lodash.min.js"></script>

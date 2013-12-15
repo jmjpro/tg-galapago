@@ -20,17 +20,19 @@
 }
 
 #button-change-player {
-	background-repeat: no-repeat;
-	background-position: left top;
 	width: 611px;
 	height: 121px;
-	vertical-align: middle;
-	line-height: 121px;
-	display: inline-block;
+	line-height: 24px;
+	display: table;
 	position: absolute;
 	top: 175px;
-	left: 325px;
+	left: 331px;
 	color: rgb(71,221,212);
+}
+
+#change-player-text {
+	vertical-align: middle;
+	display: table-cell;
 }
 
 .main-menu-mode {
