@@ -163,5 +163,24 @@
 		"OptionResetMap"  :  "RESTAURAR MAPA",
 		"OptionMenu"  :  "Menú",
 		"OptionQuit"  :  "Salir"
+  },
+  "Dialog Leaderboard": {
+   	  "Title" : "Récords",
+      "Option Timed" : "Contrarreloj",
+	  "Option Relaxed" : "Relajado",
+	  "Rank" : "Clasificación",
+	  "Name" : "Nombre",
+	  "Score" : "Puntuación",
+	  "Option Close" : "Volver al menú principal"
+  },
+  "Screen Main Menu" : {
+  	"Hello" : "¡Hola __profile__!",
+  	"Option Change Player" : "Haz clic aquí para cambiar de jugador",
+  	"Option Timed" : "Contrarreloj",
+  	"Option Relaxed" : "Relajado",
+  	"Option Top Scores" : "Récords",
+  	"Option How To Play" : "Cómo se juega",
+  	"Option Set Language" : "Definir idioma",
+  	"Option Quit" : "Salir"
   }
 }

@@ -1,5 +1,6 @@
 MapScreen.NAV_BUTTON_IDS = ['button-play-map', 'button-start-map', 'button-reset-map', 'button-menu-map', 'button-quit-map' ];
-MapScreen.GAL_PREFIX = 'screen-map/';
+MapScreen.SCREEN_ID = 'screen-map';
+MapScreen.GAL_PREFIX = MapScreen.SCREEN_ID + '/';
 MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT = 1200;
 
 function MapScreen() {
@@ -58,14 +59,16 @@ MapScreen.prototype.handleNavButtonSelect = function(navItem) {
 			break;
 		case 'button-reset-map' :
 			levelMap.cleanupAnimationAndSound();
-			//window.dialog = new DialogMenu('layer-map-other-animation', levelMap, 'dialog-reset-game');
-			window.dialog = new DialogMenu('layer-map-other-animation', this, 'dialog-reset-game');
+			window.dialog = new DialogMenu(MapScreen.SCREEN_ID, this, 'dialog-reset-game');
+			//window.dialog = new DialogMenu('layer-map-other-animation', this, 'dialog-reset-game');
 			break;
 		case 'button-menu-map' :
-			window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
+			window.dialog = new DialogMenu(MapScreen.SCREEN_ID, this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
+			//window.dialog = new DialogMenu('screen-game', this, 'dialog-game-menu', null, DialogMenu.loadImages(['arrow-left','arrow-right']));
 			break;
 		case 'button-quit-map' :
-			window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
+		window.dialog = new DialogMenu(MapScreen.SCREEN_ID, this, 'dialog-quit');
+			//window.dialog = new DialogMenu('layer-power-up', this, 'dialog-quit');
 			break;
 	}
 }; //MapScreen.prototype.handleNavButtonSelect()
@@ -158,7 +161,7 @@ MapScreen.prototype.focusMap = function(levelMap) {
 }; //MapScreen.prototype.focusMap()
 
 MapScreen.prototype.toMainMenuScreen = function(levelMap) {
-	MainMenuScreen.init('screen-map', levelMap, function() {
+	MainMenuScreen.init(MapScreen.SCREEN_ID, levelMap, function() {
 		levelMap.cleanup();
 	});
 }; //MapScreen.prototype.toMainMenuScreen()

@@ -1,13 +1,24 @@
 /* TODO: figure out how to vertically and horizontally center either the overlay or its contents */
+#screen-dialog-container {
+	position: absolute;
+	z-index: -1;
+	width: 1279px;
+	height: 720px;
+	left: 0;
+	top: 0;
+}
+
 .overlay2 {
 	display: none;
 	position: absolute;
-	left: 0;
+	/*left: 0;
 	top: 0;
 	width:100%;
-	height:100%;
+	height:100%;*/
+	left: 50%;
+	top: 50%;
 	text-align:center;
-	z-index: 9999;
+	/*z-index: 9999;*/
 	font-family: 'JungleFever';
 	font-size: 26px;
 	color: rgb(255,255,179);
@@ -47,22 +58,14 @@ ul.menu li {
 }
 
 ul.vertical-button-nav {
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
+	margin: 15px 0 0 0;
+	padding: 0;
 	text-align: center;
 	display: inline-block;
 }
 
 ul.vertical-button-nav > li {
 	list-style-type: none;
-}
-
-#dialog-quit {
-	width: 717px;
-	height: 590px;
-	left: 281px; /*(1279-717/2)*/
-	top: 65px; /*(720-590/2)*/
-
 }
 
 div.dialog-content {
@@ -90,13 +93,6 @@ div.dialog-title-wide {
 	width: 411px;
 }
 
-#dialog-game-menu {
-	width: 718px;
-	height: 626px;
-	left: 281px; /*(1280-718/2)*/
-	top: 47px; /*(720-626/2)*/
-}
-
 #dialog-game-menu .dialog-content {
  	width: 388px;
 }
@@ -113,13 +109,6 @@ div.dialog-title-wide {
 #dialog-game-menu .button-regular {
 	height: 102px;
 	line-height: 86px;
-}
-
-#dialog-level-won {
-	width: 718px;
-	height: 626px;
-	left: 281px;
-	top: 47px;
 }
 
 #dialog-level-won .dialog-content {
@@ -155,6 +144,15 @@ div.dialog-title-wide {
 	height: 94px;
 	line-height: 79px; /* yj: height * .84; shorter than height to account for white space at buttom of button */
 	font-size: 27px;
+	/*background-position: 3px;*/
+	background-origin: content-box;
+	padding: 3px 0;
+}
+
+.button-huge-hilight {
+	width: 394px; /*388px + 6px*/
+	/*background-position: 0;*/
+	background-origin: padding-box;
 }
 
 .button-big {
@@ -193,63 +191,95 @@ div.dialog-title-wide {
 	display: none;
 }
 
-#dialog-game-over {
-	width: 717px;
-	height: 247px;
-	left: 281px; /*(1279-717/2)*/
-	top: 236px; /*(720-247/2)*/
+.dialog-small {
+	width: 718px;
+	height: 248px;
+	margin-left: -359px; /*(718/2)*/
+	margin-top: -124px; /*(-248/2)*/
 }
 
-#dialog-leaderboards {
-	width: 1081px;
-	height: 625px;
-	left: 99px; /*(1279-1081/2)*/
-	top: 48px; /*(720-625/2)*/
-}
-
-#dialog-leaderboards div.dialog-content {	
-	width: 900px;
-}
-
-#dialog-leaderboards div.dialog-content table {
-	display: inline-block;
-	background-size: 100% 100%; /* for some reason a value of cover here was chopping off the right side of the background */
-	font-size: 24px;
-	color: rgb(13,97,132);
-	text-align: center;
-	margin-top: 50px;
-	padding-bottom: 15px;
-}
-
-#dialog-leaderboards div.dialog-content table {
-	line-height: 22px;
-}
-
-#dialog-leaderboards div.dialog-content table>caption {
-	color: rgb(255,255,179);
-	height: 75px;
-}
-
-#dialog-leaderboards div.dialog-content table th {
-	color: rgb(141,122,46);
-}
-
-#dialog-time-out {
+.dialog-regular {
 	width: 718px;
 	height: 626px;
-	left: 281px;
-	top: 47px;
+	margin-left: -359px; /*-718/2*/
+	margin-top: -323px; /*-626/2*/
+}
+
+.dialog-regular-no-title {
+	width: 718px;
+	height: 590px;
+	margin-left: -359px; /*-718/2*/
+	margin-top: -295px; /*-590/2*/
+}
+
+.dialog-large {
+	width: 1082px;
+	height: 624px;
+	margin-left: -541px; /*-1181/2*/
+	margin-top: -312px; /*-624/2*/
+}
+
+#dialog-leaderboard div.dialog-content {
+	margin-top: 130px;
+}
+
+#dialog-leaderboard .button-medium {
+	width: 380px;
+	height: 50px;
+}
+
+.leaderboard-caption {
+	position: absolute;
+	z-index: 2;
+	top: 145px;
+	height: 55px;
+	left: 50%;
+	width: 416px;
+	margin-left: -208px; /*-416px/2*/
+	line-height: 50px;
+	color: rgb(255,255,179);
+	/*border: 1px solid black;*/
+}
+
+#leaderboard-caption-relaxed {
+	display: none;
+}
+
+#leaderboard {
+	font-size: 24px;
+	line-height: 22px;
+	color: rgb(13,97,132);
+	padding: 40px 0 10px 0;
+	margin-bottom: 10px;
+	border: 5px solid rgb(1,107,69);
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+#leaderboard th {
+	color: rgb(141,122,46);
+}
+.lb-col1 {
+	min-width: 210px;
+}
+
+.lb-col2 {
+	min-width: 375px;
+	text-align: left;
+}
+
+.lb-col3 {
+	text-align: left;
+	min-width: 215px;
+}
+
+.left-right{
+	vertical-align: middle;
 }
 
 #dialog-time-out div.dialog-content {
  	width: 500px;
-}
-
-#dialog-you-won {
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
 }
 
 #dialog-you-won div.dialog-content {
@@ -273,37 +303,18 @@ span#final-score {
 }
 
 #dialog-new-game {
-	width: 718px;
-	height: 590px;
-	left: 281px; /*(1280-718/2)*/
-	top: 65px; /*(720-590/2)*/
 	font-size: 27px;
 }
 
-#dialog-game-options {
-	width: 718px;
-	height: 626px;
-	left: 281px; /*(1280-718/2)*/
-	top: 47px; /*(720-626/2)*/
+#dialog-new-game ul.vertical-button-nav {
+	margin-top: 20px;
 }
-
-#dialog-profile-delete {
-	width: 717px;
-	height: 590px;
-	left: 281px; /*(1279-717/2)*/
-	top: 65px; /*(720-590/2)*/
-}
-
 
 #dialog-profile-delete div.dialog-content {
 	width: 375px;
 }
 
 #dialog-profile-create {
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
 	font-size: 27px;
 }
 
@@ -344,19 +355,7 @@ ul.galapago-drop-down {
 	display: inline-block;
 }
 
-#dialog-profile-create-init
- {
-	width: 1081px;
-	height: 625px;
-	left: 99px; /*(1279-1081/2)*/
-	top: 48px; /*(720-625/2)*/
-}
-
 #dialog-profile-list {
-	width: 717px;
-	height: 626px;
-	left: 281px;
-	top: 15px;
 	font-size: 18px;
 }
 
@@ -368,22 +367,8 @@ ul.galapago-drop-down {
 	font-size: 21px;
 }
 
-#dialog-reset-game {
-	width: 718px;
-	height: 626px;
-	left: 281px;
-	top: 47px;
-}
-
 #dialog-reset-game div.dialog-content {
 	width: 442px;
-}
-
-#dialog-help {
-	width: 1082px;
-	height: 624px;
-	left: 99px;
-	top: 58px;
 }
 
 #dialog-help div.dialog-content {
@@ -400,7 +385,7 @@ ul.galapago-drop-down {
 }
 
 #dialog-help div.dialog-content h4 {
-	margin: 0em 0em 0em 0em;
+	margin: 0;
 	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content p */
 }
 
@@ -409,7 +394,7 @@ ul.galapago-drop-down {
 	line-height: 1.15em; /* should match line-height for #dialog-help div.dialog-content h4 */
 }
 
-#dialog-help #paging {
+#dialog-help .paging {
 	color: rgb(222, 176, 98);
 	height: 44px;
 	line-height: 44px;
@@ -424,7 +409,7 @@ ul.galapago-drop-down {
 	color: rgb(255,255,179);
 }
 
-.dialog-help-arrow-container {
+.dialog-arrow-container {
 	width: 44px;
 	height: 44px;
 	display: inline-block;
@@ -454,7 +439,7 @@ ul.galapago-drop-down {
 #div-level-loading {
 	display: none;
 	position: absolute;
-	background: url("../res/img/background/dialog-small-no-title.png");
+	background: url("../res/img/background/dialog-small-no-title.png"); /*TODO set in code */
 	width: 544px;
 	height: 264px;
 	top: 228px;
@@ -471,13 +456,6 @@ ul.galapago-drop-down {
 #score-breakdown td {
 	min-width: 160px;
 	max-width: 160px;
-}
-
-#dialog-profile-create-init {
-	width: 719px;
-	height: 626px;
-	left: 280px; /*(1279-719/2)*/
-	top: 47px; /*(720-626/2)*/
 }
 
 #dialog-profile-create-init .dialog-title {

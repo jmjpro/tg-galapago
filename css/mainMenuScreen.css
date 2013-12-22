@@ -40,7 +40,7 @@
 	top: 305px;
 	width: 298px;
 	height: 210px;
-	background-size: 100%;
+	color: rgb(227, 200, 92);
 }
 
 #button-timed {
@@ -49,6 +49,27 @@
 
 #button-relaxed {
 	left: 640px;
+}
+
+.mode-hilight {
+	color: rgb(146, 65, 3);
+}
+
+.mode-label {
+	position: relative;
+	top: 110px;
+	width: 150px;
+	height: 45px;
+	line-height: 45px;
+	font-size: 14pt;
+}
+
+#button-timed .mode-label {
+	left: 45px;
+}
+
+#button-relaxed .mode-label {
+	left: 105px;
 }
 
 #main-menu-button-group {

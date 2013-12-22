@@ -27,20 +27,16 @@ ImageCollage.CREATURE_JUMP_COORDINATES = [
 ImageCollage.CREATURE_JUMP_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_JUMP_COORDINATES);
 
 ImageCollage.COLLAGE_ARRAY = {
-	"collage/main-menu-1.png":{
+	"collage/main-menu.png":{
 		"imageCoordinateArray": [
 			{"cell": [0, 0, 305, 60], "id": "main-menu/button-change-player-selected.png"},
 			{"cell": [0, 60, 305, 60], "id": "main-menu/button-change-player-regular.png"},
 			{"cell": [305, 0, 165, 60], "id": "main-menu/button-options-selected.png"},
-			{"cell": [305, 60, 165, 60], "id": "main-menu/button-options-regular.png"}
-		]
-	},
-	"collage/main-menu-2.png":{
-		"imageCoordinateArray": [
-			{"cell": [0, 0, 234, 165], "id": "main-menu/button-timed-selected.png"},
-			{"cell": [0, 165, 234, 165], "id": "main-menu/button-timed-regular.png"},
-			{"cell": [0, 330, 234, 165], "id": "main-menu/button-relaxed-selected.png"},
-			{"cell": [0, 495, 234, 165], "id": "main-menu/button-relaxed-regular.png"}
+			{"cell": [305, 60, 165, 60], "id": "main-menu/button-options-regular.png"},
+			{"cell": [0, 120, 234, 165], "id": "main-menu/button-timed-selected.png"},
+			{"cell": [0, 285, 234, 165], "id": "main-menu/button-timed-regular.png"},
+			{"cell": [234, 120, 234, 165], "id": "main-menu/button-relaxed-selected.png"},
+			{"cell": [234, 285, 234, 165], "id": "main-menu/button-relaxed-regular.png"}
 		]
 	},
 	"collage/arrows.png":{
@@ -52,16 +48,15 @@ ImageCollage.COLLAGE_ARRAY = {
 	'collage/dialog-buttons.png':{
 		'imageCoordinateArray': [
 		
-			{'cell': [0,0,180,44], 'id': 'dialog/button-disabled.png'},
-			{'cell': [0,44,180,44], 'id': 'dialog/button-regular.png'},
-			{'cell': [10,98,180,44], 'id': 'dialog/button-hilight.png'}
+			{'cell': [2,0,174,44], 'id': 'dialog/button-disabled.png'},
+			{'cell': [2,44,174,44], 'id': 'dialog/button-regular.png'},
+			{'cell': [7,95,180,47], 'id': 'dialog/button-hilight.png'}
 		]
 	},
 	"collage/dialog-arrow-buttons.png":{
 		"imageCoordinateArray": [
 			{"cell": [4, 4, 41, 41], "id": "dialog/arrow-button-up-hilight.png"},
 			{"cell": [53, 4, 44, 44], "id": "dialog/arrow-button-down-hilight.png"},
-			{"cell": [98, 0, 33, 33], "id": "dialog/arrow-button-up-active.png"},
 			{"cell": [98, 0, 33, 33], "id": "dialog/arrow-button-up-active.png"},
 			{"cell": [131, 0, 33, 33], "id": "dialog/arrow-button-up-disable.png"},
 			{"cell": [164, 0, 33, 33], "id": "dialog/arrow-button-down-active.png"},

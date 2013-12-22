@@ -1,20 +1,20 @@
 DialogMenu.BACKGROUNDS_AND_BUTTONS = [
-	{"id" : "dialog-quit", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-game-menu", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-profile-create", "background" : "dialog-regular-no-title.png", "button-class" : "keypad-cursor-letter"},
-	{"id" : "dialog-game-over", "background" : "dialog-small.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-time-out", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-you-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-leaderboards", "background" : "dialog-large.png", "button-class" : "button-big-hilight"},
-	{"id" : "dialog-level-won", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-loading", "background" : "dialog-small-no-title.png", "button-class" : ""},
-	{"id" : "dialog-new-game", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-game-options", "background" : "dialog-regular-no-title.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-profile-delete", "background" : "dialog-regular.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-profile-create-init", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-profile-list", "background" : "dialog-regular-no-title.png", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-reset-game", "background" : "dialog-regular.png", "button-class" : "button-medium-hilight"},
-	{"id" : "dialog-help", "background" : "dialog-large.png", "button-class" : "button-medium-hilight"}
+	{"id" : "dialog-quit", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-game-menu", "size": "regular", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-profile-create", "size": "regular-no-title", "button-class" : "keypad-cursor-letter"},
+	{"id" : "dialog-game-over", "size": "small", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-time-out", "size": "regular", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-you-won", "size": "regular", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-leaderboard", "size": "large", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-level-won", "size": "regular", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-loading", "size": "small-no-title", "button-class" : ""},
+	{"id" : "dialog-new-game", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-game-options", "size": "regular-no-title", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-profile-delete", "size": "regular", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-profile-create-init", "size": "large", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-profile-list", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-reset-game", "size": "regular", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-help", "size": "large", "button-class" : "button-medium-hilight"}
 ];
 DialogMenu.IMAGE_PATH_PREFIX = 'main-menu/';
 DialogMenu.DIALOG_PREFIX = 'dialog/';
@@ -110,9 +110,9 @@ DialogMenu.SELECT_HANDLERS['dialog-you-won'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-game-over'] = function(dialogMenu) {
 	dialogMenu.dialogGameOverSelect();
 };
-DialogMenu.SELECT_HANDLERS['dialog-leaderboards'] = function(dialogMenu) {
+DialogMenu.SELECT_HANDLERS['dialog-leaderboard'] = function(dialogLeaderboard) {
 	this.hide();
-	//show main menu screen;
+	return this; //chainable
 };
 DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	var level, that;
@@ -137,18 +137,25 @@ DialogMenu.SELECT_HANDLERS['dialog-time-out'] = function(dialogMenu) {
 	*/
 };
 DialogMenu.SELECT_HANDLERS['dialog-new-game'] = function(dialogMenu) {
-	var optionId, board, mode;
-	optionId = dialogMenu.currentNavItem[0].id;
-	board = Galapago.level.board;
+	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
 		case 'new-game-option-yes' :
 			console.log("starting new game");
+			//TODO init board (with Galapago.init?)
+			if( Galapago.level.board ) {
+				board = Galapago.level.board;				
+			}
+			else {
+				Galapago.init();
+			}
 		    this.hide();
 		    this.callingScreen.hide();
 		    Galapago.eraseScores(Galapago.profile);
 			//Galapago.mapScreen.focusMap( Galapago.levelMap );
 			LevelMap.show( LevelMap.getNextLevel(), function() {
-				board.level.cleanup();
+				if( Galapago.level ) {
+					Galapago.level.cleanup();
+				}
 			});
 			break;
 		case 'new-game-option-no' :
@@ -187,7 +194,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
-		case 'option-close' :
+		case 'option-profile-create-init-close' :
 			this.hide();
 			break;
 	}
@@ -253,59 +260,62 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 	this.dialogId = dialogId;
 	this.dialogMenuDOM = $('#' + dialogId);
 	this.dialogNav = this.dialogMenuDOM.find('ul');
-	this.hilightClass = DialogMenu.getButtonClass( dialogId );
 	this.hilightImageName = "button-hilight";
 	this.buttonImageName = "button-regular";
+	if( dialogId ) {
+		this.hilightClass = DialogMenu.getButtonClass( dialogId );
+		this.setDialogSize();
 
-	this.setDialogBackgroundImage();
-
-	menuButtonSize = this.dialogNav.children().length;
-	for(var i =0 ; i< menuButtonSize ; i++){
-		var liElement = (this.dialogNav.children()[i]);
-		galBgImagePath = DialogMenu.DIALOG_PREFIX + this.buttonImageName+'.png';
+		menuButtonSize = this.dialogNav.children().length;
+		for(var i =0 ; i< menuButtonSize ; i++){
+			var liElement = (this.dialogNav.children()[i]);
+			galBgImagePath = DialogMenu.DIALOG_PREFIX + this.buttonImageName+'.png';
+			bgImage = LoadingScreen.gal.get(galBgImagePath);
+			if( bgImage ) {
+				$('#'+liElement.id).css('background-image','url(' + bgImage.src + ')');
+			}
+			else {
+				console.error( 'unable to find image ' + galBgImagePath);
+			}
+		}
+		this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
+		galBgImagePath = DialogMenu.DIALOG_PREFIX + this.hilightImageName + '.png';
 		bgImage = LoadingScreen.gal.get(galBgImagePath);
 		if( bgImage ) {
-			$('#'+liElement.id).css('background-image','url(' + bgImage.src + ')');
+			this.currentNavItem.css('background-image','url(' + bgImage.src + ')');
 		}
 		else {
 			console.error( 'unable to find image ' + galBgImagePath);
 		}
-	}
-	this.currentNavItem = this.dialogNav.find('.' + this.hilightClass);
-	galBgImagePath = DialogMenu.DIALOG_PREFIX+ this.hilightImageName+'.png';
-	bgImage = LoadingScreen.gal.get(galBgImagePath);
-	if( bgImage ) {
-		this.currentNavItem.css('background-image','url(' + bgImage.src + ')');
-	}
-	else {
-		console.error( 'unable to find image ' + galBgImagePath);
-	}
 
-	this.initialNavItem = this.currentNavItem;
-	this.eventBarrierDiv = null;
-	this.show();
+		this.initialNavItem = this.currentNavItem;
+		this.eventBarrierDiv = null;
+		this.show();
 
-	//TODO: ideally we should subclass DialogMenu with a DialogLevelWon class and move this logic there
-	if( this.dialogId === 'dialog-level-won' ) {
-		this.animateScores();
-	}
+		//TODO: ideally we should subclass DialogMenu with a DialogLevelWon class and move this logic there
+		if( this.dialogId === 'dialog-level-won' ) {
+			this.animateScores();
+		}
 
-	this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
-	this.callback = null;
-	if( sdkApi && sdkReportingPage ) {
-		//sdkApi.reportPageView(sdkReportingPage);
-	}
-	if( callback ) {
-		this.callback = callback;
-		this.callback.call();
+		this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
+		this.callback = null;
+		if( sdkApi && sdkReportingPage ) {
+			//sdkApi.reportPageView(sdkReportingPage);
+		}
+		if( callback ) {
+			this.callback = callback;
+			this.callback.call();
+		}
 	}
 } //function DialogMenu()
 
-DialogMenu.prototype.setDialogBackgroundImage = function() {
-	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
+DialogMenu.prototype.setDialogSize = function() {
+	var size, dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
 	dialogSpec = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : this.dialogId} );
 	if( dialogSpec ) {
-		backgroundFileName = dialogSpec.background;
+		size = dialogSpec.size;
+		this.dialogMenuDOM.addClass( 'dialog-' + size );
+		backgroundFileName = 'dialog-' + size + '.png';
 		if( backgroundFileName ) {
 			galBackgroundPath = 'background/' + backgroundFileName;
 			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
@@ -318,7 +328,7 @@ DialogMenu.prototype.setDialogBackgroundImage = function() {
 		console.error( 'unable to find dialog spec for ' + this.dialogId );
 	}
 	return this;
-}; //DialogMenu.prototype.setDialogBackgroundImage()
+}; //DialogMenu.prototype.setDialogSize()
 
 DialogMenu.prototype.show = function() {
 	/*
@@ -328,6 +338,7 @@ DialogMenu.prototype.show = function() {
 	this.registerEventHandlers();
 	this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
 	this.callingScreen.addClass( 'transparent' );
+	$( '#screen-dialog-container' ).css( 'z-index', 9999 );
 	this.dialogMenuDOM.show();
 	this.dialogMenuDOM.focus();
 	console.debug( 'element ' + document.activeElement.id + ' has focus' );
@@ -335,6 +346,7 @@ DialogMenu.prototype.show = function() {
 
 DialogMenu.prototype.hide = function() {
 	this.dialogMenuDOM.hide();
+	$( '#screen-dialog-container' ).css( 'z-index', -9999 );
 	this.setNavItem(this.initialNavItem);
 	if(this.callingObject instanceof Board){
 		this.callingObject.reshuffleService.start();
@@ -345,6 +357,8 @@ DialogMenu.prototype.hide = function() {
 	}
 	ScreenUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
+	this.callingScreen.focus();
+	console.debug( 'element ' + document.activeElement.id + ' has focus' );
 }; //DialogMenu.prototype.hide()
 
 DialogMenu.prototype.onDialogClose = function() {
@@ -417,7 +431,7 @@ DialogMenu.prototype.registerEventHandlers = function() {
 	firstItemSelector = '*:nth-child(1)';
 	this.dialogMenuDOM.off('keydown');
 	this.dialogMenuDOM.on('keydown', function(evt) {
-		console.debug( 'DialogMenu.prototype.registerEventHandlers keydown ' + evt.keyCode );
+		//console.debug( 'DialogMenu.prototype.registerEventHandlers keydown ' + evt.keyCode );
 		switch( evt.keyCode ) {
 		case 13: // enter
 			dialogMenu.selectHandler(dialogMenu);

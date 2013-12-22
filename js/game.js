@@ -5,6 +5,7 @@ Galapago.ACTIVE_TILE_LOGIC_LEVELS = [1, 2, 14, 15, 16, 17, 18, 19];
 Galapago.CONFIG_FILE_PATH = 'js/levels.json';
 Galapago.CONFIG_FILE_PATH_YA = 'js/levels-ya.json';
 Galapago.NUM_LEVELS = 70;
+Galapago.MAX_PROFILES = 10;
 Galapago.GAME_SCREEN_GAL_PREFIX = 'screen-game/';
 Galapago.IMAGE_PATH_SUFFIX = '.png';
 Galapago.LAYER_MAP = '#screen-map #layer-map';

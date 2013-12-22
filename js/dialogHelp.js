@@ -16,7 +16,7 @@ function DialogHelp(callingScreenId, callingObject, sdkReportingPage, callback) 
 	this.callingObject = callingObject;
 	this.dialogId = 'dialog-help';
 	this.dialogHelpDOM = $('#' + this.dialogId);
-	this.setDialogBackgroundImage();
+	this.setDialogSize();
 	this.scrollDiv = $('#help-text-scroll');
 	this.currentPage = 1;
 	this.dialogNav = this.dialogHelpDOM.find('ul');
@@ -54,11 +54,13 @@ DialogHelp.prototype.showCurrentPage = function(){
 	$("#help-text-scroll-page" + this.currentPage).show()[0].scrollIntoView();
 }
 
-DialogHelp.prototype.setDialogBackgroundImage = function() {
-	var dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
+DialogHelp.prototype.setDialogSize = function() {
+	var size, dialogSpec, backgroundFileName, galBackgroundPath, backgroundImage;
 	dialogSpec = _.find( DialogMenu.BACKGROUNDS_AND_BUTTONS, {'id' : this.dialogId} );
 	if( dialogSpec ) {
-		backgroundFileName = dialogSpec.background;
+		size = dialogSpec.size;
+		this.dialogHelpDOM.addClass( 'dialog-' + dialogSpec.size );
+		backgroundFileName = 'dialog-' + size + '.png';
 		if( backgroundFileName ) {
 			galBackgroundPath = 'background/' + backgroundFileName;
 			backgroundImage = LoadingScreen.gal.get(galBackgroundPath);
@@ -74,9 +76,10 @@ DialogHelp.prototype.setDialogBackgroundImage = function() {
 		console.error( 'unable to find dialog spec for ' + this.dialogId );
 	}
 	return this;
-}; //DialogHelp.prototype.setDialogBackgroundImage()
+}; //DialogHelp.prototype.setDialogSize()
 
 DialogHelp.prototype.show = function() {
+	$( '#screen-dialog-container' ).css( 'z-index', 9999 );
 	this.dialogHelpDOM.show();
 	this.dialogHelpDOM.focus();
 	this.eventBarrier = ScreenUtil.addEventBarrier(this.dialogId);
@@ -85,6 +88,7 @@ DialogHelp.prototype.show = function() {
 
 DialogHelp.prototype.hide = function() {
 	this.dialogHelpDOM.hide();
+	$( '#screen-dialog-container' ).css( 'z-index', -9999 );
 	this.setNavItem(this.initialNavItem);
 	ScreenUtil.removeEventBarrier(this.eventBarrier);
 	this.callingScreen.removeClass('transparent');
@@ -116,38 +120,38 @@ DialogHelp.prototype.registerMouseHandlers = function() {
 		dialogHelp.selectHandler( dialogHelp );
 		return false;
 	});
-	$( '#dialog-help-up' ).off( 'click');
-	$( '#dialog-help-up' ).on( 'click', function() {
+	$( '.up' ).off( 'click');
+	$( '.up' ).on( 'click', function() {
 		dialogHelp.handleUpArrow();
 		return false;
 	});
-	$( '#dialog-help-up' ).off( 'mouseover');
-	$( '#dialog-help-up' ).on( 'mouseover', function() {
+	$( '.up' ).off( 'mouseover');
+	$( '.up' ).on( 'mouseover', function() {
 		if( dialogHelp.currentPage > 1 ) {
 			dialogHelp.setArrow( 'up', true );
 		}
 		return false;
 	});
-	$( '#dialog-help-up' ).off( 'mouseout');
-	$( '#dialog-help-up' ).on( 'mouseout', function() {
+	$( '.up' ).off( 'mouseout');
+	$( '.up' ).on( 'mouseout', function() {
 		dialogHelp.setArrow( 'up', false );
 		return false;
 	});
 
-	$( '#dialog-help-down' ).off( 'click' );
-	$( '#dialog-help-down' ).on( 'click', function() {
+	$( '.down' ).off( 'click' );
+	$( '.down' ).on( 'click', function() {
 		dialogHelp.handleDownArrow();
 		return false;
 	});
-	$( '#dialog-help-down' ).off( 'mouseover');
-	$( '#dialog-help-down' ).on( 'mouseover', function() {
+	$( '.down' ).off( 'mouseover');
+	$( '.down' ).on( 'mouseover', function() {
 		if( dialogHelp.currentPage < dialogHelp.maxPage ) {
 			dialogHelp.setArrow( 'down', true );
 		}
 		return false;
 	});
-	$( '#dialog-help-down' ).off( 'mouseout');
-	$( '#dialog-help-down' ).on( 'mouseout', function() {
+	$( '.down' ).off( 'mouseout');
+	$( '.down' ).on( 'mouseout', function() {
 		dialogHelp.setArrow( 'down', false );
 		return false;
 	});
@@ -247,7 +251,7 @@ DialogHelp.prototype.updateScrollDivPages = function() {
 
 DialogHelp.prototype.setArrow = function(direction, isHilight) {
 	var arrowSelector, galResourcePath, imageArrow;
-	arrowSelector = '#dialog-help-' + direction;
+	arrowSelector = '#dialog-help .' + direction;
 	galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-';
 	if( isHilight ) {
 		galResourcePath += 'hilight';
@@ -261,7 +265,6 @@ DialogHelp.prototype.setArrow = function(direction, isHilight) {
 	galResourcePath += '.png';
 	imageArrow = LoadingScreen.gal.get(galResourcePath);
 	if( imageArrow ) {
-		//$(arrowSelector).css( 'background-image', 'url(' + imageArrow.src + ')' );
 		$(arrowSelector)[0].src = imageArrow.src;
 	}
 	else {
@@ -269,40 +272,3 @@ DialogHelp.prototype.setArrow = function(direction, isHilight) {
 	}
 	return this;
 }; //DialogHelp.prototype.setArrow()
-
-DialogHelp.prototype.setArrowOld = function(direction, isEnabled) {
-	var arrowSelector, galResourcePath, imageArrow;
-	arrowSelector = '#dialog-help-' + direction;
-	galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-';
-	if( isEnabled ) {
-		galResourcePath += 'active';
-	}
-	else {
-		galResourcePath += 'disable';
-	}
-	galResourcePath += '.png';
-	imageArrow = LoadingScreen.gal.get(galResourcePath);
-	if( imageArrow ) {
-		$(arrowSelector)[0].src = imageArrow.src;
-	}
-	else {
-		console.error( 'unable to load arrow ' + galResourcePath);
-	}
-	return this;
-}; //DialogHelp.prototype.setArrowOld()
-
-DialogHelp.prototype.hilightArrow = function( direction ) {
-	var arrowSelector, galResourcePath, imageArrow;
-	if( (direction === 'up' && this.currentPage < this.maxPage) || (direction === 'down' && this.currentPage > 1) ) {
-		arrowSelector = '#dialog-help-' + direction;
-		galResourcePath = DialogMenu.DIALOG_PREFIX + 'arrow-button-' + direction + '-hilight.png';
-		imageArrow = LoadingScreen.gal.get(galResourcePath);
-		if( imageArrow ) {
-			$(arrowSelector)[0].src = imageArrow.src;
-		}
-		else {
-			console.error( 'unable to load arrow ' + galResourcePath);
-		}
-	}
-	return this;
-}; //DialogHelp.prototype.hilightArrow()

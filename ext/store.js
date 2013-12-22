@@ -1,3 +1,5 @@
+window.store = new Store();
+
 function Store(){
 }
 

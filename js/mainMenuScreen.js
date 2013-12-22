@@ -50,8 +50,7 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 			mainMenuScreen.mainMenuOnScreenCache = new OnScreenCache(
 				[
 					LoadingScreen.gal.get('background/main-menu.jpg'),
-					LoadingScreen.gal.getSprites('collage/main-menu-1.png'),
-					LoadingScreen.gal.getSprites('collage/main-menu-2.png')
+					LoadingScreen.gal.getSprites('collage/main-menu.png')
 				], function () {
 					mainMenuScreen.setImages();
 					mainMenuScreen.setInitialNavItem();
@@ -127,10 +126,10 @@ MainMenuScreen.prototype.handleSelect = function() {
 	switch( navItem[0].id ) {
 		case 'button-change-player' :
 			if( Galapago.profile ) {
-				window.dialog = new DialogMenu( 'main-menu-screen', this, 'dialog-profile-list' );
+				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-list' );
 			}
 			else {
-				window.dialog = new DialogMenu( 'main-menu-screen', this, 'dialog-profile-create-init' );
+				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-create-init' );
 			}
 			break;
 		case 'button-timed' :
@@ -159,10 +158,13 @@ MainMenuScreen.prototype.handleSelect = function() {
 			}
 			break;
 		case 'button-how-to-play' :
-			new DialogHelp('main-menu-screen', this);
+			new DialogHelp('screen-main-menu', this);
 			break;
 		case 'button-top-scores' :
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-leaderboards', TGH5.Reporting.Screen.Leaderboards);
+			var mode;
+			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
+			window.dialog = new DialogLeaderboard( this, mode );
+			//window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-leaderboard', TGH5.Reporting.Screen.Leaderboards );
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;
@@ -172,7 +174,7 @@ MainMenuScreen.prototype.handleSelect = function() {
 			//TODO add event handlers here to change the language with left and right arrows, and enter to select the language
 			break;
 		case 'button-quit' :
-			window.dialog = new DialogMenu('main-menu-screen', this, 'dialog-quit');
+			window.dialog = new DialogMenu('screen-main-menu', this, 'dialog-quit');
 			break;
 	}
 }; //MainMenuScreen.prototype.handleSelect()
@@ -182,6 +184,14 @@ MainMenuScreen.prototype.onDialogClose = function() {
 };
 
 MainMenuScreen.prototype.show = function() {
+	var profile;
+	if( typeof Galapago.profile === 'undefined' ) {
+		profile = 'New Player';
+	}
+	else {
+		profile = Galapago.profile;
+	}
+	$( '#hello' ).html( i18n.t("Screen Main Menu.Hello", { profile: profile }) );
 	this.registerEventHandlers();
 	this.mainMenuDOM.show();
 	this.mainMenuDOM.focus();
@@ -210,6 +220,7 @@ MainMenuScreen.prototype.getNavItem = function(direction, callingScreen) {
 	var navItem, currentElementId, nextElementId;
 	if( callingScreen && callingScreen.length > 0 && callingScreen[0].id ) {
 		if( callingScreen[0].id === 'screen-loading' ) {
+			Galapago.isTimedMode = true;
 			navItem = $( '#button-timed' );
 		}
 		else {
@@ -245,6 +256,7 @@ MainMenuScreen.prototype.removeHilight = function(navItem) {
 	regularImage = LoadingScreen.gal.get(galFilePath);
 	if( regularImage ) {
 		navItem.css( 'background-image', 'url(' + regularImage.src + ')' );
+		navItem.removeClass( 'mode-hilight' );
 	}
 	else {
 		console.error( 'unable to swap to regular image ' + galFilePath );
@@ -258,6 +270,7 @@ MainMenuScreen.prototype.addHilight = function(navItem) {
 	hilightedImage = LoadingScreen.gal.get(galHilightFilePath);
 	if( hilightedImage ) {
 		navItem.css( 'background-image', 'url(' + hilightedImage.src + ')' );
+		navItem.addClass( 'mode-hilight' );
 	}
 	else {
 		console.error( 'unable to swap to hilight image ' + galHilightFilePath );

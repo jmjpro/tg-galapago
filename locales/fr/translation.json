@@ -163,10 +163,23 @@
 		"OptionMenu"  :  "Menu",
 		"OptionQuit"  :  "Quitter"
   },
-  "Dialog Leaderboards": {
-   	  "Title" : "Leaderboards French",
-      "OptionTimed" : "Timed French",
-	  "OptionRelaxed" : "Relaxed French",
-	  "OptionClose" : "Fermer"
+  "Dialog Leaderboard": {
+   	  "Title" : "Meilleurs scores",
+      "OptionTimed" : "Chronométré",
+	  "OptionRelaxed" : "Détente",
+	  "Rank" : "Place",
+	  "Name" : "Nom",
+	  "Score" : "Score",
+	  "OptionBack" : "Retour au menu principal"
+  },
+  "Screen Main Menu" : {
+  	"Hello" : "Bonjour __profile__!",
+  	"Option Change Player" : "Cliquez ici pour changer de profil.",
+  	"Option Timed" : "Chronométré",
+  	"Option Relaxed" : "Détente",
+  	"Option Top Scores" : "Meilleurs scores",
+  	"Option How To Play" : "Comment jouer",
+  	"Option Set Language" : "Langue",
+  	"Option Quit" : "Quitter"
   }
 }

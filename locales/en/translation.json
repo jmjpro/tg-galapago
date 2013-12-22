@@ -180,5 +180,24 @@
 		"OptionResetMap"  :  "RESET MAP",
 		"OptionMenu"  :  "Menu",
 		"OptionQuit"  :  "Quit"
+  },
+  "Dialog Leaderboard": {
+   	  "Title" : "Top Scores",
+      "Option Timed" : "Timed",
+	  "Option Relaxed" : "Relaxed",
+	  "Rank" : "Rank",
+	  "Name" : "Name",
+	  "Score" : "Score",
+	  "Option Close" : "Back to Main Menu"
+  },
+  "Screen Main Menu" : {
+  	"Hello" : "Hello __profile__!",
+  	"Option Change Player" : "Click here to change the player",
+  	"Option Timed" : "Timed",
+  	"Option Relaxed" : "Relaxed",
+  	"Option Top Scores" : "Top Scores",
+  	"Option How To Play" : "How to Play",
+  	"Option Set Language" : "Set Language",
+  	"Option Quit" : "Quit"
   }
 }

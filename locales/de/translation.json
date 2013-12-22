@@ -162,5 +162,24 @@
 		"OptionResetMap"  :  "KARTE ZURÜCKSETZEN",
 		"OptionMenu"  :  "Menü",
 		"OptionQuit"  :  "Beenden"
+  },
+  "Dialog Leaderboard": {
+   	  "Title" : "Highscores",
+      "OptionTimed" : "Gegen die Uhr",
+	  "OptionRelaxed" : "Entspannt",
+	  "Rank" : "Rang",
+	  "Name" : "Name",
+	  "Score" : "Punkte",
+	  "OptionBack" : "Zurück zum Hauptmenü"
+  },
+  "Screen Main Menu" : {
+  	"Hello" : "Hallo __profile__!",
+  	"Option Change Player" : "Klicke hier, um den Spieler zu wechseln.",
+  	"Option Timed" : "Gegen die Uhr",
+  	"Option Relaxed" : "Entspannt",
+  	"Option Top Scores" : "Highscores",
+  	"Option How To Play" : "Spielanleitung",
+  	"Option Set Language" : "Sprache einstellen",
+  	"Option Quit" : "Verlassen"
   }
 }
