@@ -408,8 +408,8 @@ Keyboard.prototype.handleSpecialKey = function( keyId ) {
 			if( this.elementProfileName.text().length > 0 ) {
 				Galapago.profile = this.elementProfileName.text();
 				console.debug( 'profile created: "' +  Galapago.profile + '"');
+				this.container.hide();
 			}
-			this.container.hide();
 			break;
 	}
 	return this;

@@ -112,7 +112,7 @@ MainMenuScreen.prototype.setImages = function() {
 }; //MainMenuScreen.prototype.setImages()
 
 MainMenuScreen.prototype.handleSelect = function() {
-	var navItem, isTimedMode, level, hide;
+	var navItem, isTimedMode, level, hide, keyboard;
 
 	hide = (function(that) {
 	    return function() {
@@ -129,7 +129,12 @@ MainMenuScreen.prototype.handleSelect = function() {
 				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-list' );
 			}
 			else {
-				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-create-init' );
+				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-create-init', null, function() {
+					keyboard = new Keyboard();
+					$( '#dialog' ).focus();
+					DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = Keyboard.prototype.handleSelect;
+				} );
+				keyboard.init( window.dialog );
 			}
 			break;
 		case 'button-timed' :

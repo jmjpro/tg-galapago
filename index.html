@@ -391,11 +391,12 @@
 			<div id="dialog-profile-create-init" class="overlay2" tabindex="1">
 				<div class="dialog-title" data-i18n="Dialog Profile Create Init.Title">Please enter<br/>your name</div>
 				<div class="dialog-content">
-					<img src="res/img/dialog/keypad.jpg"/>
-
-					<ul class="vertical-button-nav">
-						<li id="option-profile-create-init-close" data-i18n="Dialog Profile Create Init.Close" class="button-medium button-medium-hilight">Close</li>
-					</ul>
+					<div id="profile"><span id="profile-name"></span><span id="keypad-cursor">|</span></div>
+					<div id="keyboard-background">
+						<div id="key-hilight" id="boundary-key"></div>
+						<div id="key-selected" id="boundary-key"></div>
+						<ul id="keyboard"></ul>
+					</div>
 				</div>
 				<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 			</div>
@@ -404,6 +405,7 @@
 		<script src="ext/q.min.js"></script>
 		<!--script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script-->
 		<script src="ext/lodash-2.4.1.compat.min.js"></script>
+		<script src="ext/zepto-fx-1.1.2.js"></script>
 		<script src="ext/zepto-touch-1.1.2.js"></script>
 		<script src="ext/gal.js"></script>
 		<!--script src="//cdnjs.cloudflare.com/ajax/libs/i18next/1.6.3/i18next-1.6.3.js"></script-->
