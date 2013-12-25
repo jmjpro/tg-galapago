@@ -21,20 +21,18 @@ DialogLeaderboard.prototype.show = function() {
 	this.displayTopScores( topScoreMap );
 
 	captionBgImageGalPath = 'dialog/button-regular.png';
-
 	captionBgImage = LoadingScreen.gal.get( captionBgImageGalPath );
-
-	captionDOM = $( '.leaderboard-caption' );
-
-	this.setArrow( 'left', false );
-	this.setArrow( 'right', false );
-
 	if( captionBgImage ) {
 		captionDOM.css( 'background-image','url(' + captionBgImage.src + ')' );
 	}
 	else {
 		console.debug( 'unable to load GAL image ' + captionBgImageGalPath );
 	}
+
+	captionDOM = $( '.leaderboard-caption' );
+
+	this.setArrow( 'left', false );
+	this.setArrow( 'right', false );
 
 	//call show() method on parent class
 	DialogMenu.prototype.show.call( this );

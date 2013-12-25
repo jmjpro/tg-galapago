@@ -260,6 +260,7 @@ div.dialog-title-wide {
 #leaderboard th {
 	color: rgb(141,122,46);
 }
+
 .lb-col1 {
 	min-width: 210px;
 }
@@ -276,6 +277,10 @@ div.dialog-title-wide {
 
 .left-right{
 	vertical-align: middle;
+}
+
+#dialog-leaderboard .vertical-button-nav {
+	margin-top: 5px;
 }
 
 #dialog-time-out div.dialog-content {
@@ -460,4 +465,8 @@ ul.galapago-drop-down {
 
 #dialog-profile-create-init .dialog-title {
 	top: 30px;
+}
+
+#dialog-profile-create-init .dialog-content {
+	margin-top: -90px;
 }

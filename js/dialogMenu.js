@@ -11,7 +11,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-new-game", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-game-options", "size": "regular-no-title", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-delete", "size": "regular", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-profile-create-init", "size": "large", "button-class" : "button-medium-hilight"},
+	{"id" : "dialog-profile-create-init", "size": "regular", "button-class" : ""},
 	{"id" : "dialog-profile-list", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-reset-game", "size": "regular", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-help", "size": "large", "button-class" : "button-medium-hilight"}
@@ -191,6 +191,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 			break;
 	}
 };
+/*
 DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
@@ -198,7 +199,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) 
 			this.hide();
 			break;
 	}
-};
+};*/
 DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {

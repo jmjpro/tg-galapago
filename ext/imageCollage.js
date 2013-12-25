@@ -65,7 +65,16 @@ ImageCollage.COLLAGE_ARRAY = {
 	},
 	"collage/keypad-buttons.png":{
 		"imageCoordinateArray": [
-			{"cell": [0, 0, 1, 1], "id": "dialog/keypad-button-1.png"}
+			{"cell": [0, 0, 136, 35], "id": "dialog/keypad-hilight-space.png"},
+			{"cell": [0, 35, 128, 23], "id": "dialog/keypad-active-space.png"},
+			{"cell": [0, 58, 109, 30], "id": "dialog/keypad-hilight-done.png"},
+			{"cell": [0, 88, 100, 22], "id": "dialog/keypad-active-done.png"},
+			{"cell": [0, 109, 112, 42], "id": "dialog/keypad-hilight-delete.png"},
+			{"cell": [0, 150, 101, 29], "id": "dialog/keypad-active-delete.png"},
+			{"cell": [0, 179, 111, 42], "id": "dialog/keypad-hilight-reset.png"},
+			{"cell": [0, 220, 101, 27], "id": "dialog/keypad-active-reset.png"},
+			{"cell": [0, 248, 35, 35], "id": "dialog/keypad-hilight-key.png"},
+			{"cell": [35, 246, 26, 23], "id": "dialog/keypad-active-key.png"}
 		]
 	},
 	"collage/map-board-1.png":{
@@ -819,8 +828,6 @@ ImageCollage.loadByName = function (collageId){
 	return imageCollage;
 }; //ImageCollage.loadByName()
 
-
-
 ImageCollage.findByName = function( collageId ) {
     var result = null;
     if(collageId) {
@@ -830,8 +837,34 @@ ImageCollage.findByName = function( collageId ) {
         }
     }
     return result;
-};
- //ImageCollage.findByName()
+}; //ImageCollage.findByName()
+
+ImageCollage.getImageDimensions = function( imageId ) {
+    var  imageIt, collageIt, collageImageSpec, imageSpec, dimensionArr, imageSpecResult, collageImageSpecCount = 0, imageSpecCount = 0;
+    if( imageId ) {
+        for( collageIt in ImageCollage.COLLAGE_ARRAY ) {
+        	collageImageSpecCount++;
+        	//console.debug( 'collageImageSpecCount: ' + collageImageSpecCount );
+        	collageImageSpec = ImageCollage.COLLAGE_ARRAY[collageIt];
+        	if( imageSpecResult ) {
+        		break;
+        	}
+        	for( imageIt in collageImageSpec.imageCoordinateArray ) {
+        		imageSpec = collageImageSpec.imageCoordinateArray[imageIt];
+        		imageSpecCount++;
+        		//console.debug( 'imageSpecCount: ' + imageSpecCount );
+        		if( imageSpec.id === imageId ) {
+        			imageSpecResult = imageSpec;
+        			break;
+        		}
+        	}
+        }
+        if( imageSpecResult && imageSpecResult.cell ) {
+        	dimensionArr = [ imageSpecResult.cell[2], imageSpecResult.cell[3] ];
+        }
+    }
+    return dimensionArr;
+}; //ImageCollage.getImageDimensions()
 
 ImageCollage.buildSpriteAssetPath = function( collageId, i ) {
 	return collageId.replace( Level.BLOB_IMAGE_EXTENSION, '_' + (i + 1));

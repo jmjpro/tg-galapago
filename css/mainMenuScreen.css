@@ -7,7 +7,6 @@
 	left: 0px;
 	top: 0px;
 	font-family: 'JungleFever';
-	font-size: 18pt;
 	text-align: center;
 }
 
@@ -61,7 +60,7 @@
 	width: 150px;
 	height: 45px;
 	line-height: 45px;
-	font-size: 14pt;
+	font-size: 27px;
 }
 
 #button-timed .mode-label {
@@ -93,14 +92,16 @@
 	line-height: 116px;
 	text-align: center;
 	color: rgb(71,221,212);
+	font-size: 20px;
 }
 
 #hello-player {
 	color: rgb(226,199,92);
-	font-size: 24pt;
+	font-size: 32px;
 	display: inline;
 }
 
 #click-here {
 	display: inline;
+	font-size: 24px;
 }

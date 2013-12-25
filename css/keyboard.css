@@ -1,0 +1,88 @@
+#profile {
+	width: 435px;
+	height: 56px;
+	line-height: 50px; /* @jmjpro: smaller than height to account for bottom drop shadow on bg image */
+	color: rgb(255, 255, 179);
+	text-align: center;
+	font-family: JungleFever;
+	font-size: 27px;
+	margin: auto;
+}
+
+#keyboard-background {  
+	width: 351px;
+	height: 218px;
+    margin: 20px auto auto auto;
+	padding: 12px 18px 10px 18px;
+    font-family: Helvetica;
+    font-size: 17px;
+}
+
+#key-hilight {
+	position: absolute;
+	z-index: 1;
+	display: none;
+}
+
+#key-selected {
+	position: absolute;
+	z-index: 1;
+	display: none;
+}
+
+#keyboard {
+	position: absolute;
+	z-index: 2;
+	list-style: none;
+	width: inherit;
+	height: inherit;
+	margin: 0;
+	padding: 0;
+}
+
+.key {
+	float: left;
+    margin: 0;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.key-last {
+	margin-right: 0;
+}
+
+#key-space {
+	width: 130px;
+}
+
+#key-reset {
+	width: 101px;
+	margin: 3px 26px 0 0;
+}
+
+#key-done {
+	width: 100px;
+	margin: 13px 18px 0 0;
+}
+
+#key-delete {
+	width: 101px;
+	margin-top: 3px;
+}
+
+/*
+#boundary-key {
+	display: none;
+}
+
+.key-active {
+	background-color: rgb(91, 231, 89);
+}
+
+.key-hilight {
+	box-shadow: 0px 0px 3pt 3pt rgb(91, 231, 89);
+}
+*/

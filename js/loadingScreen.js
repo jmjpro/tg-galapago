@@ -25,7 +25,7 @@ function LoadingScreen() {
 
 LoadingScreen.init = function() {
 	//sdkApi && sdkApi.reportPageView(TGH5.Reporting.Screen.Loading);
-	this.gal = new GameAssetLoader('js/loadingScreen.manifest');
+	this.gal = new GameAssetLoader('js/resourceManifest.json');
 	this.screenDiv = $('#screen-loading');
 	this.screenDiv.width = LoadingScreen.STAGE_WIDTH;
 	this.screenDiv.height = LoadingScreen.STAGE_HEIGHT;	

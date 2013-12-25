@@ -12,7 +12,7 @@ MatrixUtil.isSameDimensions = function(matrix1, matrix2) {
 	else {
 		return false;
 	}
-};
+}; //MatrixUtil.isSameDimensions()
 
 // returns the matrix point at a certain distance from a particular point
 MatrixUtil.getNeighborCoordinates = function(coordinates, coordsDistance) {
@@ -21,7 +21,7 @@ MatrixUtil.getNeighborCoordinates = function(coordinates, coordsDistance) {
 	coordsNeighbor[0] = coordinates[0] + coordsDistance[0];
 	coordsNeighbor[1] = coordinates[1] + coordsDistance[1];
 	return coordsNeighbor;
-};
+}; //MatrixUtil.getNeighborCoordinates()
 
 //given a point at row R in a NxM matrix, returns an array of coordinates for points above that point
 MatrixUtil.getNeighborsAbovePoint = function(coordinates) {
@@ -33,7 +33,7 @@ MatrixUtil.getNeighborsAbovePoint = function(coordinates) {
 		neighborPoints.push([col, rowIt]);
 	}
 	return neighborPoints;
-};
+}; //MatrixUtil.getNeighborsAbovePoint()
 
 //utility wrapper for getNeighborsAbove for a set (array) of points
 //first filter only the highest point in the input for a vertical set such as [[0,1],[0,2],[0,3]]
@@ -56,7 +56,7 @@ MatrixUtil.getNeighborsAbovePoints = function(points) {
 		MatrixUtil.pointsArrayToString(points) + ' is ' +
 		MatrixUtil.pointsArrayToString(neighborPoints));
 	return neighborPoints;
-};
+}; //MatrixUtil.getNeighborsAbovePoints()
 
 /* this is hard-coded right now for a triplet of points but it could be generalized */
 MatrixUtil.isVerticalPointSet = function(points) {
@@ -72,7 +72,7 @@ MatrixUtil.isVerticalPointSet = function(points) {
 		return true;
 	} 
 	return false;
-};
+}; //MatrixUtil.isVerticalPointSet()
 
 //higher points have smaller row numbers
 //first loop to determine the highestRow
@@ -97,11 +97,11 @@ MatrixUtil.getHighestPoint = function(points) {
 		}
 	});
 	return highestPoint;
-};
+}; //MatrixUtil.getHighestPoint()
 
 MatrixUtil.lowerPointByNRows = function(point, numRows) {
 	return [point[0], point[1] + numRows];
-};
+}; //MatrixUtil.lowerPointByNRows()
 
 // depending on the number of rows N in the input verticalPoints,
 // return the points in the first N rows of the column that holds those points
@@ -114,7 +114,7 @@ MatrixUtil.getFirstNRowPoints = function(verticalPoints, startIndex) {
 		firstPoints.push([col, rowIt]);
 	}
 	return firstPoints;
-};
+}; //MatrixUtil.getFirstNRowPoints()
 
 // depending on the number of columns N in the input horizontalPoints,
 // return the points in the first row of those N columms
@@ -127,7 +127,7 @@ MatrixUtil.getNFirstRowPoints = function(horizontalPoints) {
 		firstPoints.push([col, 0]);
 	});
 	return firstPoints;
-};
+}; //MatrixUtil.getNFirstRowPoints()
 
 MatrixUtil.pointsArrayToString = function(points) {
 	var pointsString, pointsIt;
@@ -142,11 +142,11 @@ MatrixUtil.pointsArrayToString = function(points) {
 	});
 	pointsString += ']';
 	return pointsString;
-};
+}; //MatrixUtil.pointsArrayToString()
 
 MatrixUtil.coordinatesToString = function(coordinates) {
 	return '[' + coordinates[0] + ',' + coordinates[1] + ']';
-};
+}; //MatrixUtil.coordinatesToString()
 
 // determine the points that are about to change once the pointTriplet is removed
 MatrixUtil.getChangingPoints = function(pointsArray) {

@@ -164,7 +164,6 @@ MainMenuScreen.prototype.handleSelect = function() {
 			var mode;
 			mode = Galapago.isTimedMode ? Galapago.MODE_TIMED : Galapago.MODE_RELAXED;
 			window.dialog = new DialogLeaderboard( this, mode );
-			//window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-leaderboard', TGH5.Reporting.Screen.Leaderboards );
 			break;
 		case 'button-set-language' :
 			var dropDownElement, display;

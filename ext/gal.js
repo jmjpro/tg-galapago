@@ -399,6 +399,19 @@
 	};
 
 	/**
+	 * Set a background image for the input DOM element to the asset at the input path
+	 */
+	GAL.prototype.setBG = function( elementDOM, assetPath ) {
+		var image = this.get( assetPath );
+		if( image ) {
+			elementDOM.style.backgroundImage = 'url(' + image.src + ')';
+		}
+		else {
+			console.debug( 'unable to load GAL image ' + assetPath );
+		}
+	}; //GAL.prototype.setBG()
+
+	/**
 	 * @private
 	 * Initializes the adapter and calls back when that's done.
 	 * @param {string} url The URL to the manifest file.
