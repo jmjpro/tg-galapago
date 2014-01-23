@@ -291,7 +291,7 @@ LevelMap.prototype.display = function(onDialogOpenedCallBack) {
 
 					that.screenDiv.show();
 					that.canvas.focus();
-					that.startAnimations();
+					//that.startAnimations();
 				},
 				MapScreen.IMAGE_CACHE_DISPLAY_TIMEOUT
 			);

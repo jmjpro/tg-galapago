@@ -181,5 +181,18 @@
   	"Option How To Play" : "Spielanleitung",
   	"Option Set Language" : "Sprache einstellen",
   	"Option Quit" : "Verlassen"
+  },
+  "Screen Map" : {
+  	"Option Play" : "spielen",
+  	"Option Start" : "nächstes level starten",
+  	"Option Reset" : "karte zurücksetzen",
+  	"Option Menu" : "menü",
+  	"Option Quit" : "beenden"
+  },
+  "Dialog Profile Create Init": {
+   	  "Title" : "Gib bitte deinen Namen ein"
+  },
+  "Dialog Profile List": {
+   	  "Title" : "Gib bitte deinen Namen ein"
   }
 }

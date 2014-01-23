@@ -22,10 +22,12 @@
 		<link rel="stylesheet" href="css/keyboard.css"/>
 
 		<script>
-			LOCALIZED_DIALOG_IDS = [ 'screen-main-menu', 'dialog-game-menu', 'dialog-leaderboard' ];
+			LOCALIZED_DIALOG_IDS = [ 'screen-main-menu', 'screen-map', 'dialog-game-menu', 'dialog-leaderboard' ];
 
-			var sdkApi, galapagoVersion;
+			var sdkApi, galapagoVersion, langMain, langFallback;
 			galapagoVersion = 'Ver. 2.0.12';
+			langMain = 'en';
+			langFallback = 'en';
 			$( function() {
 				//redefine local storage to support cookie fallback
 				window.store = new Store();
@@ -39,21 +41,20 @@
 					        // SDK successfully initialized
 					        api.preferredLanguage().always(function (language) {
 						        /* Update the UI to use the selected language */
-						        //i18Init( language, 'en' );
-								i18Init( 'en', 'en' );
-						        console.debug( 'set language via API' );
+								i18Init( langMain, langFallback );
+						        console.log( 'set language via API to ' + i18n.lng() );
 								LoadingScreen.init();
 					    });
 				    }).fail(function (error) {
-						i18Init( 'en', 'en' );
-						console.debug( 'hardcoded language due to API init failure' );
+						i18Init( langMain, langFallback );
+						console.log( 'hardcoded language due to API init failure to ' + i18n.lng() );
 				        console.log(error);
 				        LoadingScreen.init();
 				    });
 				}
 				else {
-					i18Init( 'en', 'en' );
-					console.debug( 'hardcoding language could not locate API' );
+					i18Init( langMain, langFallback );
+					console.log( 'hardcoded language since could not locate API to ' + i18n.lng() );
 			    	LoadingScreen.init();
 				}
 
@@ -93,11 +94,11 @@
 				<span id="map-level-score-label"></span><span id="map-level-score"></span>
 			</div>
 			<ul id="map-nav" tabindex="3">
-				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button"><p>PLAY</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button"><p>START NEXT LEVEL</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button"><p>RESET MAP</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button"><p>MENU</p></div></div></li>
-				<li><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button"><p>QUIT</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-play-map" class="nav-button"><p data-i18n="Screen Map.Option Play">play</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-start-map" class="nav-button"><p data-i18n="Screen Map.Option Start">start next level</p></div></div></li>
+				<li><div class="vertical-align-shiv"><div id="button-reset-map" class="nav-button"><p data-i18n="Screen Map.Option Reset">reset map</p></div></div></li>
+				<li class="short"><div class="vertical-align-shiv"><div id="button-menu-map" class="nav-button nav-button-short"><p data-i18n="Screen Map.Option Menu">menu</p></div></div></li>
+				<li class="short"><div class="vertical-align-shiv"><div id="button-quit-map" class="nav-button nav-button-short"><p data-i18n="Screen Map.Option Quit">quit</p></div></div></li>
 			</ul>
 		</div>
 
@@ -388,18 +389,18 @@
 				<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 			</div>
 
-			<div id="dialog-profile-create-init" class="overlay2" tabindex="1">
-				<div class="dialog-title" data-i18n="Dialog Profile Create Init.Title">Please enter<br/>your name</div>
-				<div class="dialog-content">
-					<div id="profile"><span id="profile-name"></span><span id="keypad-cursor">|</span></div>
-					<div id="keyboard-background">
-						<div id="key-hilight" id="boundary-key"></div>
-						<div id="key-selected" id="boundary-key"></div>
-						<ul id="keyboard"></ul>
-					</div>
+			<div id="dialog-profile-create-init" class="overlay2">
+			<div class="dialog-title" data-i18n="Dialog Profile Create Init.Title">Please enter<br/>your name</div>
+			<div class="dialog-content">
+				<input id="profile" type="text">
+				<div id="keyboard-background">
+					<div id="key-hilight" id="boundary-key"></div>
+					<div id="key-selected" id="boundary-key"></div>
+					<ul id="keyboard"></ul>
 				</div>
-				<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
 		</div>
 
 		<script src="ext/q.min.js"></script>

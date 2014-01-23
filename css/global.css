@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'JungleFever';
-  src: url('../res/fonts/JungleFever.ttf');
-  src: local('☺'), url('../res/fonts/JungleFever.ttf') format('truetype');
+  src: url('../res/fonts/RobofeverHeavy.ttf');
+  src: local('☺'), url('../res/fonts/RobofeverHeavy.ttf') format('truetype');
 }
 
 @font-face {

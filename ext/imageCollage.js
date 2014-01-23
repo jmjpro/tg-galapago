@@ -27,16 +27,20 @@ ImageCollage.CREATURE_JUMP_COORDINATES = [
 ImageCollage.CREATURE_JUMP_COORDINATES_JSON = JSON.stringify(ImageCollage.CREATURE_JUMP_COORDINATES);
 
 ImageCollage.COLLAGE_ARRAY = {
-	"collage/main-menu.png":{
+	"collage/main-menu-mode-buttons.png":{
 		"imageCoordinateArray": [
-			{"cell": [0, 0, 305, 60], "id": "main-menu/button-change-player-selected.png"},
-			{"cell": [0, 60, 305, 60], "id": "main-menu/button-change-player-regular.png"},
-			{"cell": [305, 0, 165, 60], "id": "main-menu/button-options-selected.png"},
-			{"cell": [305, 60, 165, 60], "id": "main-menu/button-options-regular.png"},
-			{"cell": [0, 120, 234, 165], "id": "main-menu/button-timed-selected.png"},
-			{"cell": [0, 285, 234, 165], "id": "main-menu/button-timed-regular.png"},
-			{"cell": [234, 120, 234, 165], "id": "main-menu/button-relaxed-selected.png"},
-			{"cell": [234, 285, 234, 165], "id": "main-menu/button-relaxed-regular.png"}
+			{"cell": [0, 0, 235, 164], "id": "main-menu/button-timed-selected.png"},
+			{"cell": [0, 164, 235, 164], "id": "main-menu/button-timed-regular.png"},
+			{"cell": [235, 0, 235, 164], "id": "main-menu/button-relaxed-selected.png"},
+			{"cell": [235, 164, 235, 164], "id": "main-menu/button-relaxed-regular.png"}
+		]
+	},
+	"collage/main-menu-option-buttons.png":{
+		"imageCoordinateArray": [
+			{"cell": [0, 0, 355, 60], "id": "main-menu/button-change-player-selected.png"},
+			{"cell": [0, 60, 355, 60], "id": "main-menu/button-change-player-regular.png"},
+			{"cell": [355, 0, 135, 39], "id": "main-menu/button-options-selected.png"},
+			{"cell": [355, 39, 135, 39], "id": "main-menu/button-options-regular.png"}
 		]
 	},
 	"collage/arrows.png":{

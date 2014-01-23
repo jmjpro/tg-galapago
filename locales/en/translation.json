@@ -199,5 +199,11 @@
   	"Option How To Play" : "How to Play",
   	"Option Set Language" : "Set Language",
   	"Option Quit" : "Quit"
+  },
+  "Dialog Profile Create Init": {
+   	  "Title" : "Please enter your name"
+  },
+  "Dialog Profile List": {
+   	  "Title" : "Players"
   }
 }

@@ -399,7 +399,7 @@
 	};
 
 	/**
-	 * Set a background image for the input DOM element to the asset at the input path
+	 * Set a background image for the input DOM element to the asset at the input assetPpath
 	 */
 	GAL.prototype.setBG = function( elementDOM, assetPath ) {
 		var image = this.get( assetPath );
@@ -410,6 +410,19 @@
 			console.debug( 'unable to load GAL image ' + assetPath );
 		}
 	}; //GAL.prototype.setBG()
+
+/**
+	 * Set the src for for the input DOM image to the asset at the input assetPpath
+	 */
+	GAL.prototype.setImage = function( elementDOM, assetPath ) {
+		var image = this.get( assetPath );
+		if( image ) {
+			elementDOM.src + image.src;
+		}
+		else {
+			console.debug( 'unable to load GAL image ' + assetPath );
+		}
+	}; //GAL.prototype.setImage()
 
 	/**
 	 * @private

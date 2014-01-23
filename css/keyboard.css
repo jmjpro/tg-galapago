@@ -1,12 +1,15 @@
 #profile {
 	width: 435px;
 	height: 56px;
-	line-height: 50px; /* @jmjpro: smaller than height to account for bottom drop shadow on bg image */
 	color: rgb(255, 255, 179);
 	text-align: center;
-	font-family: JungleFever;
+	font-family: 'JungleFever';
 	font-size: 27px;
-	margin: auto;
+	background-size: 100% 100%;
+	padding: 0 0 5px 0;
+	margin: 0;
+	border: 0;
+	background-color: transparent;
 }
 
 #keyboard-background {  
@@ -55,7 +58,7 @@
 }
 
 #key-space {
-	width: 130px;
+	width: 134px;
 }
 
 #key-reset {
@@ -72,17 +75,3 @@
 	width: 101px;
 	margin-top: 3px;
 }
-
-/*
-#boundary-key {
-	display: none;
-}
-
-.key-active {
-	background-color: rgb(91, 231, 89);
-}
-
-.key-hilight {
-	box-shadow: 0px 0px 3pt 3pt rgb(91, 231, 89);
-}
-*/

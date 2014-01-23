@@ -50,7 +50,8 @@ MainMenuScreen.init = function(callingScreenId, callingObject, onDialogOpenedCal
 			mainMenuScreen.mainMenuOnScreenCache = new OnScreenCache(
 				[
 					LoadingScreen.gal.get('background/main-menu.jpg'),
-					LoadingScreen.gal.getSprites('collage/main-menu.png')
+					LoadingScreen.gal.getSprites('collage/main-menu-mode-buttons.png'),
+					LoadingScreen.gal.getSprites('collage/main-menu-option-buttons.png')
 				], function () {
 					mainMenuScreen.setImages();
 					mainMenuScreen.setInitialNavItem();
@@ -131,7 +132,7 @@ MainMenuScreen.prototype.handleSelect = function() {
 			else {
 				window.dialog = new DialogMenu( 'screen-main-menu', this, 'dialog-profile-create-init', null, function() {
 					keyboard = new Keyboard();
-					$( '#dialog' ).focus();
+					//$( '#dialog' ).focus();
 					DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = Keyboard.prototype.handleSelect;
 				} );
 				keyboard.init( window.dialog );

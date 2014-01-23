@@ -164,5 +164,11 @@
 		"OptionMenu"  :  "Меню",
 		"OptionQuit"  :  "Выход"
 
+  },
+  "Dialog Profile Create Init": {
+   	  "Title" : "Пожалуйста, введите ваше имя"
+  },
+  "Dialog Profile List": {
+   	  "Title" : "Пожалуйста, введите ваше имя"
   }
 }

@@ -17,7 +17,7 @@ ul#map-nav>li {
 	display:inline-block;
 	margin-right:8px;
 	padding:0;
-	width: 150px;
+	width: 198px;
 	height: 55px;
 	vertical-align: top;
 	cursor: pointer;
@@ -27,6 +27,10 @@ ul#map-nav>li {
 	-moz-user-select: -moz-none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+ul#map-nav>li.short {
+	width: 108px;
 }
 
 img#map-nav-cursor {
@@ -40,8 +44,12 @@ div.vertical-align-shiv {
 div.nav-button {
 	position:absolute;
 	display: table; 
-	width: 150px;
+	width: 198px;
 	height: 55px;
+}
+
+div.nav-button-short {
+	width: 108px;
 }
 
 .nav-button p {
@@ -51,6 +59,7 @@ div.nav-button {
 	font-family: 'JungleFever';
 	font-size: 17px;
 	color: rgb(107,45,0);
+	padding: 3px;
 }
 
 #map-level-info {

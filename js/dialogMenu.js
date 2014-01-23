@@ -1,7 +1,6 @@
 DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-quit", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-game-menu", "size": "regular", "button-class" : "button-huge-hilight"},
-	{"id" : "dialog-profile-create", "size": "regular-no-title", "button-class" : "keypad-cursor-letter"},
 	{"id" : "dialog-game-over", "size": "small", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-time-out", "size": "regular", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-you-won", "size": "regular", "button-class" : "button-medium-hilight"},
@@ -12,7 +11,7 @@ DialogMenu.BACKGROUNDS_AND_BUTTONS = [
 	{"id" : "dialog-game-options", "size": "regular-no-title", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-profile-delete", "size": "regular", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-profile-create-init", "size": "regular", "button-class" : ""},
-	{"id" : "dialog-profile-list", "size": "regular-no-title", "button-class" : "button-huge-hilight"},
+	{"id" : "dialog-profile-list", "size": "regular", "button-class" : "button-huge-hilight"},
 	{"id" : "dialog-reset-game", "size": "regular", "button-class" : "button-medium-hilight"},
 	{"id" : "dialog-help", "size": "large", "button-class" : "button-medium-hilight"}
 ];
@@ -260,7 +259,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 
 	this.dialogId = dialogId;
 	this.dialogMenuDOM = $('#' + dialogId);
-	this.dialogNav = this.dialogMenuDOM.find('ul');
+	this.dialogNav = this.dialogMenuDOM.find('ul.vertical-button-nav');
 	this.hilightImageName = "button-hilight";
 	this.buttonImageName = "button-regular";
 	if( dialogId ) {
@@ -298,7 +297,6 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 			this.animateScores();
 		}
 
-		this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 		this.callback = null;
 		if( sdkApi && sdkReportingPage ) {
 			//sdkApi.reportPageView(sdkReportingPage);
@@ -307,6 +305,9 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 			this.callback = callback;
 			this.callback.call();
 		}
+		// @jmjpro: moving this after the callback allows us to set the handler within the callback
+		// this is good if we want to keep the handler in a class external to DialogMenu
+		this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	}
 } //function DialogMenu()
 
@@ -398,7 +399,7 @@ DialogMenu.prototype.setNavItem = function(item) {
 DialogMenu.prototype.registerMouseHandlers = function() {
 	var menuButtonSize = this.dialogNav.children().length;
 	var dialogMenu = this;
-	var dialogNavChildren = dialogMenuDOM = $('#' + this.dialogId + ' ul li');
+	var dialogNavChildren = dialogMenuDOM = $('#' + this.dialogId + ' ul.vertical-button-nav li');
 	dialogNavChildren.off('mouseover');
 	dialogNavChildren.on('mouseover', function(){
 		dialogMenu.setNavItem($('#'+this.id));

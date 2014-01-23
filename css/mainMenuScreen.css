@@ -19,13 +19,13 @@
 }
 
 #button-change-player {
-	width: 611px;
-	height: 121px;
+	width: 710px;
+	height: 120px;
 	line-height: 24px;
 	display: table;
 	position: absolute;
 	top: 175px;
-	left: 331px;
+	left: 285px; /* (1280 - 710) / 2*/
 	color: rgb(71,221,212);
 }
 
@@ -36,18 +36,18 @@
 
 .main-menu-mode {
 	position: absolute;
-	top: 305px;
-	width: 298px;
-	height: 210px;
+	top: 304px;
+	width: 310px;
+	height: 218px;
 	color: rgb(227, 200, 92);
 }
 
 #button-timed {
-	left: 335px;
+	left: 314px;
 }
 
 #button-relaxed {
-	left: 640px;
+	left: 656px;
 }
 
 .mode-hilight {
@@ -57,10 +57,10 @@
 .mode-label {
 	position: relative;
 	top: 110px;
-	width: 150px;
+	width: 153px;
 	height: 45px;
-	line-height: 45px;
-	font-size: 27px;
+	line-height: 53px;
+	font-size: 20px;
 }
 
 #button-timed .mode-label {
@@ -74,8 +74,8 @@
 #main-menu-button-group {
 	display: table;
 	position: absolute;
-	top: 500px;
-	left: 300px;
+	top: 518px;
+	left: 367px;
 }
 
 .button-group-row {
@@ -86,11 +86,8 @@
 	background-repeat: no-repeat;
 	background-position: left top;
 	background-size: 100%;
-	width: 331px;
-	height: 116px;
-	vertical-align: middle;
-	line-height: 116px;
-	text-align: center;
+	width: 268px;
+	height: 76px;
 	color: rgb(71,221,212);
 	font-size: 20px;
 }

@@ -7,17 +7,24 @@
 	<link rel="stylesheet" href="css/mainMenuScreen.css"/>
 	<link rel="stylesheet" href="css/dialogMenu.css"/>
 	<link rel="stylesheet" href="css/keyboard.css"/>
-	<script src="ext/zepto-1.1.2.min.js"></script>
-	<script>
-	LOCALIZED_DIALOG_IDS = [ 'screen-main-menu', 'dialog-game-menu', 'dialog-leaderboard' ];
+	<script src="ext/zepto-1.1.2.js"></script>
+	<script type="text/javascript">
+	LOCALIZED_DIALOG_IDS = [ 'screen-main-menu', 'dialog-game-menu', 'dialog-leaderboard', 'dialog-profile-create-init', 'dialog-profile-list' ];
 	var Galapago = function() {};
 	var LoadingScreen = function() {};
 	var MainMenuScreen = function() {};
 	function Board() {}
 	Galapago.LAYER_MAP = '#screen-map #layer-map';
-	var galapagoVersion = 'Ver. 2.0.2';
+	Galapago.MODE_TIMED = "MODE_TIMED";
+	Galapago.MODE_RELAXED = "MODE_RELAXED";
+	var galapagoVersion = 'Ver. 2.0.12';
+	var langMain, langFallback;
+	langMain = 'en';
+	langFallback = 'en';
 
 	$( function() {
+		//redefine local storage to support cookie fallback
+		window.store = new Store();
 		var testClass = new TestClass();
 		testClass.registerEventHandlers();
 		if( typeof TGH5 !== 'undefined' ) {
@@ -27,19 +34,19 @@
 			        api.preferredLanguage().always(function (language) {
 				        /* Update the UI to use the selected language */
 				        //i18Init( language, 'en' );
-						i18Init( 'en', 'en' );
-				        console.debug( 'set language via API' );
+						i18Init( langMain, langFallback );
+				        console.debug( 'set via API language to ' + langMain + ' and fallback to ' + langFallback );
 						LoadingScreen.init();
 			    });
 		    }).fail(function (error) {
-				i18Init( 'en', 'en' );
-				console.debug( 'hardcoded language due to API init failure' );
+				i18Init( langMain, langFallback );
+				console.debug( 'hardcoding language due to API init failure' );
 		        console.log(error);
 		        LoadingScreen.init();
 		    });
 		}
 		else {
-			i18Init( 'en', 'en' );
+			i18Init( langMain, langFallback );
 			console.debug( 'hardcoding language could not locate API' );
 	    	LoadingScreen.init();
 		}
@@ -91,6 +98,15 @@
 			}
 		}*/
 	}
+
+	function openProfileCreateInit() {
+		var keyboard;
+		window.dialog = new DialogMenu( 'test-layer', TestClass, 'dialog-profile-create-init', null, function() {
+			keyboard = new Keyboard();
+			DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = Keyboard.prototype.handleSelect;
+		});
+		keyboard.init( window.dialog );
+	}
 	</script>
 
 	<style>
@@ -118,9 +134,8 @@
 	}
 	</style>
 </head>
-<body style="text-align: center; ">
+<body style="text-align: center;">
 <div id="demo-nav" style="background-color: brown">
-<a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-profile-create', 'keypad-cursor-letter');">Create Profile</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-game-menu', 'button-huge-hilight');">Game Menu</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-game-over', 'button-medium-hilight');">Game Over</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-time-out', 'button-medium-hilight');">Out of Time</a> |
@@ -131,13 +146,8 @@
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a> |
-<a href="#" onclick="var keyboard; window.dialog = new DialogMenu( 'test-layer', TestClass, 'dialog-profile-create-init', null,
-function() {
-	keyboard = new Keyboard();
-	$( '#dialog' ).focus();
-	DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = Keyboard.prototype.handleSelect;
-} ); keyboard.init( window.dialog )">Create Profile Initial</a> |
-<a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-profile-list', 'button-huge-hilight');">Profile List</a> |
+<a href="#" onclick="openProfileCreateInit();">Create Profile Initial</a> |
+<a href="#" onclick="window.dialog = new DialogProfileList( 'test-layer', TestClass, Galapago.MODE_RELAXED );">Profile List</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-reset-game', 'button-medium-hilight');">Reset Game</a> |
 <a href="#" onclick="window.dialog = new DialogHelp('test-layer', TestClass);">Help</a>
@@ -461,10 +471,10 @@ function() {
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<div id="dialog-profile-create-init" class="overlay2" tabindex="1">
+		<div id="dialog-profile-create-init" class="overlay2">
 			<div class="dialog-title" data-i18n="Dialog Profile Create Init.Title">Please enter<br/>your name</div>
 			<div class="dialog-content">
-				<div id="profile"><span id="profile-name"></span><span id="keypad-cursor">|</span></div>
+				<input id="profile" type="text">
 				<div id="keyboard-background">
 					<div id="key-hilight" id="boundary-key"></div>
 					<div id="key-selected" id="boundary-key"></div>
@@ -473,20 +483,41 @@ function() {
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
+
+		<div id="dialog-profile-list" class="overlay2">
+			<div class="dialog-title dialog-title" data-i18n="Dialog Profile List.Title">Players</div>
+			<div class="dialog-content">
+				<ul id="profile-list">
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+				</ul>
+
+				<div id="close-positioner">
+					<ul class="vertical-button-nav">
+						<li id="option-profile-list-save" data-i18n="Dialog Profile List.Save" class="button-huge">Save changes and play with active player</li>
+					</ul>
+				</div>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
 	</div>
 
 	<script src="ext/lodash-2.4.1.compat.min.js"></script>
-	<script src="ext/zepto-fx-1.1.2.js"></script>
 	<script src="ext/zepto-touch-1.1.2.js"></script>
 	<script src="ext/util.js"></script>
 	<script src="ext/matrixUtil.js"></script>
 	<script src="ext/gal.js"></script>
 	<script src="js/game.js"></script>
 	<script src="ext/i18next-1.6.3.min.js"></script>
+	<script src="ext/store.js"></script>
 	<script src="../../sdk/tgh5.js"></script>
 	<!--script src="js/loadingScreen.js"></script-->
 	<script src="js/dialogMenu.js"></script>
 	<script src="js/dialogHelp.js"></script>
+	<script src="js/dialogProfileList.js"></script>
 	<script src="js/mapScreen.js"></script>
 	<script src="ext/imageCollage.js"></script>
 	<script src="js/keyboard.js"></script>

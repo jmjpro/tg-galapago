@@ -35,7 +35,8 @@
 			"background/dialog-regular-no-title.png",
 			"background/dialog-small.png",
 			"background/dialog-large.png",
-			"collage/main-menu.png",
+			"collage/main-menu-mode-buttons.png",
+			"collage/main-menu-option-buttons.png",
 			"collage/arrows.png",
 			"collage/dialog-buttons.png",
 			"collage/dialog-arrow-buttons.png",
@@ -91,7 +92,11 @@
 			"screen-game/danger-bar.png",
 			"screen-game/score-background.png",
 			"screen-game/heads-base.png",
-			"screen-game/heads-base.png"
+			"screen-game/heads-base.png",
+			"dialog/checkbox-v.png",
+			"dialog/checkbox-v-disabled.png",
+			"dialog/checkbox-delete.png",
+			"dialog/checkbox-delete-disabled.png"
 		]
 	},
 	{
@@ -149,7 +154,12 @@
 			"collage/dialog-buttons.png",
 			"collage/dialog-arrow-buttons.png",
 			"collage/keypad-buttons.png",
-			"dialog/keypad.png"
+			"dialog/keypad.png",
+			"dialog/checkbox-v.png",
+			"dialog/checkbox-v-disabled.png",
+			"dialog/checkbox-delete.png",
+			"dialog/checkbox-delete-disabled.png"
+
     	]
     },
     {
