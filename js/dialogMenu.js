@@ -180,12 +180,12 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-delete'] = function(dialogMenu) {
 	optionId = dialogMenu.currentNavItem[0].id;
 	profile = '';
 	switch( optionId ) {
-		case 'option-yes' :
+		case 'option-profile-delete-yes' :
 			console.log( 'deleting profile ' + profile );
+			//delete profile from local storage
 			this.hide();
-			//delete profile from local storage			
 			break;
-		case 'option-no' :
+		case 'option-profile-delete-no' :
 			this.hide();
 			break;
 	}
@@ -202,7 +202,7 @@ DialogMenu.SELECT_HANDLERS['dialog-profile-create-init'] = function(dialogMenu) 
 DialogMenu.SELECT_HANDLERS['dialog-profile-list'] = function(dialogMenu) {
 	var optionId = dialogMenu.currentNavItem[0].id;
 	switch( optionId ) {
-		case 'option-save' :
+		case 'option-profile-list-save' :
 			this.hide();
 			break;
 	}
@@ -309,6 +309,7 @@ function DialogMenu(callingScreenId, callingObject, dialogId, sdkReportingPage, 
 		// this is good if we want to keep the handler in a class external to DialogMenu
 		this.selectHandler = DialogMenu.SELECT_HANDLERS[dialogId];
 	}
+	return this;
 } //function DialogMenu()
 
 DialogMenu.prototype.setDialogSize = function() {

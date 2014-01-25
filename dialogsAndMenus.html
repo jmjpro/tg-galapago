@@ -145,7 +145,7 @@
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-loading', null);">Loading</a><br/>
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-new-game', 'button-huge-hilight');">New Game</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-game-options', 'button-medium-hilight');">Game Options</a> |
-<a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete', 'button-huge-hilight');">Profile Confirm Delete</a> |
+<a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-profile-delete');">Profile Confirm Delete</a> |
 <a href="#" onclick="openProfileCreateInit();">Create Profile Initial</a> |
 <a href="#" onclick="window.dialog = new DialogProfileList( 'test-layer', TestClass, Galapago.MODE_RELAXED );">Profile List</a> |
 <a href="#" onclick="window.dialog = new DialogMenu('test-layer', TestClass, 'dialog-quit', 'button-huge-hilight');">Quit</a> |
@@ -484,22 +484,32 @@
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
 
-		<div id="dialog-profile-list" class="overlay2">
+		<div id="dialog-profile-list" class="overlay2" tabindex="0">
 			<div class="dialog-title dialog-title" data-i18n="Dialog Profile List.Title">Players</div>
 			<div class="dialog-content">
 				<ul id="profile-list">
-					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
-					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
-					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
-					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
-					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><span>New Player</span></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><div class="profile-name">New Player</div></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><div class="profile-name">New Player</div></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><div class="profile-name">New Player</div></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><div class="profile-name">New Player</div></li>
+					<li><div class="checkbox-v"></div><div class="checkbox-delete"></div><div class="profile-name">New Player</div></li>
 				</ul>
 
-				<div id="close-positioner">
-					<ul class="vertical-button-nav">
-						<li id="option-profile-list-save" data-i18n="Dialog Profile List.Save" class="button-huge">Save changes and play with active player</li>
-					</ul>
-				</div>
+				<ul class="vertical-button-nav">
+					<li id="option-profile-list-save" data-i18n="Dialog Profile List.Save" class="button-huge">Save changes and play with active player</li>
+				</ul>
+			</div>
+			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
+		</div>
+
+		<div id="dialog-profile-delete" class="overlay2" tabindex="0">
+			<div class="dialog-title dialog-title" data-i18n="Dialog Profile Delete.Title">Delete Profile</div>
+			<div class="dialog-content">
+				<span>Are you sure you want to delete this player?</span>
+				<ul class="vertical-button-nav">
+					<li id="option-profile-delete-yes" data-i18n="Dialog Profile Delete.Yes" class="button-huge button-huge-hilight">Yes</li>
+					<li id="option-profile-delete-no" data-i18n="Dialog Profile Delete.No" class="button-huge">No</li>
+				</ul>
 			</div>
 			<div class="vertical-align-helper"></div><!-- see http://jsfiddle.net/kizu/7Fewx/ -->
 		</div>
